@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import Desktop from "../assets/computer.png?jsx";
-import Book from "../assets/book.png?jsx";
+import Desktop from "../media/computer.png?jsx";
+import Book from "../media/book.png?jsx";
 
 export default component$(() => {
   return (
