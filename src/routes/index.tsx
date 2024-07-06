@@ -1,6 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import Desktop from "../media/computer.png?jsx";
 import Book from "../media/book.png?jsx";
 
 export default component$(() => {
@@ -13,7 +12,12 @@ export default component$(() => {
           Study <span class="font-medium text-green-200"> {">_"} </span> {"&&"}{" "}
           <br /> <span class="underline">hack </span>
         </h1>{" "}
-        <Book class="ml-8 mt-4" />
+        <img
+          src="https://cdn.pixabay.com/photo/2016/03/31/18/27/book-1294379_1280.png"
+          height={200}
+          width={200}
+          class="ml-8 mt-4"
+        />
       </div>
       <div class="col-span-2 row-span-3 gap-6">
         <h1 class="space-x-0 px-3 pt-16 text-2xl font-extralight">
@@ -34,7 +38,12 @@ export default component$(() => {
       </div>
 
       <div class="col-span-3 col-start-4 row-span-3">
-        <Desktop class="h-[450px] w-[640px]" />
+        <img
+          src="https://cdn.pixabay.com/photo/2017/05/09/13/33/laptop-2298286_1280.png"
+          class="h-[450px] w-[640px]"
+          width={640}
+          height={450}
+        />
       </div>
     </main>
   );
