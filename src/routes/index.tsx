@@ -3,12 +3,15 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 const Landing = component$(() => {
   return (
-    <div class="bg-hero-bg  h-[80vh]  bg-cover bg-center  px-[25vw] pt-10    md:h-[110vh] md:w-[68em]  lg:h-screen   lg:w-[80em] ">
-      <div class="flex h-full flex-col items-center justify-center">
-        <h1 class="text-5xl">Learn & Hack</h1>
-        <p class=" w-[12em] text-lg text-black md:w-[17em] md:text-2xl lg:px-5 ">
+    <div class="bg-hero-bg  h-[80vh]  bg-cover bg-center  px-16 pt-10  md:h-[110vh]  md:w-[68em] md:px-[25vw]  lg:h-screen   lg:w-[80em] ">
+      <div class="flex h-full flex-col items-center justify-center md:gap-4">
+        <h1 class="text-4xl md:text-5xl">Study & Hack</h1>
+        <p class=" w-fit px-1 text-sm text-black md:text-2xl lg:px-5 ">
           {" "}
-          have you consider writing an os from scratch but think your too bad?
+          Love coding, yet finding yourself isolated lately? Seek out and
+          connect with a fellow programmer in Montreal to study with, share
+          ideas and keep each other motivated on your quest through the cyber
+          space.
         </p>
       </div>
     </div>
