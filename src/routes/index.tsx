@@ -1,60 +1,37 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import Book from "../media/book.png?jsx";
+
+const Landing = component$(() => {
+  return (
+    <div class="bg-hero-bg   bg-center  px-32 md:h-[110vh] md:w-[68em] lg:h-[100vh]  lg:w-[80em]  lg:scale-110">
+      <div class="flex h-full flex-col items-center justify-center">
+        <h1 class="self-start text-5xl font-bold text-black md:ml-[3.5em] lg:ml-[5.5em]">
+          Learn & Hack
+        </h1>
+        <p class="w-[22em] px-4   text-2xl text-black ">
+          {" "}
+          have you consider writing an os from scratch but think your too bad?
+        </p>
+      </div>
+    </div>
+  );
+});
 
 export default component$(() => {
   return (
-    <main class="grid grid-cols-6 grid-rows-2 gap-4">
-      <div class="row-span-3">
-        {" "}
-        <h1 class="p-4 text-5xl leading-[3.5rem]">
-          {" "}
-          Study <span class="font-medium text-green-200"> {">_"} </span> {"&&"}{" "}
-          <br /> <span class="underline">hack </span>
-        </h1>{" "}
-        <img
-          src="https://cdn.pixabay.com/photo/2016/03/31/18/27/book-1294379_1280.png"
-          height={200}
-          width={200}
-          class="ml-8 mt-4"
-        />
-      </div>
-      <div class="col-span-2 row-span-3 gap-6">
-        <h1 class="space-x-0 px-3 pt-16 text-2xl font-extralight">
-          Love coding, yet finding yourself isolated lately? Seek out and
-          connect with a fellow programmer in Montreal to study with, share
-          ideas and keep each other motivated on your quest through the cyber
-          space.
-        </h1>
-        <div class="ml-2  flex flex-row gap-6">
-          <button class="mt-6 rounded-md bg-green-500 px-4 py-2 text-white">
-            Get Started
-          </button>
-          <button class="mt-6 rounded-md bg-green-500 px-4 py-2 text-white">
-            Learn More ...
-          </button>
-        </div>
-        <h1> but this work </h1>
-      </div>
-
-      <div class="col-span-3 col-start-4 row-span-3">
-        <img
-          src="https://cdn.pixabay.com/photo/2017/05/09/13/33/laptop-2298286_1280.png"
-          class="h-[450px] w-[640px]"
-          width={640}
-          height={450}
-        />
-      </div>
-    </main>
+    <div>
+      <Landing />
+      <h1></h1>
+    </div>
   );
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "learn & hack",
   meta: [
     {
       name: "description",
-      content: "Qwik site description",
+      content: "some plaform about collaboration",
     },
   ],
 };
