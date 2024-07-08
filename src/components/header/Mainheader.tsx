@@ -6,12 +6,12 @@ export default component$(() => {
         class="relative flex h-16 items-center justify-between  font-mono text-black shadow-sm"
         role="navigation"
       >
-        <div class="pl-8">
+        <div class="pl-2 md:pl-8">
           <a href="#" class="text-2xl">
             {"S & H"}
           </a>
         </div>
-        <div class="pr-8">
+        <div class="">
           <a href="#" class="p-4">
             Learn more
           </a>
