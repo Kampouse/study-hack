@@ -4,8 +4,6 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 const Landing = component$(() => {
   return (
     <div class="bg-hero-bg     flex items-center flex-col justify-center py-40   bg-cover h-[80vh] bg-center  px-16    md:h-[110vh]  md:w-[68em] md:px-[25vw]  lg:h-screen   lg:w-[80em] ">
-
-
       <h1 class="text-3xl md:hidden pb-10    ">Study & Hack</h1>
       <div class="flex h-full flex-col   lg:pl-10 lg:pt-16  md:mt-10 lg:items-start md:items-center md:pt-8 justify-center gap-2  md:gap-4">
         <h1 class=" hidden md:flex   md:text-5xl    ">Study & Hack</h1>
@@ -21,16 +19,40 @@ const Landing = component$(() => {
           </button>
         </div >
       </div>
+
     </div>
   );
 });
+
+
+const UserReview = component$(() => {
+  return (<div class="flex w-full  flex-col items-center justify-center  ">
+
+    <div class="flex flex-col w-full justify-center px-8 pr-2  md:px-80 md:pr-2 gap-8">
+
+      <h1 class="w-full text-5xl pt-8 pb-2   "> Use S&H Because{"<T>"}...  </h1 >
+      <h1 class="w-full  text-2xl  font-light"> I am unabe to commit without others   ....  now i can git push  </h1  >
+      <h1 class="w-full  text-2xl  font-light"> I can't stick to one project alone ...  I always get feedback  </h1>
+
+      <h1 class="w-full  text-2xl  font-light"> Am just lonely! ...  Found a friend with common interest  </h1>
+    </div>
+  </div  >
+  );
+});
+
+
+
+
+
+
 
 export default component$(() => {
   return (
     <div>
       <Landing />
-      <h1></h1>
+      <UserReview />
     </div>
+
   );
 });
 
