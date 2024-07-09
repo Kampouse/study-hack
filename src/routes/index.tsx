@@ -51,8 +51,8 @@ const UserReview = component$(() => {
 
 const Method = component$(() => {
   return (
-    <div class=" flex w-full  flex-col lg:pl-8 justify-center  lg:pt-0">
-      <ul class=" flex flex-col list-decimal    md:w-[60em]   p-12 pb-4 pt-4 md:pt-8 lg:pt-2 pr-2 pl-12 md:ml-48   md:px-8 gap-6 bg-[#e4eff7] border-gray-100 rounded-t-none   rounded-3xl">
+    <div class=" flex w-full  flex-col lg:pl-8 justify-center  mb-4 lg:pt-0">
+      <ul class=" flex flex-col     md:w-[60em]   p-12 pb-4 pt-4 md:pt-8 lg:pt-2 pr-2 pl-12 md:ml-48   md:px-8 gap-6 bg-[#e4eff7] border-gray-100 rounded-t-none   rounded-3xl">
 
         <h1 class="w-full text-5xl  pb-1 text-black   ">So how does it work?</h1 >
         <li class=" flex w-fit   flex-col  text-2xl text-blue-500   font-light">
@@ -60,10 +60,10 @@ const Method = component$(() => {
             Let us know when you free
           </span>
           <div class="flex  flex-row gap">
-            <select disabled={true} class="bg-blue-200 hover:bg-blue-400 mt-2  text-gray-800  font-bold rounded-lg rounded-r-none pl-6  w-36  " >
+            <select disabled={true} class="bg-blue-200 hover:bg-blue-100 transition duration-500 ease-in-out mt-2 p-2  text-gray-800  font-light rounded-lg rounded-r-none pl-6  w-36  " >
               <option>Monday</option>
             </select >
-            <select disabled={true} class=" bg-blue-200 hover:bg-blue-300   mt-2 text-gray-800 font-bold rounded-lg rounded-l-none pl-6  w-36  " >
+            <select disabled={true} class=" bg-blue-200 hover:bg-blue-100 p-2 transition duration-500 ease-in-out   mt-2 text-gray-800 font-light rounded-lg rounded-l-none pl-6  w-36  " >
               <option>Morning </option>
             </select >
           </div >
@@ -72,25 +72,19 @@ const Method = component$(() => {
           <span class="text-black">
             what you will be working on:
           </span>
-          <textarea readOnly={true} class="bg-blue-200 hover:bg-blue-100 border-blue-200  mt-2 text-gray-800 font-light rounded-lg  pl-6  w-fit placeholder:text-gray-600 focus:placeholder:text-blue-800    " placeholder="Project" />
+          <textarea readOnly={true} class="bg-blue-200 hover:bg-blue-100 border-blue-200  transition ease-out duration-500 mt-2 text-gray-800 font-light rounded-lg  pl-6  w-fit placeholder:text-gray-600 focus:placeholder:text-blue-800    " placeholder="Project..." />
         </li >
-        <li class="flex w-fit  flex-col  text-2xl text-blue-500 justify-start   font-light">
-          <span class="text-black">
+        <li class="flex w-fit  flex-col  text-2xl text-blue-500 justify-start    font-light">
+          <span class="text-black pb-2">
             where you will be working from:
           </span >
-          <input readOnly={true} class="bg-blue-200 hover:bg-blue-100 border-blue-200  mt-2 text-gray-800 font-light rounded-lg  pl-6  w-fit placeholder:text-gray-600 focus:placeholder:text-blue-800    " type="text" placeholder="Location" />
-          <button class="self-start text-black bg-blue-500 px-4 rounded-md mt-3">
-            register :D
+          <input readOnly={true} class="w-32 p-4 rounded-lg hover:bg-blue-100 placeholder:text-gray-600 bg-blue-200 transition ease-out duration-500" type="text" placeholder="Location..." />
+          <button class="bg-blue-500 w-fit mt-3 hover:bg-blue-700 text-white font-light p-1  md:p-2 rounded-lg">
+            Get Started
           </button>
-
         </li >
-
-
       </ul>
-
-
     </div  >
-
   );
 });
 
@@ -100,6 +94,7 @@ export default component$(() => {
       <Landing />
       <UserReview />
       <Method />
+
     </div >
 
   );
