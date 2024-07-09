@@ -26,32 +26,66 @@ const Landing = component$(() => {
 
 
 const UserReview = component$(() => {
-  return (<div class="flex w-full  flex-col items-center justify-center  ">
-
-    <div class="flex flex-col w-full justify-center px-8 pr-2  md:px-80 md:pr-2 gap-8">
-
-      <h1 class="w-full text-5xl pt-8 pb-2   "> Use S&H Because{"<T>"}...  </h1 >
-      <h1 class="w-full  text-2xl  font-light"> I am unabe to commit without others   ....  now i can git push  </h1  >
-      <h1 class="w-full  text-2xl  font-light"> I can't stick to one project alone ...  I always get feedback  </h1>
-
-      <h1 class="w-full  text-2xl  font-light"> Am just lonely! ...  Found a friend with common interest  </h1>
-    </div>
-  </div  >
+  return (<div class="flex w-full  flex-col lg:pl-8 justify-center pt-8">
+    <ul class="flex flex-col list-disc   text-blue-200  md:w-[60em] pt-8 pb-4   p-16 pr-2 pl-12 md:ml-48 rounded-b-none md:px-8 md:pb-0 lg:pb-8 gap-6 bg-[#e4eff7] border-gray-100   rounded-3xl">
+      <h1 class="w-full text-5xl  pb-1 text-black   "> Use S&H Because{"<T>"}...  </h1 >
+      <li class="w-full  text-2xl text-blue-500  font-light">
+        <span class="text-black">
+          I am unabe to commit without others   ....  now i can git push
+        </span>
+      </li  >
+      <li class="w-full  text-2xl text-blue-500  font-light">
+        <span class="text-black">
+          I can't stick to one project alone ...  I always get feedback
+        </span>
+      </li  >
+      <li class="w-full  text-2xl text-blue-500  font-light">
+        <span class="text-black">
+          Am just lonely! ...  Found a friend with common interest
+        </span>
+      </li  >
+    </ul>
+  </div>
   );
 });
 
+const Method = component$(() => {
+  return (
+    <div class=" flex w-full  flex-col lg:pl-8 justify-center  lg:pt-0">
+      <ul class=" flex flex-col list-decimal    md:w-[60em]   p-12 pt-4 md:pt-8 lg:pt-2 pr-2 pl-12 md:ml-48   md:px-8 gap-6 bg-[#e4eff7] border-gray-100 rounded-t-none   rounded-3xl">
 
+        <h1 class="w-full text-5xl  pb-1 text-black   ">So how does it work?</h1 >
+        <li class="w-fit  flex-row  text-2xl text-blue-500   font-light">
+          <span class="text-black">
+            Let us know when you free
+          </span>
+        </li >
+        <li class="w-fit  flex-row  text-2xl text-blue-500   font-light">
+          <span class="text-black">
 
+            what you will be working on
+          </span>
+        </li >
+        <li class="w-fit  flex-row  text-2xl text-blue-500   font-light">
+          <span class="text-black">
+            where you will be working from
 
+          </span>
+        </li >
+      </ul>
 
+    </div  >
 
+  );
+});
 
 export default component$(() => {
   return (
-    <div>
+    <div class="">
       <Landing />
       <UserReview />
-    </div>
+      <Method />
+    </div >
 
   );
 });
