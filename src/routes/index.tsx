@@ -11,10 +11,10 @@ const Landing = component$(() => {
           Feeling isolated while working? Connect with a fellow techies in Montreal to study, share ideas, and stay motivated on your cyber journey.
         </p>
         <div class=" flex  md:flex-row gap-4       md:self-start  md:pl-24 lg:pl-0 px-2 md:px-0   ">
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 md:p-2  rounded-lg">
+          <button class="bg-blue-500 hover:bg-blue-700 transition ease-in-out duration-100  text-white font-bold p-1 md:p-2  rounded-lg">
             Get Started
           </button>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1  md:p-2 rounded-lg">
+          <button class="bg-blue-500 hover:bg-blue-700  transition ease-in-out duration-100 text-white font-bold p-1  md:p-2 rounded-lg">
             learn more
           </button>
         </div >
@@ -79,7 +79,7 @@ const Method = component$(() => {
             where you will be working from:
           </span >
           <input readOnly={true} class="w-32 p-4 rounded-lg hover:bg-blue-100 placeholder:text-gray-600 bg-blue-200 transition ease-out duration-500" type="text" placeholder="Location..." />
-          <button class="bg-blue-500 w-fit mt-3 hover:bg-blue-700 text-white font-light p-1  md:p-2 rounded-lg">
+          <button class="bg-blue-500 w-fit mt-3 hover:bg-blue-700 text-white font-light p-1 transition ease-in-out duration-150  md:p-2 rounded-lg">
             Get Started
           </button>
         </li >
