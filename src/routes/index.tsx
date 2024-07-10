@@ -88,13 +88,64 @@ const Method = component$(() => {
   );
 });
 
+const UserStory = component$(() => {
+  return (
+    <div class="md:ml-52 lg:ml-56 py-6 px-2 mt-10 bg-[#e0efe6]  w-fit rounded-3xl">
+      <div class=" w-[25em] lg:w-[54vw] ">
+        <h1 class="w-full text-5xl  pb-1 px-4 text-black text-left"> Review from a user </h1>
+
+        <div class="flex flex-row gap-4  p-4 text-black  justify-evenly md:justify-start ">
+
+          <div class="flex flex-col lg:flex-row gap-6 lg:gap-32 pt-6 ">
+
+
+
+            <div class="flex flex-col gap-2 self-left">
+              <img class="w-16 h-16 rounded-full self-center" width={300} height={300} src="https://randomuser.me/api/portraits/women/20.jpg" />
+
+              <h1 class="text-2xl font-bold text-center ">Johny</h1>
+              <h2 class="text-lg font-light text-center">Software Developer</h2>
+
+              <h3 class="text-lg  text-center font-medium">I been able to contribute to a  oss that i did not even know existed!</h3>
+            </div>
+
+
+
+
+
+            <div class="flex flex-col gap-2 self-left">
+              <img class="w-16 h-16 rounded-full self-center" width={300} height={300} src="https://randomuser.me/api/portraits/women/20.jpg" />
+
+              <h1 class="text-2xl font-bold text-center ">Eric</h1>
+              <h2 class="text-lg font-light text-center">Software Developer</h2>
+              <h3 class="text-lg  text-center font-medium">I been able to contribute to a  oss that i did not even know existed!</h3>
+            </div>
+            <div class="flex flex-col gap-2 self-left">
+              <img class="w-16 h-16 rounded-full self-center" width={300} height={300} src="https://randomuser.me/api/portraits/women/20.jpg" />
+
+              <h1 class="text-2xl font-bold text-center ">Janny</h1>
+              <h2 class="text-lg font-light text-center">Software Developer</h2>
+
+              <h3 class="text-lg  text-center font-medium">I been able to contribute to a  oss that i did not even know existed!</h3>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div >
+
+  );
+});
+
 export default component$(() => {
   return (
     <div class="">
       <Landing />
       <UserReview />
       <Method />
-
+      <UserStory />
     </div >
 
   );
