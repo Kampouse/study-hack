@@ -171,6 +171,7 @@ export const authMain = component$(() => {
 
 export default component$(() => {
   const session = useAuthSession();
+  console.log(session.value);
   return (
     <div class="bg-red-gray-200">
       {session.value && <div> am log in </div>}
