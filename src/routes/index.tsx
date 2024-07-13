@@ -160,7 +160,7 @@ const UserStory = component$(() => {
 });
 
 export const authMain = component$(() => {
-  const session = useAuthSession();
+  // const session = useAuthSession();
 
   return (
     <div class="bg-red-gray-200">
