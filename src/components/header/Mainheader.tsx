@@ -1,9 +1,9 @@
 import { component$ } from "@builder.io/qwik";
-import { useAuthSignin, useAuthSignout } from "~/routes/plugin@auth";
+import { useAuthSignout } from "~/routes/plugin@auth";
 import { useAuthSession } from "~/routes/plugin@auth";
 export default component$(() => {
   const session = useAuthSession();
-  const signin = useAuthSignin();
+
   const signout = useAuthSignout();
 
   return (
@@ -21,25 +21,13 @@ export default component$(() => {
           <a href="#" class="p-4">
             Learn more
           </a>
-          {!session.value && (
-            <a href="#" class="p-4">
-              register
-            </a>
-          )}
-
           {session.value && (
             <button onClick$={() => signout.submit({})}>Sign Out</button>
           )}
           {!session.value && (
-            <button
-              onClick$={() => {
-                signin.submit({
-                  providerId: "github",
-                });
-              }}
-            >
+            <a href="/login" class="p-4">
               Sign In
-            </button>
+            </a>
           )}
         </div>
       </nav>
