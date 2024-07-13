@@ -1,21 +1,9 @@
-import { component$, useTask$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { useAuthSession } from "./plugin@auth";
-import { useNavigate } from "@builder.io/qwik-city";
 const Landing = component$(() => {
-  const sesh = useAuthSession();
-  const navigate = useNavigate();
-  useTask$(() => {
-    if (sesh.value) {
-      console.log("User is logged in", sesh.value);
-      navigate("/dashboard");
-    } else {
-      console.log("User is not logged in", sesh.value);
-    }
-  });
-
   return (
-    <div class="bg-hero-bg     flex h-[34em] flex-col items-center justify-center   bg-cover bg-center px-16  py-40    md:h-[110vh]  md:w-[68em] md:px-60 lg:h-screen  lg:w-[80em]   lg:px-96  ">
+    <div class="flex     h-[34em] flex-col items-center justify-center bg-hero-bg   bg-cover bg-center px-16  py-40    md:h-[110vh]  md:w-[68em] md:px-60 lg:h-screen  lg:w-[80em]   lg:px-96  ">
       <h1 class="pb-8 text-3xl md:hidden    ">Study & Hack</h1>
       <div class=" flex h-full flex-col justify-center   gap-2 px-2  md:mt-10 md:items-center md:gap-4 md:pt-8 lg:items-start lg:pl-10  lg:pt-12">
         <h1 class=" hidden md:flex   md:text-5xl    ">Study & Hack</h1>
@@ -171,6 +159,16 @@ const UserStory = component$(() => {
   );
 });
 
+export const authMain = component$(() => {
+  const session = useAuthSession();
+
+  return (
+    <div class="bg-red-gray-200">
+      <h1> am login </h1>
+    </div>
+  );
+});
+
 export default component$(() => {
   const session = useAuthSession();
   return (
@@ -178,7 +176,8 @@ export default component$(() => {
       {session.value && <div> am log in </div>}
       {!session.value && (
         <div>
-          <Landing /> <UserReview />
+          <Landing />
+          <UserReview />
           <UserStory />
         </div>
       )}
