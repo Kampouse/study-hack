@@ -1,15 +1,9 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
-import { tursoClient } from "~/utils/turso";
 import { useAuthSession } from "./plugin@auth";
-type Session = {
-  name: String;
-  user: { email: string; name: string; image: string };
-};
-export const onGet: RequestHandler = async (event) => {
-  const session: Session | null = event.sharedMap.get("session");
 
+export const onGet: RequestHandler = async (event) => {
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform
@@ -29,6 +23,7 @@ export const onGet: RequestHandler = async (event) => {
 
 export default component$(() => {
   const session = useAuthSession();
+  console.log(session);
   return (
     <div class="">
       <div class="">
