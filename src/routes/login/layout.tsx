@@ -1,6 +1,7 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { component$, Slot } from "@builder.io/qwik";
 import { tursoClient } from "~/utils/turso";
+import { useAuthSession } from "../plugin@auth";
 type Session = {
   name: String;
   user: { email: string; name: string; image: string };
@@ -28,11 +29,14 @@ export const onRequest: RequestHandler = async (event) => {
       });
       console.log("result->", result);
     }
-    throw event.redirect(302, `/app`);
   }
+
+  // throw event.redirect(302, `/`,);
 };
 
 export default component$(() => {
+  const session = useAuthSession();
+  console.log("session->", session.value.user);
   return (
     <div class="">
       <Slot />

@@ -5,9 +5,7 @@ type Session = ReturnType<typeof useAuthSession>;
 export const onRequest: RequestHandler = (event) => {
   const session: Session = event.sharedMap.get("session");
 
-  if (!session.value || new Date(session.value.expires) < new Date()) {
-    throw event.redirect(302, `/`);
-  }
+  console.log("session", session);
 };
 
 export default component$(() => {
