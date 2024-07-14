@@ -23,13 +23,12 @@ export const onGet: RequestHandler = async (event) => {
 
 export default component$(() => {
   const session = useAuthSession();
-  console.log(session);
   return (
     <div class="">
       <div class="">
         <MainHeader />
       </div>
-      {(session.value && <div> hello </div>) || <Slot />}
+      <Slot />
     </div>
   );
 });

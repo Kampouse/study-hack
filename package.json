@@ -20,12 +20,16 @@
     "deploy": "vercel deploy",
     "dev": "vite --host --mode ssr ",
     "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
+    "drizzle:generate": "drizzle-kit generate:sqlite",
+    "drizzle:migrate": "drizzle-kit push:sqlite",
+    "drizzle:studio": "drizzle-kit studio --host 127.0.0.1",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
+    "initdb": "sqlite3 local.db < schema_db/initials.sql || true",
     "lint": "eslint \"src/**/*.ts*\"",
+    "postinstall": "drizzle-kit generate:sqlite",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr --host",
-    "initdb": "sqlite3 local.db < schema_db/initials.sql || true",
     "qwik": "qwik"
   },
   "devDependencies": {
@@ -34,12 +38,14 @@
     "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
     "@libsql/client": "^0.5.2",
+    "@types/better-sqlite3": "^7.6.9",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "autoprefixer": "^10.4.14",
     "db0": "latest",
+    "drizzle-kit": "latest",
     "eslint": "^8.57.0",
     "eslint-plugin-qwik": "^1.6.0",
     "postcss": "^8.4.31",
@@ -50,7 +56,9 @@
     "undici": "*",
     "vercel": "^29.1.1",
     "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "drizzle-orm": "latest"
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }
