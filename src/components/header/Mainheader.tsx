@@ -1,11 +1,8 @@
 import { component$ } from "@builder.io/qwik";
-import { useAuthSignout } from "~/routes/plugin@auth";
-import { Form } from "@builder.io/qwik-city";
 import { useAuthSession } from "~/routes/plugin@auth";
 export default component$(() => {
   const session = useAuthSession();
 
-  const signout = useAuthSignout();
 
   return (
     <header class="h-fit w-full px-4">
