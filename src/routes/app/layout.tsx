@@ -1,5 +1,4 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
-import { useAuthSession } from "../plugin@auth";
 import { component$, Slot } from "@builder.io/qwik";
 
 export const onGet: RequestHandler = async (req) => {
