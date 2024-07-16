@@ -11,9 +11,15 @@ type Session = {
 export const onRequest: RequestHandler = async (event) => {
 
   const session: Session | null = event.sharedMap.get("session");
+  //get env vairables
+  const url = event.env.get("PRIVATE_TURSO_DATABASE_URL")
+  const token = event.env.get("PRIVATE_TURSO_AUTH_TOKEN")
   console.log("session->", session);
   if (session) {
-    const Client = drizzle();
+    const Client = drizzle({
+      url: url,
+      authToken: token,
+    });
     const data = await Client.select().from(users).where(eq(users.Email, session.user.email));
     if (data.length == 0) {
 

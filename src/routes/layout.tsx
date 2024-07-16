@@ -1,7 +1,6 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
-import { useAuthSession } from "./plugin@auth";
 
 export const onGet: RequestHandler = async (event) => {
 
@@ -30,7 +29,6 @@ export const onGet: RequestHandler = async (event) => {
 };
 
 export default component$(() => {
-  const session = useAuthSession();
   return (
     <div class="">
       <div class="">

@@ -1,8 +1,8 @@
-import process from "process";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
-export function tursoClient() {
-  const url = process.env.PRIVATE_TURSO_DATABASE_URL;
+export function tursoClient({
+  url, authToken,
+}: { url: string | undefined, authToken: string | undefined }) {
   if (url?.includes("local")) {
     return drizzle(
       createClient({
@@ -14,7 +14,6 @@ export function tursoClient() {
     throw new Error("PRIVATE_TURSO_DATABASE_URL is not defined");
   }
 
-  const authToken = process.env.PRIVATE_TURSO_AUTH_TOKEN?.trim();
   if (authToken === undefined) {
     if (!url.includes("file:")) {
       throw new Error("PRIVATE_TURSO_AUTH_TOKEN is not defined");
