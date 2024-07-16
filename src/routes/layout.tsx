@@ -4,6 +4,14 @@ import MainHeader from "../components/header/Mainheader";
 import { useAuthSession } from "./plugin@auth";
 
 export const onGet: RequestHandler = async (event) => {
+
+
+
+
+
+
+
+
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform

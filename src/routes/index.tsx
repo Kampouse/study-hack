@@ -171,21 +171,13 @@ export const authMain = component$(() => {
 
 export default component$(() => {
   const session = useAuthSession();
-  console.log(session.value);
   return (
     <div class="bg-red-gray-200">
-      {session.value && <div> am log in </div>}
-      {!session.value && (
-        <div>
-          <Landing />
-          <UserReview />
-          <UserStory />
-        </div>
-      )}
-    </div>
-  );
+      <Landing />
+      <UserReview />
+      <UserStory />
+    </div>)
 });
-
 export const head: DocumentHead = {
   title: "learn & hack",
   meta: [

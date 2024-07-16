@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { useAuthSignout } from "~/routes/plugin@auth";
+import { Form } from "@builder.io/qwik-city";
 import { useAuthSession } from "~/routes/plugin@auth";
 export default component$(() => {
   const session = useAuthSession();
@@ -17,12 +18,18 @@ export default component$(() => {
             {"S & H"}
           </a>
         </div>
-        <div class="">
+        <div class="flex  flex-row justify-center content-center">
           <a href="#" class="p-4">
             Learn more
           </a>
           {session.value && (
-            <button onClick$={() => signout.submit({})}>Sign Out</button>
+            <Form action={signout} class="justify-center content-center">
+              <input type="hidden" name="callbackUrl" value="/" />
+              <button class="button button-signout">Sign Out</button>
+            </Form>
+
+
+
           )}
           {!session.value && (
             <a href="/login" class="p-4">
