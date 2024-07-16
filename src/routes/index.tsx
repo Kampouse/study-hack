@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { useAuthSession } from "./plugin@auth";
+import Profile from "../components/profile/Profile";
 const Landing = component$(() => {
   return (
     <div class="flex     h-[34em] flex-col items-center justify-center bg-hero-bg   bg-cover bg-center px-16  py-40    md:h-[110vh]  md:w-[68em] md:px-60 lg:h-screen  lg:w-[80em]   lg:px-96  ">
@@ -16,9 +17,11 @@ const Landing = component$(() => {
           <button class="rounded-lg bg-blue-500 p-1 font-bold text-white  transition duration-100 ease-in-out hover:bg-blue-700  md:p-2">
             Get Started
           </button>
-          <button class="rounded-lg bg-blue-500  p-1 font-bold text-white transition duration-100 ease-in-out  hover:bg-blue-700 md:p-2">
-            learn more
-          </button>
+          <a href="#about">
+            <button class="rounded-lg bg-blue-500  p-1 font-bold text-white transition duration-100 ease-in-out  hover:bg-blue-700 md:p-2">
+              learn more
+            </button>
+          </a>
         </div>
       </div>
     </div>
@@ -27,7 +30,7 @@ const Landing = component$(() => {
 
 const UserReview = component$(() => {
   return (
-    <div class="flex w-full  flex-col justify-center pt-8 lg:pl-8">
+    <div id="about" class="flex w-full  flex-col justify-center pt-8 lg:pl-8">
       <ul class="flex list-disc flex-col   gap-6  rounded-3xl rounded-b-none border-gray-100   bg-[#e4eff7] p-16 pb-4 pl-12 pr-2 pt-8 text-blue-200 md:ml-48 md:w-[60em] md:px-8 md:pb-0   lg:pb-8">
         <h1 class="w-full pb-1  text-5xl text-black   ">
           {" "}
@@ -174,7 +177,7 @@ export default component$(() => {
   console.log(session.value);
   return (
     <div class="bg-red-gray-200">
-      {session.value && <div> am log in </div>}
+      {session.value && <Profile />}
       {!session.value && (
         <div>
           <Landing />
