@@ -14,23 +14,31 @@ export default component$(() => {
         role="navigation"
       >
         <div class="pl-2 md:pl-8">
-          <a href="#" class="text-2xl">
+          <a href="/" class="text-2xl">
             {"S & H"}
           </a>
         </div>
         <div class="flex  flex-row justify-center content-center">
-          <a href="#" class="p-4">
-            Learn more
-          </a>
-          {session.value && (
-            <Form action={signout} class="justify-center content-center">
-              <input type="hidden" name="callbackUrl" value="/" />
-              <button class="button button-signout">Sign Out</button>
-            </Form>
 
-
-
+          {!session.value && (
+            <a href="/" class="p-4">
+              Learn more
+            </a>
           )}
+
+          {session.value && (
+            <a href="/app/" class="p-4">
+              App
+            </a>
+          )}
+          {session.value && (
+            <a href="/profile" class="p-4">
+              Profile
+            </a>
+          )}
+
+
+
           {!session.value && (
             <a href="/login" class="p-4">
               Sign In
