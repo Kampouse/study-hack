@@ -1,5 +1,4 @@
 import { component$, type QRL } from "@builder.io/qwik";
-import Sunflower from "../../media/sunflower.jpg";
 
 interface ItemProps {
   name: string;
@@ -11,7 +10,7 @@ export default component$<ItemProps>(({ name, about, onEdit$ }) => {
   const interests: string[] = ["HTML", "CSS", "JavaScript", "Sunlight"];
   return (
     <div class="flex flex-col gap-10 p-16 md:flex-row md:items-center md:gap-20">
-      <img src={Sunflower} width={200} height={200} style="width: 200px; height: 200px;" />
+      <img src="https://s6.imgcdn.dev/LyfCg.jpg" width={200} height={200} style="width: 200px; height: 200px;" />
       <div class="flex flex-col justify-center gap-4">
         <h1 class="text-5xl">{name}</h1>
         <div>
