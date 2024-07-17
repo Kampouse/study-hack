@@ -28,7 +28,7 @@
     "fmt.check": "prettier --check .",
     "initdb": "sqlite3 local.db < schema_db/initials.sql || true",
     "lint": "eslint \"src/**/*.ts*\"",
-    "postinstall": "drizzle-kit generate:sqlite",
+    "postinstall": "drizzle-kit generate",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr --host",
     "qwik": "qwik"
@@ -39,6 +39,8 @@
     "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
     "@libsql/client": "^0.5.2",
+    "@nabla/vite-plugin-eslint": "^2.0.4",
+    "@qwik-ui/headless": "^0.5.0",
     "@types/better-sqlite3": "^7.6.9",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.12.7",
@@ -57,8 +59,6 @@
     "undici": "*",
     "vercel": "^29.1.1",
     "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.2.1",
-    "@nabla/vite-plugin-eslint": "^2.0.4"
-  },
-  "dependencies": {}
+    "vite-tsconfig-paths": "^4.2.1"
+  }
 }
