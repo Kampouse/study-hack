@@ -29,12 +29,12 @@ export default component$(() => {
                 key={action.label}
                 disabled={action.disabled}
               >
-                <a
+                <Link
                   class="flex w-full cursor-pointer  p-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   href={action.path}
                 >
                   {action.label}
-                </a>
+                </Link>
               </Dropdown.Item>
             ))}
             <Dropdown.Item class="rounded-md hover:bg-gray-100">
