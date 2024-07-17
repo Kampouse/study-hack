@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
+import { Link, Form } from "@builder.io/qwik-city";
 import { useAuthSignout } from "~/routes/plugin@auth";
 import { Dropdown } from "@qwik-ui/headless";
 import { useAuthSession } from "~/routes/plugin@auth";
