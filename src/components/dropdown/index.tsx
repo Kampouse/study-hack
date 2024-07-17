@@ -15,11 +15,11 @@ export default component$(() => {
   ];
 
   return (
-    <Dropdown.Root class="p-5">
+    <Dropdown.Root class="p-8">
       <Dropdown.Trigger class="">
         <img class="rounded-full" width={50} height={50} src={img} />
       </Dropdown.Trigger>
-      <Dropdown.Popover class="w-52 rounded-b-md p-4 shadow-sm">
+      <Dropdown.Popover class=" w-32 rounded-b-md p-1 shadow-sm">
         <Dropdown.Arrow class="" />
         <Dropdown.Content class="">
           <Dropdown.Group class="">
