@@ -10,7 +10,7 @@ export default component$(() => {
         role="navigation"
       >
         <div class="pl-2 md:pl-8">
-          <a href="/" class="text-2xl">
+          <a href={session.value ? "/app" : "/"} class=" p-4 text-2xl">
             {"S & H"}
           </a>
         </div>
@@ -21,16 +21,7 @@ export default component$(() => {
             </a>
           )}
 
-          {session.value && (
-            <a href="/app/" class="content-center justify-center p-4">
-              App
-            </a>
-          )}
-          {session.value && (
-            <a href="/profile" class="p-4">
-              <Dropdown />
-            </a>
-          )}
+          {session.value && <Dropdown />}
 
           {!session.value && (
             <a href="/login" class="p-4">
