@@ -1,9 +1,8 @@
 import { component$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
+import Dropdown from "../dropdown";
 export default component$(() => {
   const session = useAuthSession();
-
-
   return (
     <header class="h-fit w-full px-4">
       <nav
@@ -15,8 +14,7 @@ export default component$(() => {
             {"S & H"}
           </a>
         </div>
-        <div class="flex  flex-row justify-center content-center">
-
+        <div class="flex  flex-row content-center justify-center">
           {!session.value && (
             <a href="/" class="p-4">
               Learn more
@@ -24,17 +22,15 @@ export default component$(() => {
           )}
 
           {session.value && (
-            <a href="/app/" class="p-4">
+            <a href="/app/" class="content-center justify-center p-4">
               App
             </a>
           )}
           {session.value && (
             <a href="/profile" class="p-4">
-              Profile
+              <Dropdown />
             </a>
           )}
-
-
 
           {!session.value && (
             <a href="/login" class="p-4">
