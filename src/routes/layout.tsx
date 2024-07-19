@@ -32,6 +32,9 @@ export default component$(() => {
   useVisibleTask$(
 
     () => {
+
+      if (document.location.host.includes("localhost")) return
+
       posthog.init('phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74', {
         api_host: 'https://us.i.posthog.com',
         capture_heatmaps: true,
