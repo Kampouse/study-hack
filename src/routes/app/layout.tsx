@@ -2,7 +2,6 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import { component$, Slot } from "@builder.io/qwik";
 
 export const onGet: RequestHandler = async (req) => {
-
   type Session = {
     user: {
       name: string;
@@ -27,10 +26,7 @@ export const onGet: RequestHandler = async (req) => {
 
 //
 
-
-
 export default component$(() => {
-
   return (
     <div class="">
       <Slot />

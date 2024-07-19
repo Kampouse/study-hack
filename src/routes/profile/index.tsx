@@ -2,7 +2,11 @@ import { component$, $, useStore } from "@builder.io/qwik";
 import ProfileForm from "~/components/profile/ProfileForm";
 import ProfileCard from "~/components/profile/ProfileCard";
 export default component$(() => {
-  const store = useStore({ name: "Sunflower", about: "Just a plant... photosynthesizing", editMode: false });
+  const store = useStore({
+    name: "Sunflower",
+    about: "Just a plant... photosynthesizing",
+    editMode: false,
+  });
 
   const handleSaveClick = $(() => {
     store.editMode = false;

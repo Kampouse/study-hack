@@ -3,7 +3,6 @@ import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import type { RequestHandler } from "@builder.io/qwik-city";
 export const onGet: RequestHandler = async (req) => {
-
   type Session = {
     user: {
       name: string;
@@ -21,15 +20,7 @@ export const onGet: RequestHandler = async (req) => {
       throw req.redirect(302, "/app");
     }
   }
-
 };
-
-
-
-
-
-
-
 
 export default component$(() => {
   const signin = useAuthSignin();
@@ -37,7 +28,11 @@ export default component$(() => {
     <div class=" bg-red-500 py-32">
       <Form action={signin}>
         <input type="hidden" name="providerId" value="github" />
-        <input type="hidden" name="options.callbackUrl" value="/auth/signedin" />
+        <input
+          type="hidden"
+          name="options.callbackUrl"
+          value="/auth/signedin"
+        />
         <button class="button button-auth"> sign in</button>
       </Form>
     </div>

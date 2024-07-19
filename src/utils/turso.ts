@@ -1,8 +1,12 @@
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
 export function tursoClient({
-  url, authToken,
-}: { url: string | undefined, authToken: string | undefined }) {
+  url,
+  authToken,
+}: {
+  url: string | undefined;
+  authToken: string | undefined;
+}) {
   if (url?.includes("local")) {
     return drizzle(
       createClient({
