@@ -1,6 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
-import { Link } from "@builder.io/qwik-city";
 import Dropdown from "../dropdown";
 export default component$(() => {
   const session = useAuthSession();
@@ -11,23 +10,23 @@ export default component$(() => {
         role="navigation"
       >
         <div class="pl-2 md:pl-8">
-          <Link href={session.value ? "/app" : "/"} class=" p-4 text-2xl">
+          <a href={session.value ? "/app" : "/"} class=" p-4 text-2xl">
             {"S & H"}
-          </Link>
+          </a>
         </div>
         <div class="flex  flex-row content-center justify-center">
           {!session.value && (
-            <Link href="/" class="p-4">
+            <a href="/" class="p-4">
               Learn more
-            </Link>
+            </a>
           )}
 
           {session.value && <Dropdown />}
 
           {!session.value && (
-            <Link href="/login" class="p-4">
+            <a href="/login" class="p-4">
               Sign In
-            </Link>
+            </a>
           )}
         </div>
       </nav>
