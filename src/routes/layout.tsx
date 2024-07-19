@@ -34,6 +34,9 @@ export default component$(() => {
     () => {
       posthog.init('phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74', {
         api_host: 'https://us.i.posthog.com',
+        capture_heatmaps: true,
+        capture_pageview: true,
+        capture_performance: true,
         disable_external_dependency_loading: true // Optional - will ensure we never try to load extensions lazily
       })
     }
