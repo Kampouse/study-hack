@@ -1,9 +1,8 @@
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot, useVisibleTask$ } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
-
+import posthog from 'posthog-js'
 export const onGet: RequestHandler = async () => {
-
 
 
 
@@ -29,6 +28,22 @@ export const onGet: RequestHandler = async () => {
 };
 
 export default component$(() => {
+  //eslint-disable-next-line
+  useVisibleTask$(
+
+    () => {
+      posthog.init('phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74', {
+        api_host: 'https://us.i.posthog.com',
+        disable_external_dependency_loading: true // Optional - will ensure we never try to load extensions lazily
+      })
+    }
+  )
+
+
+
+
+
+
   return (
     <div class="">
       <div class="">
@@ -37,4 +52,4 @@ export default component$(() => {
       <Slot />
     </div>
   );
-});
+})

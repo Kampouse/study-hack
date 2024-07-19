@@ -37,6 +37,8 @@
     "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
     "@libsql/client": "^0.5.2",
+    "@nabla/vite-plugin-eslint": "^2.0.4",
+    "@qwik-ui/headless": "^0.5.0",
     "@types/better-sqlite3": "^7.6.9",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.12.7",
@@ -56,9 +58,9 @@
     "undici": "*",
     "vercel": "^29.1.1",
     "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.2.1",
-    "@nabla/vite-plugin-eslint": "^2.0.4",
-    "@qwik-ui/headless": "^0.5.0"
+    "vite-tsconfig-paths": "^4.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "posthog-js": "^1.148.0"
+  }
 }
