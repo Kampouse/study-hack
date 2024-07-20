@@ -4,6 +4,7 @@
 /lib-types
 /server
 *.db
+
 # Development
 node_modules
 *.local
@@ -39,6 +40,6 @@ lerna-debug.log*
 # Yarn
 .yarn/*
 !.yarn/releases
-*.env
+*env*
 # Vercel
 .vercel

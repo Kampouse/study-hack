@@ -5,3 +5,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-primary: #f4f9f4;
+  --color-secondary: #0f0;
+  background-color: var(--color-primary);
+}
