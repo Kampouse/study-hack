@@ -12,8 +12,8 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   // Modify with your preferences. By default take all screen
   useStyles$(`
     #map {
-      width: 100%;
-      height: 53vh;
+      width: 50%;
+      height: 100vh;
     }
   `);
 
@@ -53,7 +53,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`).addTo(map);
+      marker(centerPosition).bindPopup(`Montreal, QC`).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });
