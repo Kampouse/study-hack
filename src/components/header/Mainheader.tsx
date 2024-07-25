@@ -4,7 +4,7 @@ import Dropdown from "../dropdown";
 export default component$(() => {
   const session = useAuthSession();
   return (
-    <header class="h-fit w-full px-4">
+    <header class="h-fit w-full ">
       <nav
         class="relative flex h-16 items-center justify-between  font-mono text-black shadow-sm"
         role="navigation"

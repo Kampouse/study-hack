@@ -12,8 +12,9 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   // Modify with your preferences. By default take all screen
   useStyles$(`
     #map {
+     border-radius: 10px;
       width: 100%;
-      height: 53vh;
+      height: 46em;
     }
   `);
 
@@ -46,16 +47,19 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        '&copy; <a href="http://www.openstreetmap.org/copyright">hi</a>',
     }).addTo(map);
 
     // Assign select boundary box to use in OSM API if you want
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`).addTo(map);
+      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`, {
+
+
+      }).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });
-  return <div id="map" class=""></div>;
+  return <div id="map" class="shadow-md"></div>;
 });
