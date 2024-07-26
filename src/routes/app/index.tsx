@@ -45,7 +45,6 @@ export default component$(() => {
       <div class="flex grid-cols-5 flex-col gap-2 md:gap-2 lg:grid">
         <div class="row-span-1 h-fit rounded-full  lg:col-span-3  lg:pl-4 ">
           <Montreal />
-
           <div class=" px-2 pt-2 ">
             <h1 class="py-2 text-2xl font-medium "> Intrests Filters</h1>
             <div class=" flex gap-2 ">
@@ -61,6 +60,32 @@ export default component$(() => {
                 {" "}
                 working{" "}
               </button>
+            </div>
+          </div>
+          <div class=" px-2 pt-2 ">
+            <h1 class="py-2 text-2xl font-medium ">Good locations</h1>
+            <div class=" flex gap-2 ">
+              <div class="w-32">
+                {" "}
+                <button class="max-w-lg self-end rounded-md border bg-blue-50 p-2  text-black shadow-sm  ">
+                  {" "}
+                  montreal{" "}
+                </button>
+              </div>
+              <div>
+                {" "}
+                <button class="max-w-lg self-end  rounded-md border bg-blue-50 p-2  text-black shadow-sm  ">
+                  {" "}
+                  toronto{" "}
+                </button>
+              </div>
+              <div>
+                {" "}
+                <button class="max-w-lg  self-end rounded-md border bg-blue-50 p-2  text-black shadow-sm  ">
+                  {" "}
+                  vancouver{" "}
+                </button>
+              </div>
             </div>
           </div>
         </div>

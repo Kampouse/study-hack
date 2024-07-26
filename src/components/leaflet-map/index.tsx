@@ -11,41 +11,20 @@ import type { MapProps } from "~/models/map";
 export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   // Modify with your preferences. By default take all screen
   useStyles$(`
-
-
     #map {
                border-radius: 10px;
                 width: 100%;
                 height: 50em;
               }
-
-
-
       @media (max-width: 768px) {
-
           #map {
            border-radius: 0px;
             width: 100%;
             height: 25em;
           }
-
-
-
-
-
           color: red;
           height: 10px;
-
-
           }
-
-
-
-
-
-
-
-
   `);
 
   const mapContainer$ = useSignal<Map>();
@@ -84,7 +63,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`, {}).addTo(map);
+      marker(centerPosition).bindPopup(`montreal`, {}).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });
