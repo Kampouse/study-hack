@@ -63,7 +63,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`montreal`, {}).addTo(map);
+      marker(centerPosition).bindPopup(`Montreal, QC`).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });

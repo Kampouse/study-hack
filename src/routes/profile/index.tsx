@@ -1,7 +1,11 @@
 import { component$, $, useStore } from "@builder.io/qwik";
 import ProfileForm from "~/components/profile/ProfileForm";
 import ProfileCard from "~/components/profile/ProfileCard";
+import Montreal from "~/components/leaflet-map/montreal";
+
 export default component$(() => {
+  const mapStatus = useStore({ active: false });
+
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
@@ -16,21 +20,34 @@ export default component$(() => {
     store.editMode = true;
   });
 
+  const handleMapSelect = $(() => {
+    mapStatus.active = true;
+  });
+
   return (
-    <div>
-      {store.editMode ? (
-        <ProfileForm
-          name={store.name}
-          about={store.about}
-          onSave$={handleSaveClick}
-        />
-      ) : (
-        <ProfileCard
-          name={store.name}
-          about={store.about}
-          onEdit$={handleEditClick}
-        />
-      )}
-    </div>
+    <main class="flex flex-col">
+      <div>
+        {store.editMode ? (
+          <ProfileForm
+            name={store.name}
+            about={store.about}
+            onSave$={handleSaveClick}
+          />
+        ) : (
+          <ProfileCard
+            name={store.name}
+            about={store.about}
+            onEdit$={handleEditClick}
+          />
+        )}
+      </div>
+      <div class={`flex flex-col gap-4 ${!(mapStatus.active) ? "opacity-40" : "opactiy-100"}`}>
+        <div class={`flex flex-col ${!(mapStatus.active) ? "block" : "hidden"}`}>
+          <h2 class="w-fit">Where will you be?</h2>
+          <button class="w-fit" onClick$={handleMapSelect}>Press to select</button>
+        </div>
+        <div><Montreal /></div>
+      </div>
+    </main>
   );
 });
