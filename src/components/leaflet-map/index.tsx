@@ -84,10 +84,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`, {
-
-
-      }).addTo(map);
+      marker(centerPosition).bindPopup(`Soraluze (Gipuzkoa) :)`, {}).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });
