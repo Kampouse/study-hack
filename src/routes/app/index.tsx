@@ -46,20 +46,28 @@ const UserCards = component$(() => {
 export default component$(() => {
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
-      <div class=" px-2 lg:px-8 py-2  md:pb-8">
+      <div class=" px-6  py-2 md:py-4  ">
         <h1 class="text-3xl font-medium ">Community</h1>
         <p class="text-md   font-thin  text-black">
           {" "}
           See who active this week
         </p>
       </div>
-      <div class="flex grid-cols-5 flex-col gap-4 md:gap-2 lg:grid">
-        <div class="row-span-1 h-fit rounded-full  lg:col-span-3  px-2 lg:px-8">
+      <div class="flex grid-cols-5 flex-col gap-2 md:gap-2 lg:grid">
+        <div class="row-span-1 h-fit rounded-full  lg:col-span-3  lg:pl-4 ">
 
           <Montreal />
-          <div class="w-full  bg-gray-100"></div>
+
+          <div class=" pt-2 px-2 ">
+            <h1 class="text-2xl font-medium py-2 "> Intrests Filters</h1>
+            <div class=" flex gap-2 ">
+              <button class="bg-blue-50 shadow-sm border text-black rounded-md self-end  max-w-lg p-2  ">  plant </button>
+              <button class="bg-blue-50 shadow-sm  border text-black rounded-md self-end  max-w-lg p-2  ">  code  </button>
+              <button class="bg-blue-50  shadow-sm border text-black rounded-md self-end  max-w-lg p-2  ">  working </button>
+            </div>
+          </div>
         </div>
-        <div class="row-span-1 rounded-xl    lg:col-span-2 md:pr-32">
+        <div class="row-span-1 rounded-xl    lg:col-span-2 ">
           <div class="flex h-full  flex-col justify-start py-1 px-2 gap-4">
             <UserCards />
             <UserCards />
@@ -67,7 +75,6 @@ export default component$(() => {
           </div>
 
         </div>
-
       </div>
 
     </div>
