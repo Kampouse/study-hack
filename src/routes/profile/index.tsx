@@ -41,12 +41,18 @@ export default component$(() => {
           />
         )}
       </div>
-      <div class={`flex flex-col gap-4 ${!(mapStatus.active) ? "opacity-40" : "opactiy-100"}`}>
-        <div class={`flex flex-col ${!(mapStatus.active) ? "block" : "hidden"}`}>
+      <div
+        class={`flex flex-col gap-4 ${!mapStatus.active ? "opacity-40" : "opactiy-100"}`}
+      >
+        <div class={`flex flex-col ${!mapStatus.active ? "block" : "hidden"}`}>
           <h2 class="w-fit">Where will you be?</h2>
-          <button class="w-fit" onClick$={handleMapSelect}>Press to select</button>
+          <button class="w-fit" onClick$={handleMapSelect}>
+            Press to select
+          </button>
         </div>
-        <div><Montreal /></div>
+        <div>
+          <Montreal />
+        </div>
       </div>
     </main>
   );
