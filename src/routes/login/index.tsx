@@ -25,13 +25,24 @@ export const onGet: RequestHandler = async (req) => {
 export default component$(() => {
   const signin = useAuthSignin();
   return (
-    <div class="bg-white p-20 flex justify-around items-center">
-      <div class="flex flex-col items-center gap-20">
-        <div class="flex flex-col items-center gap-2">
-          <h1 class="text-4xl">Get started</h1>
-          <p class="text-lg text-[#757575]">Select a platform to login</p>
+    <div class="bg-white shadow-sm p-20 flex  flex-col justify-around items-center">
+
+      <div class="flex  flex-col lg:flex-row items-center lg:gap-48 gap-10">
+
+
+
+        <div class=" border-2 rounded-lg  order-last w-96 h-fit">
+          <img height={1000} width={1000} src="https://s6.imgcdn.dev/LdBZd.png" />
         </div>
-        <div class="flex flex-col items-center gap-4">
+
+
+        <div class="flex flex-col items-center gap-4 pb-4">
+          <div class="flex flex-col  items-start gap-2 order-first lg:pb-4 pb-10 ">
+            <h1 class="text-4xl">Get started</h1>
+            <p class="text-lg text-[#757575]">Select a platform to login</p>
+          </div>
+
+
           <Form action={signin}>
             <input type="hidden" name="providerId" value="github" />
             <input
@@ -65,9 +76,7 @@ export default component$(() => {
           </Form>
         </div>
       </div>
-      <div class="border border-2 border-black p-4 w-96 h-96">
-        Image ...
-      </div>
+
     </div>
   );
 });
