@@ -1,8 +1,9 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { useAuthSignout } from "~/routes/plugin@auth";
 import { Dropdown } from "@qwik-ui/headless";
 import { useAuthSession } from "~/routes/plugin@auth";
+import posthog from "posthog-js";
 export default component$(() => {
   type Session = ReturnType<typeof useAuthSession>;
   const session = useAuthSession() as Session;
@@ -13,6 +14,24 @@ export default component$(() => {
     { label: "Setting", disabled: false, path: "/setting" },
     { label: "Home Page", disabled: false, path: "/landing" },
   ];
+
+  //eslint-disable-next-line
+  useVisibleTask$(() => {
+    if (document.location.host.includes("study-hack.vercel.app")) {
+      posthog.init("phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74", {
+        api_host: "https://us.i.posthog.com",
+        capture_heatmaps: true,
+        capture_pageview: true,
+        capture_performance: true,
+        disable_external_dependency_loading: true, // Optional - will ensure we never try to load extensions lazily
+      });
+    }
+  });
+
+
+
+
+
 
   return (
     <Dropdown.Root class="p-8">
