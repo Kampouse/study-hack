@@ -2,7 +2,7 @@ import { component$, Slot, useVisibleTask$ } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
 import posthog from "posthog-js";
-export const onGet: RequestHandler = async ({ sharedMap, redirect, request, pathname }) => {
+export const onGet: RequestHandler = async ({ sharedMap, redirect, pathname }) => {
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform
