@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
-import Dropdown from "../dropdown";
+import Dropdown from "@/components/dropdown"
 export default component$(() => {
   const session = useAuthSession();
   return (

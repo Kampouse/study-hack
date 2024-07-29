@@ -1,9 +1,10 @@
 import { component$, $, useStore } from "@builder.io/qwik";
-import ProfileForm from "~/components/profile/ProfileForm";
-import ProfileCard from "~/components/profile/ProfileCard";
-import Montreal from "~/components/leaflet-map/montreal";
+import { ProfileCard, ProfileForm } from "@/components/profile";
+import { MapWrapper as Leaflet } from "~/components/leaflet-map";
+
 
 export default component$(() => {
+
   const mapStatus = useStore({ active: false });
 
   const store = useStore({
@@ -51,7 +52,7 @@ export default component$(() => {
           </button>
         </div>
         <div>
-          <Montreal />
+          <Leaflet />
         </div>
       </div>
     </main>

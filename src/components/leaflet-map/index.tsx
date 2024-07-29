@@ -7,7 +7,8 @@ import {
 } from "@builder.io/qwik";
 import { Map } from "leaflet";
 import type { MapProps } from "~/models/map";
-
+import MapWrapper from "./map";
+export { MapWrapper }
 export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   // Modify with your preferences. By default take all screen
   useStyles$(`
@@ -25,7 +26,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
           color: red;
           height: 10px;
           }
-  `);
+`);
 
   const mapContainer$ = useSignal<Map>();
   //eslint-disable-next-line

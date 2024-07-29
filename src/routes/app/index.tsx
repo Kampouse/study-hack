@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import Montreal from "~/components/leaflet-map/montreal";
+import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 const UserCards = component$(() => {
   return (
     <div class="px flex w-full content-center rounded-xl border  px-4  py-2 shadow-md md:p-8 md:pb-0 ">
@@ -44,7 +44,7 @@ export default component$(() => {
       </div>
       <div class="flex grid-cols-5 flex-col gap-2 md:gap-2 lg:grid">
         <div class="row-span-1 h-fit rounded-full  lg:col-span-3  lg:pl-4 ">
-          <Montreal />
+          <Leaflet />
           <div class=" px-2 pt-2 ">
             <h1 class="py-2 text-2xl font-medium "> Intrests Filters</h1>
             <div class=" flex gap-2 ">
