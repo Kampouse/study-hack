@@ -9,7 +9,12 @@ import { Map } from "leaflet";
 import type { MapProps } from "~/models/map";
 import MapWrapper from "./map";
 export { MapWrapper }
+import { useAuthSession } from "~/routes/plugin@auth";
 export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
+
+  const data = useAuthSession()
+  console.log(data.value)
+
   // Modify with your preferences. By default take all screen
   useStyles$(`
     #map {
@@ -33,7 +38,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   useVisibleTask$(async ({ track }) => {
     track(location);
 
-    const { tileLayer, marker, Icon } = await import("leaflet");
+    const { tileLayer, marker, Icon, Popup } = await import("leaflet");
 
     const baseIcon = new Icon({
       iconUrl: "/marker-icon.png",
@@ -67,8 +72,23 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     // Assign select boundary box to use in OSM API if you want
     locationData.boundaryBox = getBoundaryBox(map);
 
+
+    const popup = new Popup({}).setLatLng(centerPosition).setContent(` <a id="hack" class="w-full h-full bg-red-50"> hi am  ${data.value?.user?.name}
+
+      </a>`)
+
+
+
     locationData.marker &&
-      marker(centerPosition, { icon: baseIcon }).bindPopup(`Montreal, QC`).addTo(map);
+      marker(centerPosition, { icon: baseIcon, bubblingMouseEvents: true })
+        .once("click", () => {
+          document.querySelector("#Kampi")?.addEventListener("click", () => {
+            console.log("clicked")
+          })
+        }).bindPopup(popup).addTo(map)
+
+
+
 
     mapContainer$.value = noSerialize(map);
   });
