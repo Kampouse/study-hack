@@ -2,7 +2,7 @@ import { component$, Slot, useVisibleTask$ } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
 import posthog from "posthog-js";
-export const onGet: RequestHandler = async () => {
+export const onGet: RequestHandler = async ({ sharedMap, redirect, request, pathname }) => {
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform
@@ -15,7 +15,11 @@ export const onGet: RequestHandler = async () => {
   // Max once every 5 seconds, revalidate on the server to get a fresh version of this page
   //    maxAge: 5,
   //});
-  //if (url.pathname == "/" && session) throw redirect(302, "/app");
+  //if (url.pathname == "/" && session) throw redirect (302, "/app");
+  const session = sharedMap.get("session")
+  if (session && pathname == "/") {
+    throw redirect(302, "/app");
+  }
 };
 
 export default component$(() => {

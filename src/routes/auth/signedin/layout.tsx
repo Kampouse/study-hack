@@ -1,6 +1,6 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { tursoClient as drizzle } from "~/utils/turso";
-import { users } from "../../../../drizzle/schema";
+import { users } from "~/../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 type Session = {

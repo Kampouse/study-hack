@@ -11,7 +11,7 @@ export default component$(() => {
   const actions = [
     { label: "Profile", disabled: false, path: "/profile" },
     { label: "Setting", disabled: false, path: "/setting" },
-    { label: "home page", disabled: false, path: "/" },
+    { label: "Home Page", disabled: false, path: "/landing" },
   ];
 
   return (

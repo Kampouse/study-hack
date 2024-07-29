@@ -19,10 +19,10 @@ export const onGet: RequestHandler = async ({
     "/login": "public",
     "/signup": "public",
     "/logout": "public",
+    "/landing": "public",
+    "/landing/": "public",
   };
-  if (publicpath[activePath] === "public") {
-    return next();
-  }
+
   type Session = {
     user: {
       name: string;
@@ -40,7 +40,21 @@ export const onGet: RequestHandler = async ({
       throw redirect(302, "/login");
     }
   }
-  if (!data) {
-    throw redirect(302, "/");
+
+
+
+  if (!data?.user) {
+    const keys = Object.keys(publicpath);
+    if (keys.includes(activePath)) {
+      return next();
+    }
+    throw redirect(302, "/landing");
   }
+  //string contain method
+
+
+
+
+
+
 };

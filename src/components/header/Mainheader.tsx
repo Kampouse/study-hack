@@ -10,7 +10,7 @@ export default component$(() => {
         role="navigation"
       >
         <div class="pl-2 md:pl-8">
-          <a href={session.value ? "/app" : "/"} class=" p-4 text-2xl">
+          <a href={session.value ? "/app" : "/landing"} class=" p-4 text-2xl">
             {"S & H"}
           </a>
         </div>
