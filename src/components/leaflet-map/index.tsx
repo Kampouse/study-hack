@@ -33,7 +33,11 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   useVisibleTask$(async ({ track }) => {
     track(location);
 
-    const { tileLayer, marker } = await import("leaflet");
+    const { tileLayer, marker, Icon } = await import("leaflet");
+
+    const baseIcon = new Icon({
+      iconUrl: "/marker-icon.png",
+    });
 
     const { getBoundaryBox } = await import("../../helpers/boundary-box");
 
@@ -64,7 +68,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     locationData.boundaryBox = getBoundaryBox(map);
 
     locationData.marker &&
-      marker(centerPosition).bindPopup(`Montreal, QC`).addTo(map);
+      marker(centerPosition, { icon: baseIcon }).bindPopup(`Montreal, QC`).addTo(map);
 
     mapContainer$.value = noSerialize(map);
   });
