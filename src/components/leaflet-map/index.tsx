@@ -8,13 +8,10 @@ import {
 import { Map } from "leaflet";
 import type { MapProps } from "~/models/map";
 import MapWrapper from "./map";
-export { MapWrapper }
+export { MapWrapper };
 import { useAuthSession } from "~/routes/plugin@auth";
 export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
-
-  const data = useAuthSession()
-  console.log(data.value)
-
+  const data = useAuthSession();
   // Modify with your preferences. By default take all screen
   useStyles$(`
     #map {
@@ -37,13 +34,11 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
   //eslint-disable-next-line
   useVisibleTask$(async ({ track }) => {
     track(location);
-
     const { tileLayer, marker, Icon, Popup } = await import("leaflet");
 
     const baseIcon = new Icon({
       iconUrl: "/marker-icon.png",
     });
-
     const { getBoundaryBox } = await import("../../helpers/boundary-box");
 
     if (mapContainer$.value) {
@@ -57,7 +52,7 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
       number,
     ];
 
-    const map: any = new Map("map").setView(
+    const map = new Map("map").setView(
       centerPosition,
       locationData.zoom || 14,
       {},
@@ -72,24 +67,20 @@ export const LeafletMap = component$<MapProps>(({ location }: MapProps) => {
     // Assign select boundary box to use in OSM API if you want
     locationData.boundaryBox = getBoundaryBox(map);
 
+    const popup = new Popup({}).setLatLng(centerPosition)
+      .setContent(` <a id="hack" class="w-full h-full bg-red-50"> hi am  ${data.value?.user?.name}
 
-    const popup = new Popup({}).setLatLng(centerPosition).setContent(` <a id="hack" class="w-full h-full bg-red-50"> hi am  ${data.value?.user?.name}
-
-      </a>`)
-
-
-
+      </a>`);
     locationData.marker &&
       marker(centerPosition, { icon: baseIcon, bubblingMouseEvents: true })
-        .once("click", () => {
-          document.querySelector("#Kampi")?.addEventListener("click", () => {
-            console.log("clicked")
-          })
-        }).bindPopup(popup).addTo(map)
-
-
-
-
+        .bindPopup(popup)
+        .addTo(map);
+    map.on("popupclose", () => {
+      document.querySelector("#Kampi")?.classList.remove("bg-red-50");
+    });
+    map.on("popupopen", () => {
+      document.querySelector("#Kampi")?.classList.add("bg-red-50");
+    });
     mapContainer$.value = noSerialize(map);
   });
   return <div id="map" class="shadow-md"></div>;

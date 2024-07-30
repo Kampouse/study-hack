@@ -2,9 +2,7 @@ import { component$, $, useStore } from "@builder.io/qwik";
 import { ProfileCard, ProfileForm } from "@/components/profile";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 
-
 export default component$(() => {
-
   const mapStatus = useStore({ active: false });
 
   const store = useStore({

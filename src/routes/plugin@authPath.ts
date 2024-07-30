@@ -41,8 +41,6 @@ export const onGet: RequestHandler = async ({
     }
   }
 
-
-
   if (!data?.user) {
     const keys = Object.keys(publicpath);
     if (keys.includes(activePath)) {
@@ -51,10 +49,4 @@ export const onGet: RequestHandler = async ({
     throw redirect(302, "/landing");
   }
   //string contain method
-
-
-
-
-
-
 };

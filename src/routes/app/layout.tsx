@@ -2,7 +2,6 @@ import { component$, Slot } from "@builder.io/qwik";
 import { useVisibleTask$ } from "@builder.io/qwik";
 import posthog from "posthog-js";
 export default component$(() => {
-
   //eslint-disable-next-line
   useVisibleTask$(() => {
     if (document.location.host.includes("study-hack.vercel.app")) {

@@ -21,10 +21,13 @@ export const UserCards = component$<UserCardProps>((props) => {
     console.log("focused");
   });
 
-
   return (
-    <div onScroll$={onFocused} class="px flex w-full content-center rounded-xl border  px-4  py-2 shadow-md md:p-8 md:pb-0 ">
-      <div id={user.name} class="">
+    <div
+      id={user.name}
+      onScroll$={onFocused}
+      class="px flex w-full content-center rounded-xl border  px-4  py-2 shadow-md md:p-8 md:pb-0 "
+    >
+      <div class="">
         <div class=" flex w-full flex-col">
           <div class="flex h-20 flex-row gap-4">
             <img

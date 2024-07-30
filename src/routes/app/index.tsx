@@ -6,14 +6,12 @@ export default component$(() => {
   const intrests = ["plant", "code", "working"];
   const location = ["montreal", "toronto", "vancouver"];
 
-
   const card = {
     name: "Kampi",
     description: "studying for cs-231",
     time: "1pm - 4pm",
     tags: ["python", "javascript", "study"],
   };
-
 
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">

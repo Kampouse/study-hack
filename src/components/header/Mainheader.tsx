@@ -1,6 +1,6 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
-import Dropdown from "@/components/dropdown"
+import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
 export default component$(() => {
   const session = useAuthSession();

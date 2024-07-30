@@ -7,8 +7,6 @@ type Location = {
   location?: LocationsProps;
 };
 
-
-
 export default component$<Location>((props) => {
   useStyles$(leafletStyles);
   const mapData = {
