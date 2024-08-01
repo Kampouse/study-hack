@@ -36,10 +36,11 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
+.eslintcache
 # Yarn
 .yarn/*
 !.yarn/releases
+!.env.example
 *env*
 # Vercel
 .vercel
