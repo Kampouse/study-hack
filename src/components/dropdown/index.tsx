@@ -19,7 +19,7 @@ export default component$(() => {
         <img class="rounded-full" width={50} height={50} src={img} />
       </Dropdown.Trigger>
       <Dropdown.Popover class=" w-32 rounded-b-md p-1 shadow-sm">
-        {/*<Dropdown.Arrow class="" />*/}
+        <Dropdown.Arrow class="" />
         <Dropdown.Content class="">
           <Dropdown.Group class="">
             {actions.map((action) => (
