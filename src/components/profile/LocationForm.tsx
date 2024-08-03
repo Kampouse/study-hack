@@ -1,13 +1,16 @@
 import { component$, type QRL } from "@builder.io/qwik";
 
 interface ItemProps {
-  name: string;
-  about: string;
+  when: string;
+  what: string;
+  where: string;
   onSave$: QRL<() => void>;
 }
 
-export default component$<ItemProps>(({ }) => {
+export default component$<ItemProps>(({ when, what, where , onSave$}) => {
     return (
-        <div></div>
+        <form onSubmit$={onSave$}>
+          
+        </form>
     )
 })

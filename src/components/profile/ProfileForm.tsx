@@ -4,13 +4,17 @@ interface ItemProps {
   name: string;
   about: string;
   interests: string[];
-  onSave$: QRL<() => void>
+  onSave$: QRL<() => void>;
+  onChange$: QRL<(e: Event) => void>;
 }
 
-export default component$<ItemProps>(({ name, about, interests, onSave$ }) => {
-  
+export default component$<ItemProps>(({ name, about, interests, onSave$, onChange$ }) => {
+  const handleSubmit = $((e: Event) => {
+    e.preventDefault();
+    onSave$();
+  });
   return (
-    <form onSubmit$={onSave$} class="flex flex-col gap-4 max-w-xl">
+    <form onSubmit$={handleSubmit} class="flex flex-col gap-4 max-w-xl">
       <div class="jus flex flex-col gap-2">
         <label for="name" class="text-lg">
           Display name
@@ -21,6 +25,7 @@ export default component$<ItemProps>(({ name, about, interests, onSave$ }) => {
           id="name"
           name="name"
           value={name}
+          onInput$={onChange$}
         />
       </div>
       <div class="flex flex-col gap-2">
@@ -33,6 +38,7 @@ export default component$<ItemProps>(({ name, about, interests, onSave$ }) => {
           id="about"
           name="about"
           value={about}
+          onInput$={onChange$}
         />
       </div>
       <fieldset class="flex flex-col gap-2">
@@ -42,7 +48,7 @@ export default component$<ItemProps>(({ name, about, interests, onSave$ }) => {
             return (
               <li key={index} class="grid grid-cols-2">
                 <label for={item} class="span-1">{item}</label>
-                <input type="checkbox" id={item} name="interests" value={item} class="span-1" />
+                <input type="checkbox" id={item} name="interests" class="span-1" />
               </li>
             )
           })}
