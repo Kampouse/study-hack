@@ -1,4 +1,4 @@
-export interface LocationsProps {
+export type LocationsProps = {
   name: string;
   // latitude , longitude
   point: [number, number];
@@ -6,4 +6,4 @@ export interface LocationsProps {
   boundaryBox: string;
   zoom: number;
   marker: boolean;
-}
+};

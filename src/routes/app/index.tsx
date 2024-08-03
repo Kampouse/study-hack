@@ -1,8 +1,25 @@
 import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { UserCards } from "@/components/cards";
+import type { popupsData } from "~/models/map";
+import { routeLoader$ } from "@builder.io/qwik-city";
+export const useMapData = routeLoader$(async () => {
+  const coords: popupsData = [
+    {
+      name: "place  central",
+      coords: [45.5017, -73.5673],
+    },
+    {
+      name: "place demi",
+      coords: [45.5017, -72.5673],
+    },
+  ];
+  return coords;
+});
 
 export default component$(() => {
+  const coords = useMapData();
+
   const intrests = ["plant", "code", "working"];
   const location = ["montreal", "toronto", "vancouver"];
 
@@ -12,7 +29,6 @@ export default component$(() => {
     time: "1pm - 4pm",
     tags: ["python", "javascript", "study"],
   };
-
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class=" px-2 py-2  md:px-6 md:py-4  ">
@@ -21,7 +37,7 @@ export default component$(() => {
       </div>
       <div class="flex grid-cols-5 flex-col gap-5 md:gap-2 lg:grid">
         <div class="row-span-1 h-fit rounded-full  lg:col-span-3  lg:pl-4 ">
-          <Leaflet />
+          <Leaflet popups={coords} />
           <div class=" px-2 pb-4 pt-4 ">
             <h1 class="py-2 text-2xl font-medium "> Intrests Filters</h1>
             <div class=" flex gap-2 ">

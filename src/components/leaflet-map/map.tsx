@@ -3,11 +3,9 @@ import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline
 import type { LocationsProps } from "~/models/location";
 import { LeafletMap } from "./index";
 
-type Location = {
-  location?: LocationsProps;
-};
+import type { MapProps } from "~/models/map";
 
-export default component$<Location>((props) => {
+export default component$<MapProps>((props) => {
   useStyles$(leafletStyles);
   const mapData = {
     name: "Montreal",
@@ -25,7 +23,7 @@ export default component$<Location>((props) => {
   });
   return (
     <div class="">
-      <LeafletMap location={currentLocation} />
+      <LeafletMap popups={props.popups} location={currentLocation} />
     </div>
   );
 });
