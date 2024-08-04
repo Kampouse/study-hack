@@ -27,6 +27,28 @@ export const users = sqliteTable("Users", {
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
 });
 
+
+
+
+
+
+export const events = sqliteTable("Events", {
+  EventID: integer("EventID").primaryKey({ autoIncrement: true }),
+  Name: text("Name").notNull(),
+  Description: text("Description").notNull(),
+  Location: text("Location").notNull(),
+  Coordinates: text("Coordinates", { mode: "json" }).$type<[number, number]>().notNull(),
+  StartTime: text("StartTime").notNull(),
+  EndTime: text("EndTime").notNull(),
+  Tags: text("Tags", { mode: "json" }).$type<string[]>().notNull(),
+  Date: integer('date', { mode: 'timestamp' }).notNull(),
+  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+  UserID: integer("UserID").notNull(),
+});
+
+
+
+
 export const sessions = sqliteTable("Sessions", {
   SessionID: integer("SessionID", { mode: "number" }).primaryKey({
     autoIncrement: true,

@@ -42,66 +42,70 @@ const ProfileForm = component$<FormProps>(({ data, active }) => {
   const action = useAddUser();
 
   const close = $(() => {
-    console.log('close');
     active.value = false;
 
   })
 
   return (
-    <Form onSubmit$={close} action={action} class="flex flex-col gap-4 max-w-xl">
-      <button onClick$={() => { active.value = false }} type="submit">Add user</button>
-      <div class="jus flex flex-col gap-2">
-        <label for="name" class="text-lg">
-          Display name
-        </label>
-        <input
-          class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
-          type="text"
-          id="name"
-          name="name"
-          value={data.name}
-          onInput$={onChange}
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="about" class="text-lg">
-          About you
-        </label>
-        <input
-          class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
-          type="text"
-          id="about"
-          name="about"
-          value={data.about}
-          onInput$={onChange}
-        />
-      </div>
-      <fieldset class="flex flex-col gap-2">
-        <div><legend class="text-lg">Interests</legend></div>
-        <ul class="flex flex-col gap-2 rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500">
-          {data.interests.map((item, index) => {
-            return (
-              <li key={index} class="grid grid-cols-2">
-                <label for={item} class="span-1">{item}</label>
-                <input type="checkbox"
-                  id={item} name="interests"
-                  checked={data.interests.includes(item)}
-                  onChange$={onChange}
-                  class="span-1" />
-              </li>
-            )
-          })}
-        </ul>
-      </fieldset>
+    <div>
+      <Form action={action} class="flex flex-col gap-4 max-w-xl">
+        <button onClick$={close} type="submit" >Add user</button>
 
-    </Form>
+        <div class="jus flex flex-col gap-2">
+          <label for="name" class="text-lg">
+            Display name
+          </label>
+          <input
+            class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
+            type="text"
+            id="name"
+            name="name"
+            value={data.name}
+            onInput$={onChange}
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="about" class="text-lg">
+            About you
+          </label>
+          <input
+            class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
+            type="text"
+            id="about"
+            name="about"
+            value={data.about}
+            onInput$={onChange}
+          />
+        </div>
+        <fieldset class="flex flex-col gap-2">
+          <div><legend class="text-lg">Interests</legend></div>
+          <ul class="flex flex-col gap-2 rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500">
+            {data.interests.map((item, index) => {
+              return (
+                <li key={index} class="grid grid-cols-2">
+                  <label for={item} class="span-1">{item}</label>
+                  <input type="checkbox"
+                    id={item} name="interests"
+                    checked={data.interests.includes(item)}
+                    onChange$={onChange}
+                    class="span-1" />
+                </li>
+              )
+            })}
+          </ul>
+        </fieldset>
+
+      </Form>
+
+      <button onClick$={close}>quit</button>
+    </div>
   );
 });
 
 const ProfileCard = component$<CardProps>(({ data, active }) => {
   const onEdited = $(() => {
     console.log('edited');
-    active.value = true;
+    active.value = !active.value;
     console.log(data);
   })
 
