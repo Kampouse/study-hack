@@ -1,14 +1,18 @@
-import { component$, $, useStore } from "@builder.io/qwik";
+import { component$, $, useStore, useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
+import type { Signal } from "@builder.io/qwik";
+import { routeAction$, Form } from '@builder.io/qwik-city';
 
-interface FormProps {
+type FormProps = {
   data: { name: string, about: string, interests: string[] };
-  onSave: (e:Event) => void;
+  active: Signal<boolean>;
+  onSave: (e: Event) => void;
   onChange: (e: Event) => void;
 }
 
-interface CardProps {
+type CardProps = {
   data: { name: string, about: string, interests: string[] };
+  active: Signal<boolean>;
   onEdit: () => void;
 }
 
@@ -16,9 +20,36 @@ interface LocationFormProps {
   data: { when: string, what: string, where: string };
 }
 
-const ProfileForm = component$<FormProps>(({ data, onSave, onChange }) => {
+export const useAddUser = routeAction$(async (data) => {
+  // This will only run on the server when the user submits the form (or when the action is called programmatically)
+  console.log(data);
+  return {
+    success: true,
+    "hello": "world"
+  };
+});
+
+
+const ProfileForm = component$<FormProps>(({ data, active }) => {
+
+  const onChange = $((e: Event) => {
+    const { name, value } = e.target as HTMLInputElement;
+    // @ts-ignore
+    data[name] = value;
+  })
+
+
+  const action = useAddUser();
+
+  const close = $(() => {
+    console.log('close');
+    active.value = false;
+
+  })
+
   return (
-    <form onSubmit$={onSave} class="flex flex-col gap-4 max-w-xl">
+    <Form onSubmit$={close} action={action} class="flex flex-col gap-4 max-w-xl">
+      <button onClick$={() => { active.value = false }} type="submit">Add user</button>
       <div class="jus flex flex-col gap-2">
         <label for="name" class="text-lg">
           Display name
@@ -62,17 +93,19 @@ const ProfileForm = component$<FormProps>(({ data, onSave, onChange }) => {
           })}
         </ul>
       </fieldset>
-      <button
-        type="submit"
-        class="self-start rounded-lg bg-green-500 p-3 text-sm text-black hover:bg-[#90EE90]"
-      >
-        Save
-      </button>
-    </form>
+
+    </Form>
   );
 });
 
-const ProfileCard = component$<CardProps>(({ data, onEdit }) => {
+const ProfileCard = component$<CardProps>(({ data, active }) => {
+  const onEdited = $(() => {
+    console.log('edited');
+    active.value = true;
+    console.log(data);
+  })
+
+
   return (
     <div class="flex flex-col gap-10 md:flex-row md:items-center md:gap-20">
       <img
@@ -98,18 +131,18 @@ const ProfileCard = component$<CardProps>(({ data, onEdit }) => {
       </div>
       <div class="order-first self-start md:order-last">
         <button
-          onClick$={onEdit}
+          onClick$={onEdited}
           class="self-start rounded-full p-3 text-sm text-black bg-white shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:text-white hover:bg-[#90EE90]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-line">
-            <path d="M12 20h9"/>
-            <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>
-            <path d="m15 5 3 3"/></svg>
+            <path d="M12 20h9" />
+            <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+            <path d="m15 5 3 3" /></svg>
         </button>
       </div>
     </div>
   );
-});
+})
 
 const LocationForm = component$<LocationFormProps>(({ data }) => {
   return (
@@ -159,10 +192,12 @@ export default component$(() => {
     interests: ["HTML", "CSS", "JavaScript", "Sunlight"],
     editMode: false,
   });
+  const editMode = useSignal(false)
 
   const handleSaveClick = $((e: Event) => {
     e.preventDefault();
     store.editMode = false;
+
   });
 
   const handleEditClick = $(() => {
@@ -191,15 +226,17 @@ export default component$(() => {
   return (
     <main class="flex flex-col gap-10 p-16">
       <div>
-        {store.editMode ? (
+        {editMode.value ? (
           <ProfileForm
-            data={{ name: store.name, about: store.about, interests: store.interests }}
+            data={{ ...store }}
+            active={editMode}
             onSave={handleSaveClick}
             onChange={handleChange}
           />
         ) : (
           <ProfileCard
-            data={{ name: store.name, about: store.about, interests: store.interests }}
+            active={editMode}
+            data={{ ...store }}
             onEdit={handleEditClick}
           />
         )}
@@ -216,7 +253,7 @@ export default component$(() => {
             <Leaflet />
           </div>
           <div class={`md:col-span-1 ${!mapStatus.active ? "hidden" : "block"}`}>
-            <LocationForm 
+            <LocationForm
               data={{ when: mapStatus.when, what: mapStatus.what, where: mapStatus.where }}
             />
           </div>

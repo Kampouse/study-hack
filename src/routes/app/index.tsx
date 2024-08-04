@@ -26,6 +26,8 @@ export default component$(() => {
   const card = {
     name: "Kampi",
     description: "studying for cs-231",
+    location: "montreal",
+    coordinates: [45.5017, -73.5673],
     time: "1pm - 4pm",
     tags: ["python", "javascript", "study"],
   };

@@ -7,10 +7,9 @@ interface ItemProps {
   onSave$: QRL<() => void>;
 }
 
-export default component$<ItemProps>(({ when, what, where , onSave$}) => {
-    return (
-        <form onSubmit$={onSave$}>
-          
-        </form>
-    )
+export default component$<ItemProps>(({ onSave$ }) => {
+  return (
+    <form onSubmit$={onSave$}>
+    </form>
+  )
 })
