@@ -1,15 +1,16 @@
 import { component$, $, useStore, useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
-import {} from "~/components/profile";
+import { } from "~/components/profile";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
 export const useAddUser = routeAction$(async (data) => {
-  // This will only run on the server when the user submits the form (or when the action is called programmatically)
   console.log(data);
+  // This will only run on the server when the user submits the form (or when the action is called programmatically)
   return {
     success: true,
     hello: "world",
   };
+
 });
 
 export default component$(() => {

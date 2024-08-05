@@ -1,7 +1,7 @@
-import { component$, $, type Signal } from "@builder.io/qwik";
+import { component$, $ } from "@builder.io/qwik";
 import { useAddUser } from "~/routes/profile";
 import { Form } from "@builder.io/qwik-city";
-import { Slot } from "@builder.io/qwik";
+import { Slot, useSignal, type Signal } from "@builder.io/qwik";
 type FormProps = {
   data: { name: string; about: string; interests: string[] };
   active: Signal<boolean>;
@@ -19,12 +19,19 @@ export default component$<FormProps>(({ data }) => {
   });
 
   const action = useAddUser();
-
+  const isActive = useSignal(false);
   return (
-    <Modal.Root>
+    <Modal.Root bind:show={isActive}>
       <Slot q:slot="profile" />
       <Modal.Panel class="modal-panel  w-96 rounded-lg px-10">
-        <Form action={action} class="flex max-w-xl flex-col gap-4 py-2">
+        <Form onSubmitCompleted$={() => {
+          if (action.value?.success) {
+            isActive.value = false
+          }
+          else {
+            console.log('error')
+          }
+        }} action={action} class="flex max-w-xl flex-col gap-4 py-2">
           <div class="jus flex flex-col gap-2">
             <label for="name" class="p-2 text-lg">
               Display name
@@ -75,12 +82,11 @@ export default component$<FormProps>(({ data }) => {
               })}
             </ul>
           </fieldset>
-          <Modal.Close
+          <button
             type="submit"
-            class="modal-close w-fit rounded-lg bg-green-200 p-2"
-          >
-            Save Changes
-          </Modal.Close>
+            class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
+            Save changes
+          </button>
         </Form>
       </Modal.Panel>
     </Modal.Root>

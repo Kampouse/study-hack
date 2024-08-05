@@ -9,20 +9,21 @@ type CardProps = {
 };
 
 export default component$<CardProps>(({ data }) => {
-
-  const session = useAuthSession()
-  const image = session.value?.user?.image
+  const session = useAuthSession();
+  const image = session.value?.user?.image;
   return (
     <div class="flex flex-col gap-5 md:flex-row md:items-center md:gap-5">
       <div class="flex flex-row">
-        <img
-          src={image || "https://via.placeholder.com/200"}
-          class="rounded-full shadow-[0_8px_15px_rgba(0,0,0,0.1)"
-          width={200}
-          height={200}
-        />
-        <Modal.Trigger
+        <Modal.Trigger>
+          <img
+            src={image || "https://via.placeholder.com/200"}
+            class="shadow-[0_8px_15px_rgba(0,0,0,0.1) rounded-full"
+            width={200}
+            height={200}
+          />
+        </Modal.Trigger>
 
+        <Modal.Trigger
           class="
               self-end rounded-full bg-white p-3 text-sm text-black shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:bg-[#90EE90] hover:text-white
               "
@@ -44,12 +45,7 @@ export default component$<CardProps>(({ data }) => {
             <path d="m15 5 3 3" />
           </svg>
         </Modal.Trigger>
-
-
-
       </div>
-
-
 
       <div class="flex flex-col justify-center gap-4">
         <h1 class="text-5xl">{data.name}</h1>
@@ -69,9 +65,7 @@ export default component$<CardProps>(({ data }) => {
           })}
         </div>
       </div>
-      <div class="order-first self-start md:order-last">
-
-      </div>
+      <div class="order-first self-start md:order-last"></div>
     </div>
   );
 });
