@@ -85,7 +85,7 @@ export default component$<FormProps>(({ data }) => {
           <button
             type="submit"
             class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
-            Save changes
+            {!action.value?.success && action.submitted ? 'Saving...' : 'Save changes'}
           </button>
         </Form>
       </Modal.Panel>
