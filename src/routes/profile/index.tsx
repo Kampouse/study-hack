@@ -3,12 +3,25 @@ import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 import { } from "~/components/profile";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
+
+type User = {
+  name: string;
+  about: string;
+  interests: string[];
+  editMode: boolean;
+};
+
+
 export const useAddUser = routeAction$(async (data) => {
   console.log(data);
   // This will only run on the server when the user submits the form (or when the action is called programmatically)
+
+
+
+
   return {
     success: true,
-    data: data,
+    data: data as User,
   };
 
 });

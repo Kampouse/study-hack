@@ -1,4 +1,4 @@
-import { component$, $ } from "@builder.io/qwik";
+import { component$, $, useStore } from "@builder.io/qwik";
 import { useAddUser } from "~/routes/profile";
 import { Form } from "@builder.io/qwik-city";
 import { Slot, useSignal, type Signal } from "@builder.io/qwik";
@@ -12,15 +12,22 @@ type FormProps = {
 import { Modal } from "@qwik-ui/headless";
 
 export default component$<FormProps>(({ data }) => {
+  const output = useStore({ name: '', about: '', interests: [] });
   const onChange = $((e: Event) => {
     const { name, value } = e.target as HTMLInputElement;
 
     // @ts-ignore
-    data[name] = value;
+    //data[name] = value;
+    // @ts-ignore
+    output[name] = value;
   });
 
   const action = useAddUser();
   const isActive = useSignal(false);
+
+
+
+
   return (
     <Modal.Root bind:show={isActive}>
       <Slot q:slot="profile" />
@@ -28,8 +35,9 @@ export default component$<FormProps>(({ data }) => {
         <Form onSubmitCompleted$={() => {
           if (action.value?.success) {
             isActive.value = false
-            action.value.data
-
+            //#todo add the intrests thing here
+            data.name = action.value.data.name
+            data.about = action.value.data.about
           }
           else {
             console.log('error')
