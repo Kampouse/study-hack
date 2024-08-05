@@ -8,7 +8,7 @@ export const useAddUser = routeAction$(async (data) => {
   // This will only run on the server when the user submits the form (or when the action is called programmatically)
   return {
     success: true,
-    hello: "world",
+    data: data,
   };
 
 });
@@ -63,14 +63,15 @@ export default component$(() => {
     <main class="flex flex-col gap-10 p-16">
       <div>
         <ProfileForm
-          data={{ ...store }}
+          data={store}
           active={editMode}
           onSave={handleSaveClick}
           onChange={handleChange}
         >
           <ProfileCard
             active={editMode}
-            data={{ ...store }}
+            data={store}
+
             onEdit={handleEditClick}
           />
         </ProfileForm>

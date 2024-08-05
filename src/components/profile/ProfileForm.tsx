@@ -14,6 +14,7 @@ import { Modal } from "@qwik-ui/headless";
 export default component$<FormProps>(({ data }) => {
   const onChange = $((e: Event) => {
     const { name, value } = e.target as HTMLInputElement;
+
     // @ts-ignore
     data[name] = value;
   });
@@ -27,6 +28,8 @@ export default component$<FormProps>(({ data }) => {
         <Form onSubmitCompleted$={() => {
           if (action.value?.success) {
             isActive.value = false
+            action.value.data
+
           }
           else {
             console.log('error')
@@ -72,7 +75,7 @@ export default component$<FormProps>(({ data }) => {
                     <input
                       type="checkbox"
                       id={item}
-                      name="interests"
+                      name={item}
                       checked={data.interests.includes(item)}
                       onChange$={onChange}
                       class="span-1"
@@ -87,6 +90,7 @@ export default component$<FormProps>(({ data }) => {
             class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
             {!action.value?.success && action.submitted ? 'Saving...' : 'Save changes'}
           </button>
+
         </Form>
       </Modal.Panel>
     </Modal.Root>
