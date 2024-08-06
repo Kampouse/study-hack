@@ -29,15 +29,19 @@ export default component$<FormProps>(({ data }) => {
 
 
   return (
-    <Modal.Root bind:show={isActive}>
+    <Modal.Root bind:show={isActive} tabIndex={-1}>
       <Slot q:slot="profile" />
       <Modal.Panel class="modal-panel  w-96 rounded-lg px-10">
-        <Form onSubmitCompleted$={() => {
+        <Form onSubmitCompleted$={(e) => {
           if (action.value?.success) {
             isActive.value = false
+            //get current scroll position
+
+            e.preventDefault()
             //#todo add the intrests thing here
             data.name = action.value.data.name
             data.about = action.value.data.about
+
           }
           else {
             console.log('error')
@@ -93,12 +97,11 @@ export default component$<FormProps>(({ data }) => {
               })}
             </ul>
           </fieldset>
-          <button
-            type="submit"
+
+          <button type="submit"
             class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
             {!action.value?.success && action.submitted ? 'Saving...' : 'Save changes'}
           </button>
-
         </Form>
       </Modal.Panel>
     </Modal.Root>

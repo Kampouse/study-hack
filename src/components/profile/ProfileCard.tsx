@@ -12,7 +12,7 @@ export default component$<CardProps>(({ data }) => {
   const session = useAuthSession();
   const image = session.value?.user?.image;
   return (
-    <div class="flex flex-col gap-5 md:flex-row md:items-center md:gap-5">
+    <div class="flex flex-col gap-5 md:flex-row md:items-center md:gap-5 ">
       <div class="flex flex-row">
         <Modal.Trigger>
           <img

@@ -73,8 +73,8 @@ export default component$(() => {
   });
 
   return (
-    <main class="flex flex-col gap-10 p-16">
-      <div>
+    <main class="flex flex-col gap-10 p-16  ">
+      <div >
         <ProfileForm
           data={store}
           active={editMode}
