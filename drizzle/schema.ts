@@ -23,7 +23,12 @@ export const users = sqliteTable("Users", {
   Name: text("Name").notNull(),
   Email: text("Email").notNull().unique(),
   ImageURL: text("ImageURL"),
+  Description: text("Description"),
   IsAdmin: integer("IsAdmin", { mode: "boolean" }).notNull().default(false),
+  Intrests: text("Intrestets", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
 });
 

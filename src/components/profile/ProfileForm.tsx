@@ -1,7 +1,7 @@
 import { component$, $, useStore } from "@builder.io/qwik";
-import { useAddUser } from "~/routes/profile";
 import { Form } from "@builder.io/qwik-city";
 import { Slot, useSignal, type Signal } from "@builder.io/qwik";
+import { useUpdateUser } from "~/routes/profile";
 type FormProps = {
   data: { name: string; about: string; interests: string[] };
   active: Signal<boolean>;
@@ -12,7 +12,7 @@ type FormProps = {
 import { Modal } from "@qwik-ui/headless";
 
 export default component$<FormProps>(({ data }) => {
-  const output = useStore({ name: '', about: '', interests: [] });
+  const output = useStore({ name: "", about: "", interests: [] });
   const onChange = $((e: Event) => {
     const { name, value } = e.target as HTMLInputElement;
 
@@ -22,53 +22,53 @@ export default component$<FormProps>(({ data }) => {
     output[name] = value;
   });
 
-  const action = useAddUser();
+  const action = useUpdateUser();
   const isActive = useSignal(false);
-
-
-
 
   return (
     <Modal.Root bind:show={isActive} tabIndex={-1}>
       <Slot q:slot="profile" />
       <Modal.Panel class="modal-panel  w-96 rounded-lg px-10">
-        <Form onSubmitCompleted$={(e) => {
-          if (action.value?.success) {
-            isActive.value = false
-            //get current scroll position
+        <Form
+          onSubmitCompleted$={(e) => {
+            if (action.value?.success) {
+              isActive.value = false;
+              //get current scroll position
 
-            e.preventDefault()
-            //#todo add the intrests thing here
-            data.name = action.value.data.name
-            data.about = action.value.data.about
-
-          }
-          else {
-            console.log('error')
-          }
-        }} action={action} class="flex max-w-xl flex-col gap-4 py-2">
+              e.preventDefault();
+              //#todo add the intrests thing here
+              data.name = action.value.data?.Name || "";
+              data.about = action.value.data?.Description || "";
+            } else {
+              console.log(action.status);
+              console.log("error");
+            }
+          }}
+          action={action}
+          class="flex max-w-xl flex-col gap-4 py-2"
+        >
           <div class="jus flex flex-col gap-2">
-            <label for="name" class="p-2 text-lg">
+            <label for="Name" class="p-2 text-lg">
               Display name
             </label>
             <input
               class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
               type="text"
-              id="name"
-              name="name"
+              id="Name"
+              name="Name"
               value={data.name}
               onInput$={onChange}
             />
           </div>
           <div class="flex flex-col gap-2">
-            <label for="about" class="text-lg">
+            <label for="Description" class="text-lg">
               About you
             </label>
             <input
               class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
               type="text"
-              id="about"
-              name="about"
+              id="Description"
+              name="Description"
               value={data.about}
               onInput$={onChange}
             />
@@ -98,14 +98,16 @@ export default component$<FormProps>(({ data }) => {
             </ul>
           </fieldset>
 
-          <button type="submit"
-            class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
-            {!action.value?.success && action.submitted ? 'Saving...' : 'Save changes'}
+          <button
+            type="submit"
+            class="rounded-lg bg-green-500 p-2 text-white hover:bg-green-600"
+          >
+            {!action.value?.success && action.submitted
+              ? "Saving..."
+              : "Save changes"}
           </button>
         </Form>
       </Modal.Panel>
     </Modal.Root>
   );
 });
-
-// internal

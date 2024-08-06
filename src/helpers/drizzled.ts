@@ -1,0 +1,29 @@
+import type { RequestEvent } from "@builder.io/qwik-city";
+import { tursoClient as drizzle } from "~/utils/turso";
+import type { RequestEventAction } from "@builder.io/qwik-city";
+export type Session = {
+  name: String;
+  user: { email: string; name: string; image: string };
+};
+
+export type validDrizzler = ReturnType<typeof drizzle>;
+export type Requested =
+  | RequestEvent
+  | RequestEventAction<QwikCityPlatform>
+  | RequestEvent<QwikCityPlatform>;
+export const drizzler = async (
+  event: RequestEvent | RequestEventAction<QwikCityPlatform>,
+) => {
+  const session: Session | null = event.sharedMap.get("session");
+  //get env vairables
+  const url = event.env.get("PRIVATE_TURSO_DATABASE_URL");
+  const token = event.env.get("PRIVATE_TURSO_AUTH_TOKEN");
+  if (session) {
+    const Client = drizzle({
+      url: url,
+      authToken: token,
+    });
+    return Client;
+  }
+  return null;
+};

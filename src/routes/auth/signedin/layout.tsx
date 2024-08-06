@@ -1,41 +1,13 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
-import { tursoClient as drizzle } from "~/utils/turso";
-import { users } from "~/../drizzle/schema";
-import { eq } from "drizzle-orm";
-
-type Session = {
-  name: String;
-  user: { email: string; name: string; image: string };
-};
-
+import { CreateUser } from "~/helpers/query";
+import type { Session } from "~/helpers/drizzled";
 export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get("session");
-  //get env vairables
-  const url = event.env.get("PRIVATE_TURSO_DATABASE_URL");
-  const token = event.env.get("PRIVATE_TURSO_AUTH_TOKEN");
-  if (session) {
-    const Client = drizzle({
-      url: url,
-      authToken: token,
-    });
 
-    const data = await Client.select()
-      .from(users)
-      .where(eq(users.Email, session.user.email));
-    if (data.length == 0) {
-      await Client.insert(users)
-        .values({
-          Email: session.user.email,
-          Name: session.user.name,
-          Username: session.user.name,
-          ImageURL: session.user.image,
-          IsAdmin: false,
-        })
-        .execute();
-    }
+  if (session) {
+    CreateUser(event, session);
     throw event.redirect(302, "/app");
   }
-
   throw event.redirect(302, `/`);
 };
 

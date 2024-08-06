@@ -1,29 +1,21 @@
 import { component$, $, useStore, useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
-import { } from "~/components/profile";
+import { UpdateUser } from "~/helpers/query";
+import {} from "~/components/profile";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
+import type { User } from "~/helpers/query";
 
-type User = {
-  name: string;
-  about: string;
-  interests: string[];
-  editMode: boolean;
-};
-
-
-export const useAddUser = routeAction$(async (data) => {
+export const useUpdateUser = routeAction$(async (data, event) => {
   console.log(data);
-  // This will only run on the server when the user submits the form (or when the action is called programmatically)
-
-
-
+  //todo make this validated
+  const output = await UpdateUser(event, data as User);
+  console.log(output);
 
   return {
     success: true,
-    data: data as User,
+    data: output,
   };
-
 });
 
 export default component$(() => {
@@ -74,7 +66,7 @@ export default component$(() => {
 
   return (
     <main class="flex flex-col gap-10 p-16  ">
-      <div >
+      <div>
         <ProfileForm
           data={store}
           active={editMode}
@@ -84,7 +76,6 @@ export default component$(() => {
           <ProfileCard
             active={editMode}
             data={store}
-
             onEdit={handleEditClick}
           />
         </ProfileForm>
