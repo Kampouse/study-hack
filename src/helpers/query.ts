@@ -34,7 +34,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
     console.log("any data", data);
     if (data.length == 0) {
       console.log("Writing to database");
-      return await Client.insert(users)
+      await Client.insert(users)
         .values({
           Email: session.user.email,
           Name: session.user.name,
@@ -55,6 +55,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
   } catch (e) {
     console.log(e);
   }
+  console.log("no data found ??");
 };
 
 export const serverSession = (event: Requested) => {
