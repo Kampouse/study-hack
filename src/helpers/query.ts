@@ -43,6 +43,10 @@ export const CreateUser = async (event: Requested, session: Session) => {
       .catch((e) => {
         console.log(e);
       });
+  } else {
+    console.log("User already exists", data[0]);
+
+    return;
   }
 };
 
