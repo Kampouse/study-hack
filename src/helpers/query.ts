@@ -25,28 +25,33 @@ export const CreateUser = async (event: Requested, session: Session) => {
   }
 
   console.log("Client initialized");
-  const data = await Client.select()
-    .from(users)
-    .where(eq(users.Email, session.user.email));
-  if (data.length == 0) {
-    console.log("Writing to database");
-    return await Client.insert(users)
-      .values({
-        Email: session.user.email,
-        Name: session.user.name,
-        Description: "i am new here",
-        Username: session.user.name,
-        ImageURL: session.user.image,
-        IsAdmin: false,
-      })
-      .execute()
-      .catch((e) => {
-        console.log(e);
-      });
-  } else {
-    console.log("User already exists", data[0]);
+  try {
+    const data = await Client.select()
+      .from(users)
+      .where(eq(users.Email, session.user.email))
+      .execute();
+    if (data.length == 0) {
+      console.log("Writing to database");
+      return await Client.insert(users)
+        .values({
+          Email: session.user.email,
+          Name: session.user.name,
+          Description: "i am new here",
+          Username: session.user.name,
+          ImageURL: session.user.image,
+          IsAdmin: false,
+        })
+        .execute()
+        .catch((e) => {
+          console.log("issue", e);
+        });
+    } else {
+      console.log("User already exists", data[0]);
 
-    return;
+      return;
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
