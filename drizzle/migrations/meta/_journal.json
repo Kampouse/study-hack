@@ -1,12 +1,12 @@
 {
-  "version": "5",
+  "version": "7",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1720977366157,
-      "tag": "0000_long_firelord",
+      "version": "6",
+      "when": 1723064194964,
+      "tag": "0000_condemned_kylun",
       "breakpoints": true
     }
   ]
