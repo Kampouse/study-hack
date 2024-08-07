@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "leaflet": "1.9.4",
-    "posthog-js": "latest"
+    "posthog-js": "latest",
+    "valibot": "^0.37.0"
   }
 }
