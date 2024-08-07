@@ -27,9 +27,11 @@ export const CreateUser = async (event: Requested, session: Session) => {
   console.log("Client initialized");
   try {
     const data = await Client.select()
+
       .from(users)
       .where(eq(users.Email, session.user.email))
       .execute();
+    console.log("any data", data);
     if (data.length == 0) {
       console.log("Writing to database");
       return await Client.insert(users)
