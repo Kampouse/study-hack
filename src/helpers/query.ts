@@ -3,7 +3,7 @@ import type { Session } from "./drizzled";
 import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
-
+import type { UpdateUserForm } from "~/api/Forms";
 export type User = {
   Name: string;
   Email: string;
@@ -11,7 +11,7 @@ export type User = {
   Username: string;
   ImageURL: string;
   IsAdmin: boolean;
-  Intrest: Array<string>;
+  Intrests: Array<string>;
 };
 
 export const CreateUser = async (event: Requested, session: Session) => {
@@ -48,7 +48,7 @@ export const serverSession = (event: Requested) => {
   return event.sharedMap.get("session") as Session;
 };
 
-export const UpdateUser = async (event: Requested, session: User) => {
+export const UpdateUser = async (event: Requested, session: UpdateUserForm) => {
   const Client = await drizzler(event);
   if (Client === null) return;
   console.log(session.Name, session.Description);
@@ -77,7 +77,6 @@ export const GetUser = async (event: Requested) => {
       .from(users)
       .where(eq(users.Email, data.user.email))
       .execute();
-
     if (userData[0]) {
       return userData[0];
     }

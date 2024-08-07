@@ -1,21 +1,17 @@
 import { component$, $, useStore, useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
-import { UpdateUser } from "~/helpers/query";
 import {} from "~/components/profile";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
-import type { User } from "~/helpers/query";
+import { updateProfileForm } from "~/api/Forms";
 
 export const useUpdateUser = routeAction$(async (data, event) => {
-  console.log(data);
-  //todo make this validated
-  const output = await UpdateUser(event, data as User);
-  console.log(output);
-
-  return {
-    success: true,
-    data: output,
-  };
+  try {
+    return updateProfileForm(data, event);
+  } catch (error) {
+    console.error(error);
+    return { error: "internal server error" };
+  }
 });
 
 export default component$(() => {

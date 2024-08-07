@@ -12,19 +12,8 @@ type FormProps = {
 import { Modal } from "@qwik-ui/headless";
 
 export default component$<FormProps>(({ data }) => {
-  const output = useStore({ name: "", about: "", interests: [] });
-  const onChange = $((e: Event) => {
-    const { name, value } = e.target as HTMLInputElement;
-
-    // @ts-ignore
-    //data[name] = value;
-    // @ts-ignore
-    output[name] = value;
-  });
-
   const action = useUpdateUser();
   const isActive = useSignal(false);
-
   return (
     <Modal.Root bind:show={isActive} tabIndex={-1}>
       <Slot q:slot="profile" />
@@ -57,7 +46,6 @@ export default component$<FormProps>(({ data }) => {
               id="Name"
               name="Name"
               value={data.name}
-              onInput$={onChange}
             />
           </div>
           <div class="flex flex-col gap-2">
@@ -70,7 +58,6 @@ export default component$<FormProps>(({ data }) => {
               id="Description"
               name="Description"
               value={data.about}
-              onInput$={onChange}
             />
           </div>
           <fieldset class="flex flex-col gap-2">
@@ -89,7 +76,6 @@ export default component$<FormProps>(({ data }) => {
                       id={item}
                       name={item}
                       checked={data.interests.includes(item)}
-                      onChange$={onChange}
                       class="span-1"
                     />
                   </li>
@@ -97,7 +83,6 @@ export default component$<FormProps>(({ data }) => {
               })}
             </ul>
           </fieldset>
-
           <button
             type="submit"
             class="rounded-lg bg-green-500 p-2 text-white hover:bg-green-600"
