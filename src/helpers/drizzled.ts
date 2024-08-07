@@ -25,5 +25,6 @@ export const drizzler = async (
     });
     return Client;
   }
+  console.log("no session found ????????????");
   return null;
 };

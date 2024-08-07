@@ -18,6 +18,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
   console.log(session);
 
   const Client = await drizzler(event);
+  console.log("we  fuck up somewhere");
   if (Client === null) return;
   const data = await Client.select()
     .from(users)
