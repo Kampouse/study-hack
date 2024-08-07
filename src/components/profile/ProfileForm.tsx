@@ -1,4 +1,4 @@
-import { component$, $, useStore } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { Slot, useSignal, type Signal } from "@builder.io/qwik";
 import { useUpdateUser } from "~/routes/profile";

@@ -20,7 +20,7 @@ export const users = sqliteTable("Users", {
     autoIncrement: true,
   }),
   Username: text("Username").notNull().unique(),
-  Name: text("Name").notNull(),
+  Name: text("Name").notNull().default(""),
   Email: text("Email").notNull().unique(),
   ImageURL: text("ImageURL"),
   Description: text("Description"),
