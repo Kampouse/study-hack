@@ -18,12 +18,18 @@ export const CreateUser = async (event: Requested, session: Session) => {
   console.log(session);
 
   const Client = await drizzler(event);
-  console.log("we  fuck up somewhere");
-  if (Client === null) return;
+  if (Client === null) {
+    console.log("Client not initialized");
+
+    return;
+  }
+
+  console.log("Client initialized");
   const data = await Client.select()
     .from(users)
     .where(eq(users.Email, session.user.email));
   if (data.length == 0) {
+    console.log("Writing to database");
     return await Client.insert(users)
       .values({
         Email: session.user.email,
@@ -33,7 +39,10 @@ export const CreateUser = async (event: Requested, session: Session) => {
         ImageURL: session.user.image,
         IsAdmin: false,
       })
-      .execute();
+      .execute()
+      .catch((e) => {
+        console.log(e);
+      });
   }
 };
 
