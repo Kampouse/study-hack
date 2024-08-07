@@ -1,9 +1,14 @@
-import { component$, $, useStore, useSignal } from "@builder.io/qwik";
+import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 import {} from "~/components/profile";
-import { routeAction$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
+import { GetUser } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
+
+export const useUser = routeLoader$(async (event) => {
+  return await GetUser(event);
+});
 
 export const useUpdateUser = routeAction$(async (data, event) => {
   try {
@@ -22,14 +27,22 @@ export default component$(() => {
     where: "",
   });
 
+  const userData = useUser();
+
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
     interests: ["HTML", "CSS", "JavaScript", "Sunlight"],
     editMode: false,
   });
-  const editMode = useSignal(false);
+  useTask$(() => {
+    if (userData.value != undefined) {
+      store.name = userData.value.Name;
+      store.about = userData.value.Description ?? "";
+    }
+  });
 
+  const editMode = useSignal(false);
   const handleSaveClick = $((e: Event) => {
     e.preventDefault();
     store.editMode = false;
@@ -55,7 +68,6 @@ export default component$(() => {
       }
     }
   });
-
   const handleMapSelect = $(() => {
     mapStatus.active = true;
   });
