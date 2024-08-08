@@ -1,5 +1,6 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
+import { Link } from "@builder.io/qwik-city";
 import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
 export default component$(() => {
@@ -23,9 +24,12 @@ export default component$(() => {
         role="navigation"
       >
         <div class="pl-2 md:pl-8">
-          <a href={session.value ? "/app" : "/landing"} class=" p-4 text-2xl">
+          <Link
+            href={session.value ? "/app" : "/landing"}
+            class=" p-4 text-2xl"
+          >
             {"S & H"}
-          </a>
+          </Link>
         </div>
         <div class="flex  flex-row content-center justify-center">
           {!session.value && (
