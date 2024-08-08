@@ -18,13 +18,13 @@ export default component$<CardProps>(({ data }) => {
           class=" flex flex-col  px-2 md:items-start
         lg:items-start"
         >
-          <div class="flex flex-row">
+          <div class="">
             <Modal.Trigger>
               <img
                 src={image || "https://via.placeholder.com/200"}
                 class="shadow-[0_8px_15px_rgba(0,0,0,0.1) rounded-full py-1"
-                width={125}
-                height={125}
+                width={175}
+                height={175}
               />
             </Modal.Trigger>
 
@@ -50,10 +50,11 @@ export default component$<CardProps>(({ data }) => {
                 <path d="m15 5 3 3" />
               </svg>
             </Modal.Trigger>
+            <h1 class=" pl-2 py-0 text-3xl text-zinc-900">{data.name}</h1>
+            <p class="py-1 pl-2 text-[#939393]">{data.about}</p>
           </div>
 
-          <h1 class=" py-0 text-3xl text-zinc-900">{data.name}</h1>
-          <p class="py-1 pl-2 text-[#939393]">{data.about}</p>
+
           <div class="flex flex-wrap items-start gap-2 ">
             {data.interests.map((item, index) => {
               return (

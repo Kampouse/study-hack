@@ -7,7 +7,7 @@ import {
   useStyles$,
 } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
-import {} from "~/components/profile";
+import { } from "~/components/profile";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser } from "~/helpers/query";
@@ -86,7 +86,7 @@ export default component$(() => {
   `);
 
   return (
-    <main class="flex flex-col ">
+    <main class="flex flex-col md:p-16 md:pt-4 ">
       <div class="">
         <ProfileForm
           data={store}
