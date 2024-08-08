@@ -7,16 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      leaflet:
-        specifier: 1.9.4
-        version: 1.9.4
-      posthog-js:
-        specifier: latest
-        version: 1.154.0
-      valibot:
-        specifier: ^0.37.0
-        version: 0.37.0(typescript@5.4.5)
     devDependencies:
       '@auth/core':
         specifier: 0.31.0
@@ -72,9 +62,15 @@ importers:
       eslint-plugin-qwik:
         specifier: ^1.6.0
         version: 1.6.0(eslint@8.57.0)
+      leaflet:
+        specifier: 1.9.4
+        version: 1.9.4
       postcss:
         specifier: ^8.4.31
         version: 8.4.39
+      posthog-js:
+        specifier: latest
+        version: 1.154.0
       prettier:
         specifier: ^3.2.5
         version: 3.3.2
@@ -90,6 +86,9 @@ importers:
       undici:
         specifier: '*'
         version: 6.19.2
+      valibot:
+        specifier: ^0.37.0
+        version: 0.37.0(typescript@5.4.5)
       vercel:
         specifier: ^29.1.1
         version: 29.4.0(@types/node@20.14.10)(ts-node@10.9.1(@types/node@20.14.10)(typescript@5.4.5))
