@@ -10,10 +10,10 @@ export default component$<LocationFormProps>(({ data }) => {
       <div>
           <p class="text-[#505050] text-xl">Make changes to your account here.</p>
       </div>
-      <form class="flex flex-col gap-4">
+      <form onSubmit$={(e) => { e.preventDefault(); }} class="flex flex-col gap-4">
         <div class="flex flex-col gap-2">
           <label>When are you going?</label>
-          <select class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black focus:border-green-500">
+          <select class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black focus:border-[#90EE90]">
             <option>9h</option>
             <option>10h</option>
             <option>11h</option>
@@ -30,7 +30,7 @@ export default component$<LocationFormProps>(({ data }) => {
         <div class="flex flex-col gap-2">
           <label for="what">What are you working on?</label>
           <input
-            class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black outline-none focus:border-green-500"
+            class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]"
             type="text"
             id="what"
             name="what"
@@ -40,14 +40,14 @@ export default component$<LocationFormProps>(({ data }) => {
         <div class="flex flex-col gap-2">
           <label>Where will you be?</label>
           <input
-            class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black outline-none focus:border-green-500"
+            class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]"
             type="text"
             id="where"
             name="where"
             value={data.where}
           />
         </div>
-        <button class="w-fit rounded-lg p-2.5 bg-[#bede91] shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:bg-[#beed8e]">Save</button>
+        <button class="w-fit rounded-lg p-2.5 bg-[#90EE90] shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">Save</button>
       </form>
     </div>
   );

@@ -52,12 +52,12 @@ export default component$<CardProps>(({ data }) => {
         <div>
           <p>{data.about}</p>
         </div>
-        <div class="grid grid-cols-2 items-start gap-2 md:flex md:justify-between">
+        <div class="flex flex-wrap items-start gap-2">
           {data.interests.map((item, index) => {
             return (
               <div
                 key={index}
-                class="w-fit cursor-pointer rounded-lg bg-gray-300 p-2 text-black hover:bg-[#bede91]"
+                class="w-fit cursor-pointer rounded-lg bg-gray-300 p-2 text-black hover:bg-[#90EE90]"
               >
                 {item}
               </div>

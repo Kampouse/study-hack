@@ -1,4 +1,4 @@
-import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, $, useStore, useSignal, useTask$, useStyles$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 import {} from "~/components/profile";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
@@ -72,6 +72,12 @@ export default component$(() => {
     mapStatus.active = true;
   });
 
+  useStyles$(`
+    #map {
+      height: 35.5em !important;
+    }
+  `);
+
   return (
     <main class="flex flex-col gap-10 p-16  ">
       <div>
@@ -101,15 +107,15 @@ export default component$(() => {
           </button>
         </div>
         <div
-          class={`${!mapStatus.active ? "" : "flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-10"}`}
+          class={`${!mapStatus.active ? "" : "flex flex-col gap-4 md:flex-row md:gap-10"}`}
         >
           <div
-            class={`h-fit md:col-span-1 ${!mapStatus.active ? "opacity-40" : "opacity-100"}`}
+            class={`md:flex-1 ${!mapStatus.active ? "opacity-40" : "opacity-100"}`}
           >
             <Leaflet />
           </div>
           <div
-            class={`md:col-span-1 ${!mapStatus.active ? "hidden" : "block"}`}
+            class={`md:flex-1 ${!mapStatus.active ? "hidden" : "block"}`}
           >
             <LocationForm
               data={{
