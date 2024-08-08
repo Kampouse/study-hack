@@ -2,6 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { useAuthSignout } from "~/routes/plugin@auth";
 import { Dropdown } from "@qwik-ui/headless";
+import { Link } from "@builder.io/qwik-city";
 import { useAuthSession } from "~/routes/plugin@auth";
 export default component$(() => {
   type Session = ReturnType<typeof useAuthSession>;
@@ -28,12 +29,12 @@ export default component$(() => {
                 key={action.label}
                 disabled={action.disabled}
               >
-                <a
+                <Link
                   class="flex w-full cursor-pointer  p-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   href={action.path}
                 >
                   {action.label}
-                </a>
+                </Link>
               </Dropdown.Item>
             ))}
             <Dropdown.Item class="rounded-md hover:bg-gray-100">
