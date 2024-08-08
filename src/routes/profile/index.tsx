@@ -86,7 +86,7 @@ export default component$(() => {
   `);
 
   return (
-    <main class="flex flex-col md:p-16 md:pt-4 ">
+    <main class="flex flex-col md:px-10 md:pt-4 ">
       <div class="">
         <ProfileForm
           data={store}
