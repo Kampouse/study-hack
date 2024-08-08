@@ -1,4 +1,11 @@
-import { component$, $, useStore, useSignal, useTask$, useStyles$ } from "@builder.io/qwik";
+import {
+  component$,
+  $,
+  useStore,
+  useSignal,
+  useTask$,
+  useStyles$,
+} from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 import {} from "~/components/profile";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
@@ -79,8 +86,8 @@ export default component$(() => {
   `);
 
   return (
-    <main class="flex flex-col gap-10 p-16  ">
-      <div>
+    <main class="flex flex-col ">
+      <div class="">
         <ProfileForm
           data={store}
           active={editMode}
@@ -107,23 +114,15 @@ export default component$(() => {
           </button>
         </div>
         <div
-          class={`${!mapStatus.active ? "" : "flex flex-col gap-4 md:flex-row md:gap-10"}`}
+          class={`${!mapStatus.active ? "" : "flex flex-col gap-4 p-2 md:flex-row md:gap-3 "}`}
         >
           <div
             class={`md:flex-1 ${!mapStatus.active ? "opacity-40" : "opacity-100"}`}
           >
             <Leaflet />
           </div>
-          <div
-            class={`md:flex-1 ${!mapStatus.active ? "hidden" : "block"}`}
-          >
-            <LocationForm
-              data={{
-                when: mapStatus.when,
-                what: mapStatus.what,
-                where: mapStatus.where,
-              }}
-            />
+          <div class={"md:flex-1"}>
+            <LocationForm data={mapStatus} />
           </div>
         </div>
       </div>

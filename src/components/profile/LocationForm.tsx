@@ -6,11 +6,16 @@ type LocationFormProps = {
 
 export default component$<LocationFormProps>(({ data }) => {
   return (
-    <div class="flex flex-col gap-6 p-6 rounded-lg bg-white shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
+    <div class="flex flex-col gap-6 rounded-lg bg-white p-6 shadow-[0_8px_5px_rgba(0,0,0,0.1)]">
       <div>
-          <p class="text-[#505050] text-xl">Make changes to your account here.</p>
+        <p class="text-xl text-[#505050]">Make changes to your account here.</p>
       </div>
-      <form onSubmit$={(e) => { e.preventDefault(); }} class="flex flex-col gap-4">
+      <form
+        onSubmit$={(e) => {
+          e.preventDefault();
+        }}
+        class="flex flex-col gap-4"
+      >
         <div class="flex flex-col gap-2">
           <label>When are you going?</label>
           <select class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black focus:border-[#90EE90]">
@@ -47,7 +52,9 @@ export default component$<LocationFormProps>(({ data }) => {
             value={data.where}
           />
         </div>
-        <button class="w-fit rounded-lg p-2.5 bg-[#90EE90] shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">Save</button>
+        <button class="w-fit rounded-lg bg-[#90EE90] p-2.5 shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">
+          Save
+        </button>
       </form>
     </div>
   );
