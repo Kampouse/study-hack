@@ -21,7 +21,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 
 export default component$(() => {
   const mapStatus = useStore({
-    active: false,
+    active: true,
     when: "",
     what: "",
     where: "",

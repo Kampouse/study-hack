@@ -57,7 +57,7 @@ export default component$<CardProps>(({ data }) => {
             return (
               <div
                 key={index}
-                class="w-fit cursor-pointer rounded-lg bg-gray-300 p-2 text-black hover:bg-[#90EE90]"
+                class="w-fit cursor-pointer rounded-lg bg-gray-300 p-2 text-black hover:bg-[#bede91]"
               >
                 {item}
               </div>
