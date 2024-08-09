@@ -34,12 +34,12 @@ export default component$(() => {
 
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
-      <div class="  py-2  md:px-6 md:py-4  ">
-        <h1 class="text-3xl font-medium ">Community</h1>
-        <p class="text-md   font-thin  text-black"> See who active this week</p>
+      <div class="  py-2  md:px-2   ">
+        <h1 class="text-3xl  px-2 md:px-0 font-medium ">Community</h1>
+        <p class="text-md    px-2 md:px-0 font-thin  text-black"> See who active this week</p>
       </div>
       <div class="flex grid-cols-5 flex-col gap-5 md:gap-2 lg:grid">
-        <div class="row-span-1 h-fit rounded-full px-2 lg:col-span-3   lg:pl-4 ">
+        <div class="row-span-1 h-fit rounded-full px-2 lg:col-span-3   lg:pl-2 ">
           <Leaflet popups={coords} />
           <div class="  pb-2 pt-4 ">
             <h1 class=" text-2xl font-medium "> Intrests Filters</h1>
@@ -64,7 +64,7 @@ export default component$(() => {
         </div>
       </div>
       <div class=" order-last px-2 pt-2">
-        <h1 class=" px-1 pb-4 text-2xl  font-medium ">Good locations</h1>
+        <h1 class="  pb-4 text-2xl  font-medium ">Good locations</h1>
         <div class=" flex  w-full flex-col content-center gap-8  md:flex-row lg:gap-10 ">
           {location.map((location) => (
             <div
