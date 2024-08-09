@@ -29,7 +29,6 @@ export const LeafletMap = component$<MapProps>(
                         height: 25em;
                       }
                       color: red;
-                      height: 10px;
                       }
                     }
                     .my-profile {
@@ -45,7 +44,6 @@ export const LeafletMap = component$<MapProps>(
                       height: 25em;
                     }
                     color: red;
-                    height: 10px;
                   }
                                     }
   `,
