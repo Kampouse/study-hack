@@ -1,13 +1,5 @@
-import {
-  component$,
-  $,
-  useStore,
-  useSignal,
-  useTask$,
-  useStyles$,
-} from "@builder.io/qwik";
+import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "~/components/leaflet-map";
-import { } from "~/components/profile";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser } from "~/helpers/query";
@@ -78,12 +70,6 @@ export default component$(() => {
   const handleMapSelect = $(() => {
     mapStatus.active = true;
   });
-
-  useStyles$(`
-    #map {
-      height: 35.5em !important;
-    }
-  `);
 
   return (
     <main class="flex flex-col md:px-10 md:pt-4 ">

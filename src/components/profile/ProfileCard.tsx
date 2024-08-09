@@ -13,10 +13,9 @@ export default component$<CardProps>(({ data }) => {
   const image = session.value?.user?.image;
   return (
     <div class="flex flex-col items-center   gap-5 md:flex-row md:gap-5 lg:items-start ">
-
       <div class="flex flex-col justify-center ">
         <div
-          class=" flex flex-col md:flex-row  px-2 md:items-start
+          class=" flex flex-col px-2  md:flex-row md:items-start
         lg:items-start"
         >
           <div class="flex   flex-row">
@@ -31,7 +30,7 @@ export default component$<CardProps>(({ data }) => {
 
             <Modal.Trigger
               class="
-                  self-end rounded-full bg-white pl-4 p-3 text-sm text-black shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:bg-[#90EE90] hover:text-white
+                  self-end rounded-full bg-white p-3 pl-4 text-sm text-black shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:bg-[#90EE90] hover:text-white
                   "
             >
               <svg
@@ -53,7 +52,7 @@ export default component$<CardProps>(({ data }) => {
             </Modal.Trigger>
           </div>
           <div class=" self-center">
-            <h1 class=" pl-2 py-0 text-3xl text-zinc-900">{data.name}</h1>
+            <h1 class=" py-0 pl-2 text-3xl text-zinc-900">{data.name}</h1>
             <p class="py-1 pl-2 text-[#939393]">{data.about}</p>
 
             <div class="flex flex-wrap items-start gap-2 px-2 ">
@@ -72,6 +71,5 @@ export default component$<CardProps>(({ data }) => {
         </div>
       </div>
     </div>
-
   );
 });

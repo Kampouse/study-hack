@@ -31,6 +31,7 @@ export default component$(() => {
     time: "1pm - 4pm",
     tags: ["python", "javascript", "study"],
   };
+
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class=" px-2 py-2  md:px-6 md:py-4  ">
@@ -42,16 +43,16 @@ export default component$(() => {
           <Leaflet popups={coords} />
           <div class=" px-2 pb-4 pt-4 ">
             <h1 class="py-2 text-2xl font-medium "> Intrests Filters</h1>
-            <div class=" flex gap-2 ">
-              {intrests.map((intrest) => (
-                <button
-                  key={intrest}
-                  class=" max-w-lg self-end rounded-md border bg-blue-50 p-2  text-black shadow-sm  "
-                >
-                  {intrest}
-                </button>
-              ))}
-            </div>
+          </div>
+          <div class=" flex gap-2 ">
+            {intrests.map((intrest) => (
+              <button
+                key={intrest}
+                class=" max-w-lg self-end rounded-md border bg-blue-50 p-2  text-black shadow-sm  "
+              >
+                {intrest}
+              </button>
+            ))}
           </div>
         </div>
         <div class="row-span-1 rounded-xl    lg:col-span-2 ">

@@ -1,8 +1,8 @@
 import { UpdateUser } from "~/helpers/query";
 import type { Requested } from "~/helpers/drizzled";
 import type { JSONObject } from "@builder.io/qwik-city";
-import * as v from "valibot"; // 1.2 kB
-const userSchema = v.object({
+import * as v from "valibot";
+export const userSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   ImageURL: v.optional(v.pipe(v.string(), v.url())),
@@ -17,7 +17,6 @@ export const updateProfileForm = async (data: JSONObject, event: Requested) => {
   data.Intrests = [...intrests];
   //console.log(data);
   const validated = v.safeParse(userSchema, data);
-
   if (!validated.success) {
     console.log(validated.issues);
     return {
