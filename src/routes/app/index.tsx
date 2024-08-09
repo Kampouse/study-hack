@@ -39,7 +39,7 @@ export default component$(() => {
         <p class="text-md   font-thin  text-black"> See who active this week</p>
       </div>
       <div class="flex grid-cols-5 flex-col gap-5 md:gap-2 lg:grid">
-        <div class="row-span-1 h-fit rounded-full  lg:col-span-3  lg:pl-4 ">
+        <div class="row-span-1 h-fit rounded-full px-2 lg:col-span-3   lg:pl-4 ">
           <Leaflet popups={coords} />
           <div class=" px-2 pb-4 pt-4 ">
             <h1 class="py-2 text-2xl font-medium "> Intrests Filters</h1>
@@ -56,7 +56,7 @@ export default component$(() => {
           </div>
         </div>
         <div class="row-span-1 rounded-xl    lg:col-span-2 ">
-          <div class="flex h-full  flex-col justify-start gap-4 px-2 py-1">
+          <div class="flex h-full  flex-col justify-start gap-4 px-2 ">
             <UserCards user={card} />
             <UserCards />
             <UserCards />
