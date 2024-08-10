@@ -13,5 +13,5 @@ export const Primary: Story = {
   args: {
     size: "medium",
   },
-  render: (props) => <Button {...props}> what up </Button>,
+  render: (props: ButtonProps) => <Button {...props}> what up </Button>,
 };
