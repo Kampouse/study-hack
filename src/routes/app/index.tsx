@@ -35,8 +35,11 @@ export default component$(() => {
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class="  py-2  md:px-2   ">
-        <h1 class="text-3xl  px-2 md:px-0 font-medium ">Community</h1>
-        <p class="text-md    px-2 md:px-0 font-thin  text-black"> See who active this week</p>
+        <h1 class="px-2  text-3xl font-medium md:px-0 ">Community</h1>
+        <p class="text-md    px-2 font-thin text-black  md:px-0">
+          {" "}
+          See who active this week
+        </p>
       </div>
       <div class="flex grid-cols-5 flex-col gap-5 md:gap-2 lg:grid">
         <div class="row-span-1 h-fit rounded-full px-2 lg:col-span-3   lg:pl-2 ">

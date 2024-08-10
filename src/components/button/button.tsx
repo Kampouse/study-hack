@@ -5,9 +5,7 @@ export interface ButtonProps {
 }
 export const Button = component$<ButtonProps>(({ size = "medium" }) => {
   return (
-    <button
-      class="bg-red-900 rounded-full"
-    >
+    <button class={"rounded-full bg-red-900 " + size}>
       <Slot></Slot>
     </button>
   );
