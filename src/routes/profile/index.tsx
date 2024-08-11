@@ -3,7 +3,7 @@ import { MapWrapper as Leaflet } from "~/components/leaflet-map";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { LocationForm, ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser } from "~/helpers/query";
-import { updateProfileForm } from "~/api/Forms";
+import { updateProfileForm, createEventForm } from "~/api/Forms";
 
 export const useUser = routeLoader$(async (event) => {
   return await GetUser(event);
@@ -18,12 +18,26 @@ export const useUpdateUser = routeAction$(async (data, event) => {
   }
 });
 
+export const useCreateEvent = routeAction$(async (data, event) => {
+  try {
+    return createEventForm(data, event);
+  } catch (error) {
+    console.error(error);
+  }
+})
+
 export default component$(() => {
-  const mapStatus = useStore({
-    active: true,
-    when: "",
-    what: "",
-    where: "",
+  const mapStatus = useStore({ active:true });
+
+  const event = useStore({
+    name: "",
+    description: "",
+    location: "",
+    coordinates: [],
+    date: "",
+    startTime: "",
+    endTime: "",
+    tags: [],
   });
 
   const userData = useUser();
@@ -108,7 +122,7 @@ export default component$(() => {
             <Leaflet />
           </div>
           <div class={"md:flex-1"}>
-            <LocationForm data={mapStatus} />
+            <LocationForm data={event} />
           </div>
         </div>
       </div>

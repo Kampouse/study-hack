@@ -48,6 +48,7 @@ export const sessions = sqliteTable("Sessions", {
 
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
+export type InsertEvent = typeof events.$inferInsert;
 
 export const schema = {
   users,
