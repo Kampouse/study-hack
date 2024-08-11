@@ -10,7 +10,10 @@ export const eventSchema = v.object({
   Coordinates: v.optional(v.tuple([v.number(), v.number()]), [0, 0]),
   StartTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
-  Tags: v.optional(v.array(v.pipe(v.string(), v.minLength(3), v.maxLength(20))), ["JavaScript", "", ""]),
+  Tags: v.optional(
+    v.array(v.pipe(v.string(), v.minLength(3), v.maxLength(20))),
+    ["JavaScript", "", ""],
+  ),
 });
 export type CreateEventForm = v.InferOutput<typeof eventSchema>;
 
@@ -45,15 +48,35 @@ export const updateProfileForm = async (data: JSONObject, event: Requested) => {
 };
 
 export const createEventForm = async (data: JSONObject, event: Requested) => {
+  /*
+  const mockEventForm = {
+    Name: "Test Event",
+    Description: "Test Description",
+    Location: "Test Location",
+    Coordinates: [0, 0],
+    StartTime: "12:00",
+    EndTime: "14:00",
+    Tags: ["JavaScript", "React", "Node.js"],
+  };
+  */
   const validated = v.safeParse(eventSchema, data);
+
   if (!validated.success) {
     return {
       success: false,
+      data: null,
       error: "Invalid data",
-    }
+    };
   }
   const output = await CreateEvent(event, validated.output);
-  console.log(output);
+
+  if (output === null || output === undefined) {
+    return {
+      success: false,
+      data: null,
+      error: "Failed to create event",
+    };
+  }
   return {
     success: true,
     data: output,

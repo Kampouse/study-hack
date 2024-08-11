@@ -1,4 +1,4 @@
-import { users, events} from "../../drizzle/schema";
+import { users, events } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
 import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
@@ -100,25 +100,28 @@ export const GetUser = async (event: Requested) => {
     })
       .from(users)
       .where(eq(users.Email, data.user.email))
-      .execute();
-    if (userData[0]) {
+      .execute()
+      .catch((e) => {
+        console.log(e);
+        return [];
+      });
+    if (userData.length > 0) {
       return userData[0];
+    } else {
+      return null;
     }
   }
 };
 
-export const CreateEvent = async (event: Requested, session: CreateEventForm) => {
+export const CreateEvent = async (
+  event: Requested,
+  session: CreateEventForm,
+) => {
   const userData = await GetUser(event);
   const Client = await drizzler(event);
-  if (userData === undefined || Client === null) return
+  if (userData === undefined || Client === null || userData === null) return;
   console.log(session.Name, session.Description);
-  try {
-    const data = await Client.select()
-    .from(events)
-    .where(eq(events.UserID, userData.ID))
-    .execute()
-
-    await Client.insert(events)
+  return await Client.insert(events)
     .values({
       Name: session.Name,
       Description: session.Description,
@@ -130,8 +133,20 @@ export const CreateEvent = async (event: Requested, session: CreateEventForm) =>
       Tags: session.Tags,
       UserID: userData.ID,
     })
+    .returning({
+      Name: events.Name,
+      Description: events.Description,
+      Location: events.Location,
+      Coordinates: events.Coordinates,
+      Date: events.Date,
+      StartTime: events.StartTime,
+      EndTime: events.EndTime,
+      Tags: events.Tags,
+      UserID: events.UserID,
+    })
     .execute()
-  } catch(e) {
-    console.log(e);
-  }
+    .catch((e) => {
+      console.log(e);
+      return null;
+    });
 };
