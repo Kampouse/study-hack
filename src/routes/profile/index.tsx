@@ -24,10 +24,10 @@ export const useCreateEvent = routeAction$(async (data, event) => {
   } catch (error) {
     console.error(error);
   }
-})
+});
 
 export default component$(() => {
-  const mapStatus = useStore({ active:true });
+  const mapStatus = useStore({ active: true });
 
   const event = useStore({
     name: "",

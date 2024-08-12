@@ -119,7 +119,14 @@ export const CreateEvent = async (
 ) => {
   const userData = await GetUser(event);
   const Client = await drizzler(event);
-  if (userData === undefined || Client === null || userData === null) return;
+  const sesh = serverSession(event);
+  if (
+    sesh === null ||
+    userData === undefined ||
+    Client === null ||
+    userData === null
+  )
+    return;
   console.log(session.Name, session.Description);
   return await Client.insert(events)
     .values({
@@ -151,18 +158,18 @@ export const CreateEvent = async (
     });
 };
 
-interface QueryOptions {
+export type QueryEventOptions = {
   limit: number;
   offset: number;
   tags: string[];
   location: string;
   date: Date | null;
   orderBy: "Date" | "Name";
-}
+};
 
 export const QueryEvents = async (
   event: Requested,
-  options: QueryOptions = {
+  options: QueryEventOptions = {
     limit: 3,
     offset: 0,
     tags: [],
@@ -172,7 +179,8 @@ export const QueryEvents = async (
   },
 ) => {
   const Client = await drizzler(event);
-  if (Client === null) return;
+  const sesh = serverSession(event);
+  if (sesh === null || Client === null) return;
   const builder = options.orderBy === "Date" ? events.Date : events.Name;
   return await Client.select({
     Name: events.Name,
@@ -190,6 +198,6 @@ export const QueryEvents = async (
     .execute()
     .catch((e) => {
       console.log(e);
-      return [];
+      return null;
     });
 };

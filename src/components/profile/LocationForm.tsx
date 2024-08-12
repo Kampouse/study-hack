@@ -3,7 +3,7 @@ import { Form } from "@builder.io/qwik-city";
 import { useCreateEvent } from "~/routes/profile";
 
 type FormProps = {
-  data: { 
+  data: {
     name: string;
     description: string;
     location: string;
@@ -18,16 +18,17 @@ type FormProps = {
 export default component$<FormProps>(({ data }) => {
   const action = useCreateEvent();
   return (
-    <div class="flex flex-col gap-6 p-6 rounded-lg bg-white shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
+    <div class="flex flex-col gap-6 rounded-lg bg-white p-6 shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
       <div>
-          <p class="text-[#505050] text-xl">Make changes to your account here.</p>
+        <p class="text-xl text-[#505050]">Make changes to your account here.</p>
       </div>
       <Form
         onSubmitCompleted$={(e) => {
           e.preventDefault();
         }}
         action={action}
-        class="flex flex-col gap-4">
+        class="flex flex-col gap-4"
+      >
         <div class="flex flex-col gap-2">
           <label>When are you going?</label>
           <select class="rounded-lg border border-gray-300 bg-white p-3 text-sm text-black focus:border-[#90EE90]">
@@ -64,7 +65,9 @@ export default component$<FormProps>(({ data }) => {
             value={data.location}
           />
         </div>
-        <button class="w-fit rounded-lg p-2.5 bg-[#90EE90] shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">Save</button>
+        <button class="w-fit rounded-lg bg-[#90EE90] p-2.5 shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">
+          Save
+        </button>
       </Form>
     </div>
   );
