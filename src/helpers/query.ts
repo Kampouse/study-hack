@@ -150,3 +150,46 @@ export const CreateEvent = async (
       return null;
     });
 };
+
+interface QueryOptions {
+  limit: number;
+  offset: number;
+  tags: string[];
+  location: string;
+  date: Date | null;
+  orderBy: "Date" | "Name";
+}
+
+export const QueryEvents = async (
+  event: Requested,
+  options: QueryOptions = {
+    limit: 3,
+    offset: 0,
+    tags: [],
+    location: "",
+    date: null,
+    orderBy: "Date",
+  },
+) => {
+  const Client = await drizzler(event);
+  if (Client === null) return;
+  const builder = options.orderBy === "Date" ? events.Date : events.Name;
+  return await Client.select({
+    Name: events.Name,
+    Description: events.Description,
+    Location: events.Location,
+    Coordinates: events.Coordinates,
+    Date: events.Date,
+    StartTime: events.StartTime,
+    EndTime: events.EndTime,
+    Tags: events.Tags,
+  })
+    .from(events)
+    .limit(3)
+    .orderBy(builder)
+    .execute()
+    .catch((e) => {
+      console.log(e);
+      return [];
+    });
+};
