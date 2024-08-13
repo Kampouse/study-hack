@@ -2,21 +2,22 @@ import { component$, $ } from "@builder.io/qwik";
 type UserCard = {
   name: string;
   description: string;
-  time: string;
   tags: string[];
+  starttime: string;
+  endttime?: string;
 };
 type UserCardProps = {
-  user?: UserCard;
+  data?: UserCard;
 };
 
 export const UserCards = component$<UserCardProps>((props) => {
   const defaultUserCard: UserCard = {
     name: "Kampouse",
     description: "studying for cs-231",
-    time: "1pm - 4pm",
+    starttime: "1pm",
     tags: ["python", "javascript", "study"],
   };
-  const user = props.user || defaultUserCard;
+  const user = props.data || defaultUserCard;
   const onFocused = $(() => {
     console.log("focused");
   });
@@ -39,7 +40,7 @@ export const UserCards = component$<UserCardProps>((props) => {
             <div class="flex flex-col gap-1 self-center  ">
               <h1 class="self-start font-bold">{user.name}</h1>
               <h1 class="font-semibol  self-start">{user.description}</h1>
-              <h1 class="self-start  font-light">{user.time}</h1>
+              <h1 class="self-start  font-light">{user.starttime}</h1>
             </div>
           </div>
 

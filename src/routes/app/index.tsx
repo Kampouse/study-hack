@@ -3,6 +3,13 @@ import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { UserCards } from "@/components/cards";
 import type { popupsData } from "~/models/map";
 import { routeLoader$ } from "@builder.io/qwik-city";
+import { QueryEvents } from "~/helpers/query";
+
+export const useEvents = routeLoader$(async (event) => {
+  const data = await QueryEvents(event);
+  return data;
+});
+
 export const useMapData = routeLoader$(async () => {
   const coords: popupsData = [
     {
@@ -18,19 +25,10 @@ export const useMapData = routeLoader$(async () => {
 });
 
 export default component$(() => {
+  const events = useEvents();
   const coords = useMapData();
-
   const intrests = ["plant", "code", "working"];
   const location = ["montreal", "toronto", "vancouver"];
-
-  const card = {
-    name: "Kampi",
-    description: "studying for cs-231",
-    location: "montreal",
-    coordinates: [45.5017, -73.5673],
-    time: "1pm - 4pm",
-    tags: ["python", "javascript", "study"],
-  };
 
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
@@ -60,9 +58,7 @@ export default component$(() => {
         </div>
         <div class="row-span-1 rounded-xl    lg:col-span-2 ">
           <div class="flex h-full  flex-col justify-start gap-4 px-2 ">
-            <UserCards user={card} />
-            <UserCards />
-            <UserCards />
+            {events.value?.map((ev, inc) => <UserCards data={ev} key={inc} />)}
           </div>
         </div>
       </div>

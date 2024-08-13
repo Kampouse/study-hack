@@ -183,14 +183,14 @@ export const QueryEvents = async (
   if (sesh === null || Client === null) return;
   const builder = options.orderBy === "Date" ? events.Date : events.Name;
   return await Client.select({
-    Name: events.Name,
-    Description: events.Description,
-    Location: events.Location,
-    Coordinates: events.Coordinates,
-    Date: events.Date,
-    StartTime: events.StartTime,
-    EndTime: events.EndTime,
-    Tags: events.Tags,
+    name: events.Name,
+    description: events.Description,
+    location: events.Location,
+    coordinates: events.Coordinates,
+    date: events.Date,
+    starttime: events.StartTime,
+    endtime: events.EndTime,
+    tags: events.Tags,
   })
     .from(events)
     .limit(3)
