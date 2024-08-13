@@ -1,17 +1,17 @@
 import { component$, $ } from "@builder.io/qwik";
-type UserCard = {
+type EventCard = {
   name: string;
   description: string;
   tags: string[];
   starttime: string;
   endttime?: string;
 };
-type UserCardProps = {
-  data?: UserCard;
+type EventCardProps = {
+  data?: EventCard;
 };
 
-export const UserCards = component$<UserCardProps>((props) => {
-  const defaultUserCard: UserCard = {
+export const EventCard = component$<EventCardProps>((props) => {
+  const defaultUserCard: EventCard = {
     name: "Kampouse",
     description: "studying for cs-231",
     starttime: "1pm",

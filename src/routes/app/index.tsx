@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
-import { UserCards } from "@/components/cards";
+import { EventCard } from "@/components/cards";
 import type { popupsData } from "~/models/map";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
@@ -58,7 +58,7 @@ export default component$(() => {
         </div>
         <div class="row-span-1 rounded-xl    lg:col-span-2 ">
           <div class="flex h-full  flex-col justify-start gap-4 px-2 ">
-            {events.value?.map((ev, inc) => <UserCards data={ev} key={inc} />)}
+            {events.value?.map((ev, inc) => <EventCard data={ev} key={inc} />)}
           </div>
         </div>
       </div>
