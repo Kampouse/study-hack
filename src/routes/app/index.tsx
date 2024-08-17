@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
-import { EventCard } from "@/components/cards";
+import { EventCard } from "~/components/app/eventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
