@@ -1,11 +1,15 @@
 import { component$, Slot } from "@builder.io/qwik";
+import { Form } from "@builder.io/qwik-city";
 import { Modal } from "@qwik-ui/headless";
+import { useEventAction } from "~/routes/app";
 interface EventProps {
   eventLocation: string;
   eventDate: string;
   eventTime: string;
 }
+
 export default component$<EventProps>((props) => {
+  const action = useEventAction();
   return (
     <Modal.Root class="">
       <Modal.Trigger>
@@ -18,7 +22,7 @@ export default component$<EventProps>((props) => {
         </Modal.Title>
         <Modal.Description>Optional Description</Modal.Description>
 
-        <form class="space-y-4">
+        <Form action={action} class="space-y-4">
           <div class="space-y-2">
             <label
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -30,21 +34,16 @@ export default component$<EventProps>((props) => {
               class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="name"
               placeholder="Enter your name"
-              required={true}
             />
           </div>
           <div class="space-y-2">
-            <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              for="email"
-            >
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Email
             </label>
             <input
               class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="email"
               placeholder="What are you up to today?"
-              required={true}
               type="email"
             />
           </div>
@@ -54,7 +53,7 @@ export default component$<EventProps>((props) => {
           >
             Send RSVP
           </button>
-        </form>
+        </Form>
       </Modal.Panel>
     </Modal.Root>
   );

@@ -1,18 +1,18 @@
 import { component$, $ } from "@builder.io/qwik";
 import JoinForm from "../app/joinForm";
-type EventCard = {
-  name: string;
-  description: string;
-  tags: string[];
-  starttime: string;
-  endttime?: string;
-};
+
 type EventCardProps = {
-  data?: EventCard;
+  data?: {
+    name: string;
+    description: string;
+    tags: string[];
+    starttime: string;
+    endttime?: string;
+  };
 };
 
 export const EventCard = component$<EventCardProps>((props) => {
-  const defaultUserCard: EventCard = {
+  const defaultUserCard = {
     name: "Kampouse",
     description: "studying for cs-231",
     starttime: "1pm",

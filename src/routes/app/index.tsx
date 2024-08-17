@@ -2,8 +2,15 @@ import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/cards";
 import type { popupsData } from "~/models/map";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
+
+export const useEventAction = routeAction$((event) => {
+  console.log("hello from event action");
+
+  return event;
+});
+export type EventAction = ReturnType<typeof useEventAction>;
 
 export const useEvents = routeLoader$(async (event) => {
   const data = await QueryEvents(event);
