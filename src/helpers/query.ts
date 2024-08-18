@@ -191,6 +191,7 @@ export const QueryEvents = async (
     starttime: events.StartTime,
     endtime: events.EndTime,
     tags: events.Tags,
+    eventID: events.EventID,
   })
     .from(events)
     .limit(3)

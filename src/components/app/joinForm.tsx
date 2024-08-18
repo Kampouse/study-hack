@@ -6,6 +6,7 @@ interface EventProps {
   eventLocation: string;
   eventDate: string;
   eventTime: string;
+  eventId: number;
 }
 
 export default component$<EventProps>((props) => {
@@ -28,28 +29,38 @@ export default component$<EventProps>((props) => {
           action={action}
           class="space-y-4"
         >
-          <div class="space-y-2">
-            <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              for="name"
-            >
-              Name
+          <div class="jus flex flex-col gap-2">
+            <label for="Name" class="p-2 text-lg">
+              Contact
             </label>
             <input
-              class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="name"
-              placeholder="Enter your name"
+              class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
+              type="text"
+              id="Name"
+              name="Contact"
+              value=""
             />
           </div>
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Email
+          <div class="flex flex-col gap-2">
+            <label for="Description" class="text-lg">
+              Messsage
             </label>
             <input
-              class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="email"
-              placeholder="What are you up to today?"
-              type="email"
+              class="rounded-lg border border-gray-500 bg-gray-50 p-3 text-sm text-black focus:border-green-500"
+              type="text"
+              id="Description"
+              name="Description"
+              value=""
+            />
+            <label class="hidden" for="ID">
+              Messsage
+            </label>
+            <input
+              class="hidden"
+              type="number"
+              id="ID"
+              name="ID"
+              value={props.eventId}
             />
           </div>
           <button

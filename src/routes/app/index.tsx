@@ -5,8 +5,8 @@ import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
 
-export const useEventAction = routeAction$(() => {
-  console.log("hello from event action");
+export const useEventAction = routeAction$((e) => {
+  console.log("hello from event action", e);
 
   return {
     success: true,
@@ -67,7 +67,9 @@ export default component$(() => {
         </div>
         <div class="row-span-1 rounded-xl    lg:col-span-2 ">
           <div class="flex h-full  flex-col justify-start gap-4 px-2 ">
-            {events.value?.map((ev, inc) => <EventCard data={ev} key={inc} />)}
+            {events.value?.map((ev, inc) => (
+              <EventCard eventId={ev.eventID} data={ev} key={inc} />
+            ))}
           </div>
         </div>
       </div>

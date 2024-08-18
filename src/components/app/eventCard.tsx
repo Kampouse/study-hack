@@ -2,22 +2,27 @@ import { component$, $ } from "@builder.io/qwik";
 import JoinForm from "../app/joinForm";
 
 type EventCardProps = {
+  eventId?: number;
   data?: {
     name: string;
     description: string;
     tags: string[];
     starttime: string;
     endttime?: string;
+    eventId?: number;
   };
 };
-
 export const EventCard = component$<EventCardProps>((props) => {
   const defaultUserCard = {
     name: "Kampouse",
     description: "studying for cs-231",
     starttime: "1pm",
     tags: ["python", "javascript", "study"],
+    eventId: 1,
   };
+
+  console.log("event card", props.eventId);
+
   const user = props.data || defaultUserCard;
   const onFocused = $(() => {
     console.log("focused");
@@ -50,6 +55,7 @@ export const EventCard = component$<EventCardProps>((props) => {
               eventDate="tomrrow"
               eventTime="someday"
               eventLocation="somewhere"
+              eventId={props.eventId || 0}
             >
               <p
                 q:slot="trigger"
