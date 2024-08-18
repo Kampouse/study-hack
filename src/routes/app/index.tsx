@@ -5,10 +5,12 @@ import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
 
-export const useEventAction = routeAction$((event) => {
+export const useEventAction = routeAction$(() => {
   console.log("hello from event action");
 
-  return event;
+  return {
+    success: true,
+  };
 });
 export type EventAction = ReturnType<typeof useEventAction>;
 
