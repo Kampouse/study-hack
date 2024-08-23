@@ -28,7 +28,7 @@ export default component$(() => {
   
   const action = useCreateEvent();
   return (
-    <div class="flex justify-center p-6">
+    <div class="flex justify-center py-6">
     <div class="flex flex-col content-center w-[500px] gap-6 rounded-3xl bg-white p-8 shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
       <div class="flex flex-col gap-2 items-center">
         <h2 class="text-3xl">Create your Event</h2>
@@ -117,7 +117,7 @@ export default component$(() => {
             </select>
           </div>
         
-        <button class="rounded-lg bg-[#90EE90] p-2.5 shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">
+        <button class="rounded-lg bg-[#90EE90] p-2.5 shadow-sm hover:opacity-80">
           Save
         </button>
       </Form>
