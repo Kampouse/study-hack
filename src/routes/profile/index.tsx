@@ -18,7 +18,6 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 });
 
 export default component$(() => {
-
   const userData = useUser();
 
   const store = useStore({

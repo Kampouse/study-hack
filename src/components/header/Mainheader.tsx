@@ -1,5 +1,6 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
+import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
@@ -17,6 +18,7 @@ export default component$(() => {
       });
     }
   });
+  const location = useLocation();
   return (
     <header class="h-fit w-full ">
       <nav
@@ -37,13 +39,26 @@ export default component$(() => {
               Learn more
             </a>
           )}
-
           {session.value && (
             <div class="flex items-center gap-4">
-              <a href="/event" class="px-3 py-2 bg-black text-white rounded-full">+ Create event</a>
+              {location.url.href.includes("app") ? (
+                <Link
+                  href="/event"
+                  class="rounded-full bg-black px-3 py-2 text-white"
+                >
+                  + Create event
+                </Link>
+              ) : (
+                <Link
+                  href="/app"
+                  class="rounded-full bg-black px-3 py-2 text-white"
+                >
+                  Back to Dashboard
+                </Link>
+              )}
               <Dropdown />
             </div>
-            )}
+          )}
 
           {!session.value && (
             <a href="/login" class="p-4">
