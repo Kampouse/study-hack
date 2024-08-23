@@ -38,7 +38,12 @@ export default component$(() => {
             </a>
           )}
 
-          {session.value && <Dropdown />}
+          {session.value && (
+            <div class="flex items-center gap-4">
+              <a href="/event" class="px-3 py-2 bg-black text-white rounded-full">+ Create event</a>
+              <Dropdown />
+            </div>
+            )}
 
           {!session.value && (
             <a href="/login" class="p-4">

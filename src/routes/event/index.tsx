@@ -1,21 +1,29 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useStore } from "@builder.io/qwik";
+import { routeAction$ } from "@builder.io/qwik-city";
 import { Form } from "@builder.io/qwik-city";
-import { useCreateEvent } from "~/routes/profile";
+import { createEventForm } from "~/api/Forms";
 
-type FormProps = {
-  data: {
-    name: string;
-    description: string;
-    location: string;
-    coordinates: string[];
-    date: string;
-    startTime: string;
-    endTime: string;
-    tags: string[];
-  };
-};
+const useCreateEvent = routeAction$(async (data, event) => {
+  try {
+    return createEventForm(data, event);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-export default component$<FormProps>(({ data }) => {
+export default component$(() => {
+
+  const store = useStore({
+    name: "",
+    description: "",
+    location: "",
+    coordinates: [],
+    date: "",
+    startTime: "",
+    endTime: "",
+    tags: [],
+  });
+  
   const action = useCreateEvent();
   return (
     <div class="flex flex-col gap-6 rounded-lg bg-white p-6 shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
@@ -52,7 +60,7 @@ export default component$<FormProps>(({ data }) => {
             type="text"
             id="what"
             name="what"
-            value={data.description}
+            value={store.description}
           />
         </div>
         <div class="flex flex-col gap-2">
@@ -62,7 +70,7 @@ export default component$<FormProps>(({ data }) => {
             type="text"
             id="where"
             name="where"
-            value={data.location}
+            value={store.location}
           />
         </div>
         <button class="w-fit rounded-lg bg-[#90EE90] p-2.5 shadow-[0_8px_15px_rgba(0,0,0,0.1)] hover:opacity-80">
