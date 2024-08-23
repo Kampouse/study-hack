@@ -30,8 +30,8 @@ export default component$(() => {
       <img
         height={1000}
         width={1000}
-        src="https://s6.imgcdn.dev/LdBZd.png"
-        class=" order-last   h-72 w-96 rounded-lg border-2 lg:h-96 "
+        src="https://github.com/Kampouse/Kampouse/blob/main/media/login.png?raw=true"
+        class=" order-last   h-72 w-96   lg:h-[22em] "
       />
 
       <div class="order-first flex  flex-col  gap-2 text-center lg:pt-10   ">
