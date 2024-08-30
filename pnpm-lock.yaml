@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      lucide-qwik:
-        specifier: ^1.0.0
-        version: 1.0.0
     devDependencies:
       '@auth/core':
         specifier: 0.31.0
@@ -87,6 +83,9 @@ importers:
       leaflet:
         specifier: 1.9.4
         version: 1.9.4
+      lucide-qwik:
+        specifier: ^1.0.0
+        version: 1.0.0
       postcss:
         specifier: ^8.4.31
         version: 8.4.39

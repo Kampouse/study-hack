@@ -1,5 +1,5 @@
 import { component$, $ } from "@builder.io/qwik";
-import JoinForm from "../app/joinForm";
+import { Link } from "@builder.io/qwik-city";
 
 type EventCardProps = {
   eventId?: number;
@@ -51,19 +51,12 @@ export const EventCard = component$<EventCardProps>((props) => {
           </div>
 
           <div class="flex flex-row justify-start  gap-2   pt-4 ">
-            <JoinForm
-              eventDate="tomrrow"
-              eventTime="someday"
-              eventLocation="somewhere"
-              eventId={props.eventId || 0}
+            <Link
+              href="/app/join"
+              class="max-w-lg  cursor-pointer self-end rounded-md bg-green-400  p-2 text-black  "
             >
-              <p
-                q:slot="trigger"
-                class="max-w-lg self-end rounded-md bg-green-400  p-2 text-black  "
-              >
-                Join me
-              </p>
-            </JoinForm>
+              Join what
+            </Link>
 
             {user.tags.map((tag) => {
               return (
