@@ -71,6 +71,9 @@
     "valibot": "^0.37.0",
     "vercel": "^29.1.1",
     "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "lucide-qwik": "^1.0.0"
+  },
+  "dependencies": {
   }
 }
