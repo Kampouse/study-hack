@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, Form, routeAction$ } from "@builder.io/qwik-city";
 import * as Icons from "lucide-qwik";
+import { Accordion } from "@qwik-ui/headless";
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
@@ -64,22 +65,87 @@ export default component$(() => {
       />
       <div class="p-8 py-4">
         <p class="mb-6 text-gray-600">{event.value.description}</p>
-
-        <Form action={joinAction}>
-          <input type="hidden" name="eventId" value={event.value.id} />
-          <button
-            type="submit"
-            class="w-fit rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white transition duration-300 hover:bg-indigo-700"
-          >
-            Join This Meetup
-          </button>
-        </Form>
         {joinAction.value?.success && (
           <p class="mt-4 text-center font-semibold text-green-600">
             {joinAction.value.message}
           </p>
         )}
       </div>
+      <Form class="px-8 pb-8" action={joinAction}>
+        <div class="mb-6 flex flex-col space-y-4">
+          <div class="flex space-x-4">
+            <div class="flex-1">
+              <label
+                for="name"
+                class="mb-2 block text-sm font-bold text-gray-700"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Your full name"
+              />
+            </div>
+            <div class="flex-1">
+              <label
+                for="experienceLevel"
+                class="mb-2 block text-sm font-bold text-gray-700"
+              >
+                Experience Level
+              </label>
+              <select
+                id="experienceLevel"
+                name="experienceLevel"
+                class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select your experience level</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex-1">
+            <label
+              for="background"
+              class="mb-2 block text-sm font-bold text-gray-700"
+            >
+              Background
+            </label>
+            <textarea
+              id="background"
+              name="background"
+              rows={3}
+              class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Share your background"
+            />
+          </div>
+          <div class="flex-1">
+            <label
+              for="whyJoin"
+              class="mb-2 block text-sm font-bold text-gray-700"
+            >
+              Why do you want to join?
+            </label>
+            <textarea
+              id="whyJoin"
+              name="whyJoin"
+              rows={3}
+              class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Tell us why you want to join this event"
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="rounded-md bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Join Event
+        </button>
+      </Form>
     </div>
   );
 });
