@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, Form, routeAction$ } from "@builder.io/qwik-city";
+import { useNavigate } from "@builder.io/qwik-city";
 import * as Icons from "lucide-qwik"
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
@@ -29,6 +30,7 @@ export const useJoinEvent = routeAction$(async (data) => {
 });
 
 export default component$(() => {
+  const nav = useNavigate();
   const event = useEventDetails();
   const joinAction = useJoinEvent();
 
@@ -70,7 +72,10 @@ export default component$(() => {
           </p>
         )}
       </div>
-      <Form class="px-8 pb-8" action={joinAction}>
+      <Form class="px-8 pb-8" action={joinAction}
+        onSubmitCompleted$={async () => await nav("/app")}
+
+      >
         <div class="mb-6 flex flex-col space-y-4">
           <div class="flex space-x-4">
             <div class="flex-1">
