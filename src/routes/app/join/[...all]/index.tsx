@@ -1,7 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { EventCard } from "@/components/app/eventCard";
-import * as Icons from "lucide-qwik";
 
 export const useEvents = routeLoader$(async () => {
   // This is a placeholder. Replace with actual API call to fetch events
