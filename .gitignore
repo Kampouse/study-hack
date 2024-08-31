@@ -43,3 +43,7 @@ lerna-debug.log*
 *env*
 # Vercel
 .vercel
+
+
+.nx/cache
+.nx/workspace-data

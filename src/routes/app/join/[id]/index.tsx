@@ -1,13 +1,13 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, Form, routeAction$ } from "@builder.io/qwik-city";
 import { useNavigate } from "@builder.io/qwik-city";
-import * as Icons from "lucide-qwik"
+import * as Icons from "lucide-qwik";
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
   // This is a placeholder, replace with actual API call
   return {
-    id: params.eventId,
+    id: params.id,
     name: "Web Development Enthusiasts Meetup",
     date: "2023-07-15",
     time: "2:00 PM",
@@ -32,6 +32,10 @@ export const useJoinEvent = routeAction$(async (data) => {
 export default component$(() => {
   const nav = useNavigate();
   const event = useEventDetails();
+  console.log(event.value);
+
+  //get the id form the route
+
   const joinAction = useJoinEvent();
 
   return (
@@ -72,9 +76,12 @@ export default component$(() => {
           </p>
         )}
       </div>
-      <Form class="px-8 pb-8" action={joinAction}
-        onSubmitCompleted$={async () => await nav("/app")}
-
+      <Form
+        class="px-8 pb-8"
+        action={joinAction}
+        onSubmitCompleted$={async () =>
+          await nav(`/app/join/${event.value.id}/success`)
+        }
       >
         <div class="mb-6 flex flex-col space-y-4">
           <div class="flex space-x-4">

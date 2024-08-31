@@ -27,7 +27,7 @@ export const EventCard = component$<EventCardProps>((props) => {
   const onFocused = $(() => {
     console.log("focused");
   });
-
+  console.log("event card", props.eventId);
   return (
     <div
       id={user.name}
@@ -52,7 +52,7 @@ export const EventCard = component$<EventCardProps>((props) => {
 
           <div class="flex flex-row justify-start  gap-2   pt-4 ">
             <Link
-              href="/app/join"
+              href={`/app/join/${props.eventId}`}
               class="max-w-lg  cursor-pointer self-end rounded-md bg-green-400  p-2 text-black  "
             >
               Join what
