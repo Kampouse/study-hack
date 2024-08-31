@@ -1,7 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, Form, routeAction$ } from "@builder.io/qwik-city";
-import * as Icons from "lucide-qwik";
-import { Accordion } from "@qwik-ui/headless";
+import * as Icons from "lucide-qwik"
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
