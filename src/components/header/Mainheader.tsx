@@ -43,7 +43,7 @@ export default component$(() => {
             <div class="flex items-center gap-4">
               {location.url.href.includes("app") ? (
                 <Link
-                  href="/event"
+                  href="/app/new"
                   class="rounded-full bg-black px-3 py-2 text-white"
                 >
                   + Create event

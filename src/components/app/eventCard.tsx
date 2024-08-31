@@ -2,14 +2,13 @@ import { component$, $ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 
 type EventCardProps = {
-  eventId?: number;
+  eventId: number;
   data?: {
     name: string;
     description: string;
     tags: string[];
     starttime: string;
     endttime?: string;
-    eventId?: number;
   };
 };
 export const EventCard = component$<EventCardProps>((props) => {
@@ -21,7 +20,7 @@ export const EventCard = component$<EventCardProps>((props) => {
     eventId: 1,
   };
 
-  console.log("event card", props.eventId);
+  console.log("event card", props.data);
 
   const user = props.data || defaultUserCard;
   const onFocused = $(() => {

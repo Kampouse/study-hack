@@ -2,6 +2,7 @@ import { component$, useStore } from "@builder.io/qwik";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { Form } from "@builder.io/qwik-city";
 import { createEventForm } from "~/api/Forms";
+import { useNavigate } from "@builder.io/qwik-city";
 
 export const useCreateEvent = routeAction$(async (data, event) => {
   try {
@@ -26,6 +27,7 @@ export default component$(() => {
   });
 
   const action = useCreateEvent();
+  const nav = useNavigate();
   return (
     <div class="flex justify-center py-4">
       <div class="flex w-[500px] flex-col content-center gap-6 rounded-3xl bg-white p-8 py-6 shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
@@ -36,8 +38,8 @@ export default component$(() => {
           </p>
         </div>
         <Form
-          onSubmitCompleted$={(e) => {
-            e.preventDefault();
+          onSubmitCompleted$={() => {
+            nav("/app/new/success/1");
           }}
           action={action}
           class="flex flex-col gap-4"
@@ -113,8 +115,11 @@ export default component$(() => {
             </select>
           </div>
 
-          <button class="rounded-lg bg-[#90EE90] p-2.5 shadow-sm hover:opacity-80">
-            Save
+          <button
+            class="rounded-lg bg-[#90EE90] p-2.5 shadow-sm hover:opacity-80"
+            type="submit"
+          >
+            hello
           </button>
         </Form>
       </div>
