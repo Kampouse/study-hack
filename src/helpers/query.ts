@@ -134,10 +134,10 @@ export const CreateEvent = async (
       Description: session.Description,
       Location: session.Location,
       Coordinates: session.Coordinates,
-      Date: new Date(),
+      Date: session.Date,
+      Tags: [],
       StartTime: session.StartTime,
       EndTime: session.EndTime,
-      Tags: session.Tags,
       UserID: userData.ID,
     })
     .returning({

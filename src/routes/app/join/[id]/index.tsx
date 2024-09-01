@@ -23,6 +23,7 @@ export const useEventDetails = routeLoader$(async ({ params }) => {
 export const useJoinEvent = routeAction$(async (data) => {
   // Handle joining event logic here
   console.log("Joining event", data);
+
   return {
     success: true,
     message: "Successfully joined the event!",
@@ -146,7 +147,7 @@ export default component$(() => {
               name="whyJoin"
               rows={3}
               class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Tell us why you want to join this event"
+              placeholder="Tell me why w"
             />
           </div>
         </div>
@@ -154,7 +155,7 @@ export default component$(() => {
           type="submit"
           class="rounded-md bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Join Event
+          Register
         </button>
       </Form>
     </div>

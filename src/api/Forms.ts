@@ -6,15 +6,23 @@ import * as v from "valibot";
 export const eventSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
+  Date: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Location: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   Coordinates: v.optional(v.tuple([v.number(), v.number()]), [0, 0]),
   StartTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
-  Tags: v.optional(
-    v.array(v.pipe(v.string(), v.minLength(3), v.maxLength(20))),
-    ["JavaScript", "", ""],
-  ),
+
 });
+export const joinRequestSchema = v.object({
+  Name: v.pipe(v.string(), v.minLength(3), v.maxLength(50)),
+  ExperienceLevel: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
+  Background: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
+  WhyJoin: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
+});
+
+export type JoinRequestForm = v.InferOutput<typeof joinRequestSchema>;
+
+
 export type CreateEventForm = v.InferOutput<typeof eventSchema>;
 
 export const userSchema = v.object({
@@ -60,12 +68,14 @@ export const createEventForm = async (data: JSONObject, event: Requested) => {
   };
   */
   const validated = v.safeParse(eventSchema, data);
+  console.log(validated);
 
   if (!validated.success) {
     return {
       success: false,
       data: null,
       error: "Invalid data",
+      status: 400,
     };
   }
   const output = await CreateEvent(event, validated.output);

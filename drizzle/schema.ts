@@ -18,6 +18,23 @@ export const users = sqliteTable("Users", {
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const joinRequests = sqliteTable("JoinRequests", {
+  RequestID: integer("RequestID").primaryKey({ autoIncrement: true }),
+  EventID: integer("EventID")
+    .notNull()
+    .references(() => events.EventID),
+  UserID: integer("UserID")
+    .notNull()
+    .references(() => users.UserID),
+  Status: text("Status").notNull().default("pending"),
+  Message: text("Message"),
+  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+});
+
+export type InsertJoinRequest = typeof joinRequests.$inferInsert;
+export type SelectJoinRequest = typeof joinRequests.$inferSelect;
+
+
 export const events = sqliteTable("Events", {
   EventID: integer("EventID").primaryKey({ autoIncrement: true }),
   Name: text("Name").notNull(),
@@ -26,14 +43,15 @@ export const events = sqliteTable("Events", {
   Coordinates: text("Coordinates", { mode: "json" })
     .$type<[number, number]>()
     .notNull(),
+  Date: text("Date").notNull(),
   StartTime: text("StartTime").notNull(),
   EndTime: text("EndTime").notNull(),
   Tags: text("Tags", { mode: "json" }).$type<string[]>().notNull(),
-  Date: integer("date", { mode: "timestamp" }).notNull(),
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-  UserID: integer("UserID").notNull(),
+  UserID: integer("UserID")
+    .notNull()
+    .references(() => users.UserID),
 });
-
 export const sessions = sqliteTable("Sessions", {
   SessionID: integer("SessionID", { mode: "number" }).primaryKey({
     autoIncrement: true,
