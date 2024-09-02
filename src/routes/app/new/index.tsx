@@ -1,17 +1,18 @@
 import { component$ } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
-import { } from "@modular-forms/qwik";
+import {} from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import type { InitialValues } from "@modular-forms/qwik";
+import type { FormActionFunction, FormActionResult } from "@modular-forms/qwik";
+import type { InitialValues, ResponseData } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
 import { useNavigate } from "@builder.io/qwik-city";
-import { valiForm$, formAction$, } from "@modular-forms/qwik";
+import { valiForm$, formAction$ } from "@modular-forms/qwik";
 
 import type * as v from "valibot";
+import success from "../join/[id]/success";
 //get the type from event schema
 type Event = v.InferInput<typeof eventSchema>;
-
 
 export const useFormLoader = routeLoader$<InitialValues<Event>>(() => ({
   Name: "",
@@ -22,30 +23,43 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(() => ({
   EndTime: "",
   Coordinates: [0, 0],
   Tags: [],
-
 }));
 
-
 //take the return type of createEventForm and return it and remove the promise from it
+type Data =
+  ReturnType<typeof createEventForm> extends Promise<infer T> ? T : never;
+
+const action = formAction$<Event, Data>(async (data, event) => {
+  const output = await createEventForm(data, event);
+
+  if (output.success && output.data != null) {
+    return {
+      data: output,
+      success: true,
+      message: "Event created successfully",
+    };
+  } else if (!output.success && output.error) {
+    return {
+      data: output,
+      success: false,
+      message: "Failed to create event",
+    };
+  } else {
+    return {
+      data: output,
+      success: false,
+      message: "Unexpected error occurred",
+    };
+  }
+}, valiForm$(eventSchema));
 export default component$(() => {
-
   const nav = useNavigate();
-  const action = formAction$<Event>(async (data, event) => {
-    await createEventForm(data, event);
-
-
-  }, valiForm$(eventSchema));
-
   //  @typescript-eslint/no-unused-vars
-  const [FormEvent, { Form, Field }] = useForm<Event>({
+  const [FormEvent, { Form, Field }] = useForm<Event, Data>({
     loader: useFormLoader(),
     validate: valiForm$(eventSchema),
     action: action(),
   });
-
-
-
-
 
   return (
     <div class="flex justify-center py-4">
@@ -56,7 +70,8 @@ export default component$(() => {
             Add details and create your event
           </p>
         </div>
-        <Form class="flex flex-col gap-4"
+        <Form
+          class="flex flex-col gap-4"
           onSubmit$={() => {
             if (FormEvent.submitted) {
               nav("/app");
@@ -127,7 +142,7 @@ export default component$(() => {
                 </div>
               )}
             </Field>
-            <Field name="EndTime" >
+            <Field name="EndTime">
               {(field, props) => (
                 <div class="flex w-full flex-col gap-2">
                   <label>End Time</label>
@@ -142,7 +157,6 @@ export default component$(() => {
                 </div>
               )}
             </Field>
-
 
             <Field name="StartTime">
               {(field, props) => (
@@ -170,5 +184,4 @@ export default component$(() => {
       </div>
     </div>
   );
-
 });
