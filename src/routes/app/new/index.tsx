@@ -1,10 +1,12 @@
 import { component$ } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
+import { } from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
-import { valiForm$, formAction$ } from "@modular-forms/qwik";
+import { useNavigate } from "@builder.io/qwik-city";
+import { valiForm$, formAction$, } from "@modular-forms/qwik";
 
 import type * as v from "valibot";
 //get the type from event schema
@@ -22,23 +24,24 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(() => ({
   Tags: [],
 
 }));
+
+
+//take the return type of createEventForm and return it and remove the promise from it
 export default component$(() => {
 
-
+  const nav = useNavigate();
   const action = formAction$<Event>(async (data, event) => {
-    console.log("data", data);
     await createEventForm(data, event);
-    event.redirect(301, "/");
+
 
   }, valiForm$(eventSchema));
 
   //  @typescript-eslint/no-unused-vars
-  const [, { Form, Field }] = useForm<Event>({
+  const [FormEvent, { Form, Field }] = useForm<Event>({
     loader: useFormLoader(),
     validate: valiForm$(eventSchema),
     action: action(),
   });
-
 
 
 
@@ -54,11 +57,12 @@ export default component$(() => {
           </p>
         </div>
         <Form class="flex flex-col gap-4"
-
-
+          onSubmit$={() => {
+            if (FormEvent.submitted) {
+              nav("/app");
+            }
+          }}
         >
-
-
           <Field name="Name">
             {(field, props) => (
               <div class="flex flex-col gap-2">

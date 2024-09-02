@@ -34,7 +34,6 @@ export const joinRequests = sqliteTable("JoinRequests", {
 export type InsertJoinRequest = typeof joinRequests.$inferInsert;
 export type SelectJoinRequest = typeof joinRequests.$inferSelect;
 
-
 export const events = sqliteTable("Events", {
   EventID: integer("EventID").primaryKey({ autoIncrement: true }),
   Name: text("Name").notNull(),

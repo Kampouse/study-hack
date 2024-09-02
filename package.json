@@ -83,6 +83,5 @@
     "@modular-forms/qwik": "^0.26.1"
   },
   "nx": {},
-  "dependencies": {
-  }
+  "dependencies": {}
 }
