@@ -3,14 +3,12 @@ import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
 import {} from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import type { FormActionFunction, FormActionResult } from "@modular-forms/qwik";
-import type { InitialValues, ResponseData } from "@modular-forms/qwik";
+import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
 import { useNavigate } from "@builder.io/qwik-city";
 import { valiForm$, formAction$ } from "@modular-forms/qwik";
 
 import type * as v from "valibot";
-import success from "../join/[id]/success";
 //get the type from event schema
 type Event = v.InferInput<typeof eventSchema>;
 
