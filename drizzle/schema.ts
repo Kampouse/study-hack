@@ -39,6 +39,7 @@ export const events = sqliteTable("Events", {
   Name: text("Name").notNull(),
   Description: text("Description").notNull(),
   Location: text("Location").notNull(),
+  ImageURL: text("ImageURL"),
   Coordinates: text("Coordinates", { mode: "json" })
     .$type<[number, number]>()
     .notNull(),

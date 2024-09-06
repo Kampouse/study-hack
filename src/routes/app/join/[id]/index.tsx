@@ -1,7 +1,14 @@
+import * as Icons from "lucide-qwik";
+import type { InitialValues } from "@modular-forms/qwik";
+import { formAction$, useForm } from "@modular-forms/qwik";
+import { valiForm$ } from "@modular-forms/qwik";
+import { joinRequestSchema } from "~/api/Forms";
+type JoinRequest = v.InferInput<typeof joinRequestSchema>;
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, Form, routeAction$ } from "@builder.io/qwik-city";
+import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { useNavigate } from "@builder.io/qwik-city";
 import * as Icons from "lucide-qwik";
+import type * as v from "valibot";
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
@@ -19,25 +26,32 @@ export const useEventDetails = routeLoader$(async ({ params }) => {
       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia2.ledevoir.com%2Fimages_galerie%2Fnwd_486762_343963%2Fimage.jpg&f=1&nofb=1&ipt=0c95c5b858d16d6c4e938def46ebbaec329f08aaff69bb99bc4dc7e58d14ea56&ipo=images",
   };
 });
+export const useFormLoader = routeLoader$<InitialValues<JoinRequest>>(
+  async (req) => {
+    return {
+      Name: "",
+      ExperienceLevel: "",
+      Background: "",
+      WhyJoin: "",
+    };
+  },
+);
 
-export const useJoinEvent = routeAction$(async (data) => {
+export const action = formAction$(async (data, req) => {
   // Handle joining event logic here
   console.log("Joining event", data);
-
-  return {
-    success: true,
-    message: "Successfully joined the event!",
-  };
-});
+}, valiForm$(joinRequestSchema));
 
 export default component$(() => {
   const nav = useNavigate();
   const event = useEventDetails();
   console.log(event.value);
 
-  //get the id form the route
-
-  const joinAction = useJoinEvent();
+  const [joinForm, { Form, Field }] = useForm<JoinRequest>({
+    validate: valiForm$(joinRequestSchema),
+    loader: useFormLoader(),
+    action: action(),
+  });
 
   return (
     <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
@@ -71,85 +85,110 @@ export default component$(() => {
       />
       <div class="p-8 py-4">
         <p class="mb-6 text-gray-600">{event.value.description}</p>
-        {joinAction.value?.success && (
+        {action.value?.success && (
           <p class="mt-4 text-center font-semibold text-green-600">
-            {joinAction.value.message}
+            {action.value.message}
           </p>
         )}
       </div>
       <Form
         class="px-8 pb-8"
-        action={joinAction}
-        onSubmitCompleted$={async () =>
-          await nav(`/app/join/${event.value.id}/success`)
-        }
+        onSubmit$={() => nav(`/app/join/${event.value.id}/success`)}
       >
         <div class="mb-6 flex flex-col space-y-4">
           <div class="flex space-x-4">
-            <div class="flex-1">
-              <label
-                for="name"
-                class="mb-2 block text-sm font-bold text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Your full name"
-              />
-            </div>
-            <div class="flex-1">
-              <label
-                for="experienceLevel"
-                class="mb-2 block text-sm font-bold text-gray-700"
-              >
-                Experience Level
-              </label>
-              <select
-                id="experienceLevel"
-                name="experienceLevel"
-                class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select your experience level</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
-            </div>
+            <Field name="Name">
+              {(field, props) => (
+                <div class="flex-1">
+                  <label
+                    for={props.name}
+                    class="mb-2 block text-sm font-bold text-gray-700"
+                  >
+                    Name
+                  </label>
+                  <input
+                    {...props}
+                    type="text"
+                    class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Your full name"
+                    value={field.value}
+                  />
+                  {field?.error && (
+                    <div class="text-sm text-red-500">{field.error}</div>
+                  )}
+                </div>
+              )}
+            </Field>
+            <Field name="ExperienceLevel">
+              {(field, props) => (
+                <div class="flex-1">
+                  <label
+                    for={props.name}
+                    class="mb-2 block text-sm font-bold text-gray-700"
+                  >
+                    Experience Level
+                  </label>
+                  <select
+                    {...props}
+                    class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={field.value}
+                  >
+                    <option value="">Select your experience level</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                  {field.error && (
+                    <div class="text-sm text-red-500">{field.error}</div>
+                  )}
+                </div>
+              )}
+            </Field>
           </div>
-          <div class="flex-1">
-            <label
-              for="background"
-              class="mb-2 block text-sm font-bold text-gray-700"
-            >
-              Background
-            </label>
-            <textarea
-              id="background"
-              name="background"
-              rows={3}
-              class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Share your background"
-            />
-          </div>
-          <div class="flex-1">
-            <label
-              for="whyJoin"
-              class="mb-2 block text-sm font-bold text-gray-700"
-            >
-              Why do you want to join?
-            </label>
-            <textarea
-              id="whyJoin"
-              name="whyJoin"
-              rows={3}
-              class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Tell me why w"
-            />
-          </div>
+          <Field name="Background">
+            {(field, props) => (
+              <div class="flex-1">
+                <label
+                  for={props.name}
+                  class="mb-2 block text-sm font-bold text-gray-700"
+                >
+                  Background
+                </label>
+                <textarea
+                  {...props}
+                  rows={3}
+                  class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Share your background"
+                  value={field.value}
+                />
+                {field.error && (
+                  <div class="text-sm text-red-500">{field.error}</div>
+                )}
+              </div>
+            )}
+          </Field>
+          <Field name="WhyJoin">
+            {(field, props) => (
+              <div class="flex-1">
+                <label
+                  for={props.name}
+                  class="mb-2 block text-sm font-bold text-gray-700"
+                >
+                  Why do you want to join?
+                </label>
+                <textarea
+                  {...props}
+                  rows={3}
+                  class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Tell us why you want to join"
+                  value={field.value}
+                />
+                {field.error && (
+                  <div class="text-sm text-red-500">{field.error}</div>
+                )}
+              </div>
+            )}
+          </Field>
         </div>
         <button
           type="submit"

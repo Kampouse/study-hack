@@ -157,14 +157,13 @@ export const CreateEvent = async (
       return null;
     });
 };
-
 export type QueryEventOptions = {
-  limit: number;
-  offset: number;
-  tags: string[];
-  location: string;
-  date: Date | null;
-  orderBy: "Date" | "Name";
+  limit?: number;
+  offset?: number;
+  tags?: string[];
+  location?: string;
+  date?: Date | null;
+  orderBy?: "Date" | "Name";
 };
 
 export const QueryEvents = async (
@@ -192,9 +191,10 @@ export const QueryEvents = async (
     endtime: events.EndTime,
     tags: events.Tags,
     eventID: events.EventID,
+    image: events.ImageURL,
   })
     .from(events)
-    .limit(3)
+    .limit(options.limit ?? 3)
     .orderBy(builder)
     .execute()
     .catch((e) => {
