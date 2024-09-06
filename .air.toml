@@ -1,0 +1,10 @@
+
+[build]
+cmd = "http  google.com"
+bin = "a.out"
+include_ext =["js", "jsx", "ts", "tsx", "json", "css", "scss", "html"]
+exclude_dir = ["assets", "tmp", "vendor" ,"node_modules"]
+delay = 1000
+stop_on_error = true
+send_interrupt = false
+kill_delay = 500

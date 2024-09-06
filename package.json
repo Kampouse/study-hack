@@ -1,6 +1,6 @@
 {
-  "name": "my-qwik-empty-starter",
-  "description": "App with Routing built-in ready to create your app",
+  "name": "study-hack",
+  "description": "a study hack ",
   "engines": {
     "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
   },
@@ -35,15 +35,15 @@
   },
   "devDependencies": {
     "@auth/core": "0.31.0",
-    "@builder.io/qwik": "^1.7.1",
+    "@builder.io/qwik": "latest",
     "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
     "@libsql/client": "^0.5.2",
     "@nabla/vite-plugin-eslint": "^2.0.4",
-    "@qwik-ui/headless": "^0.5.2",
-    "@qwik-ui/styled": "^0.1.0",
-    "@qwik-ui/utils": "^0.3.1",
-    "@qwikest/icons": "^0.0.13",
+    "@qwik-ui/headless": "latest",
+    "@qwik-ui/styled": "latest",
+    "@qwik-ui/utils": "latest",
+    "@qwikest/icons": "latest",
     "@storybook/addon-essentials": "latest",
     "@storybook/addon-links": "latest",
     "@storybook/blocks": "latest",
