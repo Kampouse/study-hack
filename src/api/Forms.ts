@@ -6,12 +6,12 @@ import * as v from "valibot";
 export const eventSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
+  ImageURL: v.optional(v.pipe(v.string(), v.url())),
   Date: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Location: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   Coordinates: v.optional(v.tuple([v.number(), v.number()]), [0, 0]),
   StartTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
-
 });
 export const joinRequestSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(50)),
@@ -21,7 +21,6 @@ export const joinRequestSchema = v.object({
 });
 
 export type JoinRequestForm = v.InferOutput<typeof joinRequestSchema>;
-
 
 export type CreateEventForm = v.InferOutput<typeof eventSchema>;
 

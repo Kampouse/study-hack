@@ -3,6 +3,7 @@ import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
+import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useUser = routeLoader$(async (event) => {
   return await GetUser(event);
@@ -79,3 +80,16 @@ export default component$(() => {
     </main>
   );
 });
+export const head: DocumentHead = {
+  title: "User Profile",
+  meta: [
+    {
+      name: "description",
+      content: "View and edit your user profile",
+    },
+    {
+      name: "keywords",
+      content: "profile, user, edit, interests",
+    },
+  ],
+};
