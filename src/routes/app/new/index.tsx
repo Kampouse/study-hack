@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
-import {} from "@modular-forms/qwik";
+import { } from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
@@ -199,7 +199,7 @@ export default component$(() => {
 });
 export const head: DocumentHead = {
   // This will be used to resolve the <title> of the page
-  title: "New Event",
+  title: "S&H | New Event",
   meta: [
     {
       name: "description",

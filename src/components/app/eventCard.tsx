@@ -54,7 +54,7 @@ export const EventCard = component$<EventCardProps>((props) => {
               href={`/app/join/${props.eventId}`}
               class="max-w-lg  cursor-pointer self-end rounded-md bg-green-400  p-2 text-black  "
             >
-              Join what
+              Join event
             </Link>
 
             {user.tags.map((tag) => {

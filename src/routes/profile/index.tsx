@@ -81,7 +81,7 @@ export default component$(() => {
   );
 });
 export const head: DocumentHead = {
-  title: "User Profile",
+  title: "S&H | Dashboard",
   meta: [
     {
       name: "description",

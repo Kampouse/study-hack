@@ -5,10 +5,21 @@ import { valiForm$ } from "@modular-forms/qwik";
 import { joinRequestSchema } from "~/api/Forms";
 type JoinRequest = v.InferInput<typeof joinRequestSchema>;
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@builder.io/qwik-city";
 import { useNavigate } from "@builder.io/qwik-city";
-import * as Icons from "lucide-qwik";
 import type * as v from "valibot";
+
+
+
+
+
+
+
+export const head = {
+  title: "S&H | Join Event",
+  description: "Join the Web Development Enthusiasts Meetup",
+};
+
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
@@ -27,7 +38,7 @@ export const useEventDetails = routeLoader$(async ({ params }) => {
   };
 });
 export const useFormLoader = routeLoader$<InitialValues<JoinRequest>>(
-  async (req) => {
+  async () => {
     return {
       Name: "",
       ExperienceLevel: "",
@@ -37,9 +48,15 @@ export const useFormLoader = routeLoader$<InitialValues<JoinRequest>>(
   },
 );
 
-export const action = formAction$(async (data, req) => {
+export const action = formAction$(async () => {
   // Handle joining event logic here
-  console.log("Joining event", data);
+
+  return {
+    success: true,
+    message: "You have successfully joined the event!",
+  };
+
+
 }, valiForm$(joinRequestSchema));
 
 export default component$(() => {
@@ -47,7 +64,7 @@ export default component$(() => {
   const event = useEventDetails();
   console.log(event.value);
 
-  const [joinForm, { Form, Field }] = useForm<JoinRequest>({
+  const [, { Form, Field }] = useForm<JoinRequest>({
     validate: valiForm$(joinRequestSchema),
     loader: useFormLoader(),
     action: action(),
@@ -85,11 +102,6 @@ export default component$(() => {
       />
       <div class="p-8 py-4">
         <p class="mb-6 text-gray-600">{event.value.description}</p>
-        {action.value?.success && (
-          <p class="mt-4 text-center font-semibold text-green-600">
-            {action.value.message}
-          </p>
-        )}
       </div>
       <Form
         class="px-8 pb-8"
@@ -113,7 +125,7 @@ export default component$(() => {
                     placeholder="Your full name"
                     value={field.value}
                   />
-                  {field?.error && (
+                  {field.error && (
                     <div class="text-sm text-red-500">{field.error}</div>
                   )}
                 </div>

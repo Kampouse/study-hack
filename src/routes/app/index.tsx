@@ -4,7 +4,9 @@ import { EventCard } from "~/components/app/eventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/helpers/query";
-
+export const head = {
+  title: " S&H | Home",
+};
 export const useEventAction = routeAction$((e) => {
   console.log("hello from event action", e);
 
