@@ -9,17 +9,10 @@ import { routeLoader$ } from "@builder.io/qwik-city";
 import { useNavigate } from "@builder.io/qwik-city";
 import type * as v from "valibot";
 
-
-
-
-
-
-
 export const head = {
   title: "S&H | Join Event",
   description: "Join the Web Development Enthusiasts Meetup",
 };
-
 
 export const useEventDetails = routeLoader$(async ({ params }) => {
   // Fetch event details based on params.eventId
@@ -55,8 +48,6 @@ export const action = formAction$(async () => {
     success: true,
     message: "You have successfully joined the event!",
   };
-
-
 }, valiForm$(joinRequestSchema));
 
 export default component$(() => {
@@ -121,13 +112,12 @@ export default component$(() => {
                   <input
                     {...props}
                     type="text"
-                    class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Your full name"
                     value={field.value}
                   />
-                  {field.error && (
-                    <div class="text-sm text-red-500">{field.error}</div>
-                  )}
                 </div>
               )}
             </Field>
@@ -142,17 +132,18 @@ export default component$(() => {
                   </label>
                   <select
                     {...props}
-                    class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : ""
+                    }`}
                     value={field.value}
                   >
                     <option value="">Select your experience level</option>
+
+                    <option value="curious">Curious</option>
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
                     <option value="advanced">Advanced</option>
                   </select>
-                  {field.error && (
-                    <div class="text-sm text-red-500">{field.error}</div>
-                  )}
                 </div>
               )}
             </Field>
@@ -169,13 +160,12 @@ export default component$(() => {
                 <textarea
                   {...props}
                   rows={3}
-                  class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : ""
+                  }`}
                   placeholder="Share your background"
                   value={field.value}
                 />
-                {field.error && (
-                  <div class="text-sm text-red-500">{field.error}</div>
-                )}
               </div>
             )}
           </Field>
@@ -191,20 +181,19 @@ export default component$(() => {
                 <textarea
                   {...props}
                   rows={3}
-                  class="w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : ""
+                  }`}
                   placeholder="Tell us why you want to join"
                   value={field.value}
                 />
-                {field.error && (
-                  <div class="text-sm text-red-500">{field.error}</div>
-                )}
               </div>
             )}
           </Field>
         </div>
         <button
           type="submit"
-          class="rounded-md bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          class="w-full rounded-md bg-green-500 px-4 py-2 font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         >
           Register
         </button>

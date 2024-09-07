@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
-import { } from "@modular-forms/qwik";
+import {} from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
@@ -20,7 +20,7 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
     Description: "",
     Location: "",
     ImageURL: "https://example.com/image.jpg",
-    Date: "",
+    Date: new Date().toISOString().split("T")[0],
     StartTime: "",
     EndTime: "",
     Coordinates: [0, 0],
@@ -64,135 +64,157 @@ export default component$(() => {
   });
 
   return (
-    <div class="flex flex-row  justify-center  py-4 ">
-      <div class=" rounded-3xl p-4">
-        <div class="flex  flex-col content-center gap-6 rounded-xl   bg-white p-8 py-6 shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
-          <div class="flex flex-col items-center gap-2">
-            <h2 class="text-3xl">Create your Event</h2>
-            <p class="text-xl text-[#505050]">
-              Add details and create your event
-            </p>
+    <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
+      <h1 class="p-8 pb-0 text-3xl font-bold text-gray-800">
+        Create your Event
+      </h1>
+      <div class="p-8">
+        <p class="mb-6 text-gray-600">Add details and create your event</p>
+        <Form
+          class="flex flex-col gap-6"
+          onSubmit$={() => {
+            if (FormEvent.submitted) {
+              nav(`/app/new/1/success`);
+            }
+          }}
+        >
+          <Field name="Name">
+            {(field, props) => (
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-bold text-gray-700">
+                  Event name
+                </label>
+                <input
+                  {...props}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  type="text"
+                  placeholder="Just studyin' for fun :/"
+                  value={field.value}
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="Description">
+            {(field, props) => (
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-bold text-gray-700">
+                  What will you be working on?
+                </label>
+                <textarea
+                  {...props}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  rows={3}
+                  placeholder="I will be learning about machine learning."
+                  value={field.value}
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="Location">
+            {(field, props) => (
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-bold text-gray-700">
+                  Where will you be?
+                </label>
+                <input
+                  {...props}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  type="text"
+                  placeholder="Somewhere beyond the sea..."
+                  value={field.value}
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="ImageURL">
+            {(field, props) => (
+              <div class="flex flex-col gap-2">
+                <label class="text-sm font-bold text-gray-700">
+                  Image link (optional)
+                </label>
+                <input
+                  {...props}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  type="text"
+                  placeholder="https://example.com/image.jpg"
+                  value={field.value}
+                />
+              </div>
+            )}
+          </Field>
+
+          <div class="flex items-center gap-4">
+            <Field name="Date">
+              {(field, props) => (
+                <div class="flex w-full flex-col gap-2">
+                  <label class="text-sm font-bold text-gray-700">Date</label>
+                  <input
+                    {...props}
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : "border-gray-300"
+                    }`}
+                    type="date"
+                    placeholder="03/03/24"
+                    value={field.value}
+                  />
+                </div>
+              )}
+            </Field>
+            <Field name="StartTime">
+              {(field, props) => (
+                <div class="flex w-full flex-col gap-2">
+                  <label class="text-sm font-bold text-gray-700">
+                    Start Time
+                  </label>
+                  <input
+                    {...props}
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : "border-gray-300"
+                    }`}
+                    type="time"
+                    placeholder="16:30"
+                    value={field.value}
+                  />
+                </div>
+              )}
+            </Field>
+            <Field name="EndTime">
+              {(field, props) => (
+                <div class="flex w-full flex-col gap-2">
+                  <label class="text-sm font-bold text-gray-700">
+                    End Time
+                  </label>
+                  <input
+                    {...props}
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : "border-gray-300"
+                    }`}
+                    type="time"
+                    placeholder="16:30"
+                    value={field.value}
+                  />
+                </div>
+              )}
+            </Field>
           </div>
-          <Form
-            class="flex flex-col gap-4 rounded-lg"
-            onSubmit$={() => {
-              if (FormEvent.submitted) {
-                nav("/app");
-              }
-            }}
+          <button
+            class="w-full rounded-md bg-green-500 px-4 py-2 font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            type="submit"
           >
-            <Field name="Name">
-              {(field, props) => (
-                <div class="flex flex-col gap-2">
-                  <label>Event name</label>
-                  <input
-                    {...props}
-                    class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                    type="text"
-                    placeholder="Just studyin' for fun :/"
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-
-            <Field name="Description">
-              {(field, props) => (
-                <div class="flex flex-col gap-2">
-                  <label>What will you be working on?</label>
-                  <input
-                    {...props}
-                    class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                    type="text"
-                    placeholder="I will be learning about machine learning."
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-
-            <Field name="Location">
-              {(field, props) => (
-                <div class="flex flex-col gap-2">
-                  <label>Where will you be?</label>
-                  <input
-                    {...props}
-                    class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                    type="text"
-                    placeholder="Somewhere beyond the sea..."
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-            <Field name="ImageURL">
-              {(field, props) => (
-                <div class="flex flex-col gap-2">
-                  <label>Image link (optional)</label>
-                  <input
-                    {...props}
-                    class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                    type="text"
-                    placeholder="https://example.com/image.jpg"
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-
-            <div class="flex items-center gap-4">
-              <Field name="Date">
-                {(field, props) => (
-                  <div class="flex w-full flex-col gap-2">
-                    <label>Date</label>
-                    <input
-                      {...props}
-                      class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                      type="date"
-                      placeholder="03/03/24"
-                      value={field.value}
-                    />
-                  </div>
-                )}
-              </Field>
-              <Field name="EndTime">
-                {(field, props) => (
-                  <div class="flex w-full flex-col gap-2">
-                    <label>End Time</label>
-                    <input
-                      {...props}
-                      class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                      type="time"
-                      placeholder="16:30"
-                      value={field.value}
-                    />
-                  </div>
-                )}
-              </Field>
-
-              <Field name="StartTime">
-                {(field, props) => (
-                  <div class="flex w-full flex-col gap-2">
-                    <label>Start Time</label>
-                    <input
-                      {...props}
-                      class={`rounded-lg border ${field.error ? "border-red-500" : "border-gray-300"} bg-white p-3 text-sm text-black outline-none focus:border-[#90EE90]`}
-                      type="time"
-                      placeholder="16:30"
-                      value={field.value}
-                    />
-                  </div>
-                )}
-              </Field>
-            </div>
-            <button
-              class="rounded-lg bg-[#90EE90] p-2.5 shadow-sm hover:opacity-80"
-              type="submit"
-            >
-              Create a public Session
-            </button>
-          </Form>
-        </div>
+            Create a public Session
+          </button>
+        </Form>
       </div>
     </div>
   );
