@@ -4,7 +4,7 @@ import { Users, Sessions, Requests, Events } from "./schema";
 export const SessionsRelations = relations(Sessions, ({ one }) => ({
   User: one(Users, {
     fields: [Sessions.UserID],
-    references: [Users.UserID]
+    references: [Users.UserID],
   }),
 }));
 
@@ -16,11 +16,11 @@ export const UsersRelations = relations(Users, ({ many }) => ({
 export const RequestsRelations = relations(Requests, ({ one }) => ({
   User: one(Users, {
     fields: [Requests.UserID],
-    references: [Users.UserID]
+    references: [Users.UserID],
   }),
   Event: one(Events, {
     fields: [Requests.EventID],
-    references: [Events.EventID]
+    references: [Events.EventID],
   }),
 }));
 

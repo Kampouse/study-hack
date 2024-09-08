@@ -18,9 +18,7 @@ export const head = {
 export const useEventDetails = routeLoader$(async (request) => {
   const payload = await getEvent(request, request.params.id);
   if (payload.data == null) {
-
     throw request.redirect(302, "/app/join/");
-
   }
   return {
     data: { ...payload.data, success: payload.success },
@@ -113,8 +111,9 @@ export default component$(() => {
                   <input
                     {...props}
                     type="text"
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${field.error ? "border-red-500" : ""
-                      }`}
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : ""
+                    }`}
                     placeholder="Your full name"
                     value={field.value}
                   />
@@ -132,8 +131,9 @@ export default component$(() => {
                   </label>
                   <select
                     {...props}
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${field.error ? "border-red-500" : ""
-                      }`}
+                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      field.error ? "border-red-500" : ""
+                    }`}
                     value={field.value}
                   >
                     <option value="">Select your experience level</option>
@@ -159,8 +159,9 @@ export default component$(() => {
                 <textarea
                   {...props}
                   rows={3}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${field.error ? "border-red-500" : ""
-                    }`}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : ""
+                  }`}
                   placeholder="Share your background"
                   value={field.value}
                 />
@@ -179,8 +180,9 @@ export default component$(() => {
                 <textarea
                   {...props}
                   rows={3}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${field.error ? "border-red-500" : ""
-                    }`}
+                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    field.error ? "border-red-500" : ""
+                  }`}
                   placeholder="Tell us why you want to join"
                   value={field.value}
                 />

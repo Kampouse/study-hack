@@ -71,31 +71,31 @@ export const Events = sqliteTable("Events", {
     .references(() => Users.UserID),
 });
 
-
-export const Requests = sqliteTable("Requests", {
-  RequestID: integer("RequestID").primaryKey({ autoIncrement: true }).notNull(),
-  EventID: integer("EventID").notNull().references(() => Events.EventID),
-  UserID: integer("UserID").notNull().references(() => Users.UserID),
-  Status: text("Status").default("pending").notNull(),
-  Background: text("Background"),
-  Experience: text("Experience"),
-  WhyJoin: text("WhyJoin"),
-  CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
-},
+export const Requests = sqliteTable(
+  "Requests",
+  {
+    RequestID: integer("RequestID")
+      .primaryKey({ autoIncrement: true })
+      .notNull(),
+    EventID: integer("EventID")
+      .notNull()
+      .references(() => Events.EventID),
+    UserID: integer("UserID")
+      .notNull()
+      .references(() => Users.UserID),
+    Status: text("Status").default("pending").notNull(),
+    Background: text("Background"),
+    Experience: text("Experience"),
+    WhyJoin: text("WhyJoin"),
+    CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
+  },
   (table) => {
     return {
       UserID_idx: index("UserID").on(table.UserID),
       EventID_idx: index("EventID").on(table.EventID),
-    }
-  });
-
-
-
-
-
-
-
-
+    };
+  },
+);
 
 export type User = typeof Users.$inferSelect;
 export type NewUser = typeof Users.$inferInsert;

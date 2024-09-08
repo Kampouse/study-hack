@@ -16,8 +16,6 @@ export type User = {
 };
 
 export const CreateUser = async (event: Requested, session: Session) => {
-  console.log(session);
-
   const Client = await drizzler(event);
   if (Client === null) {
     console.log("Client not initialized");
@@ -32,9 +30,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
       .from(Users)
       .where(eq(Users.Email, session.user.email))
       .execute();
-    console.log("any data", data);
     if (data.length == 0) {
-      console.log("Writing to database");
       await Client.insert(Users)
         .values({
           Email: session.user.email,
@@ -119,15 +115,7 @@ export const CreateEvent = async (
 ) => {
   const userData = await GetUser(event);
   const Client = await drizzler(event);
-  const sesh = serverSession(event);
-  if (
-    sesh === null ||
-    userData === undefined ||
-    Client === null ||
-    userData === null
-  )
-    return;
-  console.log(session.Name, session.Description);
+  if (userData === undefined || Client === null || userData === null) return;
   return await Client.insert(Events)
 
     .values({
@@ -172,10 +160,14 @@ export type QueryEventOptions = {
   orderBy?: "Date" | "Name";
   client?: ClientType | null;
 };
-export const QueryEvent = async (event: Requested, id: number, options: QueryEventOptions | undefined) => {
-  const Client = options?.client || await drizzler(event);
-  const sesh = serverSession(event);
-  if (sesh === null || Client === null) return;
+export const QueryEvent = async (
+  event: Requested,
+  id: number,
+  options: QueryEventOptions | undefined,
+) => {
+  const Client = options?.client || (await drizzler(event));
+
+  if (Client === null) return;
   return await Client.select({
     name: Events.Name,
     description: Events.Description,
@@ -210,14 +202,9 @@ export const QueryEvents = async (
     client: null,
   },
 ) => {
+  const Client = options.client || (await drizzler(event as Requested));
 
-  const Client = options.client || await drizzler(event as Requested);
-  let sesh
-
-  if (options.client === null) {
-    sesh = serverSession(event as Requested);
-  }
-  if (sesh === null || Client == null) return null;
+  if (Client == null) return null;
   const builder = options.orderBy === "Date" ? Events.Date : Events.Name;
   return await Client.select({
     name: Events.Name,
