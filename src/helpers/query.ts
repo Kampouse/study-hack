@@ -1,4 +1,4 @@
-import { users, events } from "../../drizzle/schema";
+import { Users, Events } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
 import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
@@ -29,20 +29,20 @@ export const CreateUser = async (event: Requested, session: Session) => {
   try {
     const data = await Client.select()
 
-      .from(users)
-      .where(eq(users.Email, session.user.email))
+      .from(Users)
+      .where(eq(Users.Email, session.user.email))
       .execute();
     console.log("any data", data);
     if (data.length == 0) {
       console.log("Writing to database");
-      await Client.insert(users)
+      await Client.insert(Users)
         .values({
           Email: session.user.email,
           Name: session.user.name,
           Description: "i am new here",
           Username: session.user.name,
           ImageURL: session.user.image,
-          IsAdmin: false,
+          IsAdmin: 0,
         })
         .execute()
         .catch((e) => {
@@ -77,12 +77,12 @@ export const UpdateUser = async (event: Requested, session: UpdateUserForm) => {
   console.log(session.Name, session.Description);
   const data = serverSession(event);
   if (data !== null) {
-    await Client.update(users)
+    await Client.update(Users)
       .set({
         Name: session.Name,
         Description: session.Description,
       })
-      .where(eq(users.Email, data.user.email))
+      .where(eq(Users.Email, data.user.email))
       .execute();
     return session;
   }
@@ -92,14 +92,14 @@ export const GetUser = async (event: Requested) => {
   const data = serverSession(event);
   if (data !== null && Client !== null) {
     const userData = await Client.select({
-      ID: users.UserID,
-      Name: users.Name,
-      Description: users.Description,
-      Image: users.ImageURL,
-      Intrests: users.Intrests,
+      ID: Users.UserID,
+      Name: Users.Name,
+      Description: Users.Description,
+      Image: Users.ImageURL,
+      Intrests: Users.Intrestets,
     })
-      .from(users)
-      .where(eq(users.Email, data.user.email))
+      .from(Users)
+      .where(eq(Users.Email, data.user.email))
       .execute()
       .catch((e) => {
         console.log(e);
@@ -128,29 +128,33 @@ export const CreateEvent = async (
   )
     return;
   console.log(session.Name, session.Description);
-  return await Client.insert(events)
+  return await Client.insert(Events)
+
     .values({
       Name: session.Name,
       Description: session.Description,
       Location: session.Location,
       Coordinates: session.Coordinates,
       Date: session.Date,
-      Tags: [],
+      CreatedAt: new Date().toISOString(),
       StartTime: session.StartTime,
       EndTime: session.EndTime,
+      Tags: [],
+      ImageURL: session.ImageURL ?? "",
       UserID: userData.ID,
     })
     .returning({
-      Name: events.Name,
-      Description: events.Description,
-      Location: events.Location,
-      Coordinates: events.Coordinates,
-      Date: events.Date,
-      StartTime: events.StartTime,
-      EndTime: events.EndTime,
-      Tags: events.Tags,
-      UserID: events.UserID,
+      Name: Events.Name,
+      Description: Events.Description,
+      Location: Events.Location,
+      Coordinates: Events.Coordinates,
+      Date: Events.Date,
+      StartTime: Events.StartTime,
+      EndTime: Events.EndTime,
+      Tags: Events.Tags,
+      UserID: Events.UserID,
     })
+
     .execute()
     .catch((e) => {
       console.log(e);
@@ -180,20 +184,19 @@ export const QueryEvents = async (
   const Client = await drizzler(event);
   const sesh = serverSession(event);
   if (sesh === null || Client === null) return;
-  const builder = options.orderBy === "Date" ? events.Date : events.Name;
+  const builder = options.orderBy === "Date" ? Events.Date : Events.Name;
   return await Client.select({
-    name: events.Name,
-    description: events.Description,
-    location: events.Location,
-    coordinates: events.Coordinates,
-    date: events.Date,
-    starttime: events.StartTime,
-    endtime: events.EndTime,
-    tags: events.Tags,
-    eventID: events.EventID,
-    image: events.ImageURL,
+    name: Events.Name,
+    description: Events.Description,
+    location: Events.Location,
+    coordinates: Events.Coordinates,
+    date: Events.Date,
+    starttime: Events.StartTime,
+    endtime: Events.EndTime,
+    tags: Events.Tags,
+    eventID: Events.EventID,
   })
-    .from(events)
+    .from(Events)
     .limit(options.limit ?? 3)
     .orderBy(builder)
     .execute()

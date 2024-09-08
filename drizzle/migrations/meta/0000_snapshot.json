@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "7ba43bf9-13d8-42b7-99de-a3b8f3e71e36",
+  "id": "145af85c-cfad-424b-8888-315b2f06b70d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "Events": {
@@ -35,8 +35,22 @@
           "notNull": true,
           "autoincrement": false
         },
+        "ImageURL": {
+          "name": "ImageURL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "Coordinates": {
           "name": "Coordinates",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Date": {
+          "name": "Date",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -63,13 +77,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "date": {
-          "name": "date",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "CreatedAt": {
           "name": "CreatedAt",
           "type": "text",
@@ -87,7 +94,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Events_UserID_Users_UserID_fk": {
+          "name": "Events_UserID_Users_UserID_fk",
+          "tableFrom": "Events",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -134,7 +155,9 @@
       "indexes": {
         "Sessions_SessionToken_unique": {
           "name": "Sessions_SessionToken_unique",
-          "columns": ["SessionToken"],
+          "columns": [
+            "SessionToken"
+          ],
           "isUnique": true
         }
       },
@@ -143,8 +166,12 @@
           "name": "Sessions_UserID_Users_UserID_fk",
           "tableFrom": "Sessions",
           "tableTo": "Users",
-          "columnsFrom": ["UserID"],
-          "columnsTo": ["UserID"],
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -204,7 +231,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": false
+          "default": 0
         },
         "Intrestets": {
           "name": "Intrestets",
@@ -224,14 +251,18 @@
         }
       },
       "indexes": {
-        "Users_Username_unique": {
-          "name": "Users_Username_unique",
-          "columns": ["Username"],
-          "isUnique": true
-        },
         "Users_Email_unique": {
           "name": "Users_Email_unique",
-          "columns": ["Email"],
+          "columns": [
+            "Email"
+          ],
+          "isUnique": true
+        },
+        "Users_Username_unique": {
+          "name": "Users_Username_unique",
+          "columns": [
+            "Username"
+          ],
           "isUnique": true
         }
       },

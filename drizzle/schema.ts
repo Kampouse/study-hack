@@ -1,40 +1,57 @@
+import {
+  sqliteTable,
+  AnySQLiteColumn,
+  uniqueIndex,
+  integer,
+  text,
+  foreignKey,
+} from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const users = sqliteTable("Users", {
-  UserID: integer("UserID", { mode: "number" }).primaryKey({
-    autoIncrement: true,
-  }),
-  Username: text("Username").notNull().unique(),
-  Name: text("Name").notNull(),
-  Email: text("Email").notNull().unique(),
-  ImageURL: text("ImageURL"),
-  Description: text("Description"),
-  IsAdmin: integer("IsAdmin", { mode: "boolean" }).notNull().default(false),
-  Intrests: text("Intrestets", { mode: "json" })
-    .$type<string[]>()
-    .notNull()
-    .default([]),
-  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-});
+export const Users = sqliteTable(
+  "Users",
+  {
+    UserID: integer("UserID").primaryKey({ autoIncrement: true }).notNull(),
+    Username: text("Username").notNull(),
+    Name: text("Name").default("").notNull(),
+    Email: text("Email").notNull(),
+    ImageURL: text("ImageURL"),
+    Description: text("Description"),
+    IsAdmin: integer("IsAdmin").default(0).notNull(),
+    Intrestets: text("Intrestets").default("[]").notNull(),
+    CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => {
+    return {
+      Email_unique: uniqueIndex("Users_Email_unique").on(table.Email),
+      Username_unique: uniqueIndex("Users_Username_unique").on(table.Username),
+    };
+  },
+);
 
-export const joinRequests = sqliteTable("JoinRequests", {
-  RequestID: integer("RequestID").primaryKey({ autoIncrement: true }),
-  EventID: integer("EventID")
-    .notNull()
-    .references(() => events.EventID),
-  UserID: integer("UserID")
-    .notNull()
-    .references(() => users.UserID),
-  Status: text("Status").notNull().default("pending"),
-  Message: text("Message"),
-  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-});
+export const Sessions = sqliteTable(
+  "Sessions",
+  {
+    SessionID: integer("SessionID")
+      .primaryKey({ autoIncrement: true })
+      .notNull(),
+    UserID: integer("UserID")
+      .notNull()
+      .references(() => Users.UserID),
+    SessionToken: text("SessionToken").notNull(),
+    CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+    ExpiresAt: text("ExpiresAt"),
+  },
+  (table) => {
+    return {
+      SessionToken_unique: uniqueIndex("Sessions_SessionToken_unique").on(
+        table.SessionToken,
+      ),
+    };
+  },
+);
 
-export type InsertJoinRequest = typeof joinRequests.$inferInsert;
-export type SelectJoinRequest = typeof joinRequests.$inferSelect;
-
-export const events = sqliteTable("Events", {
+export const Events = sqliteTable("Events", {
   EventID: integer("EventID").primaryKey({ autoIncrement: true }),
   Name: text("Name").notNull(),
   Description: text("Description").notNull(),
@@ -50,24 +67,14 @@ export const events = sqliteTable("Events", {
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
   UserID: integer("UserID")
     .notNull()
-    .references(() => users.UserID),
-});
-export const sessions = sqliteTable("Sessions", {
-  SessionID: integer("SessionID", { mode: "number" }).primaryKey({
-    autoIncrement: true,
-  }),
-  UserID: integer("UserID")
-    .notNull()
-    .references(() => users.UserID),
-  SessionToken: text("SessionToken").notNull().unique(),
-  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-  ExpiresAt: text("ExpiresAt"),
+    .references(() => Users.UserID),
 });
 
-export type InsertUser = typeof users.$inferInsert;
-export type SelectUser = typeof users.$inferSelect;
-export type InsertEvent = typeof events.$inferInsert;
+export type User = typeof Users.$inferSelect;
+export type NewUser = typeof Users.$inferInsert;
 
-export const schema = {
-  users,
-};
+export type Session = typeof Sessions.$inferSelect;
+export type NewSession = typeof Sessions.$inferInsert;
+
+export type Event = typeof Events.$inferSelect;
+export type NewEvent = typeof Events.$inferInsert;

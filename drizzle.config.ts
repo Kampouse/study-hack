@@ -8,6 +8,6 @@ export default defineConfig({
   driver: "turso",
   dbCredentials: {
     authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
-    url: "file:./local.db",
+    url: process.env.PRIVATE_TURSO_DATABASE_URL || "local.db" ,
   },
 });
