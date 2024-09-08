@@ -27,7 +27,7 @@ export const getEvent = async (event: Requested, id: string) => {
   try {
 
 
-    const data = await QueryEvent(event, parseInt(id));
+    const data = await QueryEvent(event, parseInt(id), {});
     if (data === null || data === undefined) {
       return { success: false, data: null, error: "Failed to get event" };
     }

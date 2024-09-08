@@ -161,6 +161,8 @@ export const CreateEvent = async (
       return null;
     });
 };
+
+export type ClientType = Awaited<ReturnType<typeof drizzler>>;
 export type QueryEventOptions = {
   limit?: number;
   offset?: number;
@@ -168,10 +170,10 @@ export type QueryEventOptions = {
   location?: string;
   date?: Date | null;
   orderBy?: "Date" | "Name";
+  client?: ClientType | null;
 };
-
-export const QueryEvent = async (event: Requested, id: number) => {
-  const Client = await drizzler(event);
+export const QueryEvent = async (event: Requested, id: number, options: QueryEventOptions | undefined) => {
+  const Client = options?.client || await drizzler(event);
   const sesh = serverSession(event);
   if (sesh === null || Client === null) return;
   return await Client.select({
@@ -197,7 +199,7 @@ export const QueryEvent = async (event: Requested, id: number) => {
 };
 
 export const QueryEvents = async (
-  event: Requested,
+  event: Requested | undefined,
   options: QueryEventOptions = {
     limit: 3,
     offset: 0,
@@ -205,11 +207,17 @@ export const QueryEvents = async (
     location: "",
     date: null,
     orderBy: "Date",
+    client: null,
   },
 ) => {
-  const Client = await drizzler(event);
-  const sesh = serverSession(event);
-  if (sesh === null || Client === null) return;
+
+  const Client = options.client || await drizzler(event as Requested);
+  let sesh
+
+  if (options.client === null) {
+    sesh = serverSession(event as Requested);
+  }
+  if (sesh === null || Client == null) return null;
   const builder = options.orderBy === "Date" ? Events.Date : Events.Name;
   return await Client.select({
     name: Events.Name,
