@@ -1,4 +1,8 @@
-import { type QueryEventOptions, QueryEvents } from "~/helpers/query";
+import {
+  type QueryEventOptions,
+  QueryEvents,
+  QueryEvent,
+} from "~/helpers/query";
 
 import type { Requested } from "~/helpers/drizzled";
 
@@ -18,6 +22,20 @@ export const getEvents = async (
     return { success: false, data: null, error: "Failed to get events" };
   }
 };
+
+export const getEvent = async (event: Requested, id: string) => {
+  try {
+    const data = await QueryEvent(event, parseInt(id));
+    if (data === null || data === undefined) {
+      return { success: false, data: null, error: "Failed to get event" };
+    }
+    return { success: true, data: data[0] };
+  } catch (e) {
+    console.log(e);
+    return { success: false, data: null, error: "Failed to get event" };
+  }
+};
+
 export const getFirstEvent = async (
   event: Requested,
   options: QueryEventOptions,

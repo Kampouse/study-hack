@@ -170,6 +170,32 @@ export type QueryEventOptions = {
   orderBy?: "Date" | "Name";
 };
 
+export const QueryEvent = async (event: Requested, id: number) => {
+  const Client = await drizzler(event);
+  const sesh = serverSession(event);
+  if (sesh === null || Client === null) return;
+  return await Client.select({
+    name: Events.Name,
+    description: Events.Description,
+    location: Events.Location,
+    coordinates: Events.Coordinates,
+    date: Events.Date,
+    starttime: Events.StartTime,
+    endtime: Events.EndTime,
+    tags: Events.Tags,
+    eventID: Events.EventID,
+    image: Events.ImageURL,
+  })
+
+    .from(Events)
+    .where(eq(Events.EventID, id))
+    .execute()
+    .catch((e) => {
+      console.log(e);
+      return null;
+    });
+};
+
 export const QueryEvents = async (
   event: Requested,
   options: QueryEventOptions = {
@@ -195,6 +221,7 @@ export const QueryEvents = async (
     endtime: Events.EndTime,
     tags: Events.Tags,
     eventID: Events.EventID,
+    image: Events.ImageURL,
   })
     .from(Events)
     .limit(options.limit ?? 3)

@@ -99,12 +99,8 @@
           "name": "Events_UserID_Users_UserID_fk",
           "tableFrom": "Events",
           "tableTo": "Users",
-          "columnsFrom": [
-            "UserID"
-          ],
-          "columnsTo": [
-            "UserID"
-          ],
+          "columnsFrom": ["UserID"],
+          "columnsTo": ["UserID"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -155,9 +151,7 @@
       "indexes": {
         "Sessions_SessionToken_unique": {
           "name": "Sessions_SessionToken_unique",
-          "columns": [
-            "SessionToken"
-          ],
+          "columns": ["SessionToken"],
           "isUnique": true
         }
       },
@@ -166,12 +160,8 @@
           "name": "Sessions_UserID_Users_UserID_fk",
           "tableFrom": "Sessions",
           "tableTo": "Users",
-          "columnsFrom": [
-            "UserID"
-          ],
-          "columnsTo": [
-            "UserID"
-          ],
+          "columnsFrom": ["UserID"],
+          "columnsTo": ["UserID"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -253,16 +243,12 @@
       "indexes": {
         "Users_Email_unique": {
           "name": "Users_Email_unique",
-          "columns": [
-            "Email"
-          ],
+          "columns": ["Email"],
           "isUnique": true
         },
         "Users_Username_unique": {
           "name": "Users_Username_unique",
-          "columns": [
-            "Username"
-          ],
+          "columns": ["Username"],
           "isUnique": true
         }
       },

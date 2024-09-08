@@ -6,13 +6,16 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useEvents = routeLoader$(async (event) => {
   // This is a placeholder. Replace with actual API call to fetch events
-
-  const data = await QueryEvents(event, {
-    limit: 10,
-  });
-
-  if (data) {
-    return data;
+  try {
+    const data = await QueryEvents(event, {
+      limit: 10,
+    });
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 });
 export const head: DocumentHead = {
