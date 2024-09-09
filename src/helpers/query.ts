@@ -1,4 +1,4 @@
-import { Users, Events } from "../../drizzle/schema";
+import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
 import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
@@ -15,8 +15,10 @@ export type User = {
   Intrests: Array<string>;
 };
 
-export const CreateUser = async (event: Requested, session: Session) => {
-  const Client = await drizzler(event);
+
+export type ClientType = Awaited<ReturnType<typeof drizzler>>;
+export const CreateUser = async (event: Requested | undefined, session: Session, client: ClientType | null = null) => {
+  const Client = client ?? await drizzler(event as Requested);
   if (Client === null) {
     console.log("Client not initialized");
 
@@ -31,7 +33,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
       .where(eq(Users.Email, session.user.email))
       .execute();
     if (data.length == 0) {
-      await Client.insert(Users)
+      return await Client.insert(Users)
         .values({
           Email: session.user.email,
           Name: session.user.name,
@@ -39,7 +41,7 @@ export const CreateUser = async (event: Requested, session: Session) => {
           Username: session.user.name,
           ImageURL: session.user.image,
           IsAdmin: 0,
-        })
+        }).returning()
         .execute()
         .catch((e) => {
           console.log("issue", e);
@@ -52,7 +54,6 @@ export const CreateUser = async (event: Requested, session: Session) => {
   } catch (e) {
     console.log(e);
   }
-  console.log("no data found ??");
 };
 
 export const serverSession = (event: Requested) => {
@@ -150,7 +151,6 @@ export const CreateEvent = async (
     });
 };
 
-export type ClientType = Awaited<ReturnType<typeof drizzler>>;
 export type QueryEventOptions = {
   limit?: number;
   offset?: number;
@@ -226,4 +226,44 @@ export const QueryEvents = async (
       console.log(e);
       return null;
     });
+};
+
+export const createRequest = async (
+  event: Requested,
+  requestData: {
+    eventId: number;
+    userId: number;
+    background: string;
+    experience: string;
+    why: string;
+
+  }, client: ClientType | null = null
+) => {
+  const Client = client ?? await drizzler(event);
+  if (Client === null) return null;
+
+  try {
+    const result = await Client.insert(Requests)
+      .values({
+        EventID: requestData.eventId,
+        UserID: requestData.userId,
+        Experience: requestData.experience,
+        Background: requestData.background,
+        WhyJoin: requestData.why,
+        CreatedAt: new Date().toISOString(),
+      })
+      .returning({
+        RequestID: Requests.RequestID,
+        EventID: Requests.EventID,
+        UserID: Requests.UserID,
+        Status: Requests.Status,
+        CreatedAt: Requests.CreatedAt,
+      })
+      .execute();
+
+    return result[0];
+  } catch (error) {
+    console.error("Error creating request:", error);
+    return null;
+  }
 };

@@ -1,15 +1,32 @@
 import { tursoClient as drizzle } from "../src/utils/turso.ts";
-import { QueryEvents } from "../src/helpers/query.ts";
-import { Event } from "./schema.ts";
+import { QueryEvents, CreateUser } from "../src/helpers/query.ts";
+
+import { Session } from "../src/helpers/drizzled.ts";
+import { Event, User } from "./schema.ts";
 
 const main = async () => {
   const db = drizzle({
-    url: process.env.PRIVATE_TURSO_DATABASE_URL,
+    url: "file:./local.db",
     authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
   });
 
-  const data = (await QueryEvents(undefined, {
-    client: db,
-  })) as Event[];
-};
+
+
+
+
+  const example = {
+    name: "test",
+    user: { email: "test", name: "test", image: "test" },
+
+  } satisfies Session
+  const user = await CreateUser(undefined, example, db) as User;
+
+
+
+
+
+}
+
+
+
 main();
