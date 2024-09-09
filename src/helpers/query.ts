@@ -48,8 +48,7 @@ export const CreateUser = async (event: Requested | undefined, session: Session,
         });
     } else {
       console.log("User already exists", data[0]);
-
-      return;
+      return data[0]
     }
   } catch (e) {
     console.log(e);
@@ -109,14 +108,21 @@ export const GetUser = async (event: Requested) => {
     }
   }
 };
-
+export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>;
 export const CreateEvent = async (
-  event: Requested,
+  event: Requested | undefined,
   session: CreateEventForm,
+  params: {
+    Client: ClientType | null;
+    userData: GetUserReturnType | null;
+  } = { Client: null, userData: null },
 ) => {
-  const userData = await GetUser(event);
-  const Client = await drizzler(event);
+  const userData = params.userData ?? await GetUser(event as Requested);
+  const Client = params.Client ?? await drizzler(event as Requested);
   if (userData === undefined || Client === null || userData === null) return;
+
+  console.log(params)
+
   return await Client.insert(Events)
 
     .values({
@@ -130,7 +136,7 @@ export const CreateEvent = async (
       EndTime: session.EndTime,
       Tags: [],
       ImageURL: session.ImageURL ?? "",
-      UserID: userData.ID,
+      UserID: params.userData?.ID ?? userData.ID,
     })
     .returning({
       Name: Events.Name,
@@ -142,6 +148,7 @@ export const CreateEvent = async (
       EndTime: Events.EndTime,
       Tags: Events.Tags,
       UserID: Events.UserID,
+      EventID: Events.EventID,
     })
 
     .execute()
@@ -229,7 +236,7 @@ export const QueryEvents = async (
 };
 
 export const createRequest = async (
-  event: Requested,
+  event: Requested | undefined,
   requestData: {
     eventId: number;
     userId: number;
@@ -239,7 +246,7 @@ export const createRequest = async (
 
   }, client: ClientType | null = null
 ) => {
-  const Client = client ?? await drizzler(event);
+  const Client = client ?? await drizzler(event as Requested);
   if (Client === null) return null;
 
   try {

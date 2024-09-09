@@ -17,7 +17,7 @@ export const Users = sqliteTable(
     Email: text("Email").notNull(),
     ImageURL: text("ImageURL"),
     Description: text("Description"),
-    IsAdmin: integer("IsAdmin").default(false).notNull(),
+    IsAdmin: integer("IsAdmin").default(0).notNull(),
     Intrestets: text("Intrestets").default("[]").notNull(),
     CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
   },
