@@ -14,7 +14,7 @@ export const useActiveEvent = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
     const user = await GetUser({ event: event });
     const lst = await QueryActiveEvent({ event: event, user: user });
-    console.log("lst", lst);
+
     return lst;
   },
 );
@@ -31,7 +31,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 export default component$(() => {
   const userData = useUser();
   const activeEvent = useActiveEvent();
-  console.log("activeEvent", activeEvent.value);
+  console.log("activeEvent", activeEvent);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
@@ -86,6 +86,28 @@ export default component$(() => {
             data={store}
             onEdit={handleEditClick}
           />
+          <div>
+            <h1 class="text-2xl font-bold">Active Event</h1>
+            <div class="flex flex-row gap-2">
+              {activeEvent.value &&
+                activeEvent.value.map((event) => (
+                  <div key={event.eventID} class="flex flex-col">
+                    <h2 class="text-xl font-bold"> {event.name}</h2>
+                    <img
+                      width={300}
+                      height={300}
+                      class="rounded-lg"
+                      src={
+                        event.image ??
+                        "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                      }
+                      alt={event.name}
+                    />
+                    <p> {event.description}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
         </ProfileForm>
       </div>
     </main>
