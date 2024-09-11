@@ -5,7 +5,6 @@ import { valiForm$ } from "@modular-forms/qwik";
 import { joinRequest, joinRequestSchema } from "~/api/Forms";
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { useNavigate } from "@builder.io/qwik-city";
 import type * as v from "valibot";
 import { getEvent } from "~/api/EndPoint";
 import type { JoinEvent } from "~/../drizzle/schema";

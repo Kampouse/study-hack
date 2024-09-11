@@ -215,7 +215,7 @@ export const QueryEvents = async (params: {
     params.options.client || (await drizzler(params.event as Requested));
 
   if (Client == null) return null;
-  const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+  //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
   return await Client.select({
     name: Events.Name,
     description: Events.Description,
@@ -257,7 +257,7 @@ export const QueryActiveEvent = async (params: {
     params.options.client || (await drizzler(params.event as Requested));
 
   if (Client == null || params.user == null) return null;
-  const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+  //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
 
   return await Client.select({
     name: Events.Name,

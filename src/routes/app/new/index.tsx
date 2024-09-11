@@ -222,21 +222,7 @@ export default component$(() => {
 export const head: DocumentHead = {
   // This will be used to resolve the <title> of the page
   title: "S&H | New Event",
-  meta: [
-    {
-      name: "description",
-      content: "Create an event to study with others",
-    },
-    // Open graph
-    {
-      property: "og:title",
-      content: "New Event",
-    },
-    {
-      property: "og:description",
-      content: "Create an event to study with others",
-    },
-  ],
+  meta: [],
   links: [
     {
       rel: "canonical",
