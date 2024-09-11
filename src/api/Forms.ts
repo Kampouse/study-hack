@@ -1,4 +1,9 @@
-import { UpdateUser, CreateEvent } from "~/helpers/query";
+import {
+  UpdateUser,
+  CreateEvent,
+  createJoinRequest,
+  GetUser,
+} from "~/helpers/query";
 import type { Requested } from "~/helpers/drizzled";
 import type { JSONObject } from "@builder.io/qwik-city";
 import * as v from "valibot";
@@ -46,12 +51,39 @@ export const updateProfileForm = async (data: JSONObject, event: Requested) => {
       error: "Invalid data",
     };
   }
-  const output = await UpdateUser(event, validated.output);
+  const output = await UpdateUser({ event: event, session: validated.output });
   console.log(output);
   return {
     success: true,
     data: output,
   };
+};
+export const joinRequest = async (data: JSONObject, event: Requested) => {
+  const validated = v.safeParse(joinRequestSchema, data);
+  if (validated.success) {
+    const user = await GetUser({ event: event });
+    if (user) {
+      const content = await createJoinRequest({
+        event: event,
+        requestData: {
+          ...validated.output,
+          background: validated.output.Background,
+          why: validated.output.WhyJoin,
+          experience: validated.output.ExperienceLevel,
+          userId: user.ID,
+          eventId: parseInt(event.params.id),
+        },
+      });
+      return content;
+    }
+
+    return {
+      success: false,
+      data: null,
+      error: "Invalid data",
+      status: 400,
+    };
+  }
 };
 
 export const createEventForm = async (data: JSONObject, event: Requested) => {
@@ -77,7 +109,11 @@ export const createEventForm = async (data: JSONObject, event: Requested) => {
       status: 400,
     };
   }
-  const output = await CreateEvent(event, validated.output);
+  const output = await CreateEvent({
+    event: event,
+    session: validated.output,
+    Client: null,
+  });
 
   if (output === null || output === undefined) {
     return {

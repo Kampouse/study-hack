@@ -14,7 +14,7 @@ import { GetUser } from "~/helpers/query";
 //get the type from event schema
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
-  const user = await GetUser(req);
+  const user = await GetUser({ event: req });
   return {
     Name: "chill with " + user?.Name,
     Description: "",

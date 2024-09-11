@@ -5,7 +5,7 @@ export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get("session");
 
   if (session) {
-    await CreateUser(event, session);
+    await CreateUser({ event: event, session: session });
     throw event.redirect(302, "/app");
   }
   throw event.redirect(302, `/`);

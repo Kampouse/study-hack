@@ -4,7 +4,6 @@ import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
-
 export type User = {
   Name: string;
   Email: string;
@@ -15,40 +14,42 @@ export type User = {
   Intrests: Array<string>;
 };
 
-
 export type ClientType = Awaited<ReturnType<typeof drizzler>>;
-export const CreateUser = async (event: Requested | undefined, session: Session, client: ClientType | null = null) => {
-  const Client = client ?? await drizzler(event as Requested);
+export const CreateUser = async (params: {
+  event: Requested | undefined;
+  session: Session;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
   if (Client === null) {
     console.log("Client not initialized");
-
     return;
   }
 
   console.log("Client initialized");
   try {
     const data = await Client.select()
-
       .from(Users)
-      .where(eq(Users.Email, session.user.email))
+      .where(eq(Users.Email, params.session.user.email))
       .execute();
     if (data.length == 0) {
       return await Client.insert(Users)
         .values({
-          Email: session.user.email,
-          Name: session.user.name,
+          Email: params.session.user.email,
+          Name: params.session.user.name,
           Description: "i am new here",
-          Username: session.user.name,
-          ImageURL: session.user.image,
+          Username: params.session.user.name,
+          ImageURL: params.session.user.image,
           IsAdmin: 0,
-        }).returning()
+        })
+        .returning()
         .execute()
         .catch((e) => {
           console.log("issue", e);
         });
     } else {
       console.log("User already exists", data[0]);
-      return data[0]
+      return data[0];
     }
   } catch (e) {
     console.log(e);
@@ -67,25 +68,29 @@ export const serverSession = (event: Requested) => {
   return event.sharedMap.get("session") as Session;
 };
 
-export const UpdateUser = async (event: Requested, session: UpdateUserForm) => {
-  const Client = await drizzler(event);
+export const UpdateUser = async (params: {
+  event: Requested;
+  session: UpdateUserForm;
+}) => {
+  const Client = await drizzler(params.event);
   if (Client === null) return;
-  console.log(session.Name, session.Description);
-  const data = serverSession(event);
+  console.log(params.session.Name, params.session.Description);
+  const data = serverSession(params.event);
   if (data !== null) {
     await Client.update(Users)
       .set({
-        Name: session.Name,
-        Description: session.Description,
+        Name: params.session.Name,
+        Description: params.session.Description,
       })
       .where(eq(Users.Email, data.user.email))
       .execute();
-    return session;
+    return params.session;
   }
 };
-export const GetUser = async (event: Requested) => {
-  const Client = await drizzler(event);
-  const data = serverSession(event);
+
+export const GetUser = async (params: { event: Requested }) => {
+  const Client = await drizzler(params.event);
+  const data = serverSession(params.event);
   if (data !== null && Client !== null) {
     const userData = await Client.select({
       ID: Users.UserID,
@@ -108,34 +113,33 @@ export const GetUser = async (event: Requested) => {
     }
   }
 };
+
 export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>;
-export const CreateEvent = async (
-  event: Requested | undefined,
-  session: CreateEventForm,
-  params: {
-    Client: ClientType | null;
-    userData: GetUserReturnType | null;
-  } = { Client: null, userData: null },
-) => {
-  const userData = params.userData ?? await GetUser(event as Requested);
-  const Client = params.Client ?? await drizzler(event as Requested);
+export const CreateEvent = async (params: {
+  event: Requested | undefined;
+  session: CreateEventForm;
+  Client: ClientType | null;
+  userData?: GetUserReturnType | null;
+}) => {
+  const userData =
+    params.userData ?? (await GetUser({ event: params.event as Requested }));
+  const Client = params.Client ?? (await drizzler(params.event as Requested));
   if (userData === undefined || Client === null || userData === null) return;
 
-  console.log(params)
+  console.log(params);
 
   return await Client.insert(Events)
-
     .values({
-      Name: session.Name,
-      Description: session.Description,
-      Location: session.Location,
-      Coordinates: session.Coordinates,
-      Date: session.Date,
+      Name: params.session.Name,
+      Description: params.session.Description,
+      Location: params.session.Location,
+      Coordinates: params.session.Coordinates,
+      Date: params.session.Date,
       CreatedAt: new Date().toISOString(),
-      StartTime: session.StartTime,
-      EndTime: session.EndTime,
+      StartTime: params.session.StartTime,
+      EndTime: params.session.EndTime,
       Tags: [],
-      ImageURL: session.ImageURL ?? "",
+      ImageURL: params.session.ImageURL ?? "",
       UserID: params.userData?.ID ?? userData.ID,
     })
     .returning({
@@ -150,7 +154,6 @@ export const CreateEvent = async (
       UserID: Events.UserID,
       EventID: Events.EventID,
     })
-
     .execute()
     .catch((e) => {
       console.log(e);
@@ -167,12 +170,13 @@ export type QueryEventOptions = {
   orderBy?: "Date" | "Name";
   client?: ClientType | null;
 };
-export const QueryEvent = async (
-  event: Requested,
-  id: number,
-  options: QueryEventOptions | undefined,
-) => {
-  const Client = options?.client || (await drizzler(event));
+
+export const QueryEvent = async (params: {
+  event: Requested;
+  id: number;
+  options: QueryEventOptions | undefined;
+}) => {
+  const Client = params.options?.client || (await drizzler(params.event));
 
   if (Client === null) return;
   return await Client.select({
@@ -187,9 +191,8 @@ export const QueryEvent = async (
     eventID: Events.EventID,
     image: Events.ImageURL,
   })
-
     .from(Events)
-    .where(eq(Events.EventID, id))
+    .where(eq(Events.EventID, params.id))
     .execute()
     .catch((e) => {
       console.log(e);
@@ -197,22 +200,17 @@ export const QueryEvent = async (
     });
 };
 
-export const QueryEvents = async (
-  event: Requested | undefined,
-  options: QueryEventOptions = {
-    limit: 3,
-    offset: 0,
-    tags: [],
-    location: "",
-    date: null,
-    orderBy: "Date",
-    client: null,
-  },
-) => {
-  const Client = options.client || (await drizzler(event as Requested));
+export const QueryEvents = async (params: {
+  event: Requested | undefined;
+  options?: QueryEventOptions;
+}) => {
+  params.options = params.options ?? {};
+
+  const Client =
+    params.options.client || (await drizzler(params.event as Requested));
 
   if (Client == null) return null;
-  const builder = options.orderBy === "Date" ? Events.Date : Events.Name;
+  const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
   return await Client.select({
     name: Events.Name,
     description: Events.Description,
@@ -226,7 +224,7 @@ export const QueryEvents = async (
     image: Events.ImageURL,
   })
     .from(Events)
-    .limit(options.limit ?? 3)
+    .limit(params.options.limit ?? 3)
     .orderBy(builder)
     .execute()
     .catch((e) => {
@@ -235,42 +233,55 @@ export const QueryEvents = async (
     });
 };
 
-export const createRequest = async (
-  event: Requested | undefined,
+export const createJoinRequest = async (params: {
+  event: Requested | undefined;
   requestData: {
     eventId: number;
     userId: number;
     background: string;
     experience: string;
     why: string;
-
-  }, client: ClientType | null = null
-) => {
-  const Client = client ?? await drizzler(event as Requested);
-  if (Client === null) return null;
+  };
+  client?: ClientType | null;
+}) => {
+  const Client = (await drizzler(params.event as Requested)) ?? params.client;
+  if (Client === null || Client == undefined)
+    return {
+      data: null,
+      success: false,
+      message: "Client not found",
+    };
 
   try {
-    const result = await Client.insert(Requests)
-      .values({
-        EventID: requestData.eventId,
-        UserID: requestData.userId,
-        Experience: requestData.experience,
-        Background: requestData.background,
-        WhyJoin: requestData.why,
-        CreatedAt: new Date().toISOString(),
-      })
-      .returning({
-        RequestID: Requests.RequestID,
-        EventID: Requests.EventID,
-        UserID: Requests.UserID,
-        Status: Requests.Status,
-        CreatedAt: Requests.CreatedAt,
-      })
-      .execute();
-
-    return result[0];
+    return {
+      data: (
+        await Client.insert(Requests)
+          .values({
+            EventID: params.requestData.eventId,
+            UserID: params.requestData.userId,
+            Experience: params.requestData.experience,
+            Background: params.requestData.background,
+            WhyJoin: params.requestData.why,
+            CreatedAt: new Date().toISOString(),
+          })
+          .returning({
+            RequestID: Requests.RequestID,
+            EventID: Requests.EventID,
+            UserID: Requests.UserID,
+            Status: Requests.Status,
+            CreatedAt: Requests.CreatedAt,
+          })
+          .execute()
+      )[0],
+      success: true,
+      message: "Request created",
+    };
   } catch (error) {
     console.error("Error creating request:", error);
-    return null;
+    return {
+      data: null,
+      success: false,
+      message: "Error creating request",
+    };
   }
 };

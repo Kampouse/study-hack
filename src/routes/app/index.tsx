@@ -17,7 +17,8 @@ export const useEventAction = routeAction$((e) => {
 export type EventAction = ReturnType<typeof useEventAction>;
 
 export const useEvents = routeLoader$(async (event) => {
-  const data = await QueryEvents(event);
+  const data = await QueryEvents({ event: event, options: {} });
+
   return data;
 });
 

@@ -11,7 +11,7 @@ export const getEvents = async (
   options: QueryEventOptions,
 ) => {
   try {
-    const data = await QueryEvents(event, options);
+    const data = await QueryEvents({ event, options });
     console.log(data);
     if (data === null) {
       return { success: false, data: null, error: "Failed to get events" };
@@ -25,7 +25,7 @@ export const getEvents = async (
 
 export const getEvent = async (event: Requested, id: string) => {
   try {
-    const data = await QueryEvent(event, parseInt(id), {});
+    const data = await QueryEvent({ event, id: parseInt(id), options: {} });
     if (data === null || data === undefined) {
       return { success: false, data: null, error: "Failed to get event" };
     }

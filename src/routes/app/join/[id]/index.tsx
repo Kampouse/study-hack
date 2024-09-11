@@ -2,14 +2,14 @@ import * as Icons from "lucide-qwik";
 import type { InitialValues } from "@modular-forms/qwik";
 import { formAction$, useForm } from "@modular-forms/qwik";
 import { valiForm$ } from "@modular-forms/qwik";
-import { joinRequestSchema } from "~/api/Forms";
-type JoinRequest = v.InferInput<typeof joinRequestSchema>;
+import { joinRequest, joinRequestSchema } from "~/api/Forms";
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { useNavigate } from "@builder.io/qwik-city";
 import type * as v from "valibot";
 import { getEvent } from "~/api/EndPoint";
-
+import type { JoinEvent } from "~/../drizzle/schema";
+type JoinRequest = v.InferInput<typeof joinRequestSchema>;
 export const head = {
   title: "S&H | Join Event",
   description: "Join the Web Development Enthusiasts Meetup",
@@ -34,21 +34,30 @@ export const useFormLoader = routeLoader$<InitialValues<JoinRequest>>(
     };
   },
 );
+export type Res = {
+  success: boolean;
+  data?: JoinEvent;
+  message: string;
+};
+export const action = formAction$<JoinRequest, Res>(
+  async (data, event) => {
+    const stuff = await joinRequest(data, event);
+    if (stuff && stuff.success && stuff.data != null) {
+      return {
+        data: stuff,
+        message: "Join request sent successfully",
+      };
+    }
+  },
 
-export const action = formAction$(async () => {
-  // Handle joining event logic here
-
-  return {
-    success: true,
-    message: "You have successfully joined the event!",
-  };
-}, valiForm$(joinRequestSchema));
+  valiForm$(joinRequestSchema),
+);
 
 export default component$(() => {
   const nav = useNavigate();
   const event = useEventDetails();
 
-  const [, { Form, Field }] = useForm<JoinRequest>({
+  const [, { Form, Field }] = useForm<JoinRequest, Res>({
     validate: valiForm$(joinRequestSchema),
     loader: useFormLoader(),
     action: action(),

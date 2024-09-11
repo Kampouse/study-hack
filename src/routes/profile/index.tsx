@@ -6,7 +6,7 @@ import { updateProfileForm } from "~/api/Forms";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useUser = routeLoader$(async (event) => {
-  return await GetUser(event);
+  return await GetUser({ event: event });
 });
 
 export const useUpdateUser = routeAction$(async (data, event) => {
