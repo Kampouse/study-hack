@@ -1,13 +1,23 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
-import { GetUser } from "~/helpers/query";
+import { GetUser, QueryActiveEvent } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
+import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useUser = routeLoader$(async (event) => {
   return await GetUser({ event: event });
 });
+
+export const useActiveEvent = routeLoader$(
+  async (event: RequestEventLoader<QwikCityPlatform>) => {
+    const user = await GetUser({ event: event });
+    const lst = await QueryActiveEvent({ event: event, user: user });
+    console.log("lst", lst);
+    return lst;
+  },
+);
 
 export const useUpdateUser = routeAction$(async (data, event) => {
   try {
@@ -20,7 +30,8 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 
 export default component$(() => {
   const userData = useUser();
-
+  const activeEvent = useActiveEvent();
+  console.log("activeEvent", activeEvent.value);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",

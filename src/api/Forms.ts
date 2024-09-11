@@ -19,7 +19,6 @@ export const eventSchema = v.object({
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
 });
 export const joinRequestSchema = v.object({
-  Name: v.pipe(v.string(), v.minLength(3), v.maxLength(50)),
   ExperienceLevel: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Background: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
   WhyJoin: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),

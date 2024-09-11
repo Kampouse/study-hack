@@ -42,19 +42,24 @@ export type Res = {
 export const action = formAction$<JoinRequest, Res>(
   async (data, event) => {
     const stuff = await joinRequest(data, event);
+
     if (stuff && stuff.success && stuff.data != null) {
+      event.redirect(302, `/app/join/${stuff.data.EventID}/success`);
       return {
         data: stuff,
         message: "Join request sent successfully",
       };
     }
+    return {
+      success: false,
+      message: "Join request failed",
+    };
   },
 
   valiForm$(joinRequestSchema),
 );
 
 export default component$(() => {
-  const nav = useNavigate();
   const event = useEventDetails();
 
   const [, { Form, Field }] = useForm<JoinRequest, Res>({
@@ -102,33 +107,9 @@ export default component$(() => {
           {event.value.data.description || "hello"}
         </p>
       </div>
-      <Form
-        class="px-8 pb-8"
-        onSubmit$={() => nav(`/app/join/${event.value.data.eventID}/success`)}
-      >
+      <Form class="px-8 pb-8">
         <div class="mb-6 flex flex-col space-y-4">
           <div class="flex space-x-4">
-            <Field name="Name">
-              {(field, props) => (
-                <div class="flex-1">
-                  <label
-                    for={props.name}
-                    class="mb-2 block text-sm font-bold text-gray-700"
-                  >
-                    Name
-                  </label>
-                  <input
-                    {...props}
-                    type="text"
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      field.error ? "border-red-500" : ""
-                    }`}
-                    placeholder="Your full name"
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
             <Field name="ExperienceLevel">
               {(field, props) => (
                 <div class="flex-1">

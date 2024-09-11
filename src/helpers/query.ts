@@ -3,6 +3,7 @@ import type { Session } from "./drizzled";
 import { eq } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
+import { sql } from "drizzle-orm";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
 export type User = {
   Name: string;
@@ -169,6 +170,10 @@ export type QueryEventOptions = {
   date?: Date | null;
   orderBy?: "Date" | "Name";
   client?: ClientType | null;
+  from?: Date;
+  to?: Date;
+  byUser?: number;
+  active?: boolean;
 };
 
 export const QueryEvent = async (params: {
@@ -224,8 +229,72 @@ export const QueryEvents = async (params: {
     image: Events.ImageURL,
   })
     .from(Events)
+
+    .where(
+      params.options.byUser
+        ? eq(Events.UserID, params.options.byUser)
+        : undefined,
+    )
+    .orderBy(sql`RANDOM()`)
     .limit(params.options.limit ?? 3)
-    .orderBy(builder)
+    .offset(params.options.offset ?? 0)
+    .execute()
+
+    .catch((e) => {
+      console.log(e);
+      return null;
+    });
+};
+
+export const QueryActiveEvent = async (params: {
+  event: Requested | undefined;
+  options?: QueryEventOptions;
+  user: GetUserReturnType;
+}) => {
+  params.options = params.options ?? {};
+
+  const Client =
+    params.options.client || (await drizzler(params.event as Requested));
+
+  if (Client == null || params.user == null) return null;
+  const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+
+  return await Client.select({
+    name: Events.Name,
+    description: Events.Description,
+    location: Events.Location,
+    coordinates: Events.Coordinates,
+    date: Events.Date,
+    starttime: Events.StartTime,
+    endtime: Events.EndTime,
+    tags: Events.Tags,
+    eventID: Events.EventID,
+    image: Events.ImageURL,
+    requestStatus: Requests.Status,
+  })
+    .from(Events)
+    .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
+    .where(eq(Requests.UserID, params.user.ID))
+    .intersect(
+      Client.select({
+        name: Events.Name,
+        description: Events.Description,
+        location: Events.Location,
+        coordinates: Events.Coordinates,
+        date: Events.Date,
+        starttime: Events.StartTime,
+        endtime: Events.EndTime,
+        tags: Events.Tags,
+        eventID: Events.EventID,
+        image: Events.ImageURL,
+        requestStatus: Requests.Status,
+      })
+        .from(Events)
+        .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
+        .where(eq(Requests.UserID, params.user.ID)),
+    )
+    .limit(params.options.limit ?? 3)
+    .offset(params.options.offset ?? 0)
     .execute()
     .catch((e) => {
       console.log(e);
