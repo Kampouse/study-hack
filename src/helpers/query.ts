@@ -1,6 +1,6 @@
 import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, not, ne } from "drizzle-orm";
+import { eq, ne } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import { sql } from "drizzle-orm";
