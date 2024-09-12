@@ -216,7 +216,7 @@ export const QueryEvents = async (params: {
 
   if (Client == null) return null;
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
-  return await Client.select({
+  const output = await Client.select({
     name: Events.Name,
     description: Events.Description,
     location: Events.Location,
@@ -240,10 +240,15 @@ export const QueryEvents = async (params: {
     .offset(params.options.offset ?? 0)
     .execute()
 
+
+
     .catch((e) => {
       console.log(e);
       return null;
     });
+
+
+  return output;
 };
 
 export const QueryActiveEvent = async (params: {
