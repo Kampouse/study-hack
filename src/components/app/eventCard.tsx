@@ -9,6 +9,7 @@ type EventCardProps = {
     tags: string[];
     starttime: string;
     endttime?: string;
+    image: string;
   };
 };
 export const EventCard = component$<EventCardProps>((props) => {
@@ -18,6 +19,8 @@ export const EventCard = component$<EventCardProps>((props) => {
     starttime: "1pm",
     tags: ["python", "javascript", "study"],
     eventId: 1,
+    image:
+      "https://images.unsplash.com/photo-1629910190000-4b3b3b3b3b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMjIwNzV8MHwxfGFsbHwxf",
   };
 
   console.log("event card", props.data);
@@ -36,12 +39,7 @@ export const EventCard = component$<EventCardProps>((props) => {
       <div class="">
         <div class=" flex w-full flex-col">
           <div class="flex h-20 flex-row gap-4">
-            <img
-              height={75}
-              width={75}
-              class=" self-start"
-              src="https://s6.imgcdn.dev/LyfCg.jpg"
-            />
+            <img height={75} width={75} class=" self-start" src={user.image} />
             <div class="flex flex-col gap-1 self-center  ">
               <h1 class="self-start font-bold">{user.name}</h1>
               <h1 class="font-semibol  self-start">{user.description}</h1>
