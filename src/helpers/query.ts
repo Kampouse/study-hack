@@ -1,6 +1,6 @@
 import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq } from "drizzle-orm";
+import { eq, not, ne } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import { sql } from "drizzle-orm";
@@ -240,13 +240,10 @@ export const QueryEvents = async (params: {
     .offset(params.options.offset ?? 0)
     .execute()
 
-
-
     .catch((e) => {
       console.log(e);
       return null;
     });
-
 
   return output;
 };
@@ -305,6 +302,41 @@ export const QueryActiveEvent = async (params: {
       console.log(e);
       return null;
     });
+};
+
+export const QueryActiveRequest = async (params: {
+  event: Requested | undefined;
+  options?: QueryEventOptions;
+  user: GetUserReturnType;
+}) => {
+  params.options = params.options ?? {};
+
+  const Client =
+    params.options.client || (await drizzler(params.event as Requested));
+
+  if (Client == null || params.user == null) return null;
+  //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+  // to be changed
+  try {
+    return await Client.select({
+      eventId: Events.EventID,
+      eventName: Events.Name,
+      requestId: Requests.RequestID,
+      requestStatus: Requests.Status,
+      why: Requests.WhyJoin,
+      background: Requests.Background,
+      username: Users.Username,
+      image: Users.ImageURL,
+      email: Users.Email,
+    })
+      .from(Events)
+      .leftJoin(Requests, eq(Events.EventID, Requests.EventID))
+      .leftJoin(Users, eq(Users.UserID, Requests.UserID))
+      .where(ne(Events.UserID, Requests.UserID));
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 };
 
 export const createJoinRequest = async (params: {

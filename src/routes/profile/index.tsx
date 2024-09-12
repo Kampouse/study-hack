@@ -1,7 +1,7 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
-import { GetUser, QueryActiveEvent } from "~/helpers/query";
+import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
 import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
@@ -9,6 +9,15 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 export const useUser = routeLoader$(async (event) => {
   return await GetUser({ event: event });
 });
+
+export const useQueryActiveRequest = routeLoader$(
+  async (event: RequestEventLoader<QwikCityPlatform>) => {
+    const user = await GetUser({ event: event });
+    const lst = await QueryActiveRequest({ event: event, user: user });
+
+    return lst;
+  },
+);
 
 export const useActiveEvent = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
@@ -31,6 +40,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 export default component$(() => {
   const userData = useUser();
   const activeEvent = useActiveEvent();
+  const activeRequest = useQueryActiveRequest();
   console.log("activeEvent", activeEvent);
   const store = useStore({
     name: "Sunflower",
@@ -87,8 +97,36 @@ export default component$(() => {
             onEdit={handleEditClick}
           />
           <div>
-            <h1 class="text-2xl font-bold">Active Event</h1>
+            <h1 class="py-2 text-2xl font-bold">Active Request</h1>
+
             <div class="flex flex-row gap-2">
+              {activeRequest.value != null &&
+                activeRequest.value.map((req) => (
+                  <div key={req.requestId} class="flex flex-col">
+                    <h2 class="px-2 text-lg font-bold"> {req.eventName}</h2>
+                    <img
+                      width={250}
+                      height={250}
+                      class="rounded-lg"
+                      src={
+                        req.image ??
+                        "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                      }
+                      alt={req.username ?? "User"}
+                    />
+                    <div class=" flex flex-row gap-2 px-1">
+                      <h1> @{req.username}</h1>
+                      <h1>
+                        {" "}
+                        Status {"->"} {req.requestStatus}
+                      </h1>
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            <h1 class="pt-2 text-2xl font-bold">Active Events</h1>
+            <div class="flex flex-row gap-2 py-2">
               {activeEvent.value &&
                 activeEvent.value.map((event) => (
                   <div key={event.eventID} class="flex flex-col">

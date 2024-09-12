@@ -39,7 +39,12 @@ export const EventCard = component$<EventCardProps>((props) => {
       <div class="">
         <div class=" flex w-full flex-col">
           <div class="flex h-20 flex-row gap-4">
-            <img height={75} width={75} class=" self-start" src={user.image ?? defaultUserCard.image} />
+            <img
+              height={75}
+              width={75}
+              class=" self-start"
+              src={user.image ?? defaultUserCard.image}
+            />
             <div class="flex flex-col gap-1 self-center  ">
               <h1 class="self-start font-bold">{user.name}</h1>
               <h1 class="font-semibol  self-start">{user.description}</h1>
