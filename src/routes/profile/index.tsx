@@ -104,7 +104,7 @@ export default component$(() => {
                 activeRequest.value.map((req) => (
                   <Link
                     key={req.requestId}
-                    href={`/profile/request/${req.requestId}`}
+                    href={`/profile/meet/${req.requestId}`}
                   >
                     <div class="flex flex-col">
                       <h2 class="px-2 text-lg font-bold"> {req.eventName}</h2>
