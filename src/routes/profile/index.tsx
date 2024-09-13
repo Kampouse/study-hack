@@ -1,5 +1,5 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
-import { routeAction$, routeLoader$, useLocation } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
@@ -42,7 +42,6 @@ export default component$(() => {
   const userData = useUser();
   const activeEvent = useActiveEvent();
   const activeRequest = useQueryActiveRequest();
-  console.log("activeEvent", activeEvent);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
