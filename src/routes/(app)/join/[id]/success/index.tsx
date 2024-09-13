@@ -44,7 +44,7 @@ export default component$(() => {
         </div>
       </div>
       <Link
-        href="/app"
+        href="/home"
         class="mt-8 block w-full cursor-pointer rounded bg-blue-500 px-4 py-2 text-lg font-semibold text-white hover:bg-blue-700"
       >
         Back to Events

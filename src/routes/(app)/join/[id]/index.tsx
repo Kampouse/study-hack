@@ -17,7 +17,7 @@ export const head = {
 export const useEventDetails = routeLoader$(async (request) => {
   const payload = await getEvent(request, request.params.id);
   if (payload.data == null) {
-    throw request.redirect(302, "/app/join/");
+    throw request.redirect(302, "/join/");
   }
   return {
     data: { ...payload.data, success: payload.success },
@@ -43,7 +43,7 @@ export const action = formAction$<JoinRequest, Res>(
     const stuff = await joinRequest(data, event);
 
     if (stuff && stuff.success && stuff.data != null) {
-      event.redirect(302, `/app/join/${stuff.data.EventID}/success`);
+      event.redirect(302, `/join/${stuff.data.EventID}/success`);
       return {
         data: stuff,
         message: "Join request sent successfully",

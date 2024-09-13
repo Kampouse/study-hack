@@ -18,7 +18,7 @@ export const onGet: RequestHandler = async (req) => {
     const currentTime = new Date().getTime();
     const sessionDate = new Date(data.expires).getTime();
     if (currentTime < sessionDate) {
-      throw req.redirect(302, "/app");
+      throw req.redirect(302, "/home");
     }
   }
 };

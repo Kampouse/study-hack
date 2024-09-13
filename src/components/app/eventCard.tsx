@@ -54,7 +54,7 @@ export const EventCard = component$<EventCardProps>((props) => {
 
           <div class="flex flex-row justify-start  gap-2   pt-4 ">
             <Link
-              href={`/app/join/${props.eventId}`}
+              href={`/join/${props.eventId}`}
               class="p-fit rounded-md border bg-green-400 px-4 py-2 font-medium text-black transition hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
               Join event

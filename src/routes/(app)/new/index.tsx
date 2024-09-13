@@ -74,7 +74,7 @@ export default component$(() => {
           class="flex flex-col gap-6"
           onSubmit$={() => {
             if (FormEvent.submitted) {
-              nav(`/app/new/1/success`);
+              nav(`/new/1/success`);
             }
           }}
         >

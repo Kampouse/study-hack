@@ -15,14 +15,14 @@ export default component$(() => {
         </p>
         <div class="flex flex-col space-y-4">
           <Link
-            href="/app"
+            href="/home"
             class="rounded-md bg-blue-500 px-6 py-2 text-white transition duration-300 hover:bg-blue-600"
           >
             Back to Home
           </Link>
           <button
             onClick$={() => {
-              const eventUrl = ` ${window.location.origin}/app/join/${location.params.id}`;
+              const eventUrl = ` ${window.location.origin}/join/${location.params.id}`;
               navigator.clipboard.writeText(eventUrl).then(
                 () => {
                   // #TODO: Show a toast message or something

@@ -41,21 +41,29 @@ export default component$(() => {
           )}
           {session.value && (
             <div class="flex items-center gap-4">
-              {location.url.href.includes("app") ? (
+              {location.url.href.includes("home") ? (
                 <Link
-                  href="/app/new"
+                  href="/new"
                   class="rounded-full bg-black px-3 py-2 text-white"
                 >
                   + Create event
                 </Link>
               ) : (
                 <Link
-                  href="/app"
+                  href="/home"
                   class="rounded-full bg-black px-3 py-2 text-white"
                 >
                   Back to Dashboard
                 </Link>
               )}
+              {location.url.pathname !== "/profile" && (
+                <Link
+                  href="/profile"
+                  class="rounded-full bg-black px-3 py-2 text-white"
+                >
+                  Profile
+                </Link>
+              )}{" "}
               <Dropdown />
             </div>
           )}

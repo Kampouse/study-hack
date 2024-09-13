@@ -21,7 +21,7 @@ export const onGet: RequestHandler = async ({
   //if (url.pathname == "/" && session) throw redirect (302, "/app");
   const session = sharedMap.get("session");
   if (session && pathname == "/") {
-    throw redirect(302, "/app");
+    throw redirect(302, "/home");
   }
 };
 
