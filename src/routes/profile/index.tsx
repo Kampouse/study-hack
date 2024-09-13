@@ -1,10 +1,11 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
-import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$, useLocation } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
 import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/helpers/query";
 import { updateProfileForm } from "~/api/Forms";
 import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
 
 export const useUser = routeLoader$(async (event) => {
   return await GetUser({ event: event });
@@ -102,26 +103,31 @@ export default component$(() => {
             <div class="flex flex-row gap-2">
               {activeRequest.value != null &&
                 activeRequest.value.map((req) => (
-                  <div key={req.requestId} class="flex flex-col">
-                    <h2 class="px-2 text-lg font-bold"> {req.eventName}</h2>
-                    <img
-                      width={250}
-                      height={250}
-                      class="rounded-lg"
-                      src={
-                        req.image ??
-                        "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                      }
-                      alt={req.username ?? "User"}
-                    />
-                    <div class=" flex flex-row gap-2 px-1">
-                      <h1> @{req.username}</h1>
-                      <h1>
-                        {" "}
-                        Status {"->"} {req.requestStatus}
-                      </h1>
+                  <Link
+                    key={req.requestId}
+                    href={`/profile/request/${req.requestId}`}
+                  >
+                    <div class="flex flex-col">
+                      <h2 class="px-2 text-lg font-bold"> {req.eventName}</h2>
+                      <img
+                        width={250}
+                        height={250}
+                        class="rounded-lg"
+                        src={
+                          req.image ??
+                          "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                        }
+                        alt={req.username ?? "User"}
+                      />
+                      <div class=" flex flex-row gap-2 px-1">
+                        <h1> @{req.username}</h1>
+                        <h1>
+                          {" "}
+                          Status {"->"} {req.requestStatus}
+                        </h1>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
             </div>
 
