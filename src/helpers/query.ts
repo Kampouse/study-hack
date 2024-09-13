@@ -332,7 +332,9 @@ export const QueryActiveRequest = async (params: {
       .from(Events)
       .leftJoin(Requests, eq(Events.EventID, Requests.EventID))
       .leftJoin(Users, eq(Users.UserID, Requests.UserID))
-      .where(ne(Events.UserID, Requests.UserID));
+      .where(
+        sql`${Events.UserID} != ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
+      );
   } catch (e) {
     console.log(e);
     return null;
@@ -388,6 +390,53 @@ export const createJoinRequest = async (params: {
       data: null,
       success: false,
       message: "Error creating request",
+    };
+  }
+};
+export const updateRequestStatus = async (params: {
+  event: Requested | undefined;
+  requestId: number;
+  newStatus: "confirmed" | "denied";
+  client?: ClientType | null;
+}) => {
+  const Client = (await drizzler(params.event as Requested)) ?? params.client;
+  if (Client === null || Client == undefined)
+    return {
+      success: false,
+      message: "Client not found",
+    };
+
+  try {
+    const result = await Client.update(Requests)
+      .set({
+        Status: params.newStatus,
+      })
+      .where(eq(Requests.RequestID, params.requestId))
+      .returning({
+        RequestID: Requests.RequestID,
+        EventID: Requests.EventID,
+        UserID: Requests.UserID,
+        Status: Requests.Status,
+      })
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "Request not found",
+      };
+    }
+
+    return {
+      data: result[0],
+      success: true,
+      message: `Request status updated to ${params.newStatus}`,
+    };
+  } catch (error) {
+    console.error("Error updating request status:", error);
+    return {
+      success: false,
+      message: "Error updating request status",
     };
   }
 };

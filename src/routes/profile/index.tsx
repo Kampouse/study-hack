@@ -97,9 +97,9 @@ export default component$(() => {
             onEdit={handleEditClick}
           />
           <div>
-            <h1 class="py-2 text-2xl font-bold">Active Request</h1>
+            <h1 class="px-4 py-2 text-2xl font-bold">Active Request</h1>
 
-            <div class="flex flex-row gap-2">
+            <div class="flex flex-row gap-2 px-4">
               {activeRequest.value != null &&
                 activeRequest.value.map((req) => (
                   <Link
@@ -130,11 +130,11 @@ export default component$(() => {
                 ))}
             </div>
 
-            <h1 class="pt-2 text-2xl font-bold">Active Events</h1>
-            <div class="flex flex-row gap-2 py-2">
+            <h1 class="px-4 pt-2 text-2xl font-bold">Active Events</h1>
+            <div class=" flex flex-row gap-2 py-2">
               {activeEvent.value &&
                 activeEvent.value.map((event) => (
-                  <div key={event.eventID} class="flex flex-col">
+                  <div key={event.eventID} class="mx-4 flex flex-col">
                     <h2 class="text-xl font-bold"> {event.name}</h2>
                     <img
                       width={300}

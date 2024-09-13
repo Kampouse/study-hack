@@ -22,13 +22,13 @@ export default component$(() => {
   return (
     <header class="h-fit w-full ">
       <nav
-        class="relative flex h-16 items-center justify-between  font-mono text-black shadow-sm"
+        class="relative flex h-16 items-center font-mono  text-black shadow-sm md:justify-between"
         role="navigation"
       >
-        <div class="pl-2 md:pl-8">
+        <div class="pl-2   md:pl-8">
           <Link
-            href={session.value ? "/app" : "/landing"}
-            class=" p-4 text-2xl"
+            href={session.value ? "/home" : "/landing"}
+            class=" hidden p-4 text-2xl md:inline "
           >
             {"S & H"}
           </Link>
