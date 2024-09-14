@@ -5,10 +5,9 @@ import {
   updateRequestStatus,
   createJoinRequest,
   GetUserFromEmail,
-} from "../src/helpers/query";
+} from "../src/api/Query";
 
-import type { Session } from "../src/helpers/drizzled";
-import type { User } from "./schema";
+import type { Session } from "../src/api/drizzled";
 
 const main = async () => {
   const db = drizzle({

@@ -1,10 +1,6 @@
-import {
-  type QueryEventOptions,
-  QueryEvents,
-  QueryEvent,
-} from "~/helpers/query";
+import { type QueryEventOptions, QueryEvents, QueryEvent } from "~/api/Query";
 
-import type { Requested } from "~/helpers/drizzled";
+import type { Requested } from "~/api/drizzled";
 
 export const getEvents = async (
   event: Requested,

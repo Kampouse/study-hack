@@ -3,8 +3,8 @@ import {
   CreateEvent,
   createJoinRequest,
   GetUser,
-} from "~/helpers/query";
-import type { Requested } from "~/helpers/drizzled";
+} from "~/api/Query";
+import type { Requested } from "~/api/drizzled";
 import type { JSONObject } from "@builder.io/qwik-city";
 import * as v from "valibot";
 
