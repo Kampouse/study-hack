@@ -24,7 +24,7 @@ export const CreateUser = async (params: {
   const Client = params.client ?? (await drizzler(params.event as Requested));
   if (Client === null) {
     console.log("Client not initialized");
-    return;
+    return null;
   }
 
   console.log("Client initialized");
@@ -47,6 +47,7 @@ export const CreateUser = async (params: {
         .execute()
         .catch((e) => {
           console.log("issue", e);
+          return null;
         });
     } else {
       console.log("User already exists", data[0]);
@@ -54,6 +55,8 @@ export const CreateUser = async (params: {
     }
   } catch (e) {
     console.log(e);
+
+    return null;
   }
 };
 
@@ -86,6 +89,40 @@ export const UpdateUser = async (params: {
       .where(eq(Users.Email, data.user.email))
       .execute();
     return params.session;
+  }
+};
+
+export const GetUserFromEmail = async (params: {
+  event: Requested | undefined;
+  email: string;
+  client?: ClientType;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) return null;
+
+  try {
+    const userData = await Client.select({
+      ID: Users.UserID,
+      Name: Users.Name,
+      Email: Users.Email,
+      Description: Users.Description,
+      Username: Users.Username,
+      ImageURL: Users.ImageURL,
+      IsAdmin: Users.IsAdmin,
+      Intrests: Users.Intrestets,
+    })
+      .from(Users)
+      .where(eq(Users.Email, params.email))
+      .execute();
+
+    if (userData.length > 0) {
+      return userData[0];
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log("Error fetching user by ID:", e);
+    return null;
   }
 };
 
@@ -352,8 +389,8 @@ export const createJoinRequest = async (params: {
   };
   client?: ClientType | null;
 }) => {
-  const Client = (await drizzler(params.event as Requested)) ?? params.client;
-  if (Client === null || Client == undefined)
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null)
     return {
       data: null,
       success: false,
@@ -399,8 +436,8 @@ export const updateRequestStatus = async (params: {
   newStatus: "confirmed" | "denied";
   client?: ClientType | null;
 }) => {
-  const Client = (await drizzler(params.event as Requested)) ?? params.client;
-  if (Client === null || Client == undefined)
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null)
     return {
       success: false,
       message: "Client not found",

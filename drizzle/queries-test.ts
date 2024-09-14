@@ -2,7 +2,9 @@ import { tursoClient as drizzle } from "../src/utils/turso";
 import {
   CreateUser,
   CreateEvent,
+  updateRequestStatus,
   createJoinRequest,
+  GetUserFromEmail,
 } from "../src/helpers/query";
 
 import type { Session } from "../src/helpers/drizzled";
@@ -18,12 +20,25 @@ const main = async () => {
     name: "test",
     user: { email: "test", name: "test", image: "test" },
   } satisfies Session;
-  const data = (await CreateUser({
+  let input = await CreateUser({
     event: undefined,
     session: example,
     client: db,
-  })) as User | undefined;
-  console.log(data?.UserID);
+  });
+  if (input == null) {
+    return;
+  }
+  if (Array.isArray(input)) {
+    input = input[0];
+  }
+
+  const data = await GetUserFromEmail({
+    event: undefined,
+    email: input.Email,
+    client: db,
+  });
+  console.log("Data:", data);
+
   const data2 = await CreateEvent({
     event: undefined,
     session: {
@@ -37,24 +52,24 @@ const main = async () => {
       Coordinates: [0, 0],
     },
     userData: {
-      ID: data?.UserID ?? 0,
+      ID: data?.ID ?? 0,
       Name: data?.Name ?? "",
-      Intrests: data?.Intrestets ?? "",
+      Intrests: data?.Intrests ?? "",
       Description: data?.Description ?? "",
       Image: data?.ImageURL ?? "",
     },
     Client: db,
   });
 
-  if (data2 === undefined || data2 === null || data === undefined) {
+  if (data2 === undefined || data2 === null) {
     console.log("Event creation failed");
     return;
   }
   const requestData = {
     eventId: data2[0].EventID,
-    userId: data.UserID,
-    background: "",
-    experience: "",
+    userId: data?.ID ?? 0,
+    background: "what up",
+    experience: " whatup",
     why: "whatup",
   };
 
@@ -64,6 +79,15 @@ const main = async () => {
     client: db,
   });
 
+  // Test update query
+  const updateResult = await updateRequestStatus({
+    event: undefined,
+    requestId: joinRequestResult.data?.RequestID ?? 0,
+    newStatus: "confirmed",
+    client: db,
+  });
+  console.log("Update Result:", updateResult);
   console.log("Join Request Result:", joinRequestResult);
+  console.log("Join Request Result:", updateResult);
 };
 main();
