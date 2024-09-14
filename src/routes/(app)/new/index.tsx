@@ -10,7 +10,7 @@ import { valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 import type * as v from "valibot";
-import { GetUser } from "~/helpers/query";
+import { GetUser } from "~/api/Query";
 //get the type from event schema
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {

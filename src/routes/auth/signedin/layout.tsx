@@ -1,6 +1,6 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
-import { CreateUser } from "~/helpers/query";
-import type { Session } from "~/helpers/drizzled";
+import { CreateUser } from "~/api/Query";
+import type { Session } from "~/api/drizzled";
 export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get("session");
 

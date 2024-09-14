@@ -1,7 +1,7 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
-import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/helpers/query";
+import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/api/Query";
 import { updateProfileForm } from "~/api/Forms";
 import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";

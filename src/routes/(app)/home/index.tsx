@@ -3,7 +3,7 @@ import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "~/components/app/eventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
-import { QueryEvents } from "~/helpers/query";
+import { QueryEvents } from "~/api/Query";
 export const head = {
   title: " S&H | Home",
 };
