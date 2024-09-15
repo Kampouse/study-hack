@@ -1,7 +1,12 @@
 import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { ProfileForm, ProfileCard } from "~/components/profile";
-import { GetUser, QueryActiveEvent, QueryActiveRequest } from "~/api/Query";
+import {
+  GetUser,
+  QueryActiveEvent,
+  QueryActiveRequest,
+  QueryMyCompletedRequests,
+} from "~/api/Query";
 import { updateProfileForm } from "~/api/Forms";
 import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
@@ -11,21 +16,21 @@ export const useUser = routeLoader$(async (event) => {
   return await GetUser({ event: event });
 });
 
-export const useQueryActiveRequest = routeLoader$(
+export const useQueries = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
     const user = await GetUser({ event: event });
-    const lst = await QueryActiveRequest({ event: event, user: user });
-
-    return lst;
-  },
-);
-
-export const useActiveEvent = routeLoader$(
-  async (event: RequestEventLoader<QwikCityPlatform>) => {
-    const user = await GetUser({ event: event });
-    const lst = await QueryActiveEvent({ event: event, user: user });
-
-    return lst;
+    const [activeRequest, activeEvent, completedRequest] = await Promise.all([
+      QueryActiveRequest({ event: event, user: user }),
+      QueryActiveEvent({ event: event, user: user }),
+      QueryMyCompletedRequests({ event: event, user: user }),
+    ]);
+    console.log(activeRequest, activeEvent, "pending", completedRequest);
+    return {
+      userData: user,
+      activeRequest: activeRequest,
+      activeEvent: activeEvent,
+      completedRequest: completedRequest,
+    };
   },
 );
 
@@ -39,9 +44,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 });
 
 export default component$(() => {
-  const userData = useUser();
-  const activeEvent = useActiveEvent();
-  const activeRequest = useQueryActiveRequest();
+  const data = useQueries();
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
@@ -49,9 +52,9 @@ export default component$(() => {
     editMode: false,
   });
   useTask$(() => {
-    if (userData.value != undefined) {
-      store.name = userData.value.Name;
-      store.about = userData.value.Description ?? "";
+    if (data.value.userData != undefined) {
+      store.name = data.value.userData.Name;
+      store.about = data.value.userData.Description ?? "";
     }
   });
 
@@ -99,9 +102,9 @@ export default component$(() => {
           <div>
             <h1 class="px-4 py-2 text-2xl font-bold">Active Request</h1>
 
-            <div class="flex flex-row gap-2 px-4">
-              {activeRequest.value != null &&
-                activeRequest.value.map((req) => (
+            <div class="flex flex-wrap gap-2 px-4">
+              {data.value.activeRequest != null &&
+                data.value.activeRequest.map((req) => (
                   <Link
                     key={req.requestId}
                     href={`/profile/meet/${req.requestId}`}
@@ -131,9 +134,9 @@ export default component$(() => {
             </div>
 
             <h1 class="px-4 pt-2 text-2xl font-bold">Active Events</h1>
-            <div class=" flex flex-row gap-2 py-2">
-              {activeEvent.value &&
-                activeEvent.value.map((event) => (
+            <div class=" flex  flex-col gap-2 py-2 md:flex-row">
+              {data.value.activeEvent &&
+                data.value.activeEvent.map((event) => (
                   <div key={event.eventID} class="mx-4 flex flex-col">
                     <h2 class="text-xl font-bold"> {event.name}</h2>
                     <img
@@ -152,6 +155,32 @@ export default component$(() => {
             </div>
           </div>
         </ProfileForm>
+      </div>
+
+      <h1 class="px-4 pt-2 text-2xl font-bold">Confirmed Requests</h1>
+      <div class="flex flex-row gap-2 px-4">
+        {data.value.completedRequest != null &&
+          data.value.completedRequest
+            .filter((req) => req.requestStatus === "confirmed")
+            .map((req) => (
+              <Link key={req.requestId} href={`/profile/meet/${req.requestId}`}>
+                <div class="flex flex-col">
+                  <h2 class="px-2 text-lg font-bold">{req.eventName}</h2>
+                  <img
+                    width={250}
+                    height={250}
+                    class="rounded-lg"
+                    src={
+                      req.eventImg ??
+                      "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                    }
+                  />
+                  <div class="flex flex-row gap-2 px-1">
+                    <h1>Status -&gt; {req.requestStatus}</h1>
+                  </div>
+                </div>
+              </Link>
+            ))}
       </div>
     </main>
   );

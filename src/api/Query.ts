@@ -1,6 +1,6 @@
 import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import { sql } from "drizzle-orm";
@@ -285,6 +285,48 @@ export const QueryEvents = async (params: {
   return output;
 };
 
+export const QueryMyCompletedRequests = async (params: {
+  event: Requested | undefined;
+  options?: QueryEventOptions;
+  user: GetUserReturnType;
+}) => {
+  params.options = params.options ?? {};
+
+  const Client =
+    params.options.client || (await drizzler(params.event as Requested));
+
+  if (Client == null || params.user == null) return null;
+
+  try {
+    return await Client.select({
+      eventId: Events.EventID,
+      eventName: Events.Name,
+      eventImg: Events.ImageURL,
+      requestId: Requests.RequestID,
+      requestStatus: Requests.Status,
+      why: Requests.WhyJoin,
+      background: Requests.Background,
+      createdAt: Requests.CreatedAt,
+    })
+      .from(Requests)
+      .innerJoin(Events, eq(Events.EventID, Requests.EventID))
+      .where(
+        and(
+          eq(Requests.UserID, params.user.ID),
+          eq(Requests.Status, "confirmed"),
+          //   ne(Events.UserID, params.user.ID),
+        ),
+      )
+      .orderBy(Requests.CreatedAt)
+      .limit(params.options.limit ?? 10)
+      .offset(params.options.offset ?? 0)
+      .execute();
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 export const QueryActiveEvent = async (params: {
   event: Requested | undefined;
   options?: QueryEventOptions;
@@ -370,7 +412,7 @@ export const QueryActiveRequest = async (params: {
       .leftJoin(Requests, eq(Events.EventID, Requests.EventID))
       .leftJoin(Users, eq(Users.UserID, Requests.UserID))
       .where(
-        sql`${Events.UserID} != ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
+        sql`${Events.UserID} == ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
       );
   } catch (e) {
     console.log(e);
