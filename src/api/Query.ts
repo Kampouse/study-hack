@@ -1,6 +1,6 @@
 import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, and } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import { sql } from "drizzle-orm";
@@ -312,9 +312,8 @@ export const QueryMyCompletedRequests = async (params: {
       .innerJoin(Events, eq(Events.EventID, Requests.EventID))
       .where(
         and(
-          eq(Requests.UserID, params.user.ID),
-          eq(Requests.Status, "confirmed"),
-          //   ne(Events.UserID, params.user.ID),
+          ne(Requests.UserID, params.user.ID),
+          eq(Events.UserID, params.user.ID),
         ),
       )
       .orderBy(Requests.CreatedAt)
@@ -339,7 +338,6 @@ export const QueryActiveEvent = async (params: {
 
   if (Client == null || params.user == null) return null;
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
-
   return await Client.select({
     name: Events.Name,
     description: Events.Description,
@@ -351,29 +349,13 @@ export const QueryActiveEvent = async (params: {
     tags: Events.Tags,
     eventID: Events.EventID,
     image: Events.ImageURL,
-    requestStatus: Requests.Status,
   })
     .from(Events)
     .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
-    .where(eq(Requests.UserID, params.user.ID))
-    .intersect(
-      Client.select({
-        name: Events.Name,
-        description: Events.Description,
-        location: Events.Location,
-        coordinates: Events.Coordinates,
-        date: Events.Date,
-        starttime: Events.StartTime,
-        endtime: Events.EndTime,
-        tags: Events.Tags,
-        eventID: Events.EventID,
-        image: Events.ImageURL,
-        requestStatus: Requests.Status,
-      })
-        .from(Events)
-        .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
-        .where(eq(Requests.UserID, params.user.ID)),
+    .where(
+      and(ne(Events.UserID, Requests.UserID), eq(Requests.Status, "confirmed")),
     )
+    .groupBy(Events.EventID)
     .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()

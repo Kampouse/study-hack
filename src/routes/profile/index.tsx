@@ -24,6 +24,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 
 export default component$(() => {
   const data = useContext(queryContext);
+  console.log(data.value.completedRequest);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
@@ -79,7 +80,12 @@ export default component$(() => {
             onEdit={handleEditClick}
           />
           <div>
-            <h1 class="px-4 py-2 text-2xl font-bold">Active Request</h1>
+            {(data.value.activeRequest &&
+              data.value.activeRequest.length == 0 && (
+                <h1 class="px-4 py-2 text-2xl font-bold"></h1>
+              )) || (
+              <h1 class="px-4 py-2 text-2xl font-bold">Active Requests</h1>
+            )}
 
             <div class="flex flex-wrap">
               {data.value.activeRequest != null &&
@@ -117,8 +123,9 @@ export default component$(() => {
                   </Link>
                 ))}
             </div>
-
-            <h1 class="px-4 pt-2 text-2xl font-bold">Active Events</h1>
+            {data.value.activeEvent && data.value.activeEvent.length != 0 && (
+              <h1 class="px-4 pt-2 text-2xl font-bold">Active Events</h1>
+            )}
             <div class=" flex  flex-col gap-2 py-2 md:flex-row">
               {data.value.activeEvent &&
                 data.value.activeEvent.map((event) => (
@@ -140,32 +147,6 @@ export default component$(() => {
             </div>
           </div>
         </ProfileForm>
-      </div>
-
-      <h1 class=" pt-2 text-2xl font-bold">Confirmed Requests</h1>
-      <div class="flex flex-row gap-2">
-        {data.value.completedRequest != null &&
-          data.value.completedRequest
-            .filter((req) => req.requestStatus === "confirmed")
-            .map((req) => (
-              <Link key={req.requestId} href={`/profile/meet/${req.requestId}`}>
-                <div class="flex flex-col">
-                  <h2 class="px-2 text-lg font-bold">{req.eventName}</h2>
-                  <img
-                    width={250}
-                    height={250}
-                    class=""
-                    src={
-                      req.eventImg ??
-                      "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                    }
-                  />
-                  <div class="flex flex-row gap-2 px-1">
-                    <h1>Status -&gt; {req.requestStatus}</h1>
-                  </div>
-                </div>
-              </Link>
-            ))}
       </div>
     </main>
   );

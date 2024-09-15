@@ -15,6 +15,7 @@ import {
 } from "~/api/Query";
 export const useQueries = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
+    console.log("ran->");
     const user = await GetUser({ event: event });
     const [activeRequest, activeEvent, completedRequest] = await Promise.all([
       QueryActiveRequest({ event: event, user: user }),

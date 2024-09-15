@@ -6,6 +6,7 @@ import { valiForm$ } from "@modular-forms/qwik";
 import * as v from "valibot";
 import { useContext } from "@builder.io/qwik";
 import { queryContext } from "../../layout";
+import { updateRequestStatus } from "~/api/Query";
 enum status {
   confirmed = "confirmed",
   denied = "denied",
@@ -36,6 +37,12 @@ export const useFormDenied = routeLoader$<InitialValues<Request>>(() => {
 export const useFormAction = formAction$<Request>((values, req) => {
   // Perform actions with form values
   console.log(values);
+
+  updateRequestStatus({
+    event: req,
+    requestId: parseInt(req.params.request),
+    newStatus: values.status as "confirmed" | "denied",
+  });
 
   // Return success or error message
   req.redirect(302, "/profile");
