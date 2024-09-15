@@ -1,39 +1,18 @@
-import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
-import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
-import { ProfileForm, ProfileCard } from "~/components/profile";
 import {
-  GetUser,
-  QueryActiveEvent,
-  QueryActiveRequest,
-  QueryMyCompletedRequests,
-} from "~/api/Query";
+  component$,
+  $,
+  useStore,
+  useSignal,
+  useTask$,
+  useContext,
+} from "@builder.io/qwik";
+import { routeAction$ } from "@builder.io/qwik-city";
+import { queryContext } from "./layout";
+import { ProfileForm, ProfileCard } from "~/components/profile";
+import {} from "~/api/Query";
 import { updateProfileForm } from "~/api/Forms";
-import type { RequestEventLoader } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-
-export const useUser = routeLoader$(async (event) => {
-  return await GetUser({ event: event });
-});
-
-export const useQueries = routeLoader$(
-  async (event: RequestEventLoader<QwikCityPlatform>) => {
-    const user = await GetUser({ event: event });
-    const [activeRequest, activeEvent, completedRequest] = await Promise.all([
-      QueryActiveRequest({ event: event, user: user }),
-      QueryActiveEvent({ event: event, user: user }),
-      QueryMyCompletedRequests({ event: event, user: user }),
-    ]);
-    console.log(activeRequest, activeEvent, "pending", completedRequest);
-    return {
-      userData: user,
-      activeRequest: activeRequest,
-      activeEvent: activeEvent,
-      completedRequest: completedRequest,
-    };
-  },
-);
-
 export const useUpdateUser = routeAction$(async (data, event) => {
   try {
     return updateProfileForm(data, event);
@@ -44,7 +23,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 });
 
 export default component$(() => {
-  const data = useQueries();
+  const data = useContext(queryContext);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
