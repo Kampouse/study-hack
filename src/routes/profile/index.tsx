@@ -81,13 +81,13 @@ export default component$(() => {
           <div>
             <h1 class="px-4 py-2 text-2xl font-bold">Active Request</h1>
 
-            <div class="flex flex-wrap  px-4">
+            <div class="flex flex-wrap">
               {data.value.activeRequest != null &&
                 data.value.activeRequest.map((req) => (
                   <Link
                     key={req.requestId}
                     href={`/profile/meet/${req.requestId}`}
-                    class="w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4"
+                    class="w-fit p-2"
                   >
                     <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm">
                       <div class="p-4">
@@ -98,7 +98,7 @@ export default component$(() => {
                       </div>
                       <div class="flex-grow">
                         <img
-                          class="h-48 w-full  rounded-md object-cover "
+                          class="h-32 w-60 rounded-md object-cover    shadow-lg md:h-60 md:w-full "
                           src={
                             req.image ??
                             "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
@@ -142,8 +142,8 @@ export default component$(() => {
         </ProfileForm>
       </div>
 
-      <h1 class="px-4 pt-2 text-2xl font-bold">Confirmed Requests</h1>
-      <div class="flex flex-row gap-2 px-4">
+      <h1 class=" pt-2 text-2xl font-bold">Confirmed Requests</h1>
+      <div class="flex flex-row gap-2">
         {data.value.completedRequest != null &&
           data.value.completedRequest
             .filter((req) => req.requestStatus === "confirmed")
@@ -154,7 +154,7 @@ export default component$(() => {
                   <img
                     width={250}
                     height={250}
-                    class="rounded-lg"
+                    class=""
                     src={
                       req.eventImg ??
                       "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
