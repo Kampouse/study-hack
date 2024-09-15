@@ -67,7 +67,6 @@ export default component$(() => {
 
   return (
     <div class="flex flex-col">
-      <h1 class="bg-red-500">Request: {location.params.request}</h1>
       <div class="flex w-full flex-col items-center justify-start">
         <div class="mb-4 w-full max-w-md rounded-lg bg-white p-6 shadow-md">
           <h2 class="mb-2 text-center text-xl font-semibold">
