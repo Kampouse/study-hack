@@ -412,8 +412,9 @@ export const QueryActiveRequest = async (params: {
       .leftJoin(Requests, eq(Events.EventID, Requests.EventID))
       .leftJoin(Users, eq(Users.UserID, Requests.UserID))
       .where(
-        sql`${Events.UserID} == ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
-      );
+        sql`${Events.UserID} != ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
+      )
+      .limit(5);
   } catch (e) {
     console.log(e);
     return null;

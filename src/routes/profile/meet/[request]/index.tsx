@@ -69,18 +69,15 @@ export default component$(() => {
     <div class="flex flex-col">
       <div class="flex w-full flex-col items-center justify-start">
         <div class="mb-4 w-full max-w-md rounded-lg bg-white p-6 shadow-md">
-          <h2 class="mb-2 text-center text-xl font-semibold">
-            Request Details
-          </h2>
           <img
             src={display?.image || "https://via.placeholder.com/300"}
             alt="image"
             height={150}
             width={150}
-            class="mb-4 w-full rounded-lg"
+            class="mb-4 h-72  w-full rounded-lg"
           />
 
-          <p class="text-center text-base italic text-gray-800">
+          <p class="pl-2 text-left text-base italic text-gray-800">
             {display?.username}
           </p>
           <div class="space-y-4">

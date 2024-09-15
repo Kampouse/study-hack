@@ -81,30 +81,36 @@ export default component$(() => {
           <div>
             <h1 class="px-4 py-2 text-2xl font-bold">Active Request</h1>
 
-            <div class="flex flex-wrap gap-2 px-4">
+            <div class="flex flex-wrap  px-4">
               {data.value.activeRequest != null &&
                 data.value.activeRequest.map((req) => (
                   <Link
                     key={req.requestId}
                     href={`/profile/meet/${req.requestId}`}
+                    class="w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4"
                   >
-                    <div class="flex flex-col">
-                      <h2 class="px-2 text-lg font-bold"> {req.eventName}</h2>
-                      <img
-                        width={250}
-                        height={250}
-                        class="rounded-lg"
-                        src={
-                          req.image ??
-                          "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                        }
-                        alt={req.username ?? "User"}
-                      />
-                      <div class=" flex flex-row gap-2 px-1">
-                        <h1> @{req.username}</h1>
-                        <h1>
+                    <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm">
+                      <div class="p-4">
+                        <h2 class="truncate text-lg font-bold">
                           {" "}
-                          Status {"->"} {req.requestStatus}
+                          {req.eventName}
+                        </h2>
+                      </div>
+                      <div class="flex-grow">
+                        <img
+                          class="h-48 w-full  rounded-md object-cover "
+                          src={
+                            req.image ??
+                            "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                          }
+                          width={300}
+                          height={300}
+                          alt={req.username ?? "User"}
+                        />
+                      </div>
+                      <div class="bg-gray-50 p-4">
+                        <h1 class="truncate text-left text-sm font-semibold text-gray-800">
+                          @{req.username}
                         </h1>
                       </div>
                     </div>
@@ -116,7 +122,7 @@ export default component$(() => {
             <div class=" flex  flex-col gap-2 py-2 md:flex-row">
               {data.value.activeEvent &&
                 data.value.activeEvent.map((event) => (
-                  <div key={event.eventID} class="mx-4 flex flex-col">
+                  <div key={event.eventID} class=" flex flex-col">
                     <h2 class="text-xl font-bold"> {event.name}</h2>
                     <img
                       width={300}
