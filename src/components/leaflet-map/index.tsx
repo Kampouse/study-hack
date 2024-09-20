@@ -18,9 +18,9 @@ export const LeafletMap = component$<MapProps>(
     useStyles$(
       `   .my-app {
                 #map {
-                  border-radius: 10px;
+                  border-radius: 1rem;
                   width: 100%;
-                   height: 50em;
+                   height: 54.8em;
                     }
                   @media (max-width: 768px) {
                       #map {

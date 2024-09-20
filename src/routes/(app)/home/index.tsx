@@ -1,9 +1,10 @@
 import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
-import { EventCard } from "~/components/app/eventCard";
+import { EventCard } from "@/components/app/eventCard/EventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/api/Query";
+export type Events = Awaited<ReturnType<typeof useEvents>>;
 export const head = {
   title: " S&H | Home",
 };
@@ -17,7 +18,7 @@ export const useEventAction = routeAction$((e) => {
 export type EventAction = ReturnType<typeof useEventAction>;
 
 export const useEvents = routeLoader$(async (event) => {
-  const data = await QueryEvents({ event: event, options: { limit: 3 } });
+  const data = await QueryEvents({ event: event, options: { limit: 6 } });
 
   return data;
 });
@@ -35,7 +36,6 @@ export const useMapData = routeLoader$(async () => {
   ];
   return coords;
 });
-
 export default component$(() => {
   const events = useEvents();
   const coords = useMapData();
@@ -68,10 +68,18 @@ export default component$(() => {
             ))}
           </div>
         </div>
-        <div class="row-span-1 rounded-xl    lg:col-span-2 ">
-          <div class="flex h-full  flex-col justify-start gap-4 px-2 ">
-            {events.value?.map((ev, inc) => (
-              <EventCard eventId={ev.eventID} data={ev} key={inc} />
+
+        <div class="row-span-1 rounded-xl lg:col-span-2">
+          <div class="grid grid-cols-2 gap-2 px-2 lg:grid-cols-2 lg:gap-2">
+            {events.value?.map((ev) => (
+              <EventCard
+                key={ev.eventID}
+                title={ev.name}
+                description={ev.description}
+                time={ev.date}
+                attendees={0}
+                tags={[]}
+              />
             ))}
           </div>
         </div>

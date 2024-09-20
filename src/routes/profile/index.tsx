@@ -6,6 +6,7 @@ import {
   useTask$,
   useContext,
 } from "@builder.io/qwik";
+import { EventCard } from "@/components/app/eventCard/EventCard";
 import { routeAction$ } from "@builder.io/qwik-city";
 import { queryContext } from "./layout";
 import { ProfileForm, ProfileCard } from "~/components/profile";
@@ -13,6 +14,7 @@ import {} from "~/api/Query";
 import { updateProfileForm } from "~/api/Forms";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
+
 export const useUpdateUser = routeAction$(async (data, event) => {
   try {
     return updateProfileForm(data, event);
@@ -124,24 +126,24 @@ export default component$(() => {
                 ))}
             </div>
             {data.value.activeEvent && data.value.activeEvent.length != 0 && (
-              <h1 class="px-4 pt-2 text-2xl font-bold">Active Events</h1>
+              <h1 class="px-4 py-2 text-center text-2xl font-bold md:text-start">
+                Active Events
+              </h1>
             )}
-            <div class=" flex  flex-col gap-2 py-2 md:flex-row">
+            <div class="">
               {data.value.activeEvent &&
                 data.value.activeEvent.map((event) => (
-                  <div key={event.eventID} class=" flex flex-col">
-                    <h2 class="text-xl font-bold"> {event.name}</h2>
-                    <img
-                      width={300}
-                      height={300}
-                      class="rounded-lg"
-                      src={
-                        event.image ??
-                        "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                      }
-                      alt={event.name}
+                  <div
+                    key={event.eventID}
+                    class="flex flex-row justify-center md:justify-start"
+                  >
+                    <EventCard
+                      title="the rust conf"
+                      description="something cool"
+                      time="uhhh"
+                      attendees={10}
+                      tags={[]}
                     />
-                    <p> {event.description}</p>
                   </div>
                 ))}
             </div>
