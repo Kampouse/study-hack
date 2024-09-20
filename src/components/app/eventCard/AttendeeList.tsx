@@ -9,20 +9,20 @@ interface AttendeeListProps {
 
 export const AttendeeList = component$((props: AttendeeListProps) => {
   return (
-    <div class="flex gap-1.5 items-center mt-2.5 w-full text-center whitespace-nowrap shadow-sm rounded-[48px]">
-      <div class="flex items-start self-stretch my-auto text-sm font-medium tracking-normal leading-none text-gray-600">
-        <div class="flex overflow-hidden gap-0.5 justify-center items-center px-2 py-1.5 bg-slate-50 rounded-[999px]">
-          <div class="gap-2 self-stretch px-1 my-auto">Going</div>
+    <div class="mt-2.5 flex w-full items-center justify-between gap-1.5 whitespace-nowrap rounded-[48px] text-center shadow-sm">
+      <div class="flex items-start self-stretch text-sm font-medium leading-none tracking-normal text-white">
+        <div class="flex items-center justify-center gap-0.5 overflow-hidden rounded-[999px] bg-black px-2 py-2">
+          <button class="gap-2   self-stretch px-1">Join?</button>
         </div>
       </div>
-      <div class="flex flex-1 shrink gap-1.5 items-center self-stretch my-auto text-xs leading-none basis-0 text-blue-950">
+      <div class="flex items-center gap-1.5 self-stretch text-xs leading-none text-blue-950">
+        <div class="">+{props.attendees}</div>
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/d60fbae89c1e1d3aba6909bbab84537127eff4f29faa651afcfdb25c70c3dc29?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
-          class="object-contain shrink-0 gap-0 self-stretch my-auto w-14 aspect-[2.8]"
+          class="aspect-[2.8] w-14 shrink-0 object-contain"
           alt="Attendee avatars"
         />
-        <div class="self-stretch my-auto">+{props.attendees}</div>
       </div>
     </div>
   );

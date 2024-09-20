@@ -45,7 +45,9 @@ export const EventCard = component$((props: EventCardProps) => {
         {props.tags &&
           props.tags.map((tag, index) => <Tag key={index} text={tag} />)}
       </div>
-      <AttendeeList attendees={props.attendees} />
+      <div class="flex flex-row">
+        <AttendeeList attendees={props.attendees} />
+      </div>
     </article>
   );
 });

@@ -70,7 +70,7 @@ export default component$(() => {
         </div>
 
         <div class="row-span-1 rounded-xl lg:col-span-2">
-          <div class="grid grid-cols-2 gap-2 px-2 lg:grid-cols-2 lg:gap-2">
+          <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value?.map((ev) => (
               <EventCard
                 key={ev.eventID}
