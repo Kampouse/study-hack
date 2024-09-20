@@ -22,6 +22,8 @@ export const AttendeeList = component$((props: AttendeeListProps) => {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/d60fbae89c1e1d3aba6909bbab84537127eff4f29faa651afcfdb25c70c3dc29?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
           class="aspect-[2.8] w-14 shrink-0 object-contain"
           alt="Attendee avatars"
+          height={56}
+          width={56}
         />
       </div>
     </div>
