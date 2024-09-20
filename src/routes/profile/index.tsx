@@ -135,7 +135,7 @@ export default component$(() => {
                 data.value.activeEvent.map((event) => (
                   <div
                     key={event.eventID}
-                    class="flex flex-row justify-center md:justify-start"
+                    class="flex w-1/4 flex-row justify-center md:justify-start"
                   >
                     <EventCard
                       title="the rust conf"
