@@ -138,10 +138,10 @@ export default component$(() => {
                     class="flex w-1/4 flex-row justify-center md:justify-start"
                   >
                     <EventCard
-                      title="the rust conf"
-                      link="tbd"
+                      title={event.name}
+                      link={`/join/${event.eventID}`}
                       description="something cool"
-                      time="uhhh"
+                      time="soon"
                       attendees={10}
                       tags={[]}
                     />
