@@ -51,17 +51,17 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex grid-cols-5 flex-col gap-5 md:gap-2 lg:grid">
-        <div class="row-span-1 h-fit rounded-full px-2 lg:col-span-3   lg:pl-2 ">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:grid-cols-5">
+        <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <Leaflet popups={coords} />
-          <div class="  pb-2 pt-4 ">
-            <h1 class=" text-2xl font-medium "> Intrests Filters</h1>
+          <div class="pb-2 pt-4">
+            <h1 class="text-2xl font-medium">Intrests Filters</h1>
           </div>
-          <div class=" flex gap-2  md:px-0">
+          <div class="flex gap-2 md:px-0">
             {intrests.map((intrest) => (
               <button
                 key={intrest}
-                class=" max-w-lg self-end rounded-md border bg-blue-50 p-2  text-black shadow-sm  "
+                class="max-w-lg self-end rounded-md border bg-blue-50 p-2 text-black shadow-sm"
               >
                 {intrest}
               </button>
@@ -69,7 +69,7 @@ export default component$(() => {
           </div>
         </div>
 
-        <div class="row-span-1 rounded-xl lg:col-span-2">
+        <div class="order-1 row-span-1 rounded-xl lg:order-2 lg:col-span-2">
           <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value?.map((ev) => (
               <EventCard

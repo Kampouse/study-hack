@@ -21,7 +21,7 @@ export const LeafletMap = component$<MapProps>(
                   border-radius: 1rem;
                   width: 100%;
                   height: 100%;
-                  min-height: 39em;
+                  min-height: 59em;
                     }
                   @media (max-width: 768px) {
                       #map {
