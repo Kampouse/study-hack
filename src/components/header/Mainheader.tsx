@@ -2,6 +2,7 @@ import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
+import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
 export default component$(() => {
@@ -19,41 +20,59 @@ export default component$(() => {
     }
   });
   const location = useLocation();
+
   return (
     <header class="h-fit w-full ">
-      <nav
-        class="relative flex h-16 items-center font-mono  text-black shadow-sm md:justify-between"
-        role="navigation"
-      >
-        <div class="pl-2   md:pl-8">
-          <Link
-            href={session.value ? "/home" : "/landing"}
-            class=" hidden p-4 text-2xl md:inline "
-          >
-            {"S & H"}
-          </Link>
-        </div>
-        <div class="flex  flex-row content-center justify-center">
+      <nav class="flex w-full items-center justify-between" role="navigation">
+        <div class="flex items-center">
+          <div class="pl-10 md:pl-8">
+            <Link
+              href={session.value ? "/home" : "/landing"}
+              class="hidden p-4 text-2xl text-black md:inline-block"
+            >
+              <h1>{"S & H"} </h1>
+            </Link>
+
+            {location.url.pathname === "/home" && (
+              <Link
+                href="/new"
+                class="rounded-full bg-black px-3 py-2 text-white md:hidden"
+              >
+                New
+              </Link>
+            )}
+            <Link href="/home" class="p-4 pl-5 text-white">
+              {location.url.pathname !== "/home" && (
+                <div class="rounded-full bg-black px-3 py-2 md:hidden">
+                  <ArrowLeftIcon size={24} />
+                </div>
+              )}
+            </Link>
+          </div>
           {!session.value && (
             <a href="/" class="p-4">
               Learn more
             </a>
           )}
+        </div>
+        <div class="flex w-full flex-row content-center justify-end">
           {session.value && (
             <div class="flex items-center gap-4">
               {location.url.href.includes("home") ? (
-                <Link
-                  href="/new"
-                  class="rounded-full bg-black px-3 py-2 text-white"
-                >
-                  + Create event
-                </Link>
+                <div>
+                  <Link
+                    href="/new"
+                    class="hidden rounded-full bg-black px-3 py-2 text-white md:block"
+                  >
+                    New
+                  </Link>
+                </div>
               ) : (
                 <Link
                   href="/home"
-                  class="rounded-full bg-black px-3 py-2 text-white"
+                  class="hidden rounded-full bg-black px-3 py-2 text-white md:block"
                 >
-                  Back to Dashboard
+                  <ArrowLeftIcon size={24} />
                 </Link>
               )}
               {location.url.pathname !== "/profile" && (
