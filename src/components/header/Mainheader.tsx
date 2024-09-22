@@ -24,13 +24,13 @@ export default component$(() => {
   return (
     <header class="h-fit w-full ">
       <nav class="flex w-full items-center justify-between" role="navigation">
-        <div class="flex items-center">
+        <div class="flex flex-col items-center">
           <div class="pl-10 md:pl-8">
             <Link
               href={session.value ? "/home" : "/landing"}
               class="hidden p-4 text-2xl text-black md:inline-block"
             >
-              <h1>{"S & H"} </h1>
+              <h1 class="inline-block">{"S & H"} </h1>
             </Link>
 
             {location.url.pathname === "/home" && (
@@ -41,21 +41,21 @@ export default component$(() => {
                 New
               </Link>
             )}
-            <Link href="/home" class="p-4 pl-5 text-white">
+            <Link href="/home" class="p-4 pl-5 text-white  md:hidden ">
               {location.url.pathname !== "/home" && (
-                <div class="rounded-full bg-black px-3 py-2 md:hidden">
+                <div class="rounded-full bg-black px-3 py-2 ">
                   <ArrowLeftIcon size={24} />
                 </div>
               )}
             </Link>
           </div>
           {!session.value && (
-            <a href="/" class="p-4">
+            <a href="/" class="hidden p-4">
               Learn more
             </a>
           )}
         </div>
-        <div class="flex w-full flex-row content-center justify-end">
+        <div class="flex  flex-row content-center justify-end">
           {session.value && (
             <div class="flex items-center gap-4">
               {location.url.href.includes("home") ? (

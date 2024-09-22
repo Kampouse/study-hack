@@ -130,12 +130,12 @@ export default component$(() => {
                 Active Events
               </h1>
             )}
-            <div class="">
+            <div class="flex justify-center lg:justify-start">
               {data.value.activeEvent &&
                 data.value.activeEvent.map((event) => (
                   <div
                     key={event.eventID}
-                    class="flex w-1/4 flex-row justify-center md:justify-start"
+                    class="flex  w-[25em] flex-row justify-center md:justify-start lg:w-1/4"
                   >
                     <EventCard
                       title={event.name}

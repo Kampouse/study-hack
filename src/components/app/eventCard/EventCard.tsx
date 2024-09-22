@@ -16,7 +16,7 @@ export type EventCardProps = {
 
 export const EventCard = component$((props: EventCardProps) => {
   return (
-    <article class="flex  flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full">
+    <article class="flex  w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full">
       <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
         <img
           loading="lazy"

@@ -18,7 +18,7 @@ export default component$<CardProps>(({ data }) => {
           class=" flex flex-col px-2  md:flex-row md:items-start
         lg:items-start"
         >
-          <div class="flex   flex-row">
+          <div class="flex   flex-row justify-end md:justify-center">
             <Modal.Trigger>
               <img
                 src={image || "https://via.placeholder.com/200"}
@@ -52,8 +52,12 @@ export default component$<CardProps>(({ data }) => {
             </Modal.Trigger>
           </div>
           <div class=" self-center">
-            <h1 class=" py-0 pl-2 text-3xl text-zinc-900">{data.name}</h1>
-            <p class="py-1 pl-2 text-[#939393]">{data.about}</p>
+            <h1 class=" py-0 pl-2 text-center text-3xl text-zinc-900 md:text-left">
+              {data.name}
+            </h1>
+            <p class="py-1 pl-2  text-center text-[#939393]  md:text-left">
+              {data.about}
+            </p>
 
             <div class="flex flex-wrap items-start gap-2 px-2 ">
               {data.interests.map((item, index) => {
