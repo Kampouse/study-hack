@@ -11,6 +11,7 @@ export type EventCardProps = {
   time: string;
   tags: string[];
   attendees: number;
+  link: string;
 };
 
 export const EventCard = component$((props: EventCardProps) => {
@@ -46,7 +47,7 @@ export const EventCard = component$((props: EventCardProps) => {
           props.tags.map((tag, index) => <Tag key={index} text={tag} />)}
       </div>
       <div class="flex flex-row">
-        <AttendeeList attendees={props.attendees} />
+        <AttendeeList link={props.link} attendees={props.attendees} />
       </div>
     </article>
   );

@@ -73,6 +73,7 @@ export default component$(() => {
           <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value?.map((ev) => (
               <EventCard
+                link={`/join/${ev.eventID}`}
                 key={ev.eventID}
                 title={ev.name}
                 description={ev.description}

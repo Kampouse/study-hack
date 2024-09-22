@@ -139,6 +139,7 @@ export default component$(() => {
                   >
                     <EventCard
                       title="the rust conf"
+                      link="tbd"
                       description="something cool"
                       time="uhhh"
                       attendees={10}

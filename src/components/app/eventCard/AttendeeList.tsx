@@ -3,8 +3,10 @@
  */
 import { component$ } from "@builder.io/qwik";
 
+import { Link } from "@builder.io/qwik-city";
 interface AttendeeListProps {
   attendees: number;
+  link: string;
 }
 
 export const AttendeeList = component$((props: AttendeeListProps) => {
@@ -12,7 +14,9 @@ export const AttendeeList = component$((props: AttendeeListProps) => {
     <div class="mt-2.5 flex w-full items-center justify-between gap-1.5 whitespace-nowrap rounded-[48px] text-center shadow-sm">
       <div class="flex items-start self-stretch text-sm font-medium leading-none tracking-normal text-white">
         <div class="flex items-center justify-center gap-0.5 overflow-hidden rounded-[999px] bg-black px-2 py-2">
-          <button class="gap-2   self-stretch px-1">Join?</button>
+          <Link href={props.link} class="gap-2   self-stretch px-1">
+            Join?
+          </Link>
         </div>
       </div>
       <div class="flex items-center gap-1.5 self-stretch text-xs leading-none text-blue-950">
