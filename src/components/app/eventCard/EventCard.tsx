@@ -4,6 +4,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Tag } from "./Tag";
 import { AttendeeList } from "./AttendeeList";
+import { Attendeed } from "./AttendeeList";
 
 export type EventCardProps = {
   title: string;
@@ -13,7 +14,7 @@ export type EventCardProps = {
   attendees: number;
   link: string;
 };
-
+const imgs = ["hello", "stuff", "world"];
 export const EventCard = component$((props: EventCardProps) => {
   return (
     <article class="flex  w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full">
@@ -47,7 +48,11 @@ export const EventCard = component$((props: EventCardProps) => {
           props.tags.map((tag, index) => <Tag key={index} text={tag} />)}
       </div>
       <div class="flex flex-row">
-        <AttendeeList link={props.link} attendees={props.attendees} />
+        <AttendeeList
+          link={props.link}
+          attendees={props.attendees}
+          images={imgs}
+        />
       </div>
     </article>
   );

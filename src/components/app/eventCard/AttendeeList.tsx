@@ -6,8 +6,35 @@ import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 interface AttendeeListProps {
   attendees: number;
+  images: string[];
   link: string;
 }
+
+type Attendees = {
+  images: string[];
+};
+
+export const Attendeed = component$<Attendees>((props) => {
+  return (
+    <div class="flex items-center space-x-2 rounded-lg bg-white ">
+      <div class="  ">+0</div>
+      <div class="flex -space-x-4">
+        {props.images.map((member, index) => (
+          <div
+            key={index}
+            class="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white"
+          >
+            <img
+              src="https://images.nightcafe.studio/jobs/032KbO9u2g23uM4b102q/032KbO9u2g23uM4b102q--1--5ukpj.jpg?tr=w-640,c-at_max"
+              height={64}
+              width={64}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+});
 
 export const AttendeeList = component$((props: AttendeeListProps) => {
   return (
@@ -21,14 +48,18 @@ export const AttendeeList = component$((props: AttendeeListProps) => {
       </div>
       <div class="flex items-center gap-1.5 self-stretch text-xs leading-none text-blue-950">
         <div class="">+{props.attendees}</div>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/d60fbae89c1e1d3aba6909bbab84537127eff4f29faa651afcfdb25c70c3dc29?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
-          class="aspect-[2.8] w-14 shrink-0 object-contain"
-          alt="Attendee avatars"
-          height={56}
-          width={56}
-        />
+        {props.images.map((member, index) => (
+          <div
+            key={index}
+            class={`relative h-8 w-8 overflow-hidden rounded-full border-2 border-white ${index > 0 ? "-ml-4" : ""}`}
+          >
+            <img
+              src="https://images.nightcafe.studio/jobs/032KbO9u2g23uM4b102q/032KbO9u2g23uM4b102q--1--5ukpj.jpg?tr=w-640,c-at_max"
+              height={64}
+              width={64}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
