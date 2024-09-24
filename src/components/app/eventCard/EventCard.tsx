@@ -4,7 +4,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Tag } from "./Tag";
 import { AttendeeList } from "./AttendeeList";
-import { Attendeed } from "./AttendeeList";
 
 export type EventCardProps = {
   title: string;
