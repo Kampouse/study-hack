@@ -2,7 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/app/eventCard/EventCard";
 import type { popupsData } from "~/models/map";
-import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
+import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/api/Query";
 import { LocationCard } from "@/components/app/LocationCard/LocationCard";
 export type Events = Awaited<ReturnType<typeof useEvents>>;
@@ -58,7 +58,7 @@ export default component$(() => {
           </div>
         </div>
 
-        <div class="order-1 row-span-1 rounded-xl lg:order-2 lg:col-span-2">
+        <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value?.map((ev) => (
               <EventCard
@@ -71,13 +71,20 @@ export default component$(() => {
                 tags={[]}
               />
             ))}
+            {events.value && events.value.length > 3 && (
+              <Link
+                href="/join"
+                class=" rounded-lg bg-black  p-2 text-center text-white md:hidden"
+              >
+                See more
+              </Link>
+            )}
           </div>
         </div>
       </div>
       <div class=" order-last px-2 pt-2">
         <h1 class="  pb-2 text-2xl  font-medium ">Good locations</h1>
         <div class=" flex  w-full flex-col content-center gap-2  md:flex-row lg:gap-4 ">
-
           <LocationCard
             name="Esplanda"
             link="/montreal"
