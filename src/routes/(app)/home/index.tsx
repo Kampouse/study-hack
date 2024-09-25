@@ -77,6 +77,23 @@ export default component$(() => {
       <div class=" order-last px-2 pt-2">
         <h1 class="  pb-2 text-2xl  font-medium ">Good locations</h1>
         <div class=" flex  w-full flex-col content-center gap-2  md:flex-row lg:gap-4 ">
+
+          <LocationCard
+            name="Esplanda"
+            link="/montreal"
+            tags={["festival", "city"]}
+            rating={5}
+            address="Montreal, Quebec, Canada"
+            description="The city of festivals"
+          />
+          <LocationCard
+            name="Esplanda"
+            link="/montreal"
+            tags={["festival", "city"]}
+            rating={5}
+            address="Montreal, Quebec, Canada"
+            description="The city of festivals"
+          />
           <LocationCard
             name="Esplanda"
             link="/montreal"
