@@ -20,13 +20,11 @@ export const LeafletMap = component$<MapProps>(
                 #map {
                   border-radius: 1rem;
                   width: 100%;
-                  height: 59em;
                     }
                   @media (max-width: 768px) {
                       #map {
                         border-radius: 5px;
                         width: 100%;
-                        height: 35em;
                       }
                       color: red;
                       }
@@ -41,7 +39,6 @@ export const LeafletMap = component$<MapProps>(
                       #map {
                       border-radius: 5px;
                       width: 100%;
-                      height: 35em;
                     }
                     color: red;
                   }
@@ -107,6 +104,6 @@ export const LeafletMap = component$<MapProps>(
       });
       mapContainer$.value = noSerialize(map);
     });
-    return <div id="map" class="shadow-md"></div>;
+    return <div id="map" class="shadow-md border h-[27em] lg:h-[59em]  2xl:h-[64em]"></div>;
   },
 );

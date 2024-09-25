@@ -53,7 +53,9 @@ export default component$(() => {
       </div>
       <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:grid-cols-5">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
-          <Leaflet popups={coords} />
+          <div class="h-[20em]">
+            <Leaflet popups={coords} />
+          </div>
         </div>
 
         <div class="order-1 row-span-1 rounded-xl lg:order-2 lg:col-span-2">

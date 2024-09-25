@@ -5,7 +5,7 @@ export default component$(() => {
   return <Landing />;
 });
 export const head: DocumentHead = {
-  title: "learn & hack",
+  title: "Just RND",
   meta: [
     {
       name: "description",
