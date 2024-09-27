@@ -23,7 +23,10 @@ export default component$(() => {
 
   return (
     <header class="h-fit w-full ">
-      <nav class="flex w-full items-center justify-between" role="navigation">
+      <nav
+        class="flex w-full items-center justify-between shadow-sm"
+        role="navigation"
+      >
         <div class="flex flex-col items-center">
           <div class="pl-10 md:pl-8">
             <Link

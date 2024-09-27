@@ -55,7 +55,7 @@ export const LocationCard = component$((props: LocationCardProps) => {
       </div>
       <div class="flex justify-start">
         <button class="mt-2 w-fit rounded-full bg-black px-2 py-2 font-medium text-white transition-colors hover:bg-gray-800">
-          Select Location
+          Learn more
         </button>
       </div>
     </article>
