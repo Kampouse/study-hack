@@ -11,11 +11,14 @@ interface AttendeeListProps {
 }
 export const AttendeeList = component$((props: AttendeeListProps) => {
   return (
-    <div class="mt-2.5 flex w-full items-center justify-between gap-1.5 whitespace-nowrap rounded-[48px] text-center shadow-sm">
+    <div class="mt-2.5 flex w-full items-center justify-between gap-1.5 whitespace-nowrap rounded-[48px] text-center ">
       <div class="flex items-start self-stretch text-sm font-medium leading-none tracking-normal text-white">
-        <div class="flex items-center justify-center gap-0.5 overflow-hidden rounded-[999px] bg-black px-2 py-2">
-          <Link href={props.link} class="gap-2   self-stretch px-1">
-            Join?
+        <div class="flex items-center justify-center gap-0.5 overflow-hidden rounded-[999px] bg-black px-2 py-2 transition-all duration-300 hover:scale-105 hover:bg-blue-600">
+          <Link
+            href={props.link}
+            class="gap-2 self-stretch px-1 text-white transition-colors duration-300 hover:text-yellow-300"
+          >
+            Join
           </Link>
         </div>
       </div>
