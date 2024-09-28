@@ -1,6 +1,6 @@
 import { Users, Events, Requests } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, ne, or } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import { sql } from "drizzle-orm";
@@ -353,7 +353,14 @@ export const QueryActiveEvent = async (params: {
     .from(Events)
     .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
     .where(
-      and(ne(Events.UserID, Requests.UserID), eq(Requests.Status, "confirmed")),
+      and(
+        eq(Requests.Status, "confirmed"),
+        ne(Requests.UserID, params.user.ID),
+        or(
+          eq(Requests.UserID, params.user.ID),
+          eq(Events.UserID, params.user.ID),
+        ),
+      ),
     )
     .groupBy(Events.EventID)
     .limit(params.options.limit ?? 3)
@@ -394,7 +401,12 @@ export const QueryActiveRequest = async (params: {
       .leftJoin(Requests, eq(Events.EventID, Requests.EventID))
       .leftJoin(Users, eq(Users.UserID, Requests.UserID))
       .where(
-        sql`${Events.UserID} != ${Requests.UserID} AND ${Requests.Status} = 'pending'`,
+        and(
+          eq(Events.UserID, params.user.ID),
+          eq(Requests.Status, "pending"),
+          //comment this line for testing
+          ne(Requests.UserID, params.user.ID),
+        ),
       )
       .limit(5);
   } catch (e) {

@@ -26,7 +26,7 @@ export const useUpdateUser = routeAction$(async (data, event) => {
 
 export default component$(() => {
   const data = useContext(queryContext);
-  console.log(data.value.completedRequest);
+  console.log(data.value.activeEvent);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",
@@ -94,7 +94,7 @@ export default component$(() => {
                 data.value.activeRequest.map((req) => (
                   <Link
                     key={req.requestId}
-                    href={`/profile/meet/${req.requestId}`}
+                    href={`/profile/meet/request/${req.requestId}`}
                     class="w-fit p-2"
                   >
                     <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm">
