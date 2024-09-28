@@ -14,6 +14,23 @@ export type EventCardProps = {
   link: string;
 };
 const imgs = ["hello", "stuff", "world"];
+export const EmptyEventCard = component$(() => {
+  return (
+    <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-[35em]">
+      <div class="flex h-64 flex-col items-center justify-center space-y-4">
+        <div class="h-8 w-3/4 animate-pulse rounded-md bg-gray-200"></div>
+        <div class="h-6 w-1/2 animate-pulse rounded-md bg-gray-200"></div>
+        <div class="h-6 w-2/3 animate-pulse rounded-md bg-gray-200"></div>
+        <div class="flex space-x-2">
+          <div class="h-6 w-16 animate-pulse rounded-full bg-gray-200"></div>
+          <div class="h-6 w-16 animate-pulse rounded-full bg-gray-200"></div>
+        </div>
+        <div class="h-8 w-1/3 animate-pulse rounded-md bg-gray-200"></div>
+      </div>
+    </article>
+  );
+});
+
 export const EventCard = component$((props: EventCardProps) => {
   return (
     <article class=" flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full  [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block ">
