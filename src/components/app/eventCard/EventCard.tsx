@@ -14,10 +14,11 @@ export type EventCardProps = {
   link: string;
 };
 const imgs = ["hello", "stuff", "world"];
+
 export const EmptyEventCard = component$(() => {
   return (
     <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
-      <header class="relative flex lg:aspect-[1.8] 2xl:aspect-[2.35]  w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
+      <header class="relative flex w-full flex-col items-center  justify-center overflow-hidden rounded-xl px-14 py-10 lg:aspect-[1.8] xl:aspect-[2.3] 2xl:aspect-[2.35]">
         <div class="size-full absolute inset-0 animate-pulse bg-gray-200"></div>
       </header>
       <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">
@@ -29,7 +30,6 @@ export const EmptyEventCard = component$(() => {
         <div class="h-6 w-16 animate-pulse rounded-full bg-gray-200"></div>
         <div class="h-6 w-16 animate-pulse rounded-full bg-gray-200"></div>
       </div>
-
     </article>
   );
 });

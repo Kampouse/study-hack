@@ -52,14 +52,10 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:grid-cols-5">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <div class="">
-
-
             <Leaflet popups={coords} />
-
-
           </div>
         </div>
 
@@ -75,14 +71,13 @@ export default component$(() => {
                 attendees={0}
                 tags={[]}
               />
-            )) || <div class="flex flex-col gap-2">
-
+            )) || (
+              <div class="flex flex-col gap-2">
                 <EmptyEventCard />
                 <EmptyEventCard />
                 <EmptyEventCard />
-
-
-              </div>}
+              </div>
+            )}
             {events.value && events.value.length > 3 && (
               <Link
                 href="/join"

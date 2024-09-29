@@ -27,7 +27,6 @@ export const CreateUser = async (params: {
     return null;
   }
 
-  console.log("Client initialized");
   try {
     const data = await Client.select()
       .from(Users)
@@ -163,9 +162,6 @@ export const CreateEvent = async (params: {
     params.userData ?? (await GetUser({ event: params.event as Requested }));
   const Client = params.Client ?? (await drizzler(params.event as Requested));
   if (userData === undefined || Client === null || userData === null) return;
-
-  console.log(params);
-
   return await Client.insert(Events)
     .values({
       Name: params.session.Name,
@@ -355,6 +351,7 @@ export const QueryActiveEvent = async (params: {
     .where(
       and(
         eq(Requests.Status, "confirmed"),
+        // comment this for testing
         ne(Requests.UserID, params.user.ID),
         or(
           eq(Requests.UserID, params.user.ID),
