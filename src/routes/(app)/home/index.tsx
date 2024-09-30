@@ -5,7 +5,8 @@ import { EmptyEventCard } from "@/components/app/eventCard/EventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
 import { QueryEvents } from "~/api/Query";
-import { LocationCard } from "@/components/app/LocationCard/LocationCard";
+import { LocationCard, ShareLocationCard } from "@/components/app/LocationCard/LocationCard";
+
 export type Events = Awaited<ReturnType<typeof useEvents>>;
 
 export const head = {
@@ -52,7 +53,7 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] xl:h-fit lg:grid-cols-5">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <div class="">
             <Leaflet popups={coords} />
@@ -100,6 +101,7 @@ export default component$(() => {
             address="Montreal, Quebec, Canada"
             description="The city of festivals"
           />
+          <ShareLocationCard />
           <LocationCard
             name="Esplanda"
             link="/montreal"
@@ -116,6 +118,7 @@ export default component$(() => {
             address="Montreal, Quebec, Canada"
             description="The city of festivals"
           />
+
         </div>
       </div>
     </div>

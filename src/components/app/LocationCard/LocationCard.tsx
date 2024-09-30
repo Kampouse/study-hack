@@ -9,6 +9,42 @@ export type LocationCardProps = {
   link: string;
 };
 
+export const ShareLocationCard = component$(() => {
+  const suggestedTags = [  'Wi-Fi', 'Open Late'];
+
+  return (
+    <article class="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer">
+      <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray-100 px-14 py-10">
+
+      </header>
+      <div class="mt-2.5 flex w-full flex-col text-start">
+        <h2 class="text-lg font-medium text-gray-950">Share Your Favorite Place</h2>
+        <p class="mt-1.5 text-sm  text-start text-neutral-400">Help others discover great study spots!</p>
+      </div>
+      <div class="mt-4 flex flex-wrap  justify-start gap-2">
+        {suggestedTags.map((tag, index) => (
+          <Tag key={index} text={tag} />
+        ))}
+      </div>
+      <div class="mt-4 flex justify-start">
+        <button class="rounded-full bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400">
+          Add a Location
+        </button>
+      </div>
+    </article>
+  );
+
+
+});
+
+
+
+
+
+
+
+
+
 export const LocationCard = component$((props: LocationCardProps) => {
   return (
     <article class="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full">
@@ -37,10 +73,11 @@ export const LocationCard = component$((props: LocationCardProps) => {
           {props.address}
         </address>
       </div>
-      <div class="mt-2.5 flex w-full items-start gap-2.5 text-center text-xs font-medium leading-none text-gray-600">
-        {props.tags &&
-          props.tags.map((tag, index) => <Tag key={index} text={tag} />)}
-      </div>
+      <div class="mt-4 flex flex-wrap  justify-start gap-2">
+              {props.tags.map((tag, index) => (
+                <Tag key={index} text={tag} />
+              ))}
+            </div>
       <div class="flex flex-row">
         {/*
 
@@ -53,7 +90,7 @@ export const LocationCard = component$((props: LocationCardProps) => {
 
         */}
       </div>
-      <div class="flex justify-start">
+      <div class="flex justify-start py-2">
         <button class="mt-2 w-fit rounded-full bg-black px-2 py-2 font-medium text-white transition-colors hover:bg-gray-800">
           Learn more
         </button>

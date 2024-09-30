@@ -88,8 +88,8 @@ const createRandomEvent = () => {
   return randomEvent;
 };
 
-const createMultipleEvents = (count: number, userId: number) => {
-  return Array.from({ length: count }, () => createRandomEvent(userId));
+const createMultipleEvents = (count: number) => {
+  return Array.from({ length: count }, () => createRandomEvent());
 };
 
 const insertManyEvents = async (
@@ -151,7 +151,7 @@ const applyEvents = async (users: ApplyUsers) => {
 
     for (let i = 0; i < users.length; i++) {
       const numEvents = Math.floor(Math.random() * 5) + 1; // 1 to 5 events per user
-      const events = createMultipleEvents(numEvents, users[i].UserID);
+      const events = createMultipleEvents(numEvents);
 
       await insertManyEvents(events, {
         ID: users[i].UserID,
