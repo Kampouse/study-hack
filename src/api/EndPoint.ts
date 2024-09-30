@@ -1,14 +1,27 @@
-import { type QueryEventOptions, QueryEvents, QueryEvent } from "~/api/Query";
+import {
+  type QueryEventOptions,
+  QueryEvents,
+  QueryEvent,
+  GetUser,
+} from "~/api/Query";
 
 import type { Requested } from "~/api/drizzled";
 
-export const getEvents = async (
-  event: Requested,
-  options: QueryEventOptions,
-) => {
+export const getEvents = async ({
+  event,
+  options,
+}: {
+  event: Requested;
+  options: QueryEventOptions;
+}) => {
   try {
-    const data = await QueryEvents({ event, options });
-    console.log(data);
+    const user = await GetUser({ event });
+
+    console.log("am user", user);
+    const data = await QueryEvents({
+      event,
+      options: { ...options, byUser: user?.ID },
+    });
     if (data === null) {
       return { success: false, data: null, error: "Failed to get events" };
     }
@@ -36,7 +49,7 @@ export const getFirstEvent = async (
   event: Requested,
   options: QueryEventOptions,
 ) => {
-  const response = await getEvents(event, options);
+  const response = await getEvents({ event, options });
 
   if (response.success && response.data !== null) {
     return response;
