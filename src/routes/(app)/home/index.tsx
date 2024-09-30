@@ -4,8 +4,11 @@ import { EventCard } from "@/components/app/eventCard/EventCard";
 import { EmptyEventCard } from "@/components/app/eventCard/EventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
-import { QueryEvents } from "~/api/Query";
-import { LocationCard, ShareLocationCard } from "@/components/app/LocationCard/LocationCard";
+import {
+  LocationCard,
+  ShareLocationCard,
+} from "@/components/app/LocationCard/LocationCard";
+import { getEvents } from "~/api/EndPoint";
 
 export type Events = Awaited<ReturnType<typeof useEvents>>;
 
@@ -22,8 +25,12 @@ export const useEventAction = routeAction$((e) => {
 export type EventAction = ReturnType<typeof useEventAction>;
 
 export const useEvents = routeLoader$(async (event) => {
-  const data = await QueryEvents({ event: event, options: { limit: 6 } });
-
+  const data = getEvents({
+    event: event,
+    options: {
+      limit: 6,
+    },
+  });
   return data;
 });
 
@@ -53,7 +60,7 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] xl:h-fit lg:grid-cols-5">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5 xl:h-fit">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <div class="">
             <Leaflet popups={coords} />
@@ -62,24 +69,26 @@ export default component$(() => {
 
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
-            {events.value?.map((ev) => (
-              <EventCard
-                link={`/join/${ev.eventID}`}
-                key={ev.eventID}
-                title={ev.name}
-                description={ev.description}
-                time={ev.date}
-                attendees={0}
-                tags={[]}
-              />
-            )) || (
+            {events.value.data && events.value.data.length > 0 ? (
+              events.value.data.map((ev) => (
+                <EventCard
+                  link={`/join/${ev.eventID}`}
+                  key={ev.eventID}
+                  title={ev.name}
+                  description={ev.description}
+                  time={ev.date}
+                  attendees={0}
+                  tags={[]}
+                />
+              ))
+            ) : (
               <div class="flex flex-col gap-2">
                 <EmptyEventCard />
                 <EmptyEventCard />
                 <EmptyEventCard />
               </div>
             )}
-            {events.value && events.value.length > 3 && (
+            {events.value.data && events.value.data.length > 3 && (
               <Link
                 href="/join"
                 class=" rounded-lg bg-black  p-2 text-center text-white md:hidden"
@@ -118,7 +127,6 @@ export default component$(() => {
             address="Montreal, Quebec, Canada"
             description="The city of festivals"
           />
-
         </div>
       </div>
     </div>

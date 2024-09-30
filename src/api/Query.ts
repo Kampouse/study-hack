@@ -3,7 +3,6 @@ import type { Session } from "./drizzled";
 import { eq, and, ne, or } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
-import { sql } from "drizzle-orm";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
 export type User = {
   Name: string;
@@ -249,6 +248,7 @@ export const QueryEvents = async (params: {
 
   if (Client == null) return null;
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+
   const output = await Client.select({
     name: Events.Name,
     description: Events.Description,
@@ -261,14 +261,14 @@ export const QueryEvents = async (params: {
     eventID: Events.EventID,
     image: Events.ImageURL,
   })
+
     .from(Events)
 
     .where(
       params.options.byUser
-        ? eq(Events.UserID, params.options.byUser)
+        ? ne(Events.UserID, params.options.byUser)
         : undefined,
     )
-    .orderBy(sql`RANDOM()`)
     .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
@@ -278,6 +278,7 @@ export const QueryEvents = async (params: {
       return null;
     });
 
+  console.log("what going on here", output);
   return output;
 };
 
