@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.3.0
+        version: 11.3.0
     devDependencies:
       '@auth/core':
         specifier: 0.31.0
@@ -91,7 +95,7 @@ importers:
         version: 0.23.0
       drizzle-orm:
         specifier: ^0.33.0
-        version: 0.33.0(@libsql/client@0.5.6)(@types/better-sqlite3@7.6.11)(@types/react@18.3.3)(better-sqlite3@9.6.0)(react@18.3.1)
+        version: 0.33.0(@libsql/client@0.5.6)(@types/better-sqlite3@7.6.11)(@types/react@18.3.3)(better-sqlite3@11.3.0)(react@18.3.1)
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -2631,8 +2635,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  better-sqlite3@9.6.0:
-    resolution: {integrity: sha512-yR5HATnqeYNVnkaUTf4bOP2dJSnyhP4puJN/QPRyx4YkBEEUxib422n2XzPqDEHjQQqazoYoADdAm5vE15+dAQ==}
+  better-sqlite3@11.3.0:
+    resolution: {integrity: sha512-iHt9j8NPYF3oKCNOO5ZI4JwThjt3Z6J6XrcwG85VNMVzv1ByqrHWv5VILEbCMFWDsoHhXvQ7oC8vgRXFAKgl9w==}
 
   big.js@5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
@@ -9290,11 +9294,10 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  better-sqlite3@9.6.0:
+  better-sqlite3@11.3.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.2
-    optional: true
 
   big.js@5.2.2: {}
 
@@ -9658,8 +9661,7 @@ snapshots:
 
   dedent@1.5.3: {}
 
-  deep-extend@0.6.0:
-    optional: true
+  deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
 
@@ -9768,12 +9770,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.33.0(@libsql/client@0.5.6)(@types/better-sqlite3@7.6.11)(@types/react@18.3.3)(better-sqlite3@9.6.0)(react@18.3.1):
+  drizzle-orm@0.33.0(@libsql/client@0.5.6)(@types/better-sqlite3@7.6.11)(@types/react@18.3.3)(better-sqlite3@11.3.0)(react@18.3.1):
     optionalDependencies:
       '@libsql/client': 0.5.6
       '@types/better-sqlite3': 7.6.11
       '@types/react': 18.3.3
-      better-sqlite3: 9.6.0
+      better-sqlite3: 11.3.0
       react: 18.3.1
 
   duplexer@0.1.2: {}
@@ -10296,8 +10298,7 @@ snapshots:
 
   exit-hook@2.2.1: {}
 
-  expand-template@2.0.3:
-    optional: true
+  expand-template@2.0.3: {}
 
   express@4.19.2:
     dependencies:
@@ -10620,8 +10621,7 @@ snapshots:
 
   git-hooks-list@1.0.3: {}
 
-  github-from-package@0.0.0:
-    optional: true
+  github-from-package@0.0.0: {}
 
   github-slugger@2.0.0: {}
 
@@ -10897,8 +10897,7 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  ini@1.3.8:
-    optional: true
+  ini@1.3.8: {}
 
   inline-style-parser@0.1.1: {}
 
@@ -12096,8 +12095,7 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  napi-build-utils@1.0.2:
-    optional: true
+  napi-build-utils@1.0.2: {}
 
   natural-compare@1.4.0: {}
 
@@ -12110,7 +12108,6 @@ snapshots:
   node-abi@3.65.0:
     dependencies:
       semver: 7.6.2
-    optional: true
 
   node-addon-api@1.7.2:
     optional: true
@@ -12574,7 +12571,6 @@ snapshots:
       simple-get: 4.0.1
       tar-fs: 2.1.1
       tunnel-agent: 0.6.0
-    optional: true
 
   prelude-ls@1.1.2: {}
 
@@ -12689,7 +12685,6 @@ snapshots:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
-    optional: true
 
   react-colorful@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -13086,15 +13081,13 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  simple-concat@1.0.1:
-    optional: true
+  simple-concat@1.0.1: {}
 
   simple-get@4.0.1:
     dependencies:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
-    optional: true
 
   simple-swizzle@0.2.2:
     dependencies:
@@ -13284,8 +13277,7 @@ snapshots:
 
   strip-final-newline@3.0.0: {}
 
-  strip-json-comments@2.0.1:
-    optional: true
+  strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
 
@@ -13523,7 +13515,6 @@ snapshots:
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
-    optional: true
 
   type-check@0.3.2:
     dependencies:
