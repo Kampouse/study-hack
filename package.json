@@ -24,7 +24,7 @@
     "drizzle:generate": "drizzle-kit generate:sqlite",
     "drizzle:migrate": "drizzle-kit push:sqlite",
     "drizzle:studio": "drizzle-kit studio --host 127.0.0.1",
-    "test:pre": " cd ./drizzle/ && npx drizzle-kit --config ./drizzle.config.ts generate", 
+    "test:pre": " cd ./drizzle/ && npx drizzle-kit --config ./drizzle.config.ts generate",
     "test": "bunx tsx ./src/api/EndPoint.test.ts",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
@@ -87,6 +87,7 @@
   },
   "nx": {},
   "dependencies": {
-    "better-sqlite3": "^11.3.0"
+    "better-sqlite3": "^11.3.0",
+    "vitest": "^2.1.1"
   }
 }
