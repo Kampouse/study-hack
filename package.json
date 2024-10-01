@@ -82,12 +82,12 @@
     "undici": "*",
     "valibot": "^0.37.0",
     "vercel": "^29.1.1",
-    "vite": "^5.2.10",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite": "^5.3.6",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^2.1.1"
   },
   "nx": {},
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
-    "vitest": "^2.1.1"
+    "better-sqlite3": "^11.3.0"
   }
 }
