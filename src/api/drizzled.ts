@@ -16,7 +16,12 @@ export const drizzler = async (
 ) => {
   const session: Session | null = event.sharedMap.get("session");
   //get env vairables
-  const url = event.env.get("PRIVATE_TURSO_DATABASE_URL");
+
+  const islocal = event.env.get("LOCAL");
+
+  const url = islocal
+    ? "local.db"
+    : event.env.get("PRIVATE_TURSO_DATABASE_URL");
   const token = event.env.get("PRIVATE_TURSO_AUTH_TOKEN");
   if (session) {
     const Client = drizzle({

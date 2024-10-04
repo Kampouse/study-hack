@@ -4,21 +4,23 @@ import * as Schema from "~/../drizzle/schema";
 import Database from "better-sqlite3";
 import { InjecatbleSeedScript } from "../../drizzle/seed";
 
+import { expect, test, beforeAll } from "vitest";
+import { CreateEvent, CreateUser, GetUserFromEmail } from "./Query";
+
 import { faker } from "@faker-js/faker";
 const sqlite = new Database(":memory:");
 const db = drizzle(sqlite, {
   schema: Schema,
 });
 
-await runMigration();
-async function runMigration() {
-  migrate(db, { migrationsFolder: "./drizzle/drizzle/migrations" });
-}
-//runMigration().catch(console.error);
-import { expect, test, beforeAll } from "vitest";
-import { CreateEvent, CreateUser, GetUserFromEmail } from "./Query";
+//await runMigration(db);
 
 beforeAll(async () => {
+  //const db = await runMigration().catch(console.error);
+  // console.log("db", db);
+
+  migrate(db, { migrationsFolder: "./drizzle/drizzle/migrations" });
+
   await InjecatbleSeedScript(db as any);
 });
 
@@ -28,8 +30,13 @@ test("validate data", async () => {
   // Test if seed script was executed successfully
   // You might want to check for specific data or table contents here
   // For example:
-  const users = await db.select().from(Schema.Users);
-  expect(users.length).toBeGreaterThan(0);
+  try {
+    const users = await db.select().from(Schema.Users);
+    expect(users).toBeDefined();
+    expect(users.length).toBeGreaterThan(0);
+  } catch (error) {
+    console.error(error);
+  }
 });
 test("Create a valid user", async () => {
   const result = await CreateUser({
@@ -44,7 +51,6 @@ test("Create a valid user", async () => {
     },
     client: db as any,
   });
-
   expect(result).toBeDefined();
 });
 

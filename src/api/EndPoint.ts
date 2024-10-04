@@ -17,7 +17,7 @@ export const getEvents = async ({
   try {
     const user = await GetUser({ event });
 
-    console.log("am user", user);
+    console.log("you cant be null ", user);
     const data = await QueryEvents({
       event,
       options: { ...options, byUser: user?.ID },

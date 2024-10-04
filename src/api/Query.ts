@@ -278,7 +278,6 @@ export const QueryEvents = async (params: {
       return null;
     });
 
-  console.log("what going on here", output);
   return output;
 };
 

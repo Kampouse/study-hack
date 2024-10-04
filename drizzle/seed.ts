@@ -1,25 +1,32 @@
-import { tursoClient as drizzle } from "../src/utils/turso";
+import { tursoClient } from "../src/utils/turso";
 import { CreateUser, CreateEvent, createJoinRequest } from "../src/api/Query";
 
 import type { CreateEventForm } from "~/api/Forms";
-import type { Session } from "../src/api/drizzled";
 
 import { faker } from "@faker-js/faker";
 import { Events, Requests, Users } from "./schema";
 import { createEventForm } from "~/api/Forms";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 type SelectedEvent = typeof Events.$inferSelect;
 
-type TursoClient = ReturnType<typeof drizzle>;
+type TursoClient = ReturnType<typeof tursoClient>;
 
+export const InjecatbleSeedScript = async (
+  maybeDb?: TursoClient | undefined,
+) => {
+  if (maybeDb) {
+    migrate(maybeDb as any, {
+      migrationsFolder: "./drizzle/drizzle/migrations",
+    });
+  }
 
-export const InjecatbleSeedScript = async (maybeDb?: TursoClient | undefined) => {
-
-  const db = maybeDb ?? drizzle({
-    url: "file:./local.db",
-    authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
-  });
-
-
+  const db =
+    maybeDb ??
+    tursoClient({
+      url: "file:../local.db?mode=memory&cache=shared",
+      authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
+    });
 
   const createRandomUser = () => {
     return {
@@ -53,7 +60,7 @@ export const InjecatbleSeedScript = async (maybeDb?: TursoClient | undefined) =>
     // Check if there are already existing requests for each user-event pair
     const existingRequests = await db.select().from(Requests);
     if (existingRequests.length > 0) {
-      console.log("Request already exist in the database:✅");
+      console.log("Request already exist in the database:✅", existingRequests);
       return existingRequests;
     }
 
@@ -157,7 +164,7 @@ export const InjecatbleSeedScript = async (maybeDb?: TursoClient | undefined) =>
       console.log("adding events....:✅");
 
       for (let i = 0; i < users.length; i++) {
-        const numEvents = Math.floor(Math.random() * 5) + 1; // 1 to 5 events per user
+        const numEvents = Math.floor(Math.random() * 15) + 1; // 1 to 5 events per user
         const events = createMultipleEvents(numEvents);
 
         await insertManyEvents(events, {
@@ -167,6 +174,7 @@ export const InjecatbleSeedScript = async (maybeDb?: TursoClient | undefined) =>
           Description: users[i].Description as string,
           Image: users[i].ImageURL as string,
         });
+        console.log((await db.select().from(Events)).length);
         return db.select().from(Events);
       }
     } else {
@@ -184,12 +192,12 @@ export const InjecatbleSeedScript = async (maybeDb?: TursoClient | undefined) =>
     return {
       users: users,
       events: events,
-      requests: requests
-
-    }
+      requests: requests,
+    };
   };
+
   await DrizzleSeedTest();
+};
+if (process.env.LOCAL === "true") {
+  InjecatbleSeedScript();
 }
-
-
-//InjecatbleSeedScript()
