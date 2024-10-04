@@ -39,7 +39,7 @@ To run the project locally:
 To deploy to production:
 1. Set the following environment variables:
   ```
-  PRIVATE_TURSO_DATABASE_URL="" \
+  PRIVATE_TURSO_DATABASE_URL=""
   PRIVATE_TURSO_AUTH_TOKEN=""
   ```
 
