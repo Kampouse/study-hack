@@ -60,7 +60,7 @@ export const InjecatbleSeedScript = async (
     // Check if there are already existing requests for each user-event pair
     const existingRequests = await db.select().from(Requests);
     if (existingRequests.length > 0) {
-      console.log("Request already exist in the database:✅", existingRequests);
+      console.log("Request already exist in the database:✅");
       return existingRequests;
     }
 
@@ -174,7 +174,6 @@ export const InjecatbleSeedScript = async (
           Description: users[i].Description as string,
           Image: users[i].ImageURL as string,
         });
-        console.log((await db.select().from(Events)).length);
         return db.select().from(Events);
       }
     } else {
