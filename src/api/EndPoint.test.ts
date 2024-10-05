@@ -5,7 +5,13 @@ import Database from "better-sqlite3";
 import { InjecatbleSeedScript } from "../../drizzle/seed";
 
 import { expect, test, beforeAll } from "vitest";
-import { CreateEvent, CreateUser, GetUserFromEmail } from "./Query";
+import {
+  CreateEvent,
+  CreateUser,
+  GetUserFromEmail,
+  createJoinRequest,
+  updateRequestStatus,
+} from "./Query";
 
 import { faker } from "@faker-js/faker";
 const sqlite = new Database(":memory:");
@@ -110,4 +116,84 @@ test("add valid event from user", async () => {
   if (output) {
     expect(output[0]).toHaveProperty("EventID");
   }
+});
+
+test("Create a join request", async () => {
+  // First, create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "Requester",
+      user: {
+        name: "Requester",
+        email: "requester@example.com",
+        image: "requester_image.jpg",
+      },
+    },
+    client: db as any,
+  });
+  const queriedUser = await GetUserFromEmail({
+    event: undefined,
+    email: "requester@example.com",
+    client: db as any,
+  });
+
+  expect(queriedUser).toBeDefined();
+  expect(queriedUser?.Email).toBe("requester@example.com");
+
+  // Now, create an event
+  const event = {
+    Name: faker.lorem.words(3),
+    Description: faker.lorem.paragraph(),
+    Date: faker.date.future().toISOString().split("T")[0],
+    StartTime: faker.date.future().toLocaleTimeString(),
+    EndTime: faker.date.future().toLocaleTimeString(),
+    Location: faker.location.city(),
+    ImageURL: faker.image.url() as string,
+    Coordinates: [
+      faker.number.float({ min: -90, max: 90 }),
+      faker.number.float({ min: -180, max: 180 }),
+    ] as [number, number],
+  };
+
+  const createdEvent = await CreateEvent({
+    event: undefined,
+    session: event,
+    userData: queriedUser as any,
+    Client: db as any,
+  });
+
+  expect(createdEvent).toBeDefined();
+  expect(createdEvent?.[0]).toHaveProperty("EventID");
+
+  // Now, create a join request
+  const joinRequest = await createJoinRequest({
+    event: undefined,
+    requestData: {
+      eventId: createdEvent?.[0].EventID as number,
+      userId: queriedUser?.ID as number,
+      background: faker.lorem.paragraph(),
+      experience: faker.lorem.paragraph(),
+      why: faker.lorem.paragraph(),
+    },
+    client: db as any,
+  });
+
+  expect(joinRequest).toBeDefined();
+  expect(joinRequest.success).toBe(true);
+  expect(joinRequest.data).toHaveProperty("RequestID");
+  expect(joinRequest.data?.EventID).toBe(createdEvent?.[0].EventID);
+  expect(joinRequest.data?.UserID).toBe(queriedUser?.ID);
+
+  // Update the request status
+  const updatedRequest = await updateRequestStatus({
+    event: undefined,
+    requestId: joinRequest.data?.RequestID as number,
+    newStatus: "confirmed",
+    client: db as any,
+  });
+
+  expect(updatedRequest).toBeDefined();
+  expect(updatedRequest.success).toBe(true);
+  expect(updatedRequest.data?.Status).toBe("confirmed");
 });
