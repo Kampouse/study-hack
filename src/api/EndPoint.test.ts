@@ -260,7 +260,7 @@ test("QueryAllReferenceEvents - various scenarios", async () => {
     userData: user1 as any,
     Client: db as any,
   });
-  const createdEvent2 = await CreateEvent({
+  await CreateEvent({
     event: undefined,
     session: event,
     userData: user2 as any,
