@@ -281,6 +281,58 @@ export const QueryEvents = async (params: {
   return output;
 };
 
+export const QueryAllReferenceEvents = async (params: {
+  event: Requested;
+  options?: QueryEventOptions;
+  UserID: number;
+}) => {
+  params.options = params.options ?? {};
+  const Client =
+    params.options.client || (await drizzler(params.event as Requested));
+
+  if (Client == null) return null;
+  //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
+  const hostedEvents = await Client.select()
+    .from(Events)
+    .where(eq(Events.UserID, params.UserID))
+    .execute();
+
+  const attendingEvents = await Client.select({
+    event: {
+      image: Events.ImageURL,
+      eventID: Events.EventID,
+      name: Events.Name,
+      description: Events.Description,
+      location: Events.Location,
+      date: Events.Date,
+      startTime: Events.StartTime,
+      endTime: Events.EndTime,
+    },
+    request: {
+      status: Requests.Status,
+      requestID: Requests.RequestID,
+      userID: Requests.UserID,
+      eventID: Requests.EventID,
+      experience: Requests.Experience,
+      background: Requests.Background,
+      whyJoin: Requests.WhyJoin,
+      createdAt: Requests.CreatedAt,
+    },
+  })
+    .from(Events)
+    .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
+    .where(
+      and(eq(Requests.UserID, params.UserID), ne(Events.UserID, params.UserID)),
+    )
+    .groupBy(Requests.Status)
+    .execute();
+
+  return {
+    host: hostedEvents,
+    attendie: attendingEvents,
+  };
+};
+
 export const QueryMyCompletedRequests = async (params: {
   event: Requested | undefined;
   options?: QueryEventOptions;

@@ -8,6 +8,7 @@ import { expect, test, beforeAll } from "vitest";
 import {
   CreateEvent,
   CreateUser,
+  QueryAllReferenceEvents,
   GetUserFromEmail,
   createJoinRequest,
   updateRequestStatus,
@@ -196,4 +197,112 @@ test("Create a join request", async () => {
   expect(updatedRequest).toBeDefined();
   expect(updatedRequest.success).toBe(true);
   expect(updatedRequest.data?.Status).toBe("confirmed");
+});
+test("QueryAllReferenceEvents - various scenarios", async () => {
+  // Create users
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "User1",
+      user: {
+        name: "User1",
+        email: "user1@example.com",
+        image: "user1_image.jpg",
+      },
+    },
+    client: db as any,
+  });
+
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "User2",
+      user: {
+        name: "User2",
+        email: "user2@example.com",
+        image: "user2_image.jpg",
+      },
+    },
+    client: db as any,
+  });
+
+  // Get users from email
+  const user1 = await GetUserFromEmail({
+    event: undefined,
+    email: "user1@example.com",
+    client: db as any,
+  });
+
+  const user2 = await GetUserFromEmail({
+    event: undefined,
+    email: "user2@example.com",
+    client: db as any,
+  });
+
+  expect(user1).toBeDefined();
+  expect(user2).toBeDefined();
+
+  // Create an event
+  const event = {
+    Name: "Test Event",
+    Description: "This is a test event",
+    Date: new Date().toISOString().split("T")[0],
+    StartTime: "10:00:00",
+    EndTime: "12:00:00",
+    Location: "Test Location",
+    ImageURL: "test_image.jpg",
+    Coordinates: [0, 0] as [number, number],
+  };
+
+  const createdEvent = await CreateEvent({
+    event: undefined,
+    session: event,
+    userData: user1 as any,
+    Client: db as any,
+  });
+  const createdEvent2 = await CreateEvent({
+    event: undefined,
+    session: event,
+    userData: user2 as any,
+    Client: db as any,
+  });
+
+  expect(createdEvent).toBeDefined();
+  expect(createdEvent?.[0]).toHaveProperty("EventID");
+
+  // Create a join request
+  const joinRequest = await createJoinRequest({
+    event: undefined,
+    requestData: {
+      eventId: createdEvent?.[0].EventID as number,
+      userId: user2?.ID as number,
+      background: "Test background",
+      experience: "Test experience",
+      why: "Test reason",
+    },
+    client: db as any,
+  });
+
+  expect(joinRequest).toBeDefined();
+  expect(joinRequest.success).toBe(true);
+  const data_from_user1 = await QueryAllReferenceEvents({
+    event: undefined as any,
+    UserID: user1?.ID as number,
+    options: {
+      client: db as any,
+    },
+  });
+  expect(data_from_user1).toBeDefined();
+  expect(data_from_user1?.host.length).toBeGreaterThanOrEqual(1);
+
+  const data_from_user2 = await QueryAllReferenceEvents({
+    event: undefined as any,
+    UserID: user2?.ID as number,
+    options: {
+      client: db as any,
+    },
+  });
+  expect(data_from_user2).toBeDefined();
+  expect(data_from_user2?.attendie.length).toBeGreaterThanOrEqual(1);
+  expect(data_from_user2?.host.length).toBeGreaterThanOrEqual(1);
 });
