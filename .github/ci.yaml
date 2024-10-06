@@ -12,4 +12,3 @@ jobs:
         uses: fluentci-io/setup-fluentci@v5
       - name: test
         run: fluentci run --wasm nodejs test
-     
