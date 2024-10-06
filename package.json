@@ -26,7 +26,7 @@
     "drizzle:generate": "drizzle-kit generate:sqlite",
     "drizzle:migrate": "drizzle-kit push:sqlite",
     "drizzle:studio": "drizzle-kit studio --host 127.0.0.1",
-    "test": "bunx vitest",
+    "test": "npx vitest run && exit 0",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "initdb": "sqlite3 local.db < schema_db/initials.sql || true",
@@ -85,7 +85,8 @@
     "vercel": "^29.1.1",
     "vite": "^5.3.6",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.1",
+    "@dagger.io/dagger": "^0.13.3"
   },
   "nx": {},
   "dependencies": {

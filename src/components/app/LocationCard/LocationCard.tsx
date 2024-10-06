@@ -10,16 +10,18 @@ export type LocationCardProps = {
 };
 
 export const ShareLocationCard = component$(() => {
-  const suggestedTags = [  'Wi-Fi', 'Open Late'];
+  const suggestedTags = ["Wi-Fi", "Open Late"];
 
   return (
-    <article class="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] lg:w-full border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer">
-      <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray-100 px-14 py-10">
-
-      </header>
+    <article class="flex w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] transition-colors hover:border-gray-400 lg:w-full">
+      <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray-100 px-14 py-10"></header>
       <div class="mt-2.5 flex w-full flex-col text-start">
-        <h2 class="text-lg font-medium text-gray-950">Share Your Favorite Place</h2>
-        <p class="mt-1.5 text-sm  text-start text-neutral-400">Help others discover great study spots!</p>
+        <h2 class="text-lg font-medium text-gray-950">
+          Share Your Favorite Place
+        </h2>
+        <p class="mt-1.5 text-start  text-sm text-neutral-400">
+          Help others discover great study spots!
+        </p>
       </div>
       <div class="mt-4 flex flex-wrap  justify-start gap-2">
         {suggestedTags.map((tag, index) => (
@@ -33,17 +35,7 @@ export const ShareLocationCard = component$(() => {
       </div>
     </article>
   );
-
-
 });
-
-
-
-
-
-
-
-
 
 export const LocationCard = component$((props: LocationCardProps) => {
   return (
@@ -74,10 +66,10 @@ export const LocationCard = component$((props: LocationCardProps) => {
         </address>
       </div>
       <div class="mt-4 flex flex-wrap  justify-start gap-2">
-              {props.tags.map((tag, index) => (
-                <Tag key={index} text={tag} />
-              ))}
-            </div>
+        {props.tags.map((tag, index) => (
+          <Tag key={index} text={tag} />
+        ))}
+      </div>
       <div class="flex flex-row">
         {/*
 

@@ -104,6 +104,11 @@ export const LeafletMap = component$<MapProps>(
       });
       mapContainer$.value = noSerialize(map);
     });
-    return <div id="map" class="shadow-md border h-[27em] lg:h-[59em]  2xl:h-[64em]"></div>;
+    return (
+      <div
+        id="map"
+        class="h-[27em] border shadow-md lg:h-[59em]  2xl:h-[64em]"
+      ></div>
+    );
   },
 );

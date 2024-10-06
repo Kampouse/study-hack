@@ -90,7 +90,4 @@ const main = async () => {
   console.log("Join Request Result:", updateResult);
 };
 
-
-
-
 main();

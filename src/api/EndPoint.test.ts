@@ -198,7 +198,7 @@ test("Create a join request", async () => {
   expect(updatedRequest.success).toBe(true);
   expect(updatedRequest.data?.Status).toBe("confirmed");
 });
-test("QueryAllReferenceEvents - various scenarios", async () => {
+test("QueryAllReferenceEvents - validity of  data ", async () => {
   // Create users
   await CreateUser({
     event: undefined,
