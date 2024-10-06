@@ -162,7 +162,7 @@ pub fn install(args: String) -> FnResult<String> {
     let mut version = version.as_str();
 
     if version.is_empty() {
-        version = "latest";
+        version = "22";
     }
 
     let stdout = dag()
