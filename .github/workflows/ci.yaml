@@ -11,4 +11,4 @@ jobs:
       - name: Setup Fluent CI
         uses: fluentci-io/setup-fluentci@v5
       - name: test
-        run: fluentci run   . test
+        run: fluentci run   . install test
