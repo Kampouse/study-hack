@@ -181,6 +181,7 @@ pub fn install(args: String) -> FnResult<String> {
         ])?
         .stdout()?;
 
+    let stdout = format!("{}\n", install_stdout);
     let test_stdout = dag()
         .pipeline("test")?
         .pkgx()?
@@ -196,7 +197,6 @@ pub fn install(args: String) -> FnResult<String> {
             "test",
         ])?
         .stdout()?;
-
-    let stdout = format!("{}\n{}", install_stdout, test_stdout);
+    let stdout = format!("{}\n", test_stdout);
     Ok(stdout)
 }
