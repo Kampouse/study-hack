@@ -23,7 +23,7 @@ pub fn test(args: String) -> FnResult<String> {
     let mut package_manager = package_manager.as_str();
 
     if package_manager.is_empty() {
-        package_manager = "npm";
+        package_manager = "pnpm";
     }
 
     let version = dag().get_env("NODE_VERSION").unwrap_or_default();
@@ -155,7 +155,7 @@ pub fn install(args: String) -> FnResult<String> {
     let mut package_manager = package_manager.as_str();
 
     if package_manager.is_empty() {
-        package_manager = "npm";
+        package_manager = "pnpm";
     }
 
     let version = dag().get_env("NODE_VERSION").unwrap_or_default();

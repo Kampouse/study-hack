@@ -26,7 +26,7 @@
     "drizzle:generate": "drizzle-kit generate:sqlite",
     "drizzle:migrate": "drizzle-kit push:sqlite",
     "drizzle:studio": "drizzle-kit studio --host 127.0.0.1",
-    "test": "pnpm i  &&  npx vitest run && exit 0",
+    "test": " npx vitest run && exit 0",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "initdb": "sqlite3 local.db < schema_db/initials.sql || true",
@@ -41,6 +41,7 @@
     "@builder.io/qwik": "latest",
     "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
+    "@dagger.io/dagger": "^0.13.3",
     "@faker-js/faker": "^9.0.3",
     "@libsql/client": "^0.5.2",
     "@modular-forms/qwik": "^0.26.1",
@@ -85,11 +86,11 @@
     "vercel": "^29.1.1",
     "vite": "^5.3.6",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^2.1.1",
-    "@dagger.io/dagger": "^0.13.3"
+    "vitest": "^2.1.1"
   },
   "nx": {},
   "dependencies": {
-    "better-sqlite3": "^11.3.0"
+    "better-sqlite3": "^11.3.0",
+    "test": "^3.3.0"
   }
 }
