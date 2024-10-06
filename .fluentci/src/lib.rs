@@ -157,7 +157,6 @@ pub fn install(args: String) -> FnResult<String> {
     if package_manager.is_empty() {
         package_manager = "pnpm";
     }
-
     let version = dag().get_env("NODE_VERSION").unwrap_or_default();
     let mut version = version.as_str();
 
@@ -165,8 +164,8 @@ pub fn install(args: String) -> FnResult<String> {
         version = "22";
     }
 
-    let stdout = dag()
-        .pipeline("test")?
+    let install_stdout = dag()
+        .pipeline("install")?
         .pkgx()?
         .with_exec(vec![
             "pkgx",
@@ -181,5 +180,23 @@ pub fn install(args: String) -> FnResult<String> {
             &args,
         ])?
         .stdout()?;
+
+    let test_stdout = dag()
+        .pipeline("test")?
+        .pkgx()?
+        .with_exec(vec![
+            "pkgx",
+            &format!("+nodejs.org@{}", version),
+            "+bun",
+            "+npm",
+            "+pnpm",
+            "+classic.yarnpkg.com",
+            "+mise",
+            package_manager,
+            "test",
+        ])?
+        .stdout()?;
+
+    let stdout = format!("{}\n{}", install_stdout, test_stdout);
     Ok(stdout)
 }
