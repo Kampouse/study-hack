@@ -7,10 +7,11 @@ import {
   useContext,
 } from "@builder.io/qwik";
 import { EventCard } from "@/components/app/eventCard/EventCard";
-import { routeAction$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { queryContext } from "./layout";
 import { ProfileForm, ProfileCard } from "~/components/profile";
 import {} from "~/api/Query";
+import { getAllReferenceEvents } from "~/api/EndPoint";
 import { updateProfileForm } from "~/api/Forms";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
@@ -23,8 +24,13 @@ export const useUpdateUser = routeAction$(async (data, event) => {
     return { error: "internal server error" };
   }
 });
+export const useGetAllReferenceEvents = routeLoader$(async (event) => {
+  return getAllReferenceEvents(event);
+});
 
 export default component$(() => {
+  const events = useGetAllReferenceEvents();
+  console.log("hosted", events.value);
   const data = useContext(queryContext);
   console.log(data.value.activeEvent);
   const store = useStore({
@@ -130,23 +136,60 @@ export default component$(() => {
                 Active Events
               </h1>
             )}
-            <div class="flex justify-center lg:justify-start">
-              {data.value.activeEvent &&
-                data.value.activeEvent.map((event) => (
-                  <div
-                    key={event.eventID}
-                    class="flex  w-[25em] flex-row justify-center md:justify-start lg:w-1/4"
-                  >
-                    <EventCard
-                      title={event.name}
-                      link={`/join/${event.eventID}`}
-                      description="something cool"
-                      time="soon"
-                      attendees={10}
-                      tags={[]}
-                    />
-                  </div>
-                ))}
+            <div class="flex flex-col justify-center lg:justify-start">
+              {events.value != null &&
+                events.value.attendie &&
+                events.value.attendie.length > 0 && (
+                  <>
+                    <h2 class="mb-4 text-xl font-bold">
+                      Events You're Attending
+                    </h2>
+                    <div class="flex flex-wrap justify-center lg:justify-start">
+                      {events.value.attendie.map((event) => (
+                        <div
+                          key={event.event.eventID}
+                          class="mb-4 flex w-[25em] flex-row justify-center md:justify-start lg:w-1/4 lg:pr-4"
+                        >
+                          <EventCard
+                            title={event.event.name}
+                            link={`/join/${event.event.eventID}`}
+                            description={`Status: ${event.request.status}`}
+                            time={event.event.startTime}
+                            attendees={0}
+                            tags={[]}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+              {events.value != null &&
+                events.value.hosted &&
+                events.value.hosted.length > 0 && (
+                  <>
+                    <h2 class="mb-4 mt-8 text-xl font-bold">
+                      Events You're Hosting
+                    </h2>
+                    <div class="flex flex-wrap justify-center lg:justify-start">
+                      {events.value.hosted.map((event) => (
+                        <div
+                          key={event.EventID}
+                          class="mb-4 flex w-[25em] flex-row justify-center md:justify-start lg:w-1/4 lg:pr-4"
+                        >
+                          <EventCard
+                            title={event.Name}
+                            link={`/join/${event.EventID}`}
+                            description="You're hosting this event"
+                            time={event.StartTime}
+                            attendees={10}
+                            tags={event.Tags}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
             </div>
           </div>
         </ProfileForm>

@@ -293,7 +293,7 @@ test("QueryAllReferenceEvents - validity of  data ", async () => {
     },
   });
   expect(data_from_user1).toBeDefined();
-  expect(data_from_user1?.host.length).toBeGreaterThanOrEqual(1);
+  expect(data_from_user1?.hosted.length).toBeGreaterThanOrEqual(1);
 
   const data_from_user2 = await QueryAllReferenceEvents({
     event: undefined as any,
@@ -304,5 +304,5 @@ test("QueryAllReferenceEvents - validity of  data ", async () => {
   });
   expect(data_from_user2).toBeDefined();
   expect(data_from_user2?.attendie.length).toBeGreaterThanOrEqual(1);
-  expect(data_from_user2?.host.length).toBeGreaterThanOrEqual(1);
+  expect(data_from_user2?.hosted.length).toBeGreaterThanOrEqual(1);
 });

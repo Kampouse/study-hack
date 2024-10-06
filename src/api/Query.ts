@@ -319,18 +319,12 @@ export const QueryAllReferenceEvents = async (params: {
       createdAt: Requests.CreatedAt,
     },
   })
-    .from(Events)
-    .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
-    .where(
-      and(eq(Requests.UserID, params.UserID), ne(Events.UserID, params.UserID)),
-    )
-    .groupBy(Requests.Status)
+    .from(Requests)
+    .innerJoin(Events, eq(Events.EventID, Requests.EventID))
+    .where(eq(Requests.UserID, params.UserID))
     .execute();
 
-  return {
-    host: hostedEvents,
-    attendie: attendingEvents,
-  };
+  return { hosted: hostedEvents, attendie: attendingEvents };
 };
 
 export const QueryMyCompletedRequests = async (params: {
@@ -457,7 +451,7 @@ export const QueryActiveRequest = async (params: {
           ne(Requests.UserID, params.user.ID),
         ),
       )
-      .limit(5);
+      .execute();
   } catch (e) {
     console.log(e);
     return null;

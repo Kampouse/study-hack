@@ -2,6 +2,7 @@ import {
   type QueryEventOptions,
   QueryEvents,
   QueryEvent,
+  QueryAllReferenceEvents,
   GetUser,
 } from "~/api/Query";
 
@@ -58,3 +59,13 @@ export const getFirstEvent = async (
 };
 type baseEvent = ReturnType<Awaited<typeof getFirstEvent>>;
 export type Events = baseEvent extends Promise<infer T> ? T : never;
+
+export const getAllReferenceEvents = async (event: Requested) => {
+  const user = await GetUser({ event });
+
+  const data = await QueryAllReferenceEvents({
+    event: event,
+    UserID: user?.ID as number,
+  });
+  return data;
+};
