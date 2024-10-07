@@ -12,6 +12,7 @@ export type EventCardProps = {
   tags: string[];
   attendees: number;
   link: string;
+  host: boolean;
 };
 const imgs = ["hello", "stuff", "world"];
 
@@ -36,8 +37,8 @@ export const EmptyEventCard = component$(() => {
 
 export const EventCard = component$((props: EventCardProps) => {
   return (
-    <article class=" flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full  [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block ">
-      <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
+    <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
+      <header class="relative mb-auto flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/3f0587d3f7ff9e636884c0c2be54daa3f001d89360b3a629cd9b9bf25b05857c?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
@@ -46,24 +47,31 @@ export const EventCard = component$((props: EventCardProps) => {
           width={500}
           height={500}
         />
-      </header>
-      <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">
-        <h2 class="text-sm text-gray-950">{props.title}</h2>
-        <p class="mt-1.5 text-xs leading-none">{props.description}</p>
-        <time class="mt-1.5 text-ellipsis text-xs uppercase leading-none tracking-wide">
+        <div class="absolute right-2 top-2">
+          <AttendeeList
+            host={props.host}
+            link={props.link}
+            attendees={props.attendees}
+            images={imgs}
+          />
+        </div>
+        <button class="absolute left-2 top-2 rounded bg-white bg-opacity-80 px-3 py-1.5 text-sm font-medium text-gray-800 transition-colors hover:bg-opacity-100">
+          See Event
+        </button>
+        <span class="absolute bottom-2 right-2 rounded bg-white bg-opacity-80 px-2 py-1 text-xs font-medium text-gray-800">
           {props.time}
-        </time>
-      </div>
-      <div class="mt-2.5 flex w-full items-start gap-2.5 text-center text-xs font-medium leading-none text-gray-600">
-        {props.tags &&
-          props.tags.map((tag, index) => <Tag key={index} text={tag} />)}
-      </div>
-      <div class="flex flex-row">
-        <AttendeeList
-          link={props.link}
-          attendees={props.attendees}
-          images={imgs}
-        />
+        </span>
+      </header>
+      <div class="flex flex-grow flex-col justify-between">
+        <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">
+          <h2 class="text-sm text-gray-950">{props.title}</h2>
+          <p class="mt-1.5 text-xs leading-none">{props.description}</p>
+        </div>
+        <div class="mt-2.5 flex w-full justify-end gap-2.5 text-center text-xs font-medium leading-none text-gray-600">
+          {props.tags.map((tag, index) => (
+            <Tag key={index} text={tag} />
+          ))}
+        </div>
       </div>
     </article>
   );

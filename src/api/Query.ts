@@ -292,7 +292,19 @@ export const QueryAllReferenceEvents = async (params: {
 
   if (Client == null) return null;
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
-  const hostedEvents = await Client.select()
+  const hostedEvents = await Client.select({
+    eventID: Events.EventID,
+    name: Events.Name,
+    description: Events.Description,
+    location: Events.Location,
+    coordinates: Events.Coordinates,
+    date: Events.Date,
+    starttime: Events.StartTime,
+    endtime: Events.EndTime,
+    tags: Events.Tags,
+    image: Events.ImageURL,
+    userID: Events.UserID,
+  })
     .from(Events)
     .where(eq(Events.UserID, params.UserID))
     .execute();
@@ -324,7 +336,20 @@ export const QueryAllReferenceEvents = async (params: {
     .where(eq(Requests.UserID, params.UserID))
     .execute();
 
-  return { hosted: hostedEvents, attendie: attendingEvents };
+  const mergedEvents = [
+    ...hostedEvents.map((event) => ({ ...event, host: true })),
+    ...attendingEvents.map(({ event, request }) => ({
+      ...event,
+      ...request,
+      host: false,
+    })),
+  ];
+
+  mergedEvents.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+
+  return mergedEvents;
 };
 
 export const QueryMyCompletedRequests = async (params: {

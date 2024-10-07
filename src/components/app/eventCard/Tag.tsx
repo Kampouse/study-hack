@@ -9,7 +9,7 @@ interface TagProps {
 
 export const Tag = component$((props: TagProps) => {
   return (
-    <div class="self-stretch overflow-hidden whitespace-nowrap rounded-[999px] bg-slate-50 px-2 py-0.5">
+    <div class="text-md self-stretch overflow-hidden whitespace-nowrap rounded-[999px] bg-slate-50 px-4 py-2">
       {props.text}
     </div>
   );
