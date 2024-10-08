@@ -30,9 +30,11 @@ export const useGetAllReferenceEvents = routeLoader$(async (event) => {
 export default component$(() => {
   const events = useGetAllReferenceEvents();
   const sortedEvents = useSignal(
-    events.value.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    ),
+    events.value
+      ? events.value.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        )
+      : [],
   );
 
   //todo make a real time date for event thign

@@ -198,7 +198,7 @@ test("Create a join request", async () => {
   expect(updatedRequest.success).toBe(true);
   expect(updatedRequest.data?.Status).toBe("confirmed");
 });
-test("QueryAllReferenceEvents - validity of  data ", async () => {
+test("QueryAllReferenceEvents - validity of data", async () => {
   // Create users
   await CreateUser({
     event: undefined,
@@ -242,67 +242,105 @@ test("QueryAllReferenceEvents - validity of  data ", async () => {
   expect(user1).toBeDefined();
   expect(user2).toBeDefined();
 
-  // Create an event
-  const event = {
-    Name: "Test Event",
-    Description: "This is a test event",
+  // Create events
+  const event1 = {
+    Name: "Test Event 1",
+    Description: "This is test event 1",
     Date: new Date().toISOString().split("T")[0],
     StartTime: "10:00:00",
     EndTime: "12:00:00",
-    Location: "Test Location",
-    ImageURL: "test_image.jpg",
+    Location: "Test Location 1",
+    ImageURL: "test_image1.jpg",
     Coordinates: [0, 0] as [number, number],
   };
 
-  const createdEvent = await CreateEvent({
+  const event2 = {
+    Name: "Test Event 2",
+    Description: "This is test event 2",
+    Date: new Date().toISOString().split("T")[0],
+    StartTime: "14:00:00",
+    EndTime: "16:00:00",
+    Location: "Test Location 2",
+    ImageURL: "test_image2.jpg",
+    Coordinates: [1, 1] as [number, number],
+  };
+
+  const createdEvent1 = await CreateEvent({
     event: undefined,
-    session: event,
+    session: event1,
     userData: user1 as any,
     Client: db as any,
   });
-  await CreateEvent({
+
+  const createdEvent2 = await CreateEvent({
     event: undefined,
-    session: event,
+    session: event2,
     userData: user2 as any,
     Client: db as any,
   });
 
-  expect(createdEvent).toBeDefined();
-  expect(createdEvent?.[0]).toHaveProperty("EventID");
+  expect(createdEvent1).toBeDefined();
+  expect(createdEvent1?.[0]).toHaveProperty("EventID");
+  expect(createdEvent2).toBeDefined();
+  expect(createdEvent2?.[0]).toHaveProperty("EventID");
 
-  // Create a join request
-  const joinRequest = await createJoinRequest({
+  // Create join requests
+  const joinRequest1 = await createJoinRequest({
     event: undefined,
     requestData: {
-      eventId: createdEvent?.[0].EventID as number,
+      eventId: createdEvent1?.[0].EventID as number,
       userId: user2?.ID as number,
-      background: "Test background",
-      experience: "Test experience",
-      why: "Test reason",
+      background: "Test background 1",
+      experience: "Test experience 1",
+      why: "Test reason 1",
     },
     client: db as any,
   });
 
-  expect(joinRequest).toBeDefined();
-  expect(joinRequest.success).toBe(true);
-  const data_from_user1 = await QueryAllReferenceEvents({
+  const joinRequest2 = await createJoinRequest({
+    event: undefined,
+    requestData: {
+      eventId: createdEvent2?.[0].EventID as number,
+      userId: user1?.ID as number,
+      background: "Test background 2",
+      experience: "Test experience 2",
+      why: "Test reason 2",
+    },
+    client: db as any,
+  });
+
+  expect(joinRequest1).toBeDefined();
+  expect(joinRequest1.success).toBe(true);
+  expect(joinRequest2).toBeDefined();
+  expect(joinRequest2.success).toBe(true);
+
+  // Query all reference events for user1
+  const dataFromUser1 = await QueryAllReferenceEvents({
     event: undefined as any,
     UserID: user1?.ID as number,
     options: {
       client: db as any,
     },
   });
-  expect(data_from_user1).toBeDefined();
-  expect(data_from_user1?.hosted.length).toBeGreaterThanOrEqual(1);
 
-  const data_from_user2 = await QueryAllReferenceEvents({
+  expect(dataFromUser1).toBeDefined();
+  expect(dataFromUser1).toBeInstanceOf(Array);
+  expect(dataFromUser1?.length).toBeGreaterThanOrEqual(2);
+  expect(dataFromUser1?.some((event) => event.host === true)).toBe(true);
+  expect(dataFromUser1?.some((event) => event.host === false)).toBe(true);
+
+  // Query all reference events for user2
+  const dataFromUser2 = await QueryAllReferenceEvents({
     event: undefined as any,
     UserID: user2?.ID as number,
     options: {
       client: db as any,
     },
   });
-  expect(data_from_user2).toBeDefined();
-  expect(data_from_user2?.attendie.length).toBeGreaterThanOrEqual(1);
-  expect(data_from_user2?.hosted.length).toBeGreaterThanOrEqual(1);
+
+  expect(dataFromUser2).toBeDefined();
+  expect(dataFromUser2).toBeInstanceOf(Array);
+  expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2);
+  expect(dataFromUser2?.some((event) => event.host === true)).toBe(true);
+  expect(dataFromUser2?.some((event) => event.host === false)).toBe(true);
 });

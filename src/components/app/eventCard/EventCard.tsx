@@ -3,6 +3,7 @@
  */
 import { component$ } from "@builder.io/qwik";
 import { Tag } from "./Tag";
+import { Link } from "@builder.io/qwik-city";
 import { AttendeeList } from "./AttendeeList";
 
 export type EventCardProps = {
@@ -12,7 +13,7 @@ export type EventCardProps = {
   tags: string[];
   attendees: number;
   link: string;
-  host: boolean;
+  host?: boolean;
 };
 const imgs = ["hello", "stuff", "world"];
 
@@ -49,30 +50,41 @@ export const EventCard = component$((props: EventCardProps) => {
         />
         <div class="absolute right-2 top-2">
           <AttendeeList
-            host={props.host}
             link={props.link}
             attendees={props.attendees}
             images={imgs}
           />
         </div>
-        <button class="absolute left-2 top-2 rounded bg-white bg-opacity-80 px-3 py-1.5 text-sm font-medium text-gray-800 transition-colors hover:bg-opacity-100">
-          See Event
-        </button>
-        <span class="absolute bottom-2 right-2 rounded bg-white bg-opacity-80 px-2 py-1 text-xs font-medium text-gray-800">
+        <span class="absolute bottom-2 right-2 rounded-lg bg-white bg-opacity-60 px-2 py-1 text-xs font-medium text-gray-800">
           {props.time}
         </span>
       </header>
       <div class="flex flex-grow flex-col justify-between">
         <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">
-          <h2 class="text-sm text-gray-950">{props.title}</h2>
-          <p class="mt-1.5 text-xs leading-none">{props.description}</p>
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm text-gray-950">{props.title}</h2>
+            <div class="flex gap-2">
+              {props.tags.map((tag, index) => (
+                <Tag key={index} text={tag} />
+              ))}
+            </div>
+          </div>
+          <p
+            class={`mt-1.5 overflow-hidden text-xs leading-none ${props.description.length < 50 ? "min-h-[5em]" : "max-h-10 min-h-[5em]"}`}
+          >
+            {props.description.length > 50
+              ? props.description.slice(0, 100) + "..."
+              : props.description}
+          </p>
         </div>
-        <div class="mt-2.5 flex w-full justify-end gap-2.5 text-center text-xs font-medium leading-none text-gray-600">
-          {props.tags.map((tag, index) => (
-            <Tag key={index} text={tag} />
-          ))}
-        </div>
+        <div class="mt-2.5 flex w-full justify-end gap-2.5 text-center text-xs font-medium leading-none text-gray-600"></div>
       </div>
+      <Link
+        href={`${props.link}`}
+        class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        See Event
+      </Link>
     </article>
   );
 });
