@@ -28,8 +28,11 @@ export const ShareLocationCard = component$(() => {
           <Tag key={index} text={tag} />
         ))}
       </div>
-      <div class="mt-4 flex justify-start">
-        <button class="rounded-full bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400">
+      <div class=" flex justify-start pt-2">
+        <button
+          class="
+        flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
           Add a Location
         </button>
       </div>
@@ -83,7 +86,7 @@ export const LocationCard = component$((props: LocationCardProps) => {
         */}
       </div>
       <div class="flex justify-start py-2">
-        <button class="mt-2 w-fit rounded-full bg-black px-2 py-2 font-medium text-white transition-colors hover:bg-gray-800">
+        <button class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           Learn more
         </button>
       </div>

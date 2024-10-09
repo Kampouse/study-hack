@@ -70,7 +70,7 @@ export const EventCard = component$((props: EventCardProps) => {
             </div>
           </div>
           <p
-            class={`mt-1.5 overflow-hidden text-xs leading-none ${props.description.length < 50 ? "min-h-[5em]" : "max-h-10 min-h-[5em]"}`}
+            class={`mt-1.5 overflow-hidden text-xs leading-none ${props.description.length < 50 ? "min-h-[3em]" : "max-h-10 min-h-[3.3em]"}`}
           >
             {props.description.length > 50
               ? props.description.slice(0, 100) + "..."
