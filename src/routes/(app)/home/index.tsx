@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/app/eventCard/EventCard";
 import { EmptyEventCard } from "@/components/app/eventCard/EventCard";
@@ -39,18 +40,31 @@ export const useMapData = routeLoader$(async () => {
     {
       name: "place  central",
       coords: [45.5017, -73.5673],
+      description: "The city of festivals",
+      date: "2021-09-12",
+      link: "/join/1",
     },
     {
       name: "place demi",
+      date: "2021-09-12",
+      description: "The city of festivals",
       coords: [45.5017, -72.5673],
+      link: "/join/2",
     },
   ];
   return coords;
 });
 export default component$(() => {
   const events = useEvents();
-  const coords = useMapData();
-
+  const popupData =
+    events.value.data?.map((event) => ({
+      name: event.name,
+      link: `/join/${event.eventID}`,
+      date: event.date,
+      description: event.description,
+      coords: [...event.coordinates] as [number, number],
+    })) || [];
+  const popupDataSignal = useSignal<popupsData>(popupData);
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class="  py-2  md:px-2   ">
@@ -62,9 +76,7 @@ export default component$(() => {
       </div>
       <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5 xl:h-fit">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
-          <div class="">
-            <Leaflet popups={coords} />
-          </div>
+          <Leaflet popups={popupDataSignal} />
         </div>
 
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">

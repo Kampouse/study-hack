@@ -3,6 +3,9 @@ import { type Signal } from "@builder.io/qwik";
 
 export type popupsData = Array<{
   name: string;
+  link: string;
+  description: string;
+  date: string;
   coords: [number, number];
 }>;
 

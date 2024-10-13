@@ -31,7 +31,7 @@ export default component$<MapProps>((props) => {
       styled.value = "my-app";
     }
   });
-
+  console.log("props.popups", props.popups.value);
   return (
     <div class={styled}>
       <LeafletMap popups={props.popups} location={currentLocation} />

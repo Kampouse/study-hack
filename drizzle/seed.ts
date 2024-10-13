@@ -94,8 +94,8 @@ export const InjecatbleSeedScript = async (
       Location: faker.location.city(),
       ImageURL: faker.image.url() as string,
       Coordinates: [
-        faker.number.float({ min: -90, max: 90 }),
-        faker.number.float({ min: -180, max: 180 }),
+        faker.number.float({ min: 45.4, max: 45.7 }),
+        faker.number.float({ min: -73.9, max: -73.4 }),
       ],
     } satisfies RandomEvent;
 

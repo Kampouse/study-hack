@@ -38,7 +38,10 @@ export const EmptyEventCard = component$(() => {
 
 export const EventCard = component$((props: EventCardProps) => {
   return (
-    <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
+    <article
+      id={"#" + props.title}
+      class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block"
+    >
       <header class="relative mb-auto flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
         <img
           loading="lazy"
