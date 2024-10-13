@@ -8,6 +8,7 @@ import { useLocation } from "@builder.io/qwik-city";
 
 export default component$<MapProps>((props) => {
   useStyles$(leafletStyles);
+  // todo make this dynamic
   const mapData = {
     name: "Montreal",
     point: [45.5017, -73.5673],
@@ -31,7 +32,6 @@ export default component$<MapProps>((props) => {
       styled.value = "my-app";
     }
   });
-  console.log("props.popups", props.popups.value);
   return (
     <div class={styled}>
       <LeafletMap popups={props.popups} location={currentLocation} />

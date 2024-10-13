@@ -1,6 +1,5 @@
 import {
   component$,
-  noSerialize,
   useSignal,
   useStyles$,
   useVisibleTask$,
