@@ -65,13 +65,15 @@ export default component$(() => {
                 New
               </Link>
             )}
-            <Link href="/home" class="p-4 pl-5 text-white  md:hidden ">
-              {location.url.pathname !== "/home" && (
-                <div class="rounded-full bg-black px-3 py-2 ">
-                  <ArrowLeftIcon size={24} />
-                </div>
-              )}
-            </Link>
+            {session.value && (
+              <Link href="/home" class="p-4 pl-5 text-white  md:hidden ">
+                {location.url.pathname !== "/home" && (
+                  <div class="rounded-full bg-black px-3 py-2 ">
+                    <ArrowLeftIcon size={24} />
+                  </div>
+                )}
+              </Link>
+            )}
           </div>
           {!session.value && (
             <a href="/" class="hidden p-4">

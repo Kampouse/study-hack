@@ -42,6 +42,14 @@ export const onGet: RequestHandler = async (req) => {
     if (keys.includes(activePath)) {
       return req.next();
     }
+    const path = new String(req.pathname);
+    if (
+      path === "/landing" ||
+      path.includes("/landing") ||
+      path.includes("/login")
+    ) {
+      return req.next();
+    }
     throw req.redirect(302, "/landing");
   }
 
