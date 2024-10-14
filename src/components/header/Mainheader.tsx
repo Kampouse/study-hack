@@ -1,6 +1,7 @@
-import { component$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
+import { useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
@@ -20,7 +21,27 @@ export default component$(() => {
     }
   });
   const location = useLocation();
+  const backSignal = useSignal<string | null>("/home");
 
+  const urlStack = useSignal<string[]>([]);
+  useTask$(({ track }) => {
+    track(() => location.url);
+    const currentUrl = location.url.pathname;
+    if (currentUrl !== "/home") {
+      if (
+        urlStack.value.length === 0 ||
+        urlStack.value[urlStack.value.length - 1] !== currentUrl
+      ) {
+        urlStack.value = [...urlStack.value, currentUrl];
+      }
+    } else {
+      urlStack.value = ["/home"];
+    }
+    backSignal.value =
+      urlStack.value.length > 1
+        ? urlStack.value[urlStack.value.length - 2]
+        : "/home";
+  });
   return (
     <header class="h-fit w-full ">
       <nav
@@ -72,7 +93,7 @@ export default component$(() => {
                 </div>
               ) : (
                 <Link
-                  href="/home"
+                  href={backSignal.value || "/home"}
                   class="hidden rounded-full bg-black px-3 py-2 text-white md:block"
                 >
                   <ArrowLeftIcon size={24} />

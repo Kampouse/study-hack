@@ -6,7 +6,6 @@ import type { CreateEventForm } from "~/api/Forms";
 import { faker } from "@faker-js/faker";
 import { Events, Requests, Users } from "./schema";
 import { createEventForm } from "~/api/Forms";
-import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 type SelectedEvent = typeof Events.$inferSelect;
 
