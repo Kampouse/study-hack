@@ -18,6 +18,19 @@ export const eventSchema = v.object({
   StartTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
 });
+export const placeSchema = v.object({
+  name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
+  address: v.pipe(v.string(), v.minLength(1), v.maxLength(200)),
+  image: v.optional(v.pipe(v.string(), v.url())),
+  description: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
+  tags: v.optional(v.array(v.string())),
+  rating: v.number(),
+  wifiSpeed: v.optional(v.number()),
+  hasQuietEnvironment: v.optional(v.boolean()),
+});
+
+export type PlaceForm = v.InferOutput<typeof placeSchema>;
+
 export const joinRequestSchema = v.object({
   ExperienceLevel: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Background: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
