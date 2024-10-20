@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Tag } from "./Tag";
+import { Link } from "@builder.io/qwik-city";
 export type LocationCardProps = {
   name: string;
   description: string;
@@ -13,7 +14,7 @@ export const ShareLocationCard = component$(() => {
   const suggestedTags = ["Wi-Fi", "Open Late"];
 
   return (
-    <article class="flex w-full max-w-md cursor-pointer flex-col overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] transition-colors hover:border-gray-400 lg:w-full">
+    <article class="flex w-full max-w-md  flex-col overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] transition-colors hover:border-gray-400 lg:w-full">
       <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray-100 px-14 py-10"></header>
       <div class="mt-2.5 flex w-full flex-col text-start">
         <h2 class="text-lg font-medium text-gray-950">
@@ -29,12 +30,13 @@ export const ShareLocationCard = component$(() => {
         ))}
       </div>
       <div class=" flex justify-start pt-2">
-        <button
+        <Link
+          href="/places/new"
           class="
         flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Add a Location
-        </button>
+          Add a Place
+        </Link>
       </div>
     </article>
   );
@@ -86,9 +88,12 @@ export const LocationCard = component$((props: LocationCardProps) => {
         */}
       </div>
       <div class="flex justify-start py-2">
-        <button class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <Link
+          href="places/hello"
+          class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
           Learn more
-        </button>
+        </Link>
       </div>
     </article>
   );
