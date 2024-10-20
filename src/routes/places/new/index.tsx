@@ -37,7 +37,7 @@ export default component$(() => {
             id="description"
             name="description"
             class="w-full rounded border px-3 py-2"
-            rows="3"
+            rows={3}
             required
           ></textarea>
         </div>
