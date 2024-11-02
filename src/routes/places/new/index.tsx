@@ -19,85 +19,129 @@ export default component$(() => {
     },
     validate: valiForm$(placeSchema),
   });
-
   return (
-    <div class="mx-auto mt-8 max-w-md">
-      <h2 class="mb-4 text-2xl font-bold">Add a New Location</h2>
-      <Form class="space-y-4">
+    <div class="mx-auto mt-8 max-w-md rounded-lg border-2 border-gray-300 bg-white p-8 shadow-lg">
+      <h2 class="mb-6 text-2xl font-semibold tracking-tight text-gray-900">
+        Add a New Location
+      </h2>
+      <Form class="space-y-6">
         <Field name="name" type="string">
           {(field, props) => (
             <div>
-              <label for="name" class="mb-1 block">
-                Name:
+              <label
+                for="name"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Name
               </label>
               <input
                 {...props}
                 type="text"
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value}
               />
-              {field.error && <div class="text-red-500">{field.error}</div>}
+              {field.error && (
+                <div class="mt-1 text-sm text-red-400">{field.error}</div>
+              )}
             </div>
           )}
         </Field>
         <Field name="address" type="string">
           {(field, props) => (
             <div>
-              <label for="address" class="mb-1 block">
-                Address:
+              <label
+                for="address"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Address
               </label>
               <input
                 {...props}
                 type="text"
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value}
               />
-              {field.error && <div class="text-red-500">{field.error}</div>}
+              {field.error && (
+                <div class="mt-1 text-sm text-red-400">{field.error}</div>
+              )}
             </div>
           )}
         </Field>
         <Field name="image" type="string">
           {(field, props) => (
             <div>
-              <label for="image" class="mb-1 block">
-                Image URL:
+              <label
+                for="image"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Image URL
               </label>
               <input
                 {...props}
                 type="text"
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value}
               />
-              {field.error && <div class="text-red-500">{field.error}</div>}
+              {field.error && (
+                <div class="mt-1 text-sm text-red-400">{field.error}</div>
+              )}
             </div>
           )}
         </Field>
         <Field name="description" type="string">
           {(field, props) => (
             <div>
-              <label for="description" class="mb-1 block">
-                Description:
+              <label
+                for="description"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Description
               </label>
               <textarea
                 {...props}
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 rows={3}
                 value={field.value}
               ></textarea>
-              {field.error && <div class="text-red-500">{field.error}</div>}
+              {field.error && (
+                <div class="mt-1 text-sm text-red-400">{field.error}</div>
+              )}
             </div>
           )}
         </Field>
         <Field name="tags" type="string[]">
           {(field, props) => (
             <div>
-              <label for="tags" class="mb-1 block">
-                Tags (comma-separated):
+              <label
+                for="tags"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Tags (comma-separated)
               </label>
               <input
                 {...props}
                 type="text"
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value?.join(", ")}
               />
             </div>
@@ -106,12 +150,19 @@ export default component$(() => {
         <Field name="rating" type="number">
           {(field, props) => (
             <div>
-              <label for="rating" class="mb-1 block">
-                Rating:
+              <label
+                for="rating"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Rating
               </label>
               <select
                 {...props}
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value?.toString()}
               >
                 <option value="1">1 Star</option>
@@ -120,20 +171,29 @@ export default component$(() => {
                 <option value="4">4 Stars</option>
                 <option value="5">5 Stars</option>
               </select>
-              {field.error && <div class="text-red-500">{field.error}</div>}
+              {field.error && (
+                <div class="mt-1 text-sm text-red-400">{field.error}</div>
+              )}
             </div>
           )}
         </Field>
         <Field name="wifiSpeed" type="number">
           {(field, props) => (
             <div>
-              <label for="wifiSpeed" class="mb-1 block">
-                Wi-Fi Speed (Mbps):
+              <label
+                for="wifiSpeed"
+                class="mb-2 block text-sm font-medium text-gray-900"
+              >
+                Wi-Fi Speed (Mbps)
               </label>
               <input
                 {...props}
                 type="number"
-                class="w-full rounded border px-3 py-2"
+                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  field.error
+                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                }`}
                 value={field.value?.toString()}
               />
             </div>
@@ -141,20 +201,25 @@ export default component$(() => {
         </Field>
         <Field name="hasQuietEnvironment" type="boolean">
           {(field, props) => (
-            <div class="flex items-center">
+            <div class="flex items-center space-x-2">
               <input
                 {...props}
                 type="checkbox"
-                class="mr-2 h-4 w-4"
+                class="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
                 checked={field.value}
               />
-              <label for="hasQuietEnvironment">Quiet Environment</label>
+              <label
+                for="hasQuietEnvironment"
+                class="text-sm font-medium text-gray-900"
+              >
+                Quiet Environment
+              </label>
             </div>
           )}
         </Field>
         <button
           type="submit"
-          class="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
+          class="inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
         >
           Add Location
         </button>

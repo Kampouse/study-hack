@@ -68,29 +68,28 @@ export default component$(() => {
   });
 
   return (
-    <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
-      <h1 class="p-8 pb-0 text-3xl font-bold text-gray-800">
+    <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <h1 class="p-6 text-2xl font-semibold tracking-tight text-gray-900">
         {event.value.data.name || "Event Name"}
       </h1>
-      <div class="px-8 pb-4">
-        <div class="">
-          <div class="flex items-center">
-            <Icons.CalendarIcon class="text-gray mr-2 h-5 w-5" />
-            <p class="py-2 text-gray-700">
+      <div class="px-6 pb-4">
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 text-sm">
+            <Icons.CalendarIcon class="h-4 w-4 text-gray-500" />
+            <p class="text-gray-600">
               {new Date(event.value.data.date || "0").toLocaleDateString() ||
                 "Event Date"}
             </p>
           </div>
-          <div class="flex items-center">
-            <Icons.MapPinIcon class="mr-2 h-5 w-5 text-green-600" />
-            <p class="text-gray-700">
-              {" "}
+          <div class="flex items-center gap-2 text-sm">
+            <Icons.MapPinIcon class="h-4 w-4 text-gray-500" />
+            <p class="text-gray-600">
               {event.value.data.location || "Event place"}
             </p>
           </div>
-          <div class="flex items-center">
-            <Icons.UserIcon class="mr-2 h-5 w-5 text-green-600" />
-            <p class="text-gray-700">{event.value.data.image}</p>
+          <div class="flex items-center gap-2 text-sm">
+            <Icons.UserIcon class="h-4 w-4 text-gray-500" />
+            <p class="text-gray-600">{event.value.data.image}</p>
           </div>
         </div>
       </div>
@@ -99,56 +98,53 @@ export default component$(() => {
         alt={event.value.data.name || "Event Image"}
         height={400}
         width={800}
-        class="h-[400px] w-[800px]  rounded-md  object-cover px-8"
+        class="h-[400px] w-full rounded-none object-cover px-0"
       />
-      <div class="p-8 py-4">
-        <p class="mb-6 text-gray-600">
+      <div class="p-6">
+        <p class="text-sm text-gray-600">
           {event.value.data.description || "hello"}
         </p>
       </div>
-      <Form class="px-8 pb-8">
-        <div class="mb-6 flex flex-col space-y-4">
-          <div class="flex space-x-4">
-            <Field name="ExperienceLevel">
-              {(field, props) => (
-                <div class="flex-1">
-                  <label
-                    for={props.name}
-                    class="mb-2 block text-sm font-bold text-gray-700"
-                  >
-                    Experience Level
-                  </label>
-                  <select
-                    {...props}
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                      field.error ? "border-red-500" : ""
-                    }`}
-                    value={field.value}
-                  >
-                    <option value="">Select your experience level</option>
-
-                    <option value="curious">Curious</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
-                </div>
-              )}
-            </Field>
-          </div>
-          <Field name="Background">
+      <Form class="border-t border-gray-100 p-6">
+        <div class="space-y-4">
+          <Field name="ExperienceLevel">
             {(field, props) => (
-              <div class="flex-1">
+              <div class="space-y-2">
                 <label
                   for={props.name}
-                  class="mb-2 block text-sm font-bold text-gray-700"
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Experience Level
+                </label>
+                <select
+                  {...props}
+                  class={`w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-300 focus:outline-none focus:ring-0 ${
+                    field.error ? "border-red-500" : ""
+                  }`}
+                  value={field.value}
+                >
+                  <option value="">Select your experience level</option>
+                  <option value="curious">Curious</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+            )}
+          </Field>
+          <Field name="Background">
+            {(field, props) => (
+              <div class="space-y-2">
+                <label
+                  for={props.name}
+                  class="text-sm font-medium text-gray-700"
                 >
                   Background
                 </label>
                 <textarea
                   {...props}
                   rows={3}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-300 focus:outline-none focus:ring-0 ${
                     field.error ? "border-red-500" : ""
                   }`}
                   placeholder="Share your background"
@@ -159,17 +155,17 @@ export default component$(() => {
           </Field>
           <Field name="WhyJoin">
             {(field, props) => (
-              <div class="flex-1">
+              <div class="space-y-2">
                 <label
                   for={props.name}
-                  class="mb-2 block text-sm font-bold text-gray-700"
+                  class="text-sm font-medium text-gray-700"
                 >
                   Why do you want to join?
                 </label>
                 <textarea
                   {...props}
                   rows={3}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-300 focus:outline-none focus:ring-0 ${
                     field.error ? "border-red-500" : ""
                   }`}
                   placeholder="Tell us why you want to join"
@@ -181,7 +177,7 @@ export default component$(() => {
         </div>
         <button
           type="submit"
-          class="w-full rounded-md bg-green-500 px-4 py-2 font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          class="mt-4 w-full rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
         >
           Register
         </button>
