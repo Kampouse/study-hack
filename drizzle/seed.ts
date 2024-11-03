@@ -1,5 +1,11 @@
 import { tursoClient } from "../src/utils/turso";
-import { CreateUser, CreateEvent, createJoinRequest } from "../src/api/Query";
+import {
+  CreateUser,
+  CreateEvent,
+  CreatePlace,
+  createJoinRequest,
+} from "../src/api/Query";
+import { Places } from "./schema";
 
 import type { CreateEventForm } from "~/api/Forms";
 
@@ -7,6 +13,7 @@ import { faker } from "@faker-js/faker";
 import { Events, Requests, Users } from "./schema";
 import { createEventForm } from "~/api/Forms";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import assert from "assert";
 type SelectedEvent = typeof Events.$inferSelect;
 
 type TursoClient = ReturnType<typeof tursoClient>;
@@ -182,15 +189,64 @@ export const InjecatbleSeedScript = async (
     return existingEvents;
   };
 
+  const createRandomPlaces = () => {
+    const randomPlace = {
+      name: faker.company.name(),
+      address: faker.location.streetAddress(),
+      image: faker.image.url(),
+      description: faker.lorem.paragraph(),
+      tags: Array.from({ length: 3 }, () => faker.word.noun()),
+      rating: faker.number.float({ min: 1, max: 5 }),
+      wifiSpeed: faker.number.float({ min: 1, max: 100 }),
+      hasQuietEnvironment: faker.datatype.boolean(),
+    };
+    return randomPlace;
+  };
+
+  const createMultiplePlaces = (count: number) => {
+    return Array.from({ length: count }, () => createRandomPlaces());
+  };
+
+  const applyPlaces = async (users: ApplyUsers) => {
+    const existingPlaces = await db.select().from(Places);
+
+    if (existingPlaces.length === 0 && users.length > 0) {
+      for (const user of users) {
+        assert(user);
+
+        const numPlaces = Math.floor(Math.random() * 5) + 1;
+        const places = createMultiplePlaces(numPlaces);
+
+        for (const place of places) {
+          await CreatePlace({
+            event: undefined,
+            userID: user.UserID,
+            placeData: place,
+            client: db,
+          });
+        }
+      }
+
+      console.log("adding places....:✅");
+
+      return db.select().from(Places);
+    } else {
+      console.log("Places already exist in the database:✅");
+      return existingPlaces;
+    }
+  };
+
   const DrizzleSeedTest = async () => {
     // Check if there are any users in the database
     const users = await applyUsers();
     const events = await applyEvents(users);
     const requests = await applyRequests(users, events);
+    const places = await applyPlaces(users);
     return {
       users: users,
       events: events,
       requests: requests,
+      places: places,
     };
   };
 

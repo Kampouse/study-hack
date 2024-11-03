@@ -10,6 +10,8 @@ import {
   ShareLocationCard,
 } from "@/components/app/LocationCard/LocationCard";
 import { getEvents } from "~/api/EndPoint";
+import { QueryPlaces } from "~/api/Query";
+import { drizzler } from "~/api/drizzled";
 
 export type Events = Awaited<ReturnType<typeof useEvents>>;
 
@@ -34,6 +36,17 @@ export const useEvents = routeLoader$(async (event) => {
   });
   return data;
 });
+export const usePlaces = routeLoader$(async (event) => {
+  const client = await drizzler(event);
+  const data = await QueryPlaces({
+    event: event,
+    client: client,
+    params: {
+      limit: 3,
+    },
+  });
+  return { data: data.data, success: data.success };
+});
 
 export const useMapData = routeLoader$(async () => {
   const coords: popupsData = [
@@ -56,6 +69,9 @@ export const useMapData = routeLoader$(async () => {
 });
 export default component$(() => {
   const events = useEvents();
+  const places = usePlaces();
+  const first = places.value.data?.[0];
+  const others = places.value.data?.slice(1);
   const popupData =
     events.value.data?.map((event) => ({
       name: event.name,
@@ -113,32 +129,30 @@ export default component$(() => {
       </div>
       <div class=" order-last px-2 pt-2">
         <h1 class="  pb-2 text-2xl  font-medium ">Good locations</h1>
-        <div class=" flex  w-full flex-col content-center gap-2  md:flex-row lg:gap-4 ">
-          <LocationCard
-            name="Esplanda"
-            link="/montreal"
-            tags={["festival", "city"]}
-            rating={5}
-            address="Montreal, Quebec, Canada"
-            description="The city of festivals"
-          />
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {first && (
+            <LocationCard
+              name={first.Name}
+              link={`/location/${first.PlaceID}`}
+              tags={first.Tags || []}
+              rating={first.Rating}
+              address={first.Address}
+              description={first.Description}
+            />
+          )}
           <ShareLocationCard />
-          <LocationCard
-            name="Esplanda"
-            link="/montreal"
-            tags={["festival", "city"]}
-            rating={5}
-            address="Montreal, Quebec, Canada"
-            description="The city of festivals"
-          />
-          <LocationCard
-            name="Esplanda"
-            link="/montreal"
-            tags={["festival", "city"]}
-            rating={5}
-            address="Montreal, Quebec, Canada"
-            description="The city of festivals"
-          />
+          {others &&
+            others.map((content) => (
+              <LocationCard
+                key={content.PlaceID}
+                name={content.Name}
+                link={`/location/${content.PlaceID}`}
+                tags={content.Tags || []}
+                rating={content.Rating}
+                address={content.Address}
+                description={content.Description}
+              />
+            ))}
         </div>
       </div>
     </div>

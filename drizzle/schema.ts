@@ -86,6 +86,24 @@ export const Events = sqliteTable("Events", {
     .references(() => Users.UserID),
 });
 
+export const Places = sqliteTable("Places", {
+  PlaceID: integer("PlaceID").primaryKey({ autoIncrement: true }),
+  Name: text("Name").notNull(),
+  Address: text("Address").notNull(),
+  Description: text("Description").notNull(),
+  ImageURL: text("ImageUrl"),
+  Tags: text("Tags", { mode: "json" }).$type<string[]>(),
+  Rating: integer("Rating").notNull(),
+  WifiSpeed: integer("WifiSpeed"),
+  HasQuietEnvironment: integer("HasQuietEnvironment"),
+  IsPublic: integer("IsPublic").default(1).notNull(),
+  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+  UserID: integer("UserID")
+    .notNull()
+    .references(() => Users.UserID),
+});
+
+export type Place = typeof Places.$inferSelect;
 export type User = typeof Users.$inferSelect;
 export type NewUser = typeof Users.$inferInsert;
 

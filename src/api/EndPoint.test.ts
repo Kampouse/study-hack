@@ -8,6 +8,11 @@ import { expect, test, beforeAll } from "vitest";
 import {
   CreateEvent,
   CreateUser,
+  CreatePlace,
+  QueryPlace,
+  QueryPlaces,
+  UpdatePlace,
+  DeletePlace,
   QueryAllReferenceEvents,
   GetUserFromEmail,
   createJoinRequest,
@@ -343,4 +348,162 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2);
   expect(dataFromUser2?.some((event) => event.host === true)).toBe(true);
   expect(dataFromUser2?.some((event) => event.host === false)).toBe(true);
+});
+test("Create a valid place", async () => {
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "jpmartel98@gmail.com",
+    client: db as any,
+  });
+
+  const placeData = {
+    name: faker.company.name(),
+    address: faker.location.streetAddress(),
+    image: faker.image.url(),
+    description: faker.lorem.paragraph(),
+    tags: [faker.word.sample(), faker.word.sample()],
+    rating: faker.number.int({ min: 1, max: 5 }),
+    wifiSpeed: faker.number.int({ min: 1, max: 100 }),
+    hasQuietEnvironment: faker.datatype.boolean(),
+  };
+
+  const result = await CreatePlace({
+    event: undefined,
+    userID: user?.ID as number,
+    placeData,
+    client: db as any,
+  });
+
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data).toHaveProperty("PlaceID");
+});
+
+test("Query a specific place", async () => {
+  // First create a place
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "jpmartel98@gmail.com",
+    client: db as any,
+  });
+
+  const placeData = {
+    name: faker.company.name(),
+    address: faker.location.streetAddress(),
+    description: faker.lorem.paragraph(),
+    rating: faker.number.int({ min: 1, max: 5 }),
+  };
+
+  const createdPlace = await CreatePlace({
+    event: undefined,
+    userID: user?.ID as number,
+    placeData,
+    client: db as any,
+  });
+  expect(createdPlace).toBeDefined();
+  if (!createdPlace.data) {
+    throw new Error("Failed to create place");
+  }
+
+  const result = await QueryPlace({
+    event: undefined,
+    placeId: createdPlace.data.PlaceID,
+    client: db as any,
+  });
+  if (!result.success || !result.data) {
+    throw new Error("Failed to query place");
+  }
+
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data.Name).toBe(placeData.name);
+});
+
+test("Query all places", async () => {
+  const result = await QueryPlaces({
+    event: undefined,
+    client: db as any,
+  });
+
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+});
+
+test("Update a place", async () => {
+  // First create a place
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "jpmartel98@gmail.com",
+    client: db as any,
+  });
+
+  const placeData = {
+    name: faker.company.name(),
+    address: faker.location.streetAddress(),
+    description: faker.lorem.paragraph(),
+    rating: faker.number.int({ min: 1, max: 5 }),
+  };
+
+  const createdPlace = await CreatePlace({
+    event: undefined,
+    userID: user?.ID as number,
+    placeData,
+    client: db as any,
+  });
+
+  const updateData = {
+    name: faker.company.name(),
+    description: faker.lorem.paragraph(),
+  };
+  if (!createdPlace.data) {
+    throw new Error("Failed to create place");
+  }
+
+  const result = await UpdatePlace({
+    event: undefined,
+    placeId: createdPlace.data.PlaceID,
+    placeData: updateData,
+    client: db as any,
+  });
+  if (!result.success || !result.data) {
+    throw new Error("Failed to update place");
+  }
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data.Name).toBe(updateData.name);
+});
+
+test("Delete a place", async () => {
+  // First create a place
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "jpmartel98@gmail.com",
+    client: db as any,
+  });
+
+  const placeData = {
+    name: faker.company.name(),
+    address: faker.location.streetAddress(),
+    description: faker.lorem.paragraph(),
+    rating: faker.number.int({ min: 1, max: 5 }),
+  };
+
+  const createdPlace = await CreatePlace({
+    event: undefined,
+    userID: user?.ID as number,
+    placeData,
+    client: db as any,
+  });
+  if (!createdPlace.data) {
+    throw new Error("Failed to create place");
+  }
+
+  const result = await DeletePlace({
+    event: undefined,
+    placeId: createdPlace.data.PlaceID,
+    client: db as any,
+  });
+
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
 });

@@ -1,4 +1,4 @@
-import { Users, Events, Requests } from "../../drizzle/schema";
+import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
 import { eq, and, ne, or } from "drizzle-orm";
 import type { Requested } from "./drizzled";
@@ -579,6 +579,237 @@ export const updateRequestStatus = async (params: {
     return {
       success: false,
       message: "Error updating request status",
+    };
+  }
+};
+export const CreatePlace = async (params: {
+  event: Requested | undefined;
+  userID: number;
+  placeData: {
+    name: string;
+    address: string;
+    image?: string;
+    description: string;
+    tags?: string[];
+    rating: number;
+    wifiSpeed?: number;
+    hasQuietEnvironment?: boolean;
+  };
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+    };
+  }
+
+  try {
+    const result = await Client.insert(Places)
+      .values({
+        Name: params.placeData.name,
+        Address: params.placeData.address,
+        ImageURL: params.placeData.image,
+        Description: params.placeData.description,
+        Tags: params.placeData.tags,
+        Rating: params.placeData.rating,
+        UserID: params.userID,
+        WifiSpeed: params.placeData.wifiSpeed,
+        HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,
+      })
+      .returning()
+      .execute();
+
+    return {
+      data: result[0],
+      success: true,
+      message: "Place created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating place:", error);
+    return {
+      success: false,
+      message: "Error creating place",
+    };
+  }
+};
+
+export const UpdatePlace = async (params: {
+  event: Requested | undefined;
+  placeId: number;
+  placeData: Partial<{
+    name: string;
+    address: string;
+    image?: string;
+    description: string;
+    tags?: string[];
+    rating: number;
+    wifiSpeed?: number;
+    hasQuietEnvironment?: boolean;
+  }>;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+    };
+  }
+
+  try {
+    const result = await Client.update(Places)
+      .set({
+        Name: params.placeData.name,
+        Address: params.placeData.address,
+        ImageURL: params.placeData.image,
+        Description: params.placeData.description,
+        Tags: params.placeData.tags,
+        Rating: params.placeData.rating,
+        WifiSpeed: params.placeData.wifiSpeed,
+        HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,
+      })
+      .where(eq(Places.PlaceID, params.placeId))
+      .returning()
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "Place not found",
+      };
+    }
+
+    return {
+      data: result[0],
+      success: true,
+      message: "Place updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating place:", error);
+    return {
+      success: false,
+      message: "Error updating place",
+    };
+  }
+};
+
+export const QueryPlace = async (params: {
+  event: Requested | undefined;
+  placeId: number;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+    };
+  }
+
+  try {
+    const result = await Client.select()
+      .from(Places)
+      .where(eq(Places.PlaceID, params.placeId))
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "Place not found",
+      };
+    }
+
+    return {
+      success: true,
+      data: { ...result[0] },
+    };
+  } catch (error) {
+    console.error("Error getting a place:", error);
+    return {
+      success: false,
+      message: "Error getting a place",
+    };
+  }
+};
+
+export const QueryPlaces = async (params: {
+  event: Requested | undefined;
+  client?: ClientType | null;
+  params?: { limit?: number; offset?: number };
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "places not found",
+    };
+  }
+
+  try {
+    const result = await Client.select()
+      .from(Places)
+      .where(eq(Places.IsPublic, 1))
+      .limit(params.params?.limit ?? 10)
+      .offset(params.params?.offset ?? 0)
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "no places found",
+      };
+    }
+
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error) {
+    console.error("Error getting a place:", error);
+    return {
+      success: false,
+      message: "Error getting a place",
+    };
+  }
+};
+
+export const DeletePlace = async (params: {
+  event: Requested | undefined;
+  placeId: number;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+    };
+  }
+
+  try {
+    const result = await Client.delete(Places)
+      .where(eq(Places.PlaceID, params.placeId))
+      .returning()
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "Place not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Place deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting place:", error);
+    return {
+      success: false,
+      message: "Error deleting place",
     };
   }
 };

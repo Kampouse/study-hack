@@ -8,6 +8,13 @@
       "when": 1728005323731,
       "tag": "0000_happy_kulan_gath",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1730634977757,
+      "tag": "0001_equal_shadow_king",
+      "breakpoints": true
     }
   ]
 }

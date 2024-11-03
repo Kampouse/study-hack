@@ -1,8 +1,10 @@
+import { QueryPlace } from "./Query";
 import {
   type QueryEventOptions,
   QueryEvents,
   QueryEvent,
   QueryAllReferenceEvents,
+  QueryPlaces,
   GetUser,
 } from "~/api/Query";
 
@@ -68,4 +70,29 @@ export const getAllReferenceEvents = async (event: Requested) => {
     UserID: user?.ID as number,
   });
   return data;
+};
+export const getPlace = async (event: Requested, id: string) => {
+  try {
+    const data = await QueryPlace({ event, placeId: parseInt(id) });
+    if (!data.success || !data.data) {
+      return { success: false, data: null, error: "Failed to get place" };
+    }
+    return { success: true, data: data.data };
+  } catch (e) {
+    console.log(e);
+    return { success: false, data: null, error: "Failed to get place" };
+  }
+};
+
+export const getPlaces = async (event: Requested) => {
+  try {
+    const data = await QueryPlaces({ event: event as Requested });
+    if (!data.success || !data.data) {
+      return { success: false, data: null, error: "Failed to get places" };
+    }
+    return { success: true, data: data.data };
+  } catch (e) {
+    console.log(e);
+    return { success: false, data: null, error: "Failed to get places" };
+  }
 };
