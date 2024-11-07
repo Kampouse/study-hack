@@ -1,30 +1,75 @@
 import { component$ } from "@builder.io/qwik";
-import { useForm, valiForm$ } from "@modular-forms/qwik";
+import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { PlaceForm } from "~/api/Forms";
 import { placeSchema } from "~/api/Forms";
+import { routeLoader$ } from "@builder.io/qwik-city";
+import { useNavigate } from "@builder.io/qwik-city";
+import { CreatePlace, GetUser } from "~/api/Query";
+import type { InitialValues } from "@modular-forms/qwik";
+export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
+  name: "",
+  address: "",
+  description: "",
+  image: "",
+  tags: [],
+  rating: 3,
+  wifiSpeed: 0,
+  hasQuietEnvironment: false,
+}));
+
+type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never;
+
+const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
+  const user = await GetUser({ event });
+
+  if (!user) {
+    return {
+      status: "error",
+      message: "User not found",
+    };
+  }
+
+  const result = await CreatePlace({
+    event,
+    userID: user.ID,
+    placeData: values,
+  });
+
+  if (result.success) {
+    console.log("Place created", result);
+    return {
+      status: "success",
+      data: result,
+    };
+  }
+
+  return {
+    status: "error",
+    message: result.message,
+  };
+}, valiForm$(placeSchema));
 
 export default component$(() => {
-  const [, { Form, Field }] = useForm<PlaceForm>({
-    loader: {
-      value: {
-        name: "",
-        address: "",
-        description: "",
-        image: "",
-        tags: [],
-        rating: 3,
-        wifiSpeed: undefined,
-        hasQuietEnvironment: false,
-      },
-    },
+  const nav = useNavigate();
+  const [FormPlace, { Form, Field }] = useForm<PlaceForm, Data>({
+    loader: useFormLoader(),
+    action: useFormAction(),
     validate: valiForm$(placeSchema),
   });
+
   return (
     <div class="mx-auto mt-8 max-w-md rounded-lg border-2 border-gray-300 bg-white p-8 shadow-lg">
       <h2 class="mb-6 text-2xl font-semibold tracking-tight text-gray-900">
         Add a New Location
       </h2>
-      <Form class="space-y-6">
+      <Form
+        class="space-y-6"
+        onSubmit$={() => {
+          if (FormPlace.submitted && FormPlace.response.status == "success") {
+            nav("/places");
+          }
+        }}
+      >
         <Field name="name" type="string">
           {(field, props) => (
             <div>

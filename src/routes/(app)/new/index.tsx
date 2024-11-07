@@ -33,6 +33,7 @@ type Data =
   ReturnType<typeof createEventForm> extends Promise<infer T> ? T : never;
 
 const action = formAction$<Event, Data>(async (data, event) => {
+  console.log("hello");
   const output = await createEventForm(data, event);
 
   if (output.success && output.data != null) {
@@ -74,6 +75,7 @@ export default component$(() => {
           class="flex flex-col gap-6"
           onSubmit$={() => {
             if (FormEvent.submitted) {
+              // this should point to the correct pages not just
               nav(`/new/1/success`);
             }
           }}

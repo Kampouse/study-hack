@@ -42,7 +42,7 @@ export const usePlaces = routeLoader$(async (event) => {
     event: event,
     client: client,
     params: {
-      limit: 3,
+      limit: 6,
     },
   });
   return { data: data.data, success: data.success };
