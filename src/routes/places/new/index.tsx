@@ -65,7 +65,7 @@ export default component$(() => {
       <Form
         class="space-y-6"
         onSubmit$={() => {
-          if (FormPlace.submitted && FormPlace.response.status == "success") {
+          if (FormPlace.submitted) {
             nav("/places");
           }
         }}
