@@ -694,7 +694,6 @@ export const UpdatePlace = async (params: {
     };
   }
 };
-
 export const QueryPlace = async (params: {
   event: Requested | undefined;
   placeId: number;
@@ -707,7 +706,6 @@ export const QueryPlace = async (params: {
       message: "Client not found",
     };
   }
-
   try {
     const result = await Client.select()
       .from(Places)
@@ -729,7 +727,7 @@ export const QueryPlace = async (params: {
     console.error("Error getting a place:", error);
     return {
       success: false,
-      message: "Error getting a place",
+      message: "Error getting something",
     };
   }
 };

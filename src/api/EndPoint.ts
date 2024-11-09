@@ -71,9 +71,20 @@ export const getAllReferenceEvents = async (event: Requested) => {
   });
   return data;
 };
-export const getPlace = async (event: Requested, id: string) => {
+export const getPlace = async ({
+  event,
+  id,
+}: {
+  event: Requested;
+  id: number;
+}) => {
   try {
-    const data = await QueryPlace({ event, placeId: parseInt(id) });
+    const data = await QueryPlace({
+      event,
+      placeId: id,
+    });
+    console.log(data);
+
     if (!data.success || !data.data) {
       return { success: false, data: null, error: "Failed to get place" };
     }

@@ -138,6 +138,7 @@ export default component$(() => {
               rating={first.Rating}
               address={first.Address}
               description={first.Description}
+              id={first.PlaceID}
             />
           )}
           <ShareLocationCard />
@@ -151,6 +152,7 @@ export default component$(() => {
                 rating={content.Rating}
                 address={content.Address}
                 description={content.Description}
+                id={content.PlaceID}
               />
             ))}
         </div>

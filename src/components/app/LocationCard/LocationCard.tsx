@@ -7,6 +7,7 @@ export type LocationCardProps = {
   address: string;
   tags: string[];
   rating: number;
+  id: number;
   link: string;
 };
 
@@ -91,12 +92,12 @@ export const LocationCard = component$((props: LocationCardProps) => {
         */}
       </div>
       <div class="flex justify-start py-2">
-        <Link
-          href="places/hello"
+        <a
+          href={"/places/" + props.id}
           class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:text-base"
         >
           Learn more
-        </Link>
+        </a>
       </div>
     </article>
   );
