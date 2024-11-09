@@ -110,7 +110,7 @@ export default component$(() => {
                     tags={[]}
                   />
                 ))}
-                {events.value.data.length < 4 &&
+                {events.value.data.length < 6 &&
                   [...Array(4 - events.value.data.length)].map((_, i) => (
                     <EmptyEventCard key={`empty-${i}`} />
                   ))}

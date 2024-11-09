@@ -12,7 +12,7 @@ export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
   description: "",
   image: "",
   tags: [],
-  rating: 3,
+  rating: "3",
   wifiSpeed: 0,
   hasQuietEnvironment: false,
 }));
@@ -28,11 +28,11 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
       message: "User not found",
     };
   }
-
+  console.log("User", values);
   const result = await CreatePlace({
     event,
     userID: user.ID,
-    placeData: values,
+    placeData: { ...values, rating: parseInt(values.rating) },
   });
 
   if (result.success) {
@@ -192,7 +192,7 @@ export default component$(() => {
             </div>
           )}
         </Field>
-        <Field name="rating" type="number">
+        <Field name="rating" type="string">
           {(field, props) => (
             <div>
               <label

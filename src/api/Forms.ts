@@ -24,7 +24,7 @@ export const placeSchema = v.object({
   image: v.optional(v.pipe(v.string(), v.url())),
   description: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
   tags: v.optional(v.array(v.string())),
-  rating: v.number(),
+  rating: v.string(),
   wifiSpeed: v.optional(v.number()),
   hasQuietEnvironment: v.optional(v.boolean()),
 });
