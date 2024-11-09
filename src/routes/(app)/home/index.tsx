@@ -98,17 +98,23 @@ export default component$(() => {
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value.data && events.value.data.length > 0 ? (
-              events.value.data.map((ev) => (
-                <EventCard
-                  link={`/join/${ev.eventID}`}
-                  key={ev.eventID}
-                  title={ev.name}
-                  description={ev.description}
-                  time={ev.date}
-                  attendees={0}
-                  tags={[]}
-                />
-              ))
+              <>
+                {events.value.data.map((ev) => (
+                  <EventCard
+                    link={`/join/${ev.eventID}`}
+                    key={ev.eventID}
+                    title={ev.name}
+                    description={ev.description}
+                    time={ev.date}
+                    attendees={0}
+                    tags={[]}
+                  />
+                ))}
+                {events.value.data.length < 4 &&
+                  [...Array(4 - events.value.data.length)].map((_, i) => (
+                    <EmptyEventCard key={`empty-${i}`} />
+                  ))}
+              </>
             ) : (
               <div class="flex flex-col gap-2">
                 <EmptyEventCard />
