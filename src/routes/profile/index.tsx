@@ -96,33 +96,42 @@ export default component$(() => {
             data={store}
             onEdit={handleEditClick}
           />
-          <div class="flex flex-wrap pt-5">
+          <div class="flex flex-col px-4 lg:px-0">
+            {data.value.activeRequest != null &&
+              data.value.activeRequest.length > 0 && (
+                <h2 class="mb-4 text-xl font-bold">Active Requests</h2>
+              )}
             {data.value.activeRequest != null &&
               data.value.activeRequest.map((req) => (
-                <div class="w-fit p-2" key={req.eventId}>
+                <div
+                  class="w-full rounded-2xl p-2 px-0  md:w-fit"
+                  key={req.eventId}
+                >
                   <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm">
                     <div class="flex-grow p-4">
                       <Link
                         key={req.requestId}
                         href={`/profile/meet/request/${req.requestId}`}
                       >
-                        <img
-                          class="h-40 w-full rounded-lg object-cover shadow-md transition-all hover:shadow-xl md:h-60"
-                          src={
-                            req.image ??
-                            "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                          }
-                          width={300}
-                          height={300}
-                          alt={req.username ?? "User"}
-                        />
-                        <div class="mt-4">
-                          <h1 class="text-xl font-bold tracking-tight text-gray-900 transition-colors hover:text-indigo-600">
-                            <span class="font-medium text-gray-600">
-                              Event:
-                            </span>{" "}
-                            {req.eventName}
-                          </h1>
+                        <div class="flex flex-col items-center md:flex-row">
+                          <img
+                            class="h-24 w-24 rounded-full object-cover"
+                            src={
+                              req.image ??
+                              "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                            }
+                            width={150}
+                            height={150}
+                            alt={req.username ?? "User"}
+                          />
+                          <div class="mt-4 text-center md:ml-4 md:mt-0 md:text-left">
+                            <h1 class="text-xl font-bold tracking-tight text-gray-900 transition-colors hover:text-indigo-600">
+                              <span class="font-medium text-gray-600">
+                                Event:
+                              </span>{" "}
+                              {req.eventName}
+                            </h1>
+                          </div>
                         </div>
                       </Link>
                     </div>
@@ -137,16 +146,19 @@ export default component$(() => {
                 </div>
               ))}
           </div>
-          {data.value.activeEvent && data.value.activeEvent.length != 0 && (
+          {/*data.value.activeEvent && data.value.activeEvent.length != 0 && (
             <h1 class="px-4 py-2 text-center text-2xl font-bold md:text-start">
               Active Events
             </h1>
-          )}
+          ) */}
+
           <div class="flex flex-col justify-center lg:justify-start">
             <div class="flex flex-col justify-center lg:justify-start">
               {events.value != null && events.value.length > 0 && (
                 <>
-                  <h2 class="mb-4 text-xl font-bold">Your Events</h2>
+                  <h2 class="mb-4 px-12 text-xl font-bold lg:px-0">
+                    Your Events
+                  </h2>
                   <div class="flex flex-wrap justify-center lg:justify-start">
                     {sortedEvents.value.slice(0, 8).map((event) => (
                       <div
