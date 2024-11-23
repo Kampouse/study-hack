@@ -68,6 +68,9 @@ export const getAllReferenceEvents = async (event: Requested) => {
   const data = await QueryAllReferenceEvents({
     event: event,
     UserID: user?.ID as number,
+    options: {
+      limit: 8,
+    },
   });
   return data;
 };

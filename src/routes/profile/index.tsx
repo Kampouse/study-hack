@@ -96,40 +96,45 @@ export default component$(() => {
             data={store}
             onEdit={handleEditClick}
           />
-          <div class="flex flex-wrap">
+          <div class="flex flex-wrap pt-5">
             {data.value.activeRequest != null &&
               data.value.activeRequest.map((req) => (
-                <Link
-                  key={req.requestId}
-                  href={`/profile/meet/request/${req.requestId}`}
-                  class="w-fit p-2"
-                >
+                <div class="w-fit p-2" key={req.eventId}>
                   <div class="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm">
-                    <div class="p-4">
-                      <h2 class="truncate text-lg font-bold">
-                        {" "}
-                        {req.eventName}
-                      </h2>
-                    </div>
-                    <div class="flex-grow">
-                      <img
-                        class="h-32 w-60 rounded-md object-cover    shadow-lg md:h-60 md:w-full "
-                        src={
-                          req.image ??
-                          "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
-                        }
-                        width={300}
-                        height={300}
-                        alt={req.username ?? "User"}
-                      />
+                    <div class="flex-grow p-4">
+                      <Link
+                        key={req.requestId}
+                        href={`/profile/meet/request/${req.requestId}`}
+                      >
+                        <img
+                          class="h-40 w-full rounded-lg object-cover shadow-md transition-all hover:shadow-xl md:h-60"
+                          src={
+                            req.image ??
+                            "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
+                          }
+                          width={300}
+                          height={300}
+                          alt={req.username ?? "User"}
+                        />
+                        <div class="mt-4">
+                          <h1 class="text-xl font-bold tracking-tight text-gray-900 transition-colors hover:text-indigo-600">
+                            <span class="font-medium text-gray-600">
+                              Event:
+                            </span>{" "}
+                            {req.eventName}
+                          </h1>
+                        </div>
+                      </Link>
                     </div>
                     <div class="bg-gray-50 p-4">
-                      <h1 class="truncate text-left text-sm font-semibold text-gray-800">
-                        @{req.username}
-                      </h1>
+                      <Link href={`/profile/${req.username}`}>
+                        <h1 class="truncate text-left text-sm font-semibold text-gray-800 transition-colors hover:text-indigo-600">
+                          @{req.username}
+                        </h1>
+                      </Link>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
           </div>
           {data.value.activeEvent && data.value.activeEvent.length != 0 && (
@@ -143,7 +148,7 @@ export default component$(() => {
                 <>
                   <h2 class="mb-4 text-xl font-bold">Your Events</h2>
                   <div class="flex flex-wrap justify-center lg:justify-start">
-                    {sortedEvents.value.map((event) => (
+                    {sortedEvents.value.slice(0, 8).map((event) => (
                       <div
                         key={event.eventID}
                         class="mb-4 flex w-[25em] flex-row justify-center md:justify-start lg:w-1/4 lg:pr-4"
