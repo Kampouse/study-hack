@@ -10,11 +10,12 @@ import { valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 import type * as v from "valibot";
-import { GetUser } from "~/api/Query";
+import { GetUser, QueryPlaces } from "~/api/Query";
 //get the type from event schema
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
   const user = await GetUser({ event: req });
+
   return {
     Name: "chill with " + user?.Name,
     Description: "",
@@ -56,6 +57,12 @@ const action = formAction$<Event, Data>(async (data, event) => {
     };
   }
 }, valiForm$(eventSchema));
+
+export const useloadPlaces = routeLoader$(async (req) => {
+  const places = await QueryPlaces({ event: req });
+  return places;
+});
+
 export default component$(() => {
   const nav = useNavigate();
   const [FormEvent, { Form, Field }] = useForm<Event, Data>({
@@ -63,7 +70,7 @@ export default component$(() => {
     validate: valiForm$(eventSchema),
     action: action(),
   });
-
+  const places = useloadPlaces();
   return (
     <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
       <h1 class="p-8 pb-0 text-3xl font-bold text-gray-800">
@@ -124,15 +131,20 @@ export default component$(() => {
                 <label class="text-sm font-bold text-gray-700">
                   Where will you be?
                 </label>
-                <input
+                <select
                   {...props}
                   class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
                     field.error ? "border-red-500" : "border-gray-300"
                   }`}
-                  type="text"
-                  placeholder="Somewhere beyond the sea..."
                   value={field.value}
-                />
+                >
+                  <option value="">Select a location...</option>
+                  {places.value.data?.map((place) => (
+                    <option key={place.PlaceID} value={place.Name}>
+                      {place.Name}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
           </Field>
