@@ -41,6 +41,7 @@ export default component$(() => {
             description={event.description}
             time={event.date}
             tags={event.tags}
+            placeID={event.placeId as number}
             attendees={0}
             link={"/join/" + event.eventID}
           />

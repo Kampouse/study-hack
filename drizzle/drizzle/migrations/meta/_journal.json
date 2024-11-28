@@ -15,6 +15,13 @@
       "when": 1730634977757,
       "tag": "0001_equal_shadow_king",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1732739262111,
+      "tag": "0002_rare_misty_knight",
+      "breakpoints": true
     }
   ]
 }

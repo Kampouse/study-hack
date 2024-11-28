@@ -20,6 +20,7 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
     Name: "chill with " + user?.Name,
     Description: "",
     Location: "",
+    PlaceId: 0,
     ImageURL: "https://example.com/image.jpg",
     Date: new Date().toISOString().split("T")[0],
     StartTime: "",

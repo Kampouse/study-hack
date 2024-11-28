@@ -16,6 +16,7 @@ export const eventSchema = v.object({
   Location: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   Coordinates: v.optional(v.tuple([v.number(), v.number()]), [0, 0]),
   StartTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
+  PlaceId: v.optional(v.number()),
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
 });
 export const placeSchema = v.object({

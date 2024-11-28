@@ -1,0 +1,1 @@
+ALTER TABLE `Events` ADD `PlaceId` integer;

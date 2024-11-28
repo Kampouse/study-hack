@@ -6,6 +6,7 @@ export type EventCardProps = {
   description: string;
   time: string;
   tags: string[];
+  placeID: number;
   attendees: number;
   link: string;
   host?: boolean;
@@ -49,7 +50,7 @@ export const EventCard = component$((props: EventCardProps) => {
         <div class="absolute bottom-2 left-2 rounded-lg bg-white bg-opacity-60 px-2 py-1 text-xs font-medium text-gray-800">
           <div class="group relative">
             <Link
-              href={"/place/1"}
+              href={`/places/${props.placeID}`}
               class="flex items-center gap-2 text-sm text-gray-600 transition-colors duration-300 hover:text-blue-500"
             >
               <svg

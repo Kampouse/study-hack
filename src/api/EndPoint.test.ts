@@ -360,6 +360,7 @@ test("Create a valid place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     image: faker.image.url(),
+    placeId: faker.number.int({ min: 1, max: 100 }),
     description: faker.lorem.paragraph(),
     tags: [faker.word.sample(), faker.word.sample()],
     rating: faker.number.int({ min: 1, max: 5 }),
@@ -391,6 +392,7 @@ test("Query a specific place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
+    placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
 
@@ -441,6 +443,7 @@ test("Update a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
+    placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
 
@@ -485,6 +488,8 @@ test("Delete a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
+
+    placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
 

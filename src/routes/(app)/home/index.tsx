@@ -106,6 +106,7 @@ export default component$(() => {
                     title={ev.name}
                     description={ev.description}
                     time={ev.date}
+                    placeID={ev.placeId as number}
                     attendees={0}
                     tags={[]}
                   />

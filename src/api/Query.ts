@@ -168,6 +168,7 @@ export const CreateEvent = async (params: {
       Location: params.session.Location,
       Coordinates: params.session.Coordinates,
       Date: params.session.Date,
+      PlaceId: params.session.PlaceId,
       CreatedAt: new Date().toISOString(),
       StartTime: params.session.StartTime,
       EndTime: params.session.EndTime,
@@ -258,6 +259,7 @@ export const QueryEvents = async (params: {
     starttime: Events.StartTime,
     endtime: Events.EndTime,
     tags: Events.Tags,
+    placeId: Events.PlaceId,
     eventID: Events.EventID,
     image: Events.ImageURL,
   })
@@ -302,6 +304,7 @@ export const QueryAllReferenceEvents = async (params: {
     starttime: Events.StartTime,
     endtime: Events.EndTime,
     tags: Events.Tags,
+    placeId: Events.PlaceId,
     image: Events.ImageURL,
     userID: Events.UserID,
   })
@@ -317,6 +320,7 @@ export const QueryAllReferenceEvents = async (params: {
       description: Events.Description,
       location: Events.Location,
       date: Events.Date,
+      placeId: Events.PlaceId,
       startTime: Events.StartTime,
       endTime: Events.EndTime,
     },
@@ -414,6 +418,7 @@ export const QueryActiveEvent = async (params: {
     starttime: Events.StartTime,
     endtime: Events.EndTime,
     tags: Events.Tags,
+    placeId: Events.PlaceId,
     eventID: Events.EventID,
     image: Events.ImageURL,
   })
@@ -591,6 +596,7 @@ export const CreatePlace = async (params: {
     image?: string;
     description: string;
     tags?: string[];
+    placeId: number;
     rating: number;
     wifiSpeed?: number;
     hasQuietEnvironment?: boolean;
@@ -614,6 +620,7 @@ export const CreatePlace = async (params: {
         Description: params.placeData.description,
         Tags: params.placeData.tags,
         Rating: params.placeData.rating,
+        PlaceID: params.placeData.placeId,
         UserID: params.userID,
         WifiSpeed: params.placeData.wifiSpeed,
         HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,

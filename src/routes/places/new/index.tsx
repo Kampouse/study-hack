@@ -32,7 +32,7 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
   const result = await CreatePlace({
     event,
     userID: user.ID,
-    placeData: { ...values, rating: parseInt(values.rating) },
+    placeData: { ...values, rating: parseInt(values.rating), placeId: 0 },
   });
 
   if (result.success) {

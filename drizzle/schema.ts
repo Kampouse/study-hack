@@ -1,11 +1,8 @@
 import {
   sqliteTable,
-  AnySQLiteColumn,
   uniqueIndex,
   integer,
   text,
-  foreignKey,
-  view,
 } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
@@ -78,6 +75,7 @@ export const Events = sqliteTable("Events", {
     .notNull(),
   Date: text("Date").notNull(),
   StartTime: text("StartTime").notNull(),
+  PlaceId: integer("PlaceId"),
   EndTime: text("EndTime").notNull(),
   Tags: text("Tags", { mode: "json" }).$type<string[]>().notNull(),
   CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
