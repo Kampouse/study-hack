@@ -122,6 +122,7 @@ export const createEventForm = async (data: JSONObject, event: Requested) => {
       status: 400,
     };
   }
+  console.log(validated.output);
   const output = await CreateEvent({
     event: event,
     session: validated.output,

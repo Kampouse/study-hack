@@ -195,7 +195,7 @@ export const InjecatbleSeedScript = async (
       address: faker.location.streetAddress(),
       image: faker.image.url(),
       description: faker.lorem.paragraph(),
-      placeId: faker.number.int({ min: 1, max: 10 }),
+      placeId: faker.number.int({ min: 1, max: 100 }),
       tags: Array.from({ length: 3 }, () => faker.word.noun()),
       rating: faker.number.float({ min: 1, max: 5 }),
       wifiSpeed: faker.number.float({ min: 1, max: 100 }),
@@ -217,12 +217,12 @@ export const InjecatbleSeedScript = async (
 
         const numPlaces = Math.floor(Math.random() * 5) + 1;
         const places = createMultiplePlaces(numPlaces);
-
+        let id = 0;
         for (const place of places) {
           await CreatePlace({
             event: undefined,
             userID: user.UserID,
-            placeData: place,
+            placeData: { ...place, placeId: id++ },
             client: db,
           });
         }
