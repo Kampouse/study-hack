@@ -161,6 +161,7 @@ export const CreateEvent = async (params: {
     params.userData ?? (await GetUser({ event: params.event as Requested }));
   const Client = params.Client ?? (await drizzler(params.event as Requested));
   if (userData === undefined || Client === null || userData === null) return;
+  console.log(params.session.PlaceId);
   return await Client.insert(Events)
     .values({
       Name: params.session.Name,
@@ -620,7 +621,6 @@ export const CreatePlace = async (params: {
         Description: params.placeData.description,
         Tags: params.placeData.tags,
         Rating: params.placeData.rating,
-        PlaceID: params.placeData.placeId,
         UserID: params.userID,
         WifiSpeed: params.placeData.wifiSpeed,
         HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,

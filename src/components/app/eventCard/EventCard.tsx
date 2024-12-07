@@ -7,6 +7,7 @@ export type EventCardProps = {
   time: string;
   tags: string[];
   placeID: number;
+  image: string;
   attendees: number;
   link: string;
   host?: boolean;
@@ -32,6 +33,7 @@ export const EmptyEventCard = component$(() => {
 });
 
 export const EventCard = component$((props: EventCardProps) => {
+  console.log("placeid", props.placeID);
   return (
     <article
       id={"#" + props.title}
@@ -40,7 +42,7 @@ export const EventCard = component$((props: EventCardProps) => {
       <header class="relative mb-auto flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
         <img
           loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/3f0587d3f7ff9e636884c0c2be54daa3f001d89360b3a629cd9b9bf25b05857c?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
+          src={props.image as string}
           class="size-full absolute inset-0 object-cover"
           alt=""
           width={500}

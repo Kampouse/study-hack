@@ -75,6 +75,7 @@ export default component$(() => {
   const popupData =
     events.value.data?.map((event) => ({
       name: event.name,
+      Image: event.image,
       link: `/join/${event.eventID}`,
       date: event.date,
       description: event.description,
@@ -106,6 +107,7 @@ export default component$(() => {
                     title={ev.name}
                     description={ev.description}
                     time={ev.date}
+                    image={ev.image as string}
                     placeID={ev.placeId as number}
                     attendees={0}
                     tags={[]}

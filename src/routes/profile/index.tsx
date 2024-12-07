@@ -169,6 +169,7 @@ export default component$(() => {
                           title={event.name}
                           link={`/join/${event.eventID}`}
                           description={event.description}
+                          image={event.image as string}
                           time={event.date}
                           attendees={10}
                           placeID={event.placeId as number}

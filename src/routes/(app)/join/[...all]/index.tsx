@@ -39,6 +39,7 @@ export default component$(() => {
             key={event.eventID}
             title={event.name}
             description={event.description}
+            image={event.image as string}
             time={event.date}
             tags={event.tags}
             placeID={event.placeId as number}

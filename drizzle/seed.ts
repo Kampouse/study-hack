@@ -164,31 +164,6 @@ export const InjecatbleSeedScript = async (
 
   type ApplyUsers = Awaited<ReturnType<typeof applyUsers>>;
 
-  const applyEvents = async (users: ApplyUsers) => {
-    const existingEvents = await db.select().from(Events);
-    if (existingEvents.length === 0 && users.length > 0) {
-      console.log("adding events....:✅");
-
-      for (let i = 0; i < users.length; i++) {
-        const numEvents = Math.floor(Math.random() * 15) + 1; // 1 to 5 events per user
-        const events = createMultipleEvents(numEvents);
-
-        await insertManyEvents(events, {
-          ID: users[i].UserID,
-          Name: users[i].Name,
-          Intrests: "being nice",
-          Description: users[i].Description as string,
-          Image: users[i].ImageURL as string,
-        });
-        return db.select().from(Events);
-      }
-    } else {
-      console.log("Events already exist in the database:✅");
-      return existingEvents;
-    }
-    return existingEvents;
-  };
-
   const createRandomPlaces = () => {
     const randomPlace = {
       name: faker.company.name(),
@@ -217,17 +192,15 @@ export const InjecatbleSeedScript = async (
 
         const numPlaces = Math.floor(Math.random() * 5) + 1;
         const places = createMultiplePlaces(numPlaces);
-        let id = 0;
         for (const place of places) {
           await CreatePlace({
             event: undefined,
             userID: user.UserID,
-            placeData: { ...place, placeId: id++ },
+            placeData: { ...place },
             client: db,
           });
         }
       }
-
       console.log("adding places....:✅");
 
       return db.select().from(Places);
@@ -237,12 +210,47 @@ export const InjecatbleSeedScript = async (
     }
   };
 
+  type ApplyPlaces = Awaited<ReturnType<typeof applyPlaces>>;
+  const applyEvents = async (users: ApplyUsers, places: ApplyPlaces) => {
+    const existingEvents = await db.select().from(Events);
+    if (existingEvents.length === 0 && users.length > 0) {
+      console.log("adding events....:✅");
+
+      for (let i = 0; i < users.length; i++) {
+        const numEvents = Math.floor(Math.random() * 25) + 1; // 1 to 5 events per user
+        const events = createMultipleEvents(numEvents);
+
+        const eventWithPlace = events.map((event) => {
+          const randomPlace = faker.helpers.arrayElement(places);
+          console.log("randomPlace", randomPlace.PlaceID);
+          return {
+            ...event,
+            PlaceId: randomPlace.PlaceID,
+          };
+        });
+
+        await insertManyEvents(eventWithPlace, {
+          ID: users[i].UserID,
+          Name: users[i].Name,
+          Intrests: "being nice",
+          Description: users[i].Description as string,
+          Image: users[i].ImageURL as string,
+        });
+        return db.select().from(Events);
+      }
+    } else {
+      console.log("Events already exist in the database:✅");
+      return existingEvents;
+    }
+    return existingEvents;
+  };
   const DrizzleSeedTest = async () => {
     // Check if there are any users in the database
     const users = await applyUsers();
-    const events = await applyEvents(users);
-    const requests = await applyRequests(users, events);
+
     const places = await applyPlaces(users);
+    const events = await applyEvents(users, places);
+    const requests = await applyRequests(users, events);
     return {
       users: users,
       events: events,
