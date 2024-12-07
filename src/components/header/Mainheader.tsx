@@ -43,16 +43,16 @@ export default component$(() => {
         : "/home";
   });
   return (
-    <header class="h-fit w-full ">
+    <header class="fixed top-0 z-50 h-fit w-full bg-white/80 backdrop-blur-sm">
       <nav
-        class="flex w-full items-center justify-between shadow-sm"
+        class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3"
         role="navigation"
       >
         <div class="flex flex-col items-center">
           <div class="pl-10 md:pl-8">
             <Link
               href={session.value ? "/home" : "/landing"}
-              class="hidden p-4 text-2xl text-black md:inline-block"
+              class="hidden bg-gradient-to-r from-black to-gray-600 bg-clip-text p-4 text-2xl font-bold text-transparent transition-opacity hover:opacity-80 md:inline-block"
             >
               <h1 class="inline-block">{"S & H"} </h1>
             </Link>
@@ -60,15 +60,15 @@ export default component$(() => {
             {location.url.pathname === "/home" && (
               <Link
                 href="/new"
-                class="rounded-full bg-black px-3 py-2 text-white md:hidden"
+                class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:hidden"
               >
                 New
               </Link>
             )}
             {session.value && (
-              <Link href="/home" class="p-4 pl-5 text-white  md:hidden ">
+              <Link href="/home" class="p-4 pl-5 text-white md:hidden">
                 {location.url.pathname !== "/home" && (
-                  <div class="rounded-full bg-black px-3 py-2 ">
+                  <div class="rounded-full bg-black px-3 py-2 transition-colors hover:bg-gray-800">
                     <ArrowLeftIcon size={24} />
                   </div>
                 )}
@@ -76,19 +76,22 @@ export default component$(() => {
             )}
           </div>
           {!session.value && (
-            <a href="/" class="hidden p-4">
+            <a
+              href="/"
+              class="hidden p-4 text-gray-600 transition-colors hover:text-black"
+            >
               Learn more
             </a>
           )}
         </div>
-        <div class="flex  flex-row content-center justify-end">
+        <div class="flex flex-row content-center justify-end">
           {session.value && (
             <div class="flex items-center gap-4">
               {location.url.href.includes("home") ? (
                 <div>
                   <Link
                     href="/new"
-                    class="hidden rounded-full bg-black px-3 py-2 text-white md:block"
+                    class="hidden rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:block"
                   >
                     New
                   </Link>
@@ -96,7 +99,7 @@ export default component$(() => {
               ) : (
                 <Link
                   href={backSignal.value || "/home"}
-                  class="hidden rounded-full bg-black px-3 py-2 text-white md:block"
+                  class="hidden rounded-full bg-black px-3 py-2 text-white transition-colors hover:bg-gray-800 md:block"
                 >
                   <ArrowLeftIcon size={24} />
                 </Link>
@@ -104,7 +107,7 @@ export default component$(() => {
               {location.url.pathname !== "/profile" && (
                 <Link
                   href="/profile"
-                  class="rounded-full bg-black px-3 py-2 text-white"
+                  class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800"
                 >
                   Profile
                 </Link>
@@ -114,7 +117,10 @@ export default component$(() => {
           )}
 
           {!session.value && (
-            <a href="/login" class="p-4">
+            <a
+              href="/login"
+              class="p-4 text-gray-600 transition-colors hover:text-black"
+            >
               Sign In
             </a>
           )}

@@ -16,7 +16,7 @@ export default component$(() => {
   });
 
   return (
-    <div class="px-3 lg:px-8">
+    <div class="px-3 pt-12 lg:px-8">
       <Slot />
     </div>
   );

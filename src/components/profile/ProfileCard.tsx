@@ -12,7 +12,7 @@ export default component$<CardProps>(({ data }) => {
   const session = useAuthSession();
   const image = session.value?.user?.image;
   return (
-    <div class="flex flex-col items-center   gap-5 md:flex-row md:gap-5 lg:items-start ">
+    <div class="flex flex-col items-center  gap-5  py-8  md:flex-row md:gap-5 md:pt-12 lg:items-start ">
       <div class="flex flex-col justify-center ">
         <div
           class=" flex flex-col px-2  md:flex-row md:items-start

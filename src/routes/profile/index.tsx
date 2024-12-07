@@ -156,7 +156,7 @@ export default component$(() => {
             <div class="flex flex-col justify-center lg:justify-start">
               {events.value != null && events.value.length > 0 && (
                 <>
-                  <h2 class="mb-4 px-12 text-xl font-bold lg:px-0">
+                  <h2 class="mb-4 ml-4 px-32 text-xl font-bold lg:px-0">
                     Your Events
                   </h2>
                   <div class="flex flex-wrap justify-center lg:justify-start">
