@@ -45,7 +45,7 @@ export default component$(() => {
   return (
     <header class="fixed top-0 z-50 h-fit w-full bg-white/80 backdrop-blur-sm">
       <nav
-        class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3"
+        class=" flex w-full  items-center justify-between  py-3"
         role="navigation"
       >
         <div class="flex flex-col items-center">
