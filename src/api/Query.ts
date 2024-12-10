@@ -15,6 +15,48 @@ export type User = {
 };
 
 export type ClientType = Awaited<ReturnType<typeof drizzler>>;
+
+export const QueryPlaces = async (params: {
+  event: Requested | undefined;
+  client?: ClientType | null;
+  params?: { limit?: number; offset?: number };
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "places not found",
+    };
+  }
+
+  try {
+    const result = await Client.select()
+      .from(Places)
+      .where(eq(Places.IsPublic, 1))
+      .limit(params.params?.limit ?? 100)
+      .offset(params.params?.offset ?? 0)
+      .execute();
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "no places found",
+      };
+    }
+
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error) {
+    console.error("Error getting a place:", error);
+    return {
+      success: false,
+      message: "Error getting a place",
+    };
+  }
+};
+
 export const CreateUser = async (params: {
   event: Requested | undefined;
   session: Session;
@@ -281,7 +323,16 @@ export const QueryEvents = async (params: {
       return null;
     });
 
-  return output;
+  const places = await QueryPlaces({ event: params.event, client: Client });
+
+  if (places.success && places.data) {
+    return output?.map((event) => ({
+      ...event,
+      place: places.data.find((place) => place.PlaceID === event.placeId),
+    }));
+  }
+
+  return null;
 };
 
 export const QueryAllReferenceEvents = async (params: {
@@ -746,48 +797,6 @@ export const QueryPlace = async (params: {
     };
   }
 };
-
-export const QueryPlaces = async (params: {
-  event: Requested | undefined;
-  client?: ClientType | null;
-  params?: { limit?: number; offset?: number };
-}) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
-  if (Client === null) {
-    return {
-      success: false,
-      message: "places not found",
-    };
-  }
-
-  try {
-    const result = await Client.select()
-      .from(Places)
-      .where(eq(Places.IsPublic, 1))
-      .limit(params.params?.limit ?? 10)
-      .offset(params.params?.offset ?? 0)
-      .execute();
-
-    if (result.length === 0) {
-      return {
-        success: false,
-        message: "no places found",
-      };
-    }
-
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error getting a place:", error);
-    return {
-      success: false,
-      message: "Error getting a place",
-    };
-  }
-};
-
 export const DeletePlace = async (params: {
   event: Requested | undefined;
   placeId: number;

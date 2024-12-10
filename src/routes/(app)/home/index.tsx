@@ -18,20 +18,11 @@ export type Events = Awaited<ReturnType<typeof useEvents>>;
 export const head = {
   title: " S&H | Home",
 };
-export const useEventAction = routeAction$((e) => {
-  console.log("hello from event action", e);
-
-  return {
-    success: true,
-  };
-});
-export type EventAction = ReturnType<typeof useEventAction>;
-
 export const useEvents = routeLoader$(async (event) => {
   const data = getEvents({
     event: event,
     options: {
-      limit: 6,
+      limit: 100,
     },
   });
   return data;
@@ -72,16 +63,19 @@ export default component$(() => {
   const places = usePlaces();
   const first = places.value.data?.[0];
   const others = places.value.data?.slice(1);
-  const popupData =
+  const placesData =
     events.value.data?.map((event) => ({
       name: event.name,
       Image: event.image,
       link: `/join/${event.eventID}`,
       date: event.date,
       description: event.description,
-      coords: [...event.coordinates] as [number, number],
+      coords: [event.place?.Lat ?? 0, event.place?.Lng ?? 0] as [
+        number,
+        number,
+      ],
     })) || [];
-  const popupDataSignal = useSignal<popupsData>(popupData);
+  const placeSignal = useSignal(placesData);
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class="  py-2  md:px-2   ">
@@ -93,7 +87,7 @@ export default component$(() => {
       </div>
       <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5 xl:h-fit">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
-          <Leaflet popups={popupDataSignal} />
+          <Leaflet popups={placeSignal} />
         </div>
 
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
