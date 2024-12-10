@@ -1,11 +1,47 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { PlaceForm } from "~/api/Forms";
 import { placeSchema } from "~/api/Forms";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { useNavigate } from "@builder.io/qwik-city";
+import { useNavigate, server$ } from "@builder.io/qwik-city";
 import { CreatePlace, GetUser } from "~/api/Query";
 import type { InitialValues } from "@modular-forms/qwik";
+
+type GeoResponse = {
+  results: Array<{
+    address_components: Array<{
+      long_name: string;
+      short_name: string;
+      types: string[];
+    }>;
+    formatted_address: string;
+    geometry: {
+      location: {
+        lat: number;
+        lng: number;
+      };
+      location_type: string;
+      viewport: {
+        northeast: {
+          lat: number;
+          lng: number;
+        };
+        southwest: {
+          lat: number;
+          lng: number;
+        };
+      };
+    };
+    place_id: string;
+    plus_code?: {
+      compound_code: string;
+      global_code: string;
+    };
+    types: string[];
+  }>;
+  status: string;
+};
+
 export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
   name: "",
   address: "",
@@ -19,6 +55,22 @@ export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
 
 type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never;
 
+const FindLocation = server$(async function (address: string) {
+  const session = this.sharedMap.get("session");
+
+  const GEO = this.env.get("GOOGLE_GEO");
+  if (!session) {
+    return {
+      status: "error",
+      message: "No session found",
+    };
+  }
+  const data = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`,
+  );
+  const output = (await data.json()) as GeoResponse;
+  return output.results.map((el) => el.formatted_address);
+});
 const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
   const user = await GetUser({ event });
 
@@ -28,7 +80,7 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
       message: "User not found",
     };
   }
-  console.log("User", values);
+
   const result = await CreatePlace({
     event,
     userID: user.ID,
@@ -36,7 +88,6 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
   });
 
   if (result.success) {
-    console.log("Place created", result);
     return {
       status: "success",
       data: result,
@@ -50,6 +101,8 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
 }, valiForm$(placeSchema));
 
 export default component$(() => {
+  const places = useSignal<Array<string>>([]);
+
   const nav = useNavigate();
   const [FormPlace, { Form, Field }] = useForm<PlaceForm, Data>({
     loader: useFormLoader(),
@@ -104,19 +157,53 @@ export default component$(() => {
               >
                 Address
               </label>
-              <input
-                {...props}
-                type="text"
-                class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  field.error
-                    ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                    : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
-                }`}
-                value={field.value}
-              />
+
+              <div class="flex gap-2">
+                <input
+                  {...props}
+                  type="text"
+                  class={`block w-full rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    field.error
+                      ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+                      : "border-gray-200 focus:border-gray-900 focus:ring-gray-900"
+                  }`}
+                  value={field.value}
+                />
+                <button
+                  type="button"
+                  onClick$={async () => {
+                    const output = await FindLocation(field.value as string);
+                    if (Array.isArray(output)) {
+                      places.value = output;
+                    }
+                  }}
+                  class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                >
+                  Find
+                </button>
+              </div>
               {field.error && (
                 <div class="mt-1 text-sm text-red-400">{field.error}</div>
               )}
+
+              <div class="mt-4 space-y-2">
+                <div class="max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-3">
+                  <div class="space-y-2">
+                    {places.value.map((address, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick$={() => {
+                          field.value = address;
+                        }}
+                        class="w-full rounded-md border border-gray-200 bg-white p-2 text-left text-sm text-gray-500 shadow-sm transition-colors duration-150 hover:bg-gray-50 hover:shadow-md focus:border-blue-300 focus:bg-blue-50 active:bg-blue-100"
+                      >
+                        {address}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </Field>

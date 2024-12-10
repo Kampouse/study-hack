@@ -1,13 +1,16 @@
 import { component$ } from "@builder.io/qwik";
 
 export default component$(() => {
+  // https://maps.googleapis.com/maps/api/geocode/json
   return (
     <div class="container mx-auto px-4 py-8">
       <h2 class="mb-6 text-2xl font-bold">Discover New and Popular Places</h2>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Recent Place */}
         <div class="h-fit overflow-hidden rounded-xl bg-white shadow-md">
-          <img width="1536" height="1024"
+          <img
+            width="1536"
+            height="1024"
             class="h-48 w-full object-cover"
             src="https://nashvilleguru.com/officialwebsite/wp-content/uploads/2022/09/Nashville-Coffee-Shops-1536x1024.jpg"
             alt="New place"
