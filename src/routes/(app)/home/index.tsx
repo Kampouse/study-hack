@@ -18,6 +18,15 @@ export type Events = Awaited<ReturnType<typeof useEvents>>;
 export const head = {
   title: " S&H | Home",
 };
+export const useEventAction = routeAction$((e) => {
+  console.log("hello from event action", e);
+
+  return {
+    success: true,
+  };
+});
+export type EventAction = ReturnType<typeof useEventAction>;
+
 export const useEvents = routeLoader$(async (event) => {
   const data = getEvents({
     event: event,
