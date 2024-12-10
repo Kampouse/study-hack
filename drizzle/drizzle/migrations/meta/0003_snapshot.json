@@ -1,0 +1,507 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "1706b284-6873-4111-be6e-f4620efa1ce9",
+  "prevId": "36bc0b13-f051-44a4-a269-f102658f68a5",
+  "tables": {
+    "Events": {
+      "name": "Events",
+      "columns": {
+        "EventID": {
+          "name": "EventID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "Name": {
+          "name": "Name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Description": {
+          "name": "Description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Location": {
+          "name": "Location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ImageUrl": {
+          "name": "ImageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "Coordinates": {
+          "name": "Coordinates",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Date": {
+          "name": "Date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "StartTime": {
+          "name": "StartTime",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "PlaceId": {
+          "name": "PlaceId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "EndTime": {
+          "name": "EndTime",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Tags": {
+          "name": "Tags",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "CreatedAt": {
+          "name": "CreatedAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "UserID": {
+          "name": "UserID",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Events_UserID_Users_UserID_fk": {
+          "name": "Events_UserID_Users_UserID_fk",
+          "tableFrom": "Events",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Places": {
+      "name": "Places",
+      "columns": {
+        "PlaceID": {
+          "name": "PlaceID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "Name": {
+          "name": "Name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Lat": {
+          "name": "Lat",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Lng": {
+          "name": "Lng",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Address": {
+          "name": "Address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Description": {
+          "name": "Description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ImageUrl": {
+          "name": "ImageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "Tags": {
+          "name": "Tags",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "Rating": {
+          "name": "Rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "WifiSpeed": {
+          "name": "WifiSpeed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "HasQuietEnvironment": {
+          "name": "HasQuietEnvironment",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "IsPublic": {
+          "name": "IsPublic",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "CreatedAt": {
+          "name": "CreatedAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "UserID": {
+          "name": "UserID",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Places_UserID_Users_UserID_fk": {
+          "name": "Places_UserID_Users_UserID_fk",
+          "tableFrom": "Places",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Requests": {
+      "name": "Requests",
+      "columns": {
+        "RequestID": {
+          "name": "RequestID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "EventID": {
+          "name": "EventID",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "UserID": {
+          "name": "UserID",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Status": {
+          "name": "Status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "Background": {
+          "name": "Background",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "Experience": {
+          "name": "Experience",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "WhyJoin": {
+          "name": "WhyJoin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "CreatedAt": {
+          "name": "CreatedAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'sql`(CURRENT_TIMESTAMP)`'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Requests_EventID_Events_EventID_fk": {
+          "name": "Requests_EventID_Events_EventID_fk",
+          "tableFrom": "Requests",
+          "tableTo": "Events",
+          "columnsFrom": [
+            "EventID"
+          ],
+          "columnsTo": [
+            "EventID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "Requests_UserID_Users_UserID_fk": {
+          "name": "Requests_UserID_Users_UserID_fk",
+          "tableFrom": "Requests",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Sessions": {
+      "name": "Sessions",
+      "columns": {
+        "SessionID": {
+          "name": "SessionID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "UserID": {
+          "name": "UserID",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "SessionToken": {
+          "name": "SessionToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "CreatedAt": {
+          "name": "CreatedAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "ExpiresAt": {
+          "name": "ExpiresAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "Sessions_SessionToken_unique": {
+          "name": "Sessions_SessionToken_unique",
+          "columns": [
+            "SessionToken"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "Sessions_UserID_Users_UserID_fk": {
+          "name": "Sessions_UserID_Users_UserID_fk",
+          "tableFrom": "Sessions",
+          "tableTo": "Users",
+          "columnsFrom": [
+            "UserID"
+          ],
+          "columnsTo": [
+            "UserID"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Users": {
+      "name": "Users",
+      "columns": {
+        "UserID": {
+          "name": "UserID",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "Username": {
+          "name": "Username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "Name": {
+          "name": "Name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "Email": {
+          "name": "Email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ImageURL": {
+          "name": "ImageURL",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "Description": {
+          "name": "Description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "IsAdmin": {
+          "name": "IsAdmin",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "Intrestets": {
+          "name": "Intrestets",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "CreatedAt": {
+          "name": "CreatedAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "Users_Email_unique": {
+          "name": "Users_Email_unique",
+          "columns": [
+            "Email"
+          ],
+          "isUnique": true
+        },
+        "Users_Username_unique": {
+          "name": "Users_Username_unique",
+          "columns": [
+            "Username"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

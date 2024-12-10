@@ -169,6 +169,8 @@ export const InjecatbleSeedScript = async (
       name: faker.company.name(),
       address: faker.location.streetAddress(),
       image: faker.image.url(),
+      lat: faker.address.latitude(),
+      lng: faker.address.longitude(),
       description: faker.lorem.paragraph(),
       placeId: faker.number.int({ min: 1, max: 100 }),
       tags: Array.from({ length: 3 }, () => faker.word.noun()),

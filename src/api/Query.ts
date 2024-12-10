@@ -600,6 +600,8 @@ export const CreatePlace = async (params: {
     placeId: number;
     rating: number;
     wifiSpeed?: number;
+    lat: number;
+    lng: number;
     hasQuietEnvironment?: boolean;
   };
   client?: ClientType | null;
@@ -618,6 +620,8 @@ export const CreatePlace = async (params: {
         Name: params.placeData.name,
         Address: params.placeData.address,
         ImageURL: params.placeData.image,
+        Lat: params.placeData.lat,
+        Lng: params.placeData.lng,
         Description: params.placeData.description,
         Tags: params.placeData.tags,
         Rating: params.placeData.rating,
@@ -653,6 +657,8 @@ export const UpdatePlace = async (params: {
     tags?: string[];
     rating: number;
     wifiSpeed?: number;
+    lat: number;
+    lng: number;
     hasQuietEnvironment?: boolean;
   }>;
   client?: ClientType | null;
@@ -673,6 +679,8 @@ export const UpdatePlace = async (params: {
         ImageURL: params.placeData.image,
         Description: params.placeData.description,
         Tags: params.placeData.tags,
+        Lat: params.placeData.lat,
+        Lng: params.placeData.lng,
         Rating: params.placeData.rating,
         WifiSpeed: params.placeData.wifiSpeed,
         HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,

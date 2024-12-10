@@ -57,7 +57,6 @@ type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never;
 
 const FindLocation = server$(async function (address: string) {
   const session = this.sharedMap.get("session");
-
   const GEO = this.env.get("GOOGLE_GEO");
   if (!session) {
     return {
@@ -69,7 +68,13 @@ const FindLocation = server$(async function (address: string) {
     `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`,
   );
   const output = (await data.json()) as GeoResponse;
-  return output.results.map((el) => el.formatted_address);
+  return output.results.map((el) => {
+    return {
+      address: el.formatted_address,
+      lat: el.geometry.location.lat,
+      lng: el.geometry.location.lng,
+    };
+  });
 });
 const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
   const user = await GetUser({ event });
@@ -80,13 +85,26 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
       message: "User not found",
     };
   }
+  const data = await FindLocation(values.address);
+  if (!Array.isArray(data)) {
+    return {
+      status: "error",
+      message: data.status,
+    };
+  }
 
   const result = await CreatePlace({
     event,
     userID: user.ID,
-    placeData: { ...values, rating: parseInt(values.rating), placeId: 0 },
+    placeData: {
+      ...values,
+      rating: parseInt(values.rating),
+      placeId: 0,
+      lat: data[0].lat,
+      lng: data[0].lng,
+    },
   });
-
+  console.log(result);
   if (result.success) {
     return {
       status: "success",
@@ -101,7 +119,9 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
 }, valiForm$(placeSchema));
 
 export default component$(() => {
-  const places = useSignal<Array<string>>([]);
+  const places = useSignal<
+    Array<{ address: string; lat: number; lng: number }>
+  >([]);
 
   const nav = useNavigate();
   const [FormPlace, { Form, Field }] = useForm<PlaceForm, Data>({
@@ -194,11 +214,11 @@ export default component$(() => {
                         key={i}
                         type="button"
                         onClick$={() => {
-                          field.value = address;
+                          field.value = address.address;
                         }}
                         class="w-full rounded-md border border-gray-200 bg-white p-2 text-left text-sm text-gray-500 shadow-sm transition-colors duration-150 hover:bg-gray-50 hover:shadow-md focus:border-blue-300 focus:bg-blue-50 active:bg-blue-100"
                       >
-                        {address}
+                        {address.address}
                       </button>
                     ))}
                   </div>

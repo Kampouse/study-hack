@@ -87,6 +87,8 @@ export const Events = sqliteTable("Events", {
 export const Places = sqliteTable("Places", {
   PlaceID: integer("PlaceID").primaryKey({ autoIncrement: true }),
   Name: text("Name").notNull(),
+  Lat: integer("Lat").notNull(),
+  Lng: integer("Lng").notNull(),
   Address: text("Address").notNull(),
   Description: text("Description").notNull(),
   ImageURL: text("ImageUrl"),

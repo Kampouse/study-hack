@@ -363,6 +363,8 @@ test("Create a valid place", async () => {
     placeId: faker.number.int({ min: 1, max: 100 }),
     description: faker.lorem.paragraph(),
     tags: [faker.word.sample(), faker.word.sample()],
+    lat: faker.address.latitude(),
+    lng: faker.address.longitude(),
     rating: faker.number.int({ min: 1, max: 5 }),
     wifiSpeed: faker.number.int({ min: 1, max: 100 }),
     hasQuietEnvironment: faker.datatype.boolean(),
@@ -393,6 +395,8 @@ test("Query a specific place", async () => {
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
     placeId: faker.number.int({ min: 1, max: 100 }),
+    lat: faker.address.latitude(),
+    lng: faker.address.longitude(),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
 
@@ -443,6 +447,8 @@ test("Update a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
+    lat: faker.address.latitude(),
+    lng: faker.address.longitude(),
     placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
@@ -488,7 +494,8 @@ test("Delete a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
-
+    lat: faker.address.latitude(),
+    lng: faker.address.longitude(),
     placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
