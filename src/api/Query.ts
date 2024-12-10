@@ -307,14 +307,7 @@ export const QueryEvents = async (params: {
     image: Events.ImageURL,
   })
 
-    .from(Events)
-
-    .where(
-      params.options.byUser
-        ? ne(Events.UserID, params.options.byUser)
-        : undefined,
-    )
-    .limit(params.options.limit ?? 3)
+    .from(Events).limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
 

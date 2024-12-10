@@ -33,7 +33,6 @@ export const EmptyEventCard = component$(() => {
 });
 
 export const EventCard = component$((props: EventCardProps) => {
-  console.log("placeid", props.placeID);
   return (
     <article
       id={"#" + props.title}

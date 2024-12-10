@@ -7,6 +7,7 @@ export type LocationCardProps = {
   address: string;
   tags: string[];
   rating: number;
+  image: string;
   id: number;
   link: string;
 };
@@ -51,19 +52,11 @@ export const LocationCard = component$((props: LocationCardProps) => {
       <header class="relative flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl">
         <img
           loading="lazy"
-          src="https://hellolaroux.com/wp-content/uploads/2022/05/esplanade-tranquille-montreal-quartier-des-spectacles.jpg"
+          src={props.image}
           class="absolute inset-0 h-full w-full object-cover"
           alt=""
           width={1000}
           height={1000}
-        />
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/c9d86d9147e5822062e107d2ac807972850acb658678ae4643774a3402b4e153?placeholderIfAbsent=true&apiKey=17e6b1f5aff14ccdbcafd5a66c4951ca"
-          class="aspect-square w-5 object-contain"
-          alt="Location icon"
-          width={500}
-          height={500}
         />
       </header>
       <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">

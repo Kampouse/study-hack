@@ -2,7 +2,6 @@ import { component$ } from "@builder.io/qwik";
 import { useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/app/eventCard/EventCard";
-import { EmptyEventCard } from "@/components/app/eventCard/EventCard";
 import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
 import {
@@ -42,7 +41,7 @@ export const usePlaces = routeLoader$(async (event) => {
     event: event,
     client: client,
     params: {
-      limit: 6,
+      limit: 25,
     },
   });
   return { data: data.data, success: data.success };
@@ -72,6 +71,7 @@ export default component$(() => {
   const places = usePlaces();
   const first = places.value.data?.[0];
   const others = places.value.data?.slice(1);
+  console.log("places", places.value.data);
   const placesData =
     events.value.data?.map((event) => ({
       name: event.name,
@@ -100,7 +100,7 @@ export default component$(() => {
         </div>
 
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
-          <div class="grid gap-2 px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
+          <div class="grid max-h-[45rem] gap-2 overflow-scroll px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
             {events.value.data && events.value.data.length > 0 ? (
               <>
                 {events.value.data.map((ev) => (
@@ -116,17 +116,9 @@ export default component$(() => {
                     tags={[]}
                   />
                 ))}
-                {events.value.data.length < 6 &&
-                  [...Array(6 - events.value.data.length)].map((_, i) => (
-                    <EmptyEventCard key={`empty-${i}`} />
-                  ))}
               </>
             ) : (
-              <div class="flex flex-col gap-2">
-                <EmptyEventCard />
-                <EmptyEventCard />
-                <EmptyEventCard />
-              </div>
+              <div class="flex flex-col gap-2"></div>
             )}
             {events.value.data && events.value.data.length > 3 && (
               <Link
@@ -146,6 +138,7 @@ export default component$(() => {
             <LocationCard
               name={first.Name}
               link={`/location/${first.PlaceID}`}
+              image={first.ImageURL as string}
               tags={first.Tags || []}
               rating={first.Rating}
               address={first.Address}
@@ -158,6 +151,7 @@ export default component$(() => {
             others.map((content) => (
               <LocationCard
                 key={content.PlaceID}
+                image={content.ImageURL as string}
                 name={content.Name}
                 link={`/location/${content.PlaceID}`}
                 tags={content.Tags || []}
