@@ -171,7 +171,7 @@ export default component$(() => {
                           description={event.description}
                           image={event.image as string}
                           time={event.date}
-                          attendees={10}
+                          attendees={event.attendees}
                           placeID={event.placeId as number}
                           tags={[event.host == true ? "Host" : "Attendee"]}
                           host={event.host}

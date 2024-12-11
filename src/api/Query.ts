@@ -363,7 +363,7 @@ export const QueryAllReferenceEvents = async (params: {
     location: Events.Location,
     coordinates: Events.Coordinates,
     date: Events.Date,
-    starttime: Events.StartTime,
+    startTime: Events.StartTime,
     endtime: Events.EndTime,
     tags: Events.Tags,
     placeId: Events.PlaceId,
@@ -382,6 +382,7 @@ export const QueryAllReferenceEvents = async (params: {
       description: Events.Description,
       location: Events.Location,
       date: Events.Date,
+      statTime: Events.StartTime,
       placeId: Events.PlaceId,
       startTime: Events.StartTime,
       endTime: Events.EndTime,
@@ -399,9 +400,7 @@ export const QueryAllReferenceEvents = async (params: {
   })
     .from(Requests)
     .innerJoin(Events, eq(Events.EventID, Requests.EventID))
-    .where(eq(Requests.UserID, params.UserID))
-    .execute();
-
+    .where(eq(Requests.UserID, params.UserID));
   const mergedEvents = [
     ...hostedEvents.map((event) => ({ ...event, host: true })),
     ...attendingEvents.map(({ event, request }) => ({
@@ -414,8 +413,38 @@ export const QueryAllReferenceEvents = async (params: {
   mergedEvents.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
+  const processedEvents = await Promise.all(
+    mergedEvents.map(async (event) => {
+      const date = new Date(event.date);
+      const startTime = event.startTime;
+      const hrs = startTime ? startTime.split(":")[0] : "00";
+      const minutes = startTime ? startTime.split(":")[1] : "00";
+      const ampm = parseInt(hrs) >= 12 ? "PM" : "AM";
+      const formattedHours = parseInt(hrs) % 12 || 12;
+      event.date = `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`;
 
-  return mergedEvents;
+      const res = await Client.select({
+        requestID: Requests.RequestID,
+        eventID: Requests.EventID,
+        background: Requests.Background,
+        experience: Requests.Experience,
+        whyJoin: Requests.WhyJoin,
+        createdAt: Requests.CreatedAt,
+      })
+        .from(Requests)
+        .where(
+          and(
+            eq(Requests.EventID, event.eventID),
+            eq(Requests.Status, "confirmed"),
+          ),
+        );
+      console.log(event);
+
+      return { ...event, attendees: res.length };
+    }),
+  );
+
+  return processedEvents;
 };
 
 export const QueryMyCompletedRequests = async (params: {
@@ -471,7 +500,8 @@ export const QueryActiveEvent = async (params: {
 
   if (Client == null || params.user == null) return null;
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
-  return await Client.select({
+
+  const result = await Client.select({
     name: Events.Name,
     description: Events.Description,
     location: Events.Location,
@@ -505,8 +535,9 @@ export const QueryActiveEvent = async (params: {
       console.log(e);
       return null;
     });
-};
 
+  return result;
+};
 export const QueryActiveRequest = async (params: {
   event: Requested | undefined;
   options?: QueryEventOptions;

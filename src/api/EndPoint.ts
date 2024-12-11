@@ -71,6 +71,7 @@ export const getAllReferenceEvents = async (event: Requested) => {
       limit: 8,
     },
   });
+
   return data;
 };
 export const getPlace = async ({
