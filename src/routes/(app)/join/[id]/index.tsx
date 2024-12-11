@@ -5,6 +5,7 @@ import { valiForm$ } from "@modular-forms/qwik";
 import { joinRequest, joinRequestSchema } from "~/api/Forms";
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
 import type * as v from "valibot";
 import { getEvent } from "~/api/EndPoint";
 import type { JoinEvent } from "~/../drizzle/schema";
@@ -17,7 +18,7 @@ export const head = {
 export const useEventDetails = routeLoader$(async (request) => {
   const payload = await getEvent(request, request.params.id);
   if (payload.data == null) {
-    throw request.redirect(302, "/join/");
+    //throw request.redirect(302, "/join/");
   }
   return {
     data: { ...payload.data, success: payload.success },
@@ -60,7 +61,7 @@ export const action = formAction$<JoinRequest, Res>(
 
 export default component$(() => {
   const event = useEventDetails();
-
+  const userid = event.value.data.user?.UserID.toString();
   const [, { Form, Field }] = useForm<JoinRequest, Res>({
     validate: valiForm$(joinRequestSchema),
     loader: useFormLoader(),
@@ -70,39 +71,48 @@ export default component$(() => {
   return (
     <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <h1 class="p-6 text-2xl font-semibold tracking-tight text-gray-900">
-        {event.value.data.name || "Event Name"}
+        {event.value.data.event?.name || "Event Name"}
       </h1>
       <div class="px-6 pb-4">
         <div class="space-y-3">
           <div class="flex items-center gap-2 text-sm">
             <Icons.CalendarIcon class="h-4 w-4 text-gray-500" />
             <p class="text-gray-600">
-              {new Date(event.value.data.date || "0").toLocaleDateString() ||
-                "Event Date"}
+              {new Date(
+                event.value.data.event?.date || "0",
+              ).toLocaleDateString() || "Event Date"}
             </p>
           </div>
           <div class="flex items-center gap-2 text-sm">
             <Icons.MapPinIcon class="h-4 w-4 text-gray-500" />
-            <p class="text-gray-600">
-              {event.value.data.location || "Event place"}
-            </p>
+            <Link
+              class="text-gray-600 hover:underline"
+              href={"/places/" + event.value.data.location?.PlaceID.toString()}
+            >
+              {event.value.data.event?.location || "Event place"}
+            </Link>
           </div>
           <div class="flex items-center gap-2 text-sm">
             <Icons.UserIcon class="h-4 w-4 text-gray-500" />
-            <p class="text-gray-600">{event.value.data.image}</p>
+            <Link
+              class="text-gray-600 hover:underline"
+              href={"/user/" + userid}
+            >
+              {event.value.data.user?.Name}
+            </Link>
           </div>
         </div>
       </div>
       <img
-        src={event.value.data.image || "https://via.placeholder.com/800"}
-        alt={event.value.data.name || "Event Image"}
+        src={event.value.data.event?.image || "https://via.placeholder.com/800"}
+        alt={event.value.data.event?.location || "Event Image"}
         height={400}
         width={800}
         class="h-[400px] w-full rounded-none object-cover px-0"
       />
       <div class="p-6">
         <p class="text-sm text-gray-600">
-          {event.value.data.description || "hello"}
+          {event.value.data.event?.description || "hello"}
         </p>
       </div>
       <Form class="border-t border-gray-100 p-6">

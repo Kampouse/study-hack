@@ -260,16 +260,19 @@ export const QueryEvent = async (params: {
   const Client = params.options?.client || (await drizzler(params.event));
 
   if (Client === null) return;
-  return await Client.select({
+
+  const event = await Client.select({
     name: Events.Name,
     description: Events.Description,
     location: Events.Location,
+    LocationID: Events.PlaceId,
     coordinates: Events.Coordinates,
     date: Events.Date,
     starttime: Events.StartTime,
     endtime: Events.EndTime,
     tags: Events.Tags,
     eventID: Events.EventID,
+    userID: Events.UserID,
     image: Events.ImageURL,
   })
     .from(Events)
@@ -279,6 +282,19 @@ export const QueryEvent = async (params: {
       console.log(e);
       return null;
     });
+
+  if (event && event.length > 0) {
+    const user = await Client.select()
+      .from(Users)
+      .where(eq(Users.UserID, event[0].userID))
+      .execute();
+
+    const loc = await Client.select()
+      .from(Places)
+      .where(eq(Places.PlaceID, event[0].LocationID as number));
+    console.log(loc, event);
+    return { user: user[0], event: event[0], location: loc[0] };
+  }
 };
 
 export const QueryEvents = async (params: {
@@ -307,7 +323,8 @@ export const QueryEvents = async (params: {
     image: Events.ImageURL,
   })
 
-    .from(Events).limit(params.options.limit ?? 3)
+    .from(Events)
+    .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
 

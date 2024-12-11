@@ -38,12 +38,11 @@ export const getEvents = async ({
 export const getEvent = async (event: Requested, id: string) => {
   try {
     const data = await QueryEvent({ event, id: parseInt(id), options: {} });
-    if (data === null || data === undefined) {
-      return { success: false, data: null, error: "Failed to get event" };
-    }
-    return { success: true, data: data[0] };
+
+    return { success: true, data: data };
   } catch (e) {
     console.log(e);
+
     return { success: false, data: null, error: "Failed to get event" };
   }
 };
