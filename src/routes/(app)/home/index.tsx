@@ -2,7 +2,6 @@ import { component$ } from "@builder.io/qwik";
 import { useSignal } from "@builder.io/qwik";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/app/eventCard/EventCard";
-import type { popupsData } from "~/models/map";
 import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
 import {
   LocationCard,
@@ -47,25 +46,6 @@ export const usePlaces = routeLoader$(async (event) => {
   return { data: data.data, success: data.success };
 });
 
-export const useMapData = routeLoader$(async () => {
-  const coords: popupsData = [
-    {
-      name: "place  central",
-      coords: [45.5017, -73.5673],
-      description: "The city of festivals",
-      date: "2021-09-12",
-      link: "/join/1",
-    },
-    {
-      name: "place demi",
-      date: "2021-09-12",
-      description: "The city of festivals",
-      coords: [45.5017, -72.5673],
-      link: "/join/2",
-    },
-  ];
-  return coords;
-});
 export default component$(() => {
   const events = useEvents();
   const places = usePlaces();
@@ -77,6 +57,7 @@ export default component$(() => {
       Image: event.image,
       link: `/join/${event.eventID}`,
       date: event.date,
+      place: event.place?.Name,
       description: event.description,
       coords: [event.place?.Lat ?? 0, event.place?.Lng ?? 0] as [
         number,
@@ -104,7 +85,9 @@ export default component$(() => {
               <>
                 {events.value.data.map((ev) => (
                   <EventCard
-                    link={`/join/${ev.eventID}`}
+                    link={
+                      ev.host ? `/event/${ev.eventID}` : `/join/${ev.eventID}`
+                    }
                     key={ev.eventID}
                     title={ev.name}
                     description={ev.description}
@@ -112,6 +95,7 @@ export default component$(() => {
                     image={ev.image as string}
                     placeID={ev.placeId as number}
                     attendees={ev.attendees || 0}
+                    host={ev.host}
                     tags={[]}
                   />
                 ))}

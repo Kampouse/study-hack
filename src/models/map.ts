@@ -6,6 +6,7 @@ export type popupsData = Array<{
   link: string;
   description: string;
   date: string;
+  place: string | undefined;
   coords: [number, number];
 }>;
 

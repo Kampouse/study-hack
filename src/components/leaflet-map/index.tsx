@@ -11,7 +11,6 @@ export { MapWrapper };
 export const LeafletMap = component$<MapProps>(
   ({ location, popups }: MapProps) => {
     //const data = useAuthSession();
-
     // Modify with your preferences. By default take all screen
 
     useStyles$(
@@ -84,11 +83,11 @@ export const LeafletMap = component$<MapProps>(
       locationData.boundaryBox = getBoundaryBox(map);
 
       popups?.value.map((pop) => {
-        console.log(pop);
         const popup = new Popup({}).setLatLng([...pop.coords]).setContent(`
-          <div  class="popup-content bg-white rounded shadow-sm p-3 max-w-xs">
+          <div  class="popup-content bg-white rounded shadow-sm  max-w-xs">
             <h3 class="popup-title text-base font-medium text-gray-800 mb-1">${pop.name}</h3>
-            <p class="popup-description text-xs text-gray-600 mb-2">${pop.description || "No description available"}</p>
+            <p class="popup-address text-xs text-gray-500 mb-2">${pop.description}</p>
+            <p class="popup-description text-xs text-gray-600 mb-2">${pop.place || "No description available"}</p>
             <a href="${pop.link || "#"}" class="popup-link text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-300 flex items-center">
               Learn more
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

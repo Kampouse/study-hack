@@ -88,7 +88,7 @@ export const EventCard = component$((props: EventCardProps) => {
           >
             <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          <span>{props.attendees}</span>
+          <span>{props.attendees + (props.host ? 0 : 1)}</span>
         </h1>
         <h1 class="flex items-center gap-2 text-sm text-gray-600">
           <svg
@@ -103,18 +103,25 @@ export const EventCard = component$((props: EventCardProps) => {
           <span>{props.time}</span>
         </h1>
       </div>
-      <div class="">
-        <div class="">
-          <h1 class="font-medium"> {props.title} </h1>
-        </div>
-        <p
-          class={` overflow-hidden text-xs leading-none ${props.description.length < 50 ? "min-h-[3em]" : "max-h-10 min-h-[3.3em]"}`}
-        >
-          {props.description.length > 50
-            ? props.description.slice(0, 100) + "..."
-            : props.description}
-        </p>
+      <div class="flex items-center gap-2">
+        <h1 class="font-medium">{props.title}</h1>
+        {props.host ? (
+          <span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+            Host
+          </span>
+        ) : (
+          <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800">
+            Attendee
+          </span>
+        )}
       </div>
+      <p
+        class={` overflow-hidden text-xs leading-none ${props.description.length < 50 ? "min-h-[3em]" : "max-h-10 min-h-[3.3em]"}`}
+      >
+        {props.description.length > 50
+          ? props.description.slice(0, 100) + "..."
+          : props.description}
+      </p>
       <div class="mt-2.5 flex w-full justify-end gap-2.5 text-center text-xs font-medium leading-none text-gray-600"></div>
       <Link
         href={`${props.link}`}

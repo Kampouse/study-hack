@@ -321,6 +321,7 @@ export const QueryEvents = async (params: {
     placeId: Events.PlaceId,
     eventID: Events.EventID,
     image: Events.ImageURL,
+    userID: Events.UserID,
   })
 
     .from(Events)
