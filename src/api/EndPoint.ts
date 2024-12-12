@@ -28,7 +28,25 @@ export const getEvents = async ({
     if (data === null) {
       return { success: false, data: null, error: "Failed to get events" };
     }
-    return { success: true, data: data };
+    return {
+      success: true,
+      data: data?.map((item) => {
+        return {
+          ...item,
+          date: (() => {
+            const date = new Date(item.date);
+            const hrs = item.starttime ? item.starttime.split(":")[0] : "00";
+            const minutes = item.starttime
+              ? item.starttime.split(":")[1]
+              : "00";
+            const ampm = parseInt(hrs) >= 12 ? "PM" : "AM";
+            const formattedHours = parseInt(hrs) % 12 || 12;
+            return `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`;
+          })(),
+          starttime: item.starttime.slice(0, 5), // Only take HH:MM
+        };
+      }),
+    };
   } catch (e) {
     console.log(e);
     return { success: false, data: null, error: "Failed to get events" };

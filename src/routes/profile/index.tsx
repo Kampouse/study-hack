@@ -39,9 +39,7 @@ export default component$(() => {
 
   //todo make a real time date for event thign
 
-  console.log("hosted", events.value);
   const data = useContext(queryContext);
-  console.log(data.value.activeEvent);
   const store = useStore({
     name: "Sunflower",
     about: "Just a plant... photosynthesizing",

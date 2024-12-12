@@ -109,7 +109,13 @@ export default component$(() => {
         height={400}
         width={800}
         class="h-[400px] w-full rounded-none object-cover px-0"
+        onError$={(e) => {
+          const img = e.target as HTMLImageElement;
+          img.src =
+            "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
+        }}
       />
+
       <div class="p-6">
         <p class="text-sm text-gray-600">
           {event.value.data.event?.description || "hello"}

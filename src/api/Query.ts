@@ -333,11 +333,30 @@ export const QueryEvents = async (params: {
       return null;
     });
 
-  const places = await QueryPlaces({ event: params.event, client: Client });
+  const result =
+    output?.map(async (event) => {
+      const requests = await Client.select()
+        .from(Requests)
+        .where(
+          and(
+            eq(Requests.EventID, event.eventID),
+            eq(Requests.Status, "confirmed"),
+          ),
+        )
+        .execute();
 
+      return {
+        eventID: event.eventID,
+        confirmedCount: requests.length,
+      };
+    }) ?? [];
+  const places = await QueryPlaces({ event: params.event, client: Client });
+  const resultEvents = await Promise.all(result);
   if (places.success && places.data) {
     return output?.map((event) => ({
       ...event,
+      attendees: resultEvents.find((e) => e.eventID === event.eventID)
+        ?.confirmedCount,
       place: places.data.find((place) => place.PlaceID === event.placeId),
     }));
   }
@@ -438,7 +457,6 @@ export const QueryAllReferenceEvents = async (params: {
             eq(Requests.Status, "confirmed"),
           ),
         );
-      console.log(event);
 
       return { ...event, attendees: res.length };
     }),

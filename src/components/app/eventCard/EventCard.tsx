@@ -41,7 +41,16 @@ export const EventCard = component$((props: EventCardProps) => {
       <header class="relative mb-auto flex aspect-[2.85] w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10">
         <img
           loading="lazy"
-          src={props.image as string}
+          src={
+            props.image
+              ? props.image
+              : "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg"
+          }
+          onError$={(event) => {
+            const target = event.target as HTMLImageElement;
+            target.src =
+              "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
+          }}
           class="size-full absolute inset-0 object-cover"
           alt=""
           width={500}

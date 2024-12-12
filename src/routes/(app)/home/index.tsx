@@ -71,7 +71,6 @@ export default component$(() => {
   const places = usePlaces();
   const first = places.value.data?.[0];
   const others = places.value.data?.slice(1);
-  console.log("places", places.value.data);
   const placesData =
     events.value.data?.map((event) => ({
       name: event.name,
@@ -112,7 +111,7 @@ export default component$(() => {
                     time={ev.date}
                     image={ev.image as string}
                     placeID={ev.placeId as number}
-                    attendees={0}
+                    attendees={ev.attendees || 0}
                     tags={[]}
                   />
                 ))}
