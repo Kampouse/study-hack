@@ -23,8 +23,6 @@ export const EventCard = component$<EventCardProps>((props) => {
       "https://images.unsplash.com/photo-1629910190000-4b3b3b3b3b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMjIwNzV8MHwxfGFsbHwxf",
   };
 
-  console.log("event card", props.data);
-
   const user = props.data || defaultUserCard;
   const onFocused = $(() => {
     console.log("focused");

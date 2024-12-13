@@ -10,6 +10,7 @@ export type EventCardProps = {
   image: string;
   attendees: number;
   link: string;
+  status?: string;
   host?: boolean;
 };
 
@@ -105,14 +106,24 @@ export const EventCard = component$((props: EventCardProps) => {
       </div>
       <div class="flex items-center gap-2">
         <h1 class="font-medium">{props.title}</h1>
-        {props.host ? (
+        {props.status == "host" ? (
           <span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
             Host
           </span>
         ) : (
-          <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800">
-            Attendee
-          </span>
+          <div class="">
+            <div>
+              <span
+                class={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                  props.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-green-100 text-green-800"
+                }`}
+              >
+                {props.status === "pending" ? "Pending" : "Confirmed"}
+              </span>
+            </div>
+          </div>
         )}
       </div>
       <p

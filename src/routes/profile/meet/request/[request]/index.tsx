@@ -36,7 +36,6 @@ export const useFormDenied = routeLoader$<InitialValues<Request>>(() => {
 
 export const useFormAction = formAction$<Request>((values, req) => {
   // Perform actions with form values
-  console.log(values);
 
   updateRequestStatus({
     event: req,

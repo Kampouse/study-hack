@@ -171,8 +171,8 @@ export default component$(() => {
                           time={event.date}
                           attendees={event.attendees}
                           placeID={event.placeId as number}
-                          tags={[event.host == true ? "Host" : "Attendee"]}
-                          host={event.host}
+                          status={event.role}
+                          tags={[]}
                         />
                       </div>
                     ))}

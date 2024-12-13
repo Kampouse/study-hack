@@ -203,7 +203,6 @@ export const CreateEvent = async (params: {
     params.userData ?? (await GetUser({ event: params.event as Requested }));
   const Client = params.Client ?? (await drizzler(params.event as Requested));
   if (userData === undefined || Client === null || userData === null) return;
-  console.log(params.session.PlaceId);
   return await Client.insert(Events)
     .values({
       Name: params.session.Name,
@@ -292,7 +291,6 @@ export const QueryEvent = async (params: {
     const loc = await Client.select()
       .from(Places)
       .where(eq(Places.PlaceID, event[0].LocationID as number));
-    console.log(loc, event);
     return { user: user[0], event: event[0], location: loc[0] };
   }
 };
@@ -422,11 +420,11 @@ export const QueryAllReferenceEvents = async (params: {
     .innerJoin(Events, eq(Events.EventID, Requests.EventID))
     .where(eq(Requests.UserID, params.UserID));
   const mergedEvents = [
-    ...hostedEvents.map((event) => ({ ...event, host: true })),
+    ...hostedEvents.map((event) => ({ ...event, role: "host" })),
     ...attendingEvents.map(({ event, request }) => ({
       ...event,
       ...request,
-      host: false,
+      role: request.status === "confirmed" ? "confirmed" : "pending",
     })),
   ];
 
@@ -460,7 +458,6 @@ export const QueryAllReferenceEvents = async (params: {
           ),
         )
         .groupBy(Requests.EventID);
-      console.log(res);
       return { ...event, attendees: res.length, requests: res };
     }),
   );

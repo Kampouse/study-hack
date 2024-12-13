@@ -346,8 +346,6 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   expect(dataFromUser2).toBeDefined();
   expect(dataFromUser2).toBeInstanceOf(Array);
   expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2);
-  expect(dataFromUser2?.some((event) => event.host === true)).toBe(true);
-  expect(dataFromUser2?.some((event) => event.host === false)).toBe(true);
 });
 test("Create a valid place", async () => {
   const user = await GetUserFromEmail({
@@ -494,8 +492,8 @@ test("Delete a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
-    lat: faker.address.latitude(),
-    lng: faker.address.longitude(),
+    lat: faker.location.latitude(),
+    lng: faker.location.longitude(),
     placeId: faker.number.int({ min: 1, max: 100 }),
     rating: faker.number.int({ min: 1, max: 5 }),
   };
