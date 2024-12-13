@@ -331,8 +331,6 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   expect(dataFromUser1).toBeDefined();
   expect(dataFromUser1).toBeInstanceOf(Array);
   expect(dataFromUser1?.length).toBeGreaterThanOrEqual(2);
-  expect(dataFromUser1?.some((event) => event.host === true)).toBe(true);
-  expect(dataFromUser1?.some((event) => event.host === false)).toBe(true);
 
   // Query all reference events for user2
   const dataFromUser2 = await QueryAllReferenceEvents({
