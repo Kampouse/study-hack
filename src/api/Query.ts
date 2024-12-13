@@ -449,6 +449,7 @@ export const QueryAllReferenceEvents = async (params: {
         background: Requests.Background,
         experience: Requests.Experience,
         whyJoin: Requests.WhyJoin,
+        status: Requests.Status,
         createdAt: Requests.CreatedAt,
       })
         .from(Requests)
@@ -457,9 +458,10 @@ export const QueryAllReferenceEvents = async (params: {
             eq(Requests.EventID, event.eventID),
             eq(Requests.Status, "confirmed"),
           ),
-        );
-
-      return { ...event, attendees: res.length };
+        )
+        .groupBy(Requests.EventID);
+      console.log(res);
+      return { ...event, attendees: res.length, requests: res };
     }),
   );
 
