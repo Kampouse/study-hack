@@ -34,6 +34,7 @@ export const EmptyEventCard = component$(() => {
 });
 
 export const EventCard = component$((props: EventCardProps) => {
+  console.log(props.status);
   return (
     <article
       id={"#" + props.title}
@@ -113,15 +114,17 @@ export const EventCard = component$((props: EventCardProps) => {
         ) : (
           <div class="">
             <div>
-              <span
-                class={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  props.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-green-100 text-green-800"
-                }`}
-              >
-                {props.status === "pending" ? "Pending" : "Confirmed"}
-              </span>
+              {props.status && (
+                <span
+                  class={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    props.status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
+                >
+                  {props.status === "pending" ? "Pending" : "Confirmed"}
+                </span>
+              )}
             </div>
           </div>
         )}
