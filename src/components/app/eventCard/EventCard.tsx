@@ -34,7 +34,6 @@ export const EmptyEventCard = component$(() => {
 });
 
 export const EventCard = component$((props: EventCardProps) => {
-  console.log(props.status);
   return (
     <article
       id={"#" + props.title}

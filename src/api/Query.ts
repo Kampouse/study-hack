@@ -1,6 +1,6 @@
 import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, and, ne, or } from "drizzle-orm";
+import { eq, and, ne, or, not, exists } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
@@ -294,7 +294,7 @@ export const QueryEvent = async (params: {
     return { user: user[0], event: event[0], location: loc[0] };
   }
 };
-
+//query events that are not created by the user and not registered by the user
 export const QueryEvents = async (params: {
   event: Requested | undefined;
   options?: QueryEventOptions;
@@ -323,6 +323,23 @@ export const QueryEvents = async (params: {
   })
 
     .from(Events)
+    .where(
+      and(
+        not(
+          exists(
+            Client.select()
+              .from(Requests)
+              .where(
+                and(
+                  eq(Requests.EventID, Events.EventID),
+                  eq(Requests.UserID, params.options.byUser as number),
+                ),
+              ),
+          ),
+        ),
+        ne(Events.UserID, params.options.byUser as number),
+      ),
+    )
     .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
