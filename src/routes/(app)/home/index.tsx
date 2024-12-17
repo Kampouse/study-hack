@@ -32,7 +32,7 @@ export const useEvents = routeLoader$(async (event) => {
       limit: 100,
     },
   });
-  return data;
+  return data
 });
 export const usePlaces = routeLoader$(async (event) => {
   const client = await drizzler(event);
@@ -78,40 +78,59 @@ export default component$(() => {
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <Leaflet popups={placeSignal} />
         </div>
-
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
-          <div class="grid max-h-[45rem] gap-2 overflow-scroll px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
-            {events.value.data && events.value.data.length > 0 ? (
-              <>
-                {events.value.data.map((ev) => (
-                  <EventCard
-                    link={
-                      ev.host ? `/event/${ev.eventID}` : `/join/${ev.eventID}`
-                    }
-                    key={ev.eventID}
-                    title={ev.name}
-                    description={ev.description}
-                    time={ev.date}
-                    image={ev.image as string}
-                    placeID={ev.placeId as number}
-                    attendees={ev.attendees || 0}
-                    host={ev.host}
-                    tags={[]}
-                  />
-                ))}
-              </>
-            ) : (
-              <div class="flex flex-col gap-2"></div>
-            )}
-            {events.value.data && events.value.data.length > 3 && (
+          {events.value.data && events.value.data.length > 0 ? (
+            <div class="grid max-h-[45rem] gap-2 overflow-y-auto px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
+              {events.value.data.map((ev) => (
+                <EventCard
+                  link={
+                    ev.host ? `/event/${ev.eventID}` : `/join/${ev.eventID}`
+                  }
+                  key={ev.eventID}
+                  title={ev.name}
+                  description={ev.description}
+                  time={ev.date}
+                  image={ev.image as string}
+                  placeID={ev.placeId as number}
+                  attendees={ev.attendees || 0}
+                  host={ev.host}
+                  tags={[]}
+                />
+              ))}
+              {events.value.data.length > 3 && (
+                <Link
+                  href="/join"
+                  class=" rounded-lg bg-black  p-2 text-center text-white md:hidden"
+                >
+                  See more
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div class="flex h-full flex-col items-center justify-center gap-4 rounded-lg bg-white p-8 text-center shadow-sm">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-50">
+                <img
+                  src="https://media.tenor.com/images/b2b4775788bc9666eebb0a00355948ec/tenor.gif"
+                  alt="Sad cat"
+                  class="h-8 w-8"
+                  width="32"
+                  height="32"
+                />
+              </div>
+              <h2 class="text-2xl font-medium text-gray-900">
+                No Events Found
+              </h2>
+              <p class="text-gray-500">
+                Subscribe to get notified when new events are posted
+              </p>
               <Link
-                href="/join"
-                class=" rounded-lg bg-black  p-2 text-center text-white md:hidden"
+                href="/subscribe"
+                class="inline-flex items-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
               >
-                See more
+                Subscribe Now
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
       <div class=" order-last px-2 pt-2">
