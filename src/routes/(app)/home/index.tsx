@@ -1,8 +1,8 @@
-import { component$ } from "@builder.io/qwik";
-import { useSignal } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
+import { useSignal } from "@qwik.dev/core";
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { EventCard } from "@/components/app/eventCard/EventCard";
-import { routeLoader$, routeAction$, Link } from "@builder.io/qwik-city";
+import { routeLoader$, routeAction$, Link } from "@qwik.dev/router";
 import {
   LocationCard,
   ShareLocationCard,

@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import type { DocumentHead } from "@qwik.dev/router";
 const Landing = component$(() => {
   return (
     <div class="flex     h-[34em] flex-col items-center justify-center bg-hero-bg   bg-cover bg-center px-16  py-40    md:h-[110vh]  md:w-[68em] md:px-60 lg:h-screen  lg:w-[80em]   lg:px-96  ">

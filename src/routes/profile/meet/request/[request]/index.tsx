@@ -1,10 +1,10 @@
-import { component$ } from "@builder.io/qwik";
-import { useLocation } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { useLocation } from "@qwik.dev/router";
 import { useForm, formAction$, type InitialValues } from "@modular-forms/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@qwik.dev/router";
 import { valiForm$ } from "@modular-forms/qwik";
 import * as v from "valibot";
-import { useContext } from "@builder.io/qwik";
+import { useContext } from "@qwik.dev/core";
 import { queryContext } from "../../../layout";
 import { updateRequestStatus } from "~/api/Query";
 enum status {

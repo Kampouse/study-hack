@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
-import { Slot, useSignal, type Signal } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
+import { Form } from "@qwik.dev/router";
+import { Slot, useSignal, type Signal } from "@qwik.dev/core";
 import { useUpdateUser } from "~/routes/profile";
 type FormProps = {
   data: { name: string; about: string; interests: string[] };

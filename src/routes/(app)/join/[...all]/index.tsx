@@ -1,8 +1,8 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { routeLoader$ } from "@qwik.dev/router";
 import { EventCard } from "@/components/app/eventCard/EventCard";
 import { QueryEvents } from "~/api/Query";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import type { DocumentHead } from "@qwik.dev/router";
 
 export const useEvents = routeLoader$(async (event) => {
   // This is a placeholder. Replace with actual API call to fetch events

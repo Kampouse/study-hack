@@ -1,11 +1,11 @@
 // adapters/vercel-edge/vite.config.ts
-import { vercelEdgeAdapter } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@builder.io/qwik-city/adapters/vercel-edge/vite/index.mjs";
-import { extendConfig } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@builder.io/qwik-city/vite/index.mjs";
+import { vercelEdgeAdapter } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@qwik.dev/router/adapters/vercel-edge/vite/index.mjs";
+import { extendConfig } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@qwik.dev/router/vite/index.mjs";
 
 // vite.config.ts
 import { defineConfig } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/vite@5.3.3_@types+node@20.14.10/node_modules/vite/dist/node/index.js";
-import { qwikVite } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik@1.7.1_@types+node@20.14.10_undici@6.19.2/node_modules/@builder.io/qwik/optimizer.mjs";
-import { qwikCity } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@builder.io/qwik-city/vite/index.mjs";
+import { qwikVite } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik@1.7.1_@types+node@20.14.10_undici@6.19.2/node_modules/@qwik.dev/core/optimizer.mjs";
+import { qwikCity } from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/@builder.io+qwik-city@1.7.1_@types+node@20.14.10_rollup@4.18.0/node_modules/@qwik.dev/router/vite/index.mjs";
 import tsconfigPaths from "file:///Users/j-p/dev/study-hack/node_modules/.pnpm/vite-tsconfig-paths@4.3.2_typescript@5.4.5_vite@5.3.3_@types+node@20.14.10_/node_modules/vite-tsconfig-paths/dist/index.mjs";
 
 // package.json
@@ -47,9 +47,9 @@ var package_default = {
   devDependencies: {
     "@auth/core": "0.31.0",
     "@auth/qwik": "0.2.2",
-    "@builder.io/qwik": "latest",
-    "@builder.io/qwik-auth": "0.2.2",
-    "@builder.io/qwik-city": "latest",
+    "@qwik.dev/core": "latest",
+    "@qwik.dev/core-auth": "0.2.2",
+    "@qwik.dev/router": "latest",
     "@libsql/client": "^0.5.2",
     "@types/better-sqlite3": "^7.6.9",
     "@types/eslint": "^8.56.10",
@@ -149,7 +149,7 @@ var vite_config_default2 = extendConfig(vite_config_default, () => {
     build: {
       ssr: true,
       rollupOptions: {
-        input: ["src/entry.vercel-edge.tsx", "@qwik-city-plan"],
+        input: ["src/entry.vercel-edge.tsx", "@qwik-router-config"],
       },
       outDir: ".vercel/output/functions/_qwik-city.func",
     },

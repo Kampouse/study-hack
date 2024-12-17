@@ -1,13 +1,13 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
 import {} from "@modular-forms/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@qwik.dev/router";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
-import { useNavigate } from "@builder.io/qwik-city";
+import { useNavigate } from "@qwik.dev/router";
 import { valiForm$, formAction$ } from "@modular-forms/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import type { DocumentHead } from "@qwik.dev/router";
 
 import type * as v from "valibot";
 import { GetUser, QueryPlaces } from "~/api/Query";

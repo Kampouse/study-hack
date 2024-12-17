@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 export const GithubIcon = component$(() => {
   return (
     <svg viewBox="0 0 128 128" class="h-6 w-6">

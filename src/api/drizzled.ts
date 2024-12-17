@@ -1,6 +1,6 @@
-import type { RequestEvent } from "@builder.io/qwik-city";
+import type { RequestEvent } from "@qwik.dev/router";
 import { tursoClient as drizzle } from "~/utils/turso";
-import type { RequestEventAction } from "@builder.io/qwik-city";
+import type { RequestEventAction } from "@qwik.dev/router";
 export type Session = {
   name: String;
   user: { email: string; name: string; image: string };

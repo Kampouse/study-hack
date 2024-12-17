@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { routeLoader$ } from "@qwik.dev/router";
 import { getPlace } from "~/api/EndPoint";
 export const useloadPlace = routeLoader$(async (context) => {
   const placeName = context.params.name;

@@ -1,9 +1,9 @@
 import { useAuthSignin } from "../plugin@auth";
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { GoogleIcon, GithubIcon } from "~/components/icons";
-import { Form } from "@builder.io/qwik-city";
+import { Form } from "@qwik.dev/router";
 import JustRnd from "./justrnd.png?jsx";
-import type { RequestHandler } from "@builder.io/qwik-city";
+import type { RequestHandler } from "@qwik.dev/router";
 export const onGet: RequestHandler = async (req) => {
   type Session = {
     user: {

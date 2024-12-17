@@ -1,4 +1,4 @@
-import type { RequestHandler } from "@builder.io/qwik-city";
+import type { RequestHandler } from "@qwik.dev/router";
 import { CreateUser } from "~/api/Query";
 import type { Session } from "~/api/drizzled";
 export const onRequest: RequestHandler = async (event) => {

@@ -5,15 +5,15 @@ import {
   useSignal,
   useTask$,
   useContext,
-} from "@builder.io/qwik";
+} from "@qwik.dev/core";
 import { EventCard } from "@/components/app/eventCard/EventCard";
-import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$ } from "@qwik.dev/router";
 import { queryContext } from "./layout";
 import { ProfileForm, ProfileCard } from "~/components/profile";
 import { getAllReferenceEvents } from "~/api/EndPoint";
 import { updateProfileForm } from "~/api/Forms";
-import type { DocumentHead } from "@builder.io/qwik-city";
-import { Link } from "@builder.io/qwik-city";
+import type { DocumentHead } from "@qwik.dev/router";
+import { Link } from "@qwik.dev/router";
 
 export const useUpdateUser = routeAction$(async (data, event) => {
   try {

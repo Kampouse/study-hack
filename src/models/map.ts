@@ -1,5 +1,5 @@
 import type { LocationsProps } from "./location";
-import { type Signal } from "@builder.io/qwik";
+import { type Signal } from "@qwik.dev/core";
 
 export type popupsData = Array<{
   name: string;

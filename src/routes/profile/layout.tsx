@@ -3,10 +3,10 @@ import {
   createContextId,
   Slot,
   useContextProvider,
-} from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+} from "@qwik.dev/core";
+import { routeLoader$ } from "@qwik.dev/router";
 
-import type { RequestEventLoader } from "@builder.io/qwik-city";
+import type { RequestEventLoader } from "@qwik.dev/router";
 import {
   GetUser,
   QueryActiveRequest,

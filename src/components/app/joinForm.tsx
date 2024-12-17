@@ -1,5 +1,5 @@
-import { component$, Slot, useSignal } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
+import { component$, Slot, useSignal } from "@qwik.dev/core";
+import { Form } from "@qwik.dev/router";
 import { Modal } from "@qwik-ui/headless";
 import { useEventAction } from "~/routes/(app)/home";
 interface EventProps {

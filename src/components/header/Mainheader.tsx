@@ -1,13 +1,11 @@
-import { component$, useTask$, useVisibleTask$ } from "@builder.io/qwik";
-import { useAuthSession } from "~/routes/plugin@auth";
-import { useLocation } from "@builder.io/qwik-city";
-import { useSignal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$, useTask$, useVisibleTask$ } from "@qwik.dev/core";
+import { useLocation } from "@qwik.dev/router";
+import { useSignal } from "@qwik.dev/core";
+import { Link } from "@qwik.dev/router";
 import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
 export default component$(() => {
-  const session = useAuthSession();
   //eslint-disable-next-line
   useVisibleTask$(() => {
     if (document.location.host.includes("study-hack.vercel.app")) {
@@ -51,7 +49,7 @@ export default component$(() => {
         <div class="flex flex-col items-center">
           <div class="pl-10 md:pl-8">
             <Link
-              href={session.value ? "/home" : "/landing"}
+              href="/home"
               class="hidden bg-gradient-to-r from-black to-gray-600 bg-clip-text p-4 text-2xl font-bold text-transparent transition-opacity hover:opacity-80 md:inline-block"
             >
               <h1 class="inline-block">{"S & H"} </h1>
@@ -65,65 +63,44 @@ export default component$(() => {
                 New
               </Link>
             )}
-            {session.value && (
-              <Link href="/home" class="p-4 pl-5 text-white md:hidden">
-                {location.url.pathname !== "/home" && (
-                  <div class="rounded-full bg-black px-3 py-2 transition-colors hover:bg-gray-800">
-                    <ArrowLeftIcon size={24} />
-                  </div>
-                )}
-              </Link>
-            )}
+            <Link href="/home" class="p-4 pl-5 text-white md:hidden">
+              {location.url.pathname !== "/home" && (
+                <div class="rounded-full bg-black px-3 py-2 transition-colors hover:bg-gray-800">
+                  <ArrowLeftIcon size={24} />
+                </div>
+              )}
+            </Link>
           </div>
-          {!session.value && (
-            <a
-              href="/"
-              class="hidden p-4 text-gray-600 transition-colors hover:text-black"
-            >
-              Learn more
-            </a>
-          )}
         </div>
         <div class="flex flex-row content-center justify-end">
-          {session.value && (
-            <div class="flex items-center gap-4">
-              {location.url.href.includes("home") ? (
-                <div>
-                  <Link
-                    href="/new"
-                    class="hidden rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:block"
-                  >
-                    New
-                  </Link>
-                </div>
-              ) : (
+          <div class="flex items-center gap-4">
+            {location.url.href.includes("home") ? (
+              <div>
                 <Link
-                  href={backSignal.value || "/home"}
-                  class="hidden rounded-full bg-black px-3 py-2 text-white transition-colors hover:bg-gray-800 md:block"
+                  href="/new"
+                  class="hidden rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:block"
                 >
-                  <ArrowLeftIcon size={24} />
+                  New
                 </Link>
-              )}
-              {location.url.pathname !== "/profile" && (
-                <Link
-                  href="/profile"
-                  class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800"
-                >
-                  Profile
-                </Link>
-              )}{" "}
-              <Dropdown />
-            </div>
-          )}
-
-          {!session.value && (
-            <a
-              href="/login"
-              class="p-4 text-gray-600 transition-colors hover:text-black"
-            >
-              Sign In
-            </a>
-          )}
+              </div>
+            ) : (
+              <Link
+                href={backSignal.value || "/home"}
+                class="hidden rounded-full bg-black px-3 py-2 text-white transition-colors hover:bg-gray-800 md:block"
+              >
+                <ArrowLeftIcon size={24} />
+              </Link>
+            )}
+            {location.url.pathname !== "/profile" && (
+              <Link
+                href="/profile"
+                class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800"
+              >
+                Profile
+              </Link>
+            )}{" "}
+            <Dropdown />
+          </div>
         </div>
       </nav>
     </header>

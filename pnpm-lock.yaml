@@ -18,15 +18,6 @@ importers:
       '@auth/core':
         specifier: 0.31.0
         version: 0.31.0
-      '@builder.io/qwik':
-        specifier: latest
-        version: 1.9.0(@types/node@20.16.10)
-      '@builder.io/qwik-auth':
-        specifier: 0.2.2
-        version: 0.2.2
-      '@builder.io/qwik-city':
-        specifier: latest
-        version: 1.9.0(@types/node@20.16.10)(rollup@4.24.0)(typescript@5.4.5)
       '@dagger.io/dagger':
         specifier: ^0.13.3
         version: 0.13.3
@@ -38,22 +29,28 @@ importers:
         version: 0.5.6
       '@modular-forms/qwik':
         specifier: ^0.26.1
-        version: 0.26.1(@builder.io/qwik-city@1.9.0(@types/node@20.16.10)(rollup@4.24.0)(typescript@5.4.5))(@builder.io/qwik@1.9.0(@types/node@20.16.10))(typescript@5.4.5)
+        version: 0.26.1(@builder.io/qwik-city@1.11.0(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10)))(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))(typescript@5.4.5)
       '@nabla/vite-plugin-eslint':
         specifier: ^2.0.4
         version: 2.0.4(eslint@8.57.1)(vite@5.4.8(@types/node@20.16.10))
       '@qwik-ui/headless':
         specifier: latest
-        version: 0.6.1(@builder.io/qwik@1.9.0(@types/node@20.16.10))
+        version: 0.6.1(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))
       '@qwik-ui/styled':
         specifier: latest
-        version: 0.2.0(@builder.io/qwik@1.9.0(@types/node@20.16.10))
+        version: 0.2.0(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))
       '@qwik-ui/utils':
         specifier: latest
         version: 0.3.1
+      '@qwik.dev/core':
+        specifier: 2.0.0-alpha.1
+        version: 2.0.0-alpha.1(prettier@3.3.3)(vite@5.4.8(@types/node@20.16.10))(vitest@2.1.2(@edge-runtime/vm@2.1.2)(@types/node@20.16.10))
+      '@qwik.dev/router':
+        specifier: 2.0.0-alpha.1
+        version: 2.0.0-alpha.1(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))
       '@qwikest/icons':
         specifier: latest
-        version: 0.0.13(@builder.io/qwik@1.9.0(@types/node@20.16.10))
+        version: 0.0.13(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))
       '@storybook/addon-essentials':
         specifier: latest
         version: 8.3.5(storybook@8.3.5)
@@ -106,8 +103,8 @@ importers:
         specifier: ^8.57.0
         version: 8.57.1
       eslint-plugin-qwik:
-        specifier: ^1.6.0
-        version: 1.9.0(eslint@8.57.1)
+        specifier: 2.0.0-alpha.1
+        version: 2.0.0-alpha.1(eslint@8.57.1)(typescript@5.4.5)
       leaflet:
         specifier: 1.9.4
         version: 1.9.4
@@ -137,7 +134,7 @@ importers:
         version: 8.3.5
       storybook-framework-qwik:
         specifier: latest
-        version: 0.4.0(@builder.io/qwik@1.9.0(@types/node@20.16.10))(@types/node@20.16.10)(rollup@4.24.0)(storybook@8.3.5)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))
+        version: 0.4.0(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))(@types/node@20.16.10)(rollup@4.24.0)(storybook@8.3.5)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))
       tailwindcss:
         specifier: 3.3.3
         version: 3.3.3(ts-node@10.9.1(@types/node@20.16.10)(typescript@5.4.5))
@@ -175,20 +172,6 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
-
-  '@auth/core@0.30.0':
-    resolution: {integrity: sha512-8AE4m/nk+4EIiVCJwxZAsJeAQuzpEC8M8768mmKVn60CGDdupKQkVhxbRlm5Qh7eNRCoFFME+0DvtaX2aXrYaA==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.2
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
-        optional: true
-      nodemailer:
-        optional: true
 
   '@auth/core@0.31.0':
     resolution: {integrity: sha512-UKk3psvA1cRbk4/c9CkpWB8mdWrkKvzw0DmEYRsWolUQytQ2cRqx+hYuV6ZCsngw/xbj9hpmkZmAZEyq2g4fMg==}
@@ -800,22 +783,22 @@ packages:
     resolution: {integrity: sha512-vwIVdXG+j+FOpkwqHRcBgHLYNL7XMkufrlaFvL9o6Ai9sJn9+PdyIL5qa0XzTZw084c+u9LOls53eoZWP/W5WQ==}
     engines: {node: '>=6.9.0'}
 
-  '@builder.io/qwik-auth@0.2.2':
-    resolution: {integrity: sha512-tKG26VWUMzWG929fiBYQaseQKeUzpcxVT46F4bewjEkigq8cpNgvju4KWW18cagj42902twF5XM5Ft0tGr6yig==}
+  '@builder.io/qwik-city@1.11.0':
+    resolution: {integrity: sha512-YyugV6JNm/jV/Ae8LU6k/IWa+1y409NqOCNug5yJmooBJq4qcER4WpgRf+xqE8gts0XQ4VKqe0NP3ANPggBWnw==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
+    peerDependencies:
+      vite: ^5
 
   '@builder.io/qwik-city@1.4.1':
     resolution: {integrity: sha512-SUNxptxOkJJEZN0X1o0SkR2f+8NqAONXKMSAhM6iOfzhJd9ceFpEoz2Jl1oalrZrWnPWVu386EB9f5899fhWAg==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
 
-  '@builder.io/qwik-city@1.9.0':
-    resolution: {integrity: sha512-N+TARxsrVMNpIQQ+cnTN+c/gCdI5PlUGPFaRnWT4dw3ug+bizoaldksFvdATarWVYUMkoK7tTpop3cORKN9tAg==}
-    engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
-
-  '@builder.io/qwik@1.9.0':
-    resolution: {integrity: sha512-E4EFXOaUz4A6D48lw1CwKR4CLZCPquetuMPrRoAPZjBueL/R1oBzXdRt5zVemS6lAoTSjXBsnxXo2kGYKCI7pA==}
+  '@builder.io/qwik@1.11.0':
+    resolution: {integrity: sha512-kVSB6EL0+WjXEAXHZs7vHgt64wON5meNdXIDsKqEvskmCBnOUQNgw7yeQmJa9Lafx3RAR+IUZ4d+3H6zqGuRXw==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
+    peerDependencies:
+      vite: ^5
 
   '@clack/core@0.3.4':
     resolution: {integrity: sha512-H4hxZDXgHtWTwV3RAVenqcC4VbJZNegbBjlPvzOzCouXtS2y3sDvlO3IsbrPNWuLWPPlYVYPghQdSF64683Ldw==}
@@ -2148,6 +2131,26 @@ packages:
   '@qwik-ui/utils@0.3.1':
     resolution: {integrity: sha512-lBmFDr7igPvSN8MVgPdvXzk9SLhEynCbXpczJNC2VJsVPUS51/e2+42ha03yEwihO4b3ePaBa+CzuZpsz1VvQQ==}
 
+  '@qwik.dev/core@2.0.0-alpha.1':
+    resolution: {integrity: sha512-KQHehuZVMaiZmVseAUMS15uMK9f2rjDHddYEakLb31JWwmeGI0hAPPM6fht7r0g8ygmE90dL8QYp1i4/IEkNsw==}
+    engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    hasBin: true
+    peerDependencies:
+      prettier: '*'
+      vite: ^5
+      vitest: ^2
+    peerDependenciesMeta:
+      prettier:
+        optional: true
+      vitest:
+        optional: true
+
+  '@qwik.dev/router@2.0.0-alpha.1':
+    resolution: {integrity: sha512-NNUaLJ/NOBzns5l85K4zQdzFrOuS+O2aXlLQ9MC43HcsPZ+UIdRcnNeYlNlfMSaX+sYAabMe7jY6uzmUbEoy1g==}
+    engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    peerDependencies:
+      vite: ^5
+
   '@qwikest/icons@0.0.13':
     resolution: {integrity: sha512-e0wY8vmx0nDSUiuCATlk+ojTvdBV4txIGHHWjZW5SRkv4XB8H9+3WSDcLPz0ItUdRyzcrohE9k2jtQI/98aRPA==}
     engines: {node: '>=15.0.0'}
@@ -2620,6 +2623,10 @@ packages:
     resolution: {integrity: sha512-jjhdIE/FPF2B7Z1uzc6i3oWKbGcHb87Qw7AWj6jmEqNOfDFbJWtjt/XfwCpvNkpGWlcJaog5vTR+VV8+w9JflA==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
+  '@typescript-eslint/scope-manager@8.18.1':
+    resolution: {integrity: sha512-HxfHo2b090M5s2+/9Z3gkBhI6xBH8OJCFjH9MhQ+nnoZqxU3wNxkLT+VWXWSFWc3UF3Z+CfPAyqdCTdoXtDPCQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@typescript-eslint/type-utils@7.18.0':
     resolution: {integrity: sha512-XL0FJXuCLaDuX2sYqZUUSOJ2sG5/i1AAze+axqmLnSkNEVMVYLF+cbwlB2w8D1tinFuSikHmFta+P+HOofrLeA==}
     engines: {node: ^18.18.0 || >=20.0.0}
@@ -2634,6 +2641,10 @@ packages:
     resolution: {integrity: sha512-iZqi+Ds1y4EDYUtlOOC+aUmxnE9xS/yCigkjA7XpTKV6nCBd3Hp/PRGGmdwnfkV2ThMyYldP1wRpm/id99spTQ==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
+  '@typescript-eslint/types@8.18.1':
+    resolution: {integrity: sha512-7uoAUsCj66qdNQNpH2G8MyTFlgerum8ubf21s3TSM3XmKXuIn+H2Sifh/ES2nPOPiYSRJWAk0fDkW0APBWcpfw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@typescript-eslint/typescript-estree@7.18.0':
     resolution: {integrity: sha512-aP1v/BSPnnyhMHts8cf1qQ6Q1IFwwRvAQGRvBFkWlo3/lH29OXA3Pts+c10nxRxIBrDnoMqzhgdwVe5f2D6OzA==}
     engines: {node: ^18.18.0 || >=20.0.0}
@@ -2643,15 +2654,32 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/typescript-estree@8.18.1':
+    resolution: {integrity: sha512-z8U21WI5txzl2XYOW7i9hJhxoKKNG1kcU4RzyNvKrdZDmbjkmLBo8bgeiOJmA06kizLI76/CCBAAGlTlEeUfyg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      typescript: '>=4.8.4 <5.8.0'
+
   '@typescript-eslint/utils@7.18.0':
     resolution: {integrity: sha512-kK0/rNa2j74XuHVcoCZxdFBMF+aq/vH83CXAOHieC+2Gis4mF8jJXT5eAfyD3K0sAxtPuwxaIOIOvhwzVDt/kw==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       eslint: ^8.56.0
 
+  '@typescript-eslint/utils@8.18.1':
+    resolution: {integrity: sha512-8vikiIj2ebrC4WRdcAdDcmnu9Q/MXXwg+STf40BVfT8exDqBCUPdypvzcUPxEqRGKg9ALagZ0UWcYCtn+4W2iQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+      typescript: '>=4.8.4 <5.8.0'
+
   '@typescript-eslint/visitor-keys@7.18.0':
     resolution: {integrity: sha512-cDF0/Gf81QpY3xYyJKDV14Zwdmid5+uuENhjH2EqFaF0ni+yAyq/LzMaIJdhNJXZI7uLzwIlA+V7oWoyn6Curg==}
     engines: {node: ^18.18.0 || >=20.0.0}
+
+  '@typescript-eslint/visitor-keys@8.18.1':
+    resolution: {integrity: sha512-Vj0WLm5/ZsD013YeUKn+K0y8p1M0jPpxOkKdbD1wB0ns53a5piVY02zjf072TblEweAbcYiFiPoSMF3kp+VhhQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
@@ -3846,9 +3874,9 @@ packages:
     engines: {node: '>=4.0'}
     hasBin: true
 
-  eslint-plugin-qwik@1.9.0:
-    resolution: {integrity: sha512-9EsvIVwtpANSj/ICKMoR5aeabDPgPVcW58bxY8N7R/9oQs6piCm7XbFErxAeaGxmhuvpMZsc+7AN5DizDfDdrw==}
-    engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
+  eslint-plugin-qwik@2.0.0-alpha.1:
+    resolution: {integrity: sha512-4NasNjLs4U30aVXa2H19bvvFjeKIcwnLZjo3OBA3I7xe3YpGR3IZ3bfrUnEPK14G1k8IXB31iVKRlIc+7JI9uQ==}
+    engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       eslint: ^8.57.0
 
@@ -3859,6 +3887,10 @@ packages:
   eslint-visitor-keys@3.4.3:
     resolution: {integrity: sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  eslint-visitor-keys@4.2.0:
+    resolution: {integrity: sha512-UyLnSehNt62FFhSwjZlHmeokpRK59rcz29j+F1/aDgbkbRTk7wIc9XzdoasMUbRNKDM0qQt/+BJ4BrpFeABemw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
@@ -6717,8 +6749,8 @@ packages:
   vfile@5.3.7:
     resolution: {integrity: sha512-r7qlzkgErKjobAmyNIkkSpizsFPYiUPuJb5pNW1RB4JcYVZhs4lIbVqk8XPk033CV/1z8ss5pkax8SuhGpcG8g==}
 
-  vfile@6.0.1:
-    resolution: {integrity: sha512-1bYqc7pt6NIADBJ98UiG0Bn/CHIVOoZ/IyEkqIruLg0mE1BKzkOXY2D6CSqQIcKqgadppE5lrxgWXJmXd7zZJw==}
+  vfile@6.0.2:
+    resolution: {integrity: sha512-zND7NlS8rJYb/sPqkb13ZvbbUoExdbi4w3SfRrMq6R3FvnLQmmfpajJNITuuYm6AZ5uao9vy4BAos3EXBPf2rg==}
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
@@ -6974,16 +7006,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-
-  '@auth/core@0.30.0':
-    dependencies:
-      '@panva/hkdf': 1.2.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.9.3
-      oauth4webapi: 2.17.0
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
 
   '@auth/core@0.31.0':
     dependencies:
@@ -7790,13 +7812,22 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.7
       to-fast-properties: 2.0.0
 
-  '@builder.io/qwik-auth@0.2.2':
+  '@builder.io/qwik-city@1.11.0(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))':
     dependencies:
-      '@auth/core': 0.30.0
+      '@mdx-js/mdx': 3.0.1
+      '@types/mdx': 2.0.13
+      source-map: 0.7.4
+      svgo: 3.3.2
+      undici: 6.19.8
+      valibot: 0.37.0(typescript@5.4.5)
+      vfile: 6.0.2
+      vite: 5.4.8(@types/node@20.16.10)
+      vite-imagetools: 7.0.4(rollup@4.24.0)
+      zod: 3.22.4
     transitivePeerDependencies:
-      - '@simplewebauthn/browser'
-      - '@simplewebauthn/server'
-      - nodemailer
+      - rollup
+      - supports-color
+      - typescript
 
   '@builder.io/qwik-city@1.4.1(@types/node@20.16.10)(rollup@4.24.0)':
     dependencies:
@@ -7822,44 +7853,10 @@ snapshots:
       - terser
     optional: true
 
-  '@builder.io/qwik-city@1.9.0(@types/node@20.16.10)(rollup@4.24.0)(typescript@5.4.5)':
-    dependencies:
-      '@mdx-js/mdx': 3.0.1
-      '@types/mdx': 2.0.13
-      source-map: 0.7.4
-      svgo: 3.3.2
-      undici: 6.19.8
-      valibot: 0.37.0(typescript@5.4.5)
-      vfile: 6.0.1
-      vite: 5.4.8(@types/node@20.16.10)
-      vite-imagetools: 7.0.4(rollup@4.24.0)
-      zod: 3.22.4
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - rollup
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - typescript
-
-  '@builder.io/qwik@1.9.0(@types/node@20.16.10)':
+  '@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10))':
     dependencies:
       csstype: 3.1.3
       vite: 5.4.8(@types/node@20.16.10)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
 
   '@clack/core@0.3.4':
     dependencies:
@@ -8597,7 +8594,7 @@ snapshots:
       unist-util-position-from-estree: 2.0.0
       unist-util-stringify-position: 4.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8607,10 +8604,10 @@ snapshots:
       '@types/react': 18.3.11
       react: 18.3.1
 
-  '@modular-forms/qwik@0.26.1(@builder.io/qwik-city@1.9.0(@types/node@20.16.10)(rollup@4.24.0)(typescript@5.4.5))(@builder.io/qwik@1.9.0(@types/node@20.16.10))(typescript@5.4.5)':
+  '@modular-forms/qwik@0.26.1(@builder.io/qwik-city@1.11.0(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10)))(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))(typescript@5.4.5)':
     dependencies:
-      '@builder.io/qwik': 1.9.0(@types/node@20.16.10)
-      '@builder.io/qwik-city': 1.9.0(@types/node@20.16.10)(rollup@4.24.0)(typescript@5.4.5)
+      '@builder.io/qwik': 1.11.0(vite@5.4.8(@types/node@20.16.10))
+      '@builder.io/qwik-city': 1.11.0(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))
       decode-formdata: 0.8.0
       valibot: 0.37.0(typescript@5.4.5)
     transitivePeerDependencies:
@@ -8941,18 +8938,18 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@qwik-ui/headless@0.6.1(@builder.io/qwik@1.9.0(@types/node@20.16.10))':
+  '@qwik-ui/headless@0.6.1(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))':
     dependencies:
-      '@builder.io/qwik': 1.9.0(@types/node@20.16.10)
+      '@builder.io/qwik': 1.11.0(vite@5.4.8(@types/node@20.16.10))
       '@floating-ui/core': 1.6.8
       '@floating-ui/dom': 1.6.11
       '@oddbird/popover-polyfill': 0.4.3
       body-scroll-lock-upgrade: 1.1.0
       focus-trap: 7.5.4
 
-  '@qwik-ui/styled@0.2.0(@builder.io/qwik@1.9.0(@types/node@20.16.10))':
+  '@qwik-ui/styled@0.2.0(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))':
     dependencies:
-      '@builder.io/qwik': 1.9.0(@types/node@20.16.10)
+      '@builder.io/qwik': 1.11.0(vite@5.4.8(@types/node@20.16.10))
 
   '@qwik-ui/utils@0.3.1':
     dependencies:
@@ -8961,9 +8958,34 @@ snapshots:
       specificity: 1.0.0
       tailwind-merge: 1.14.0
 
-  '@qwikest/icons@0.0.13(@builder.io/qwik@1.9.0(@types/node@20.16.10))':
+  '@qwik.dev/core@2.0.0-alpha.1(prettier@3.3.3)(vite@5.4.8(@types/node@20.16.10))(vitest@2.1.2(@edge-runtime/vm@2.1.2)(@types/node@20.16.10))':
     dependencies:
-      '@builder.io/qwik': 1.9.0(@types/node@20.16.10)
+      csstype: 3.1.3
+      vite: 5.4.8(@types/node@20.16.10)
+    optionalDependencies:
+      prettier: 3.3.3
+      vitest: 2.1.2(@edge-runtime/vm@2.1.2)(@types/node@20.16.10)
+
+  '@qwik.dev/router@2.0.0-alpha.1(rollup@4.24.0)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))':
+    dependencies:
+      '@mdx-js/mdx': 3.0.1
+      '@types/mdx': 2.0.13
+      source-map: 0.7.4
+      svgo: 3.3.2
+      undici: 6.19.8
+      valibot: 0.37.0(typescript@5.4.5)
+      vfile: 6.0.2
+      vite: 5.4.8(@types/node@20.16.10)
+      vite-imagetools: 7.0.4(rollup@4.24.0)
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+      - typescript
+
+  '@qwikest/icons@0.0.13(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))':
+    dependencies:
+      '@builder.io/qwik': 1.11.0(vite@5.4.8(@types/node@20.16.10))
 
   '@remix-run/router@1.6.2': {}
 
@@ -9494,6 +9516,11 @@ snapshots:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
 
+  '@typescript-eslint/scope-manager@8.18.1':
+    dependencies:
+      '@typescript-eslint/types': 8.18.1
+      '@typescript-eslint/visitor-keys': 8.18.1
+
   '@typescript-eslint/type-utils@7.18.0(eslint@8.57.1)(typescript@5.4.5)':
     dependencies:
       '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.4.5)
@@ -9507,6 +9534,8 @@ snapshots:
       - supports-color
 
   '@typescript-eslint/types@7.18.0': {}
+
+  '@typescript-eslint/types@8.18.1': {}
 
   '@typescript-eslint/typescript-estree@7.18.0(typescript@5.4.5)':
     dependencies:
@@ -9523,6 +9552,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/typescript-estree@8.18.1(typescript@5.4.5)':
+    dependencies:
+      '@typescript-eslint/types': 8.18.1
+      '@typescript-eslint/visitor-keys': 8.18.1
+      debug: 4.3.7
+      fast-glob: 3.3.2
+      is-glob: 4.0.3
+      minimatch: 9.0.5
+      semver: 7.6.3
+      ts-api-utils: 1.3.0(typescript@5.4.5)
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/utils@7.18.0(eslint@8.57.1)(typescript@5.4.5)':
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.1)
@@ -9534,10 +9577,26 @@ snapshots:
       - supports-color
       - typescript
 
+  '@typescript-eslint/utils@8.18.1(eslint@8.57.1)(typescript@5.4.5)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.1)
+      '@typescript-eslint/scope-manager': 8.18.1
+      '@typescript-eslint/types': 8.18.1
+      '@typescript-eslint/typescript-estree': 8.18.1(typescript@5.4.5)
+      eslint: 8.57.1
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/visitor-keys@7.18.0':
     dependencies:
       '@typescript-eslint/types': 7.18.0
       eslint-visitor-keys: 3.4.3
+
+  '@typescript-eslint/visitor-keys@8.18.1':
+    dependencies:
+      '@typescript-eslint/types': 8.18.1
+      eslint-visitor-keys: 4.2.0
 
   '@ungap/structured-clone@1.2.0': {}
 
@@ -10946,10 +11005,14 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-plugin-qwik@1.9.0(eslint@8.57.1):
+  eslint-plugin-qwik@2.0.0-alpha.1(eslint@8.57.1)(typescript@5.4.5):
     dependencies:
+      '@typescript-eslint/utils': 8.18.1(eslint@8.57.1)(typescript@5.4.5)
       eslint: 8.57.1
       jsx-ast-utils: 3.3.5
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   eslint-scope@7.2.2:
     dependencies:
@@ -10957,6 +11020,8 @@ snapshots:
       estraverse: 5.3.0
 
   eslint-visitor-keys@3.4.3: {}
+
+  eslint-visitor-keys@4.2.0: {}
 
   eslint@8.57.1:
     dependencies:
@@ -12307,7 +12372,7 @@ snapshots:
       trim-lines: 3.0.1
       unist-util-position: 5.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.3
 
   mdast-util-to-markdown@1.5.0:
     dependencies:
@@ -13652,7 +13717,7 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-to-hast: 13.2.0
       unified: 11.0.5
-      vfile: 6.0.1
+      vfile: 6.0.3
 
   remark-rehype@9.1.0:
     dependencies:
@@ -13948,9 +14013,9 @@ snapshots:
 
   std-env@3.7.0: {}
 
-  storybook-framework-qwik@0.4.0(@builder.io/qwik@1.9.0(@types/node@20.16.10))(@types/node@20.16.10)(rollup@4.24.0)(storybook@8.3.5)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10)):
+  storybook-framework-qwik@0.4.0(@builder.io/qwik@1.11.0(vite@5.4.8(@types/node@20.16.10)))(@types/node@20.16.10)(rollup@4.24.0)(storybook@8.3.5)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10)):
     dependencies:
-      '@builder.io/qwik': 1.9.0(@types/node@20.16.10)
+      '@builder.io/qwik': 1.11.0(vite@5.4.8(@types/node@20.16.10))
       '@storybook/builder-vite': 8.3.5(storybook@8.3.5)(typescript@5.4.5)(vite@5.4.8(@types/node@20.16.10))
       '@storybook/docs-tools': 8.3.5(storybook@8.3.5)
       magic-string: 0.30.11
@@ -14416,7 +14481,7 @@ snapshots:
       extend: 3.0.2
       is-plain-obj: 4.1.0
       trough: 2.2.0
-      vfile: 6.0.1
+      vfile: 6.0.3
 
   unique-filename@1.1.1:
     dependencies:
@@ -14590,7 +14655,7 @@ snapshots:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
-  vfile@6.0.1:
+  vfile@6.0.2:
     dependencies:
       '@types/unist': 3.0.3
       unist-util-stringify-position: 4.0.0
@@ -14600,7 +14665,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
-    optional: true
 
   vite-imagetools@6.2.9(rollup@4.24.0):
     dependencies:

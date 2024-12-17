@@ -1,7 +1,7 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { Link } from "@qwik.dev/router";
 import * as Icons from "lucide-qwik";
-import { useLocation } from "@builder.io/qwik-city";
+import { useLocation } from "@qwik.dev/router";
 
 export default component$(() => {
   const location = useLocation();

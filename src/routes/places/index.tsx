@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 
 export default component$(() => {
   // https://maps.googleapis.com/maps/api/geocode/json

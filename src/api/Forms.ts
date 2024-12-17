@@ -5,7 +5,7 @@ import {
   GetUser,
 } from "~/api/Query";
 import type { Requested } from "~/api/drizzled";
-import type { JSONObject } from "@builder.io/qwik-city";
+import type { JSONObject } from "@qwik.dev/router";
 import * as v from "valibot";
 
 export const eventSchema = v.object({

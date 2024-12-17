@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { Tag } from "./Tag";
-import { Link } from "@builder.io/qwik-city";
+import { Link } from "@qwik.dev/router";
 export type LocationCardProps = {
   name: string;
   description: string;

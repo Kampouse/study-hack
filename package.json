@@ -38,9 +38,6 @@
   },
   "devDependencies": {
     "@auth/core": "0.31.0",
-    "@builder.io/qwik": "latest",
-    "@builder.io/qwik-auth": "0.2.2",
-    "@builder.io/qwik-city": "latest",
     "@dagger.io/dagger": "^0.13.3",
     "@faker-js/faker": "^9.0.3",
     "@libsql/client": "^0.5.2",
@@ -67,7 +64,7 @@
     "drizzle-kit": "latest",
     "drizzle-orm": "^0.33.0",
     "eslint": "^8.57.0",
-    "eslint-plugin-qwik": "^1.6.0",
+    "eslint-plugin-qwik": "2.0.0-alpha.1",
     "leaflet": "1.9.4",
     "lucide-qwik": "^1.0.0",
     "nx": "^19.6.4",
@@ -86,7 +83,9 @@
     "vercel": "^29.1.1",
     "vite": "^5.3.6",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.1",
+    "@qwik.dev/router": "2.0.0-alpha.1",
+    "@qwik.dev/core": "2.0.0-alpha.1"
   },
   "nx": {},
   "dependencies": {

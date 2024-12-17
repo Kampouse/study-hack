@@ -1,4 +1,4 @@
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot } from "@qwik.dev/core";
 
 export interface ButtonProps {
   size?: "small" | "medium" | "large";

@@ -1,9 +1,9 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal } from "@qwik.dev/core";
 import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { PlaceForm } from "~/api/Forms";
 import { placeSchema } from "~/api/Forms";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { useNavigate, server$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@qwik.dev/router";
+import { useNavigate, server$ } from "@qwik.dev/router";
 import { CreatePlace, GetUser } from "~/api/Query";
 import type { InitialValues } from "@modular-forms/qwik";
 

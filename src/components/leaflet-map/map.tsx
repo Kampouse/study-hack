@@ -1,10 +1,10 @@
-import { component$, useStyles$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, useStyles$, useSignal, useTask$ } from "@qwik.dev/core";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 import type { LocationsProps } from "~/models/location";
 import { LeafletMap } from "./index";
 
 import type { MapProps } from "~/models/map";
-import { useLocation } from "@builder.io/qwik-city";
+import { useLocation } from "@qwik.dev/router";
 
 export default component$<MapProps>((props) => {
   useStyles$(leafletStyles);

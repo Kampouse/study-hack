@@ -1,5 +1,5 @@
 import { Modal } from "@qwik-ui/headless";
-import { component$, type Signal } from "@builder.io/qwik";
+import { component$, type Signal } from "@qwik.dev/core";
 import { useAuthSession } from "~/routes/plugin@auth";
 
 type CardProps = {

@@ -1,5 +1,5 @@
-import { component$, Slot } from "@builder.io/qwik";
-import { useVisibleTask$ } from "@builder.io/qwik";
+import { component$, Slot } from "@qwik.dev/core";
+import { useVisibleTask$ } from "@qwik.dev/core";
 import posthog from "posthog-js";
 export default component$(() => {
   //eslint-disable-next-line
