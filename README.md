@@ -1,15 +1,18 @@
-# Study & Hack
+# Juat R & D 
+![image](https://github.com/user-attachments/assets/a1c2a4e5-6c11-44b2-8544-d4bb8a3c0979)
 
-Find your ideal study partner and coworking space in your city
-.
 
-### Features
+## Find & share  great  study location while  coworking 
 
-- Connect with like-minded people and more!~
-- Discover convenient coworking spaces
-- some other marketing thing i dont know yet
 
-### Tech Stack
+###  Why
+"is  there anyone coworking this week" 
+Your answer might be a long silence like mine...
+I think it could be better than a silence 
+
+
+### Tech Stack mind
+
 
 - Built with `Qwik` `drizzle` `qwik-ui`
 - Deployed on `Vercel`
