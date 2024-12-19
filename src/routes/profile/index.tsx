@@ -44,7 +44,7 @@ type Profile = {
 const Profile = component$<Profile>((props) => {
   return (
     <div class=" flex">
-      <div class="w-full min-w-[500px] max-w-md bg-white/80 backdrop-blur  rounded-lg  overflow-hidden">
+      <div class="w-full  max-w-md bg-white/80 backdrop-blur  rounded-lg  overflow-hidden">
         <div class="p-6" >
           <div class="flex items-start gap-6">
             <div class="relative">
