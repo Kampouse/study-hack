@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
-import { Slot, useSignal, type Signal } from "@builder.io/qwik";
+import { Slot, type Signal } from "@builder.io/qwik";
 import { useUpdateUser } from "~/routes/profile";
 type FormProps = {
   data: { name: string; about: string; interests: string[] };
@@ -11,17 +11,16 @@ type FormProps = {
 
 import { Modal } from "@qwik-ui/headless";
 
-export default component$<FormProps>(({ data }) => {
+export default component$<FormProps>(({ data, active }) => {
   const action = useUpdateUser();
-  const isActive = useSignal(false);
   return (
-    <Modal.Root bind:show={isActive} tabIndex={-1}>
+    <Modal.Root bind:show={active} tabIndex={-1}>
       <Slot q:slot="profile" />
       <Modal.Panel class="modal-panel  w-96 rounded-lg px-10">
         <Form
           onSubmitCompleted$={(e) => {
             if (action.value?.success) {
-              isActive.value = false;
+              active.value = false;
               //get current scroll position
 
               e.preventDefault();

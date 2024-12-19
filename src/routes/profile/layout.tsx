@@ -1,8 +1,6 @@
 import {
   component$,
-  createContextId,
   Slot,
-  useContextProvider,
 } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 
@@ -30,12 +28,7 @@ export const useQueries = routeLoader$(
     };
   },
 );
-export type UserQueries = ReturnType<typeof useQueries>;
-export const queryContext = createContextId<UserQueries>("profile-data");
-
 export default component$(() => {
-  const userData = useQueries();
-  useContextProvider(queryContext, userData);
   return (
     <div class="">
       <Slot />

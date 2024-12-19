@@ -2,10 +2,9 @@ import { component$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { useForm, formAction$, type InitialValues } from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
+import { useQueries } from "~/routes/profile/layout";
 import { valiForm$ } from "@modular-forms/qwik";
 import * as v from "valibot";
-import { useContext } from "@builder.io/qwik";
-import { queryContext } from "../../../layout";
 import { updateRequestStatus } from "~/api/Query";
 enum status {
   confirmed = "confirmed",
@@ -53,7 +52,8 @@ export const useFormAction = formAction$<Request>((values, req) => {
 
 export default component$(() => {
   const location = useLocation();
-  const data = useContext(queryContext);
+  //#TODO fix this
+  const data = useQueries();
   const display = data.value.activeRequest?.find(
     (el) => el.requestId === parseInt(location.params.request),
   );

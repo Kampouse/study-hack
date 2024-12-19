@@ -29,7 +29,7 @@ export const useEvents = routeLoader$(async (event) => {
   const data = getEvents({
     event: event,
     options: {
-      limit: 100,
+      limit: 1000,
     },
   });
   return data
@@ -74,13 +74,13 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[50em] lg:grid-cols-5 xl:h-fit">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit px-10 md:px-0">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <Leaflet popups={placeSignal} />
         </div>
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           {events.value.data && events.value.data.length > 0 ? (
-            <div class="grid max-h-[45rem] gap-2 overflow-y-auto px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
+            <div class="grid max-h-[47rem] gap-2 overflow-y-auto md:px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
               {events.value.data.map((ev) => (
                 <EventCard
                   link={
