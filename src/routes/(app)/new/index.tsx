@@ -5,7 +5,6 @@ import {} from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
-import { useNavigate } from "@builder.io/qwik-city";
 import { valiForm$, formAction$ } from "@modular-forms/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
@@ -47,11 +46,7 @@ const action = formAction$<Event, Data>(async (data, event) => {
   );
 
   if (output.success && output.data != null) {
-    return {
-      data: output,
-      success: true,
-      message: "Event created successfully",
-    };
+    throw event.redirect(302, `/new/${output.data[0].EventID}/success`);
   } else if (!output.success && output.error) {
     return {
       data: output,
@@ -73,8 +68,7 @@ export const useloadPlaces = routeLoader$(async (req) => {
 });
 
 export default component$(() => {
-  const nav = useNavigate();
-  const [FormEvent, { Form, Field }] = useForm<Event, Data>({
+  const [, { Form, Field }] = useForm<Event, Data>({
     loader: useFormLoader(),
     validate: valiForm$(eventSchema),
     action: action(),
@@ -87,15 +81,7 @@ export default component$(() => {
       </h1>
       <div class="p-8">
         <p class="mb-6 text-gray-600">Add details and create your event</p>
-        <Form
-          class="flex flex-col gap-6"
-          onSubmit$={() => {
-            if (FormEvent.submitted) {
-              // this should point to the correct pages not just
-              nav(`/new/1/success`);
-            }
-          }}
-        >
+        <Form class="flex flex-col gap-6">
           <Field name="Name">
             {(field, props) => (
               <div class="flex flex-col gap-2">
