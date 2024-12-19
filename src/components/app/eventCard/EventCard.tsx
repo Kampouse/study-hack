@@ -133,7 +133,7 @@ export const EventCard = component$((props: EventCardProps) => {
               </div>
             )}
           </div>
-          <p class="text-sm text-gray-600 line-clamp-2">
+          <p class="text-sm text-gray-600 line-clamp-2 min-w-full w-[25em] overflow-hidden">
             {props.description}
           </p>
 
