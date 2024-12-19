@@ -36,13 +36,13 @@ export const EmptyEventCard = component$(() => {
 export const EventCard = component$((props: EventCardProps) => {
   return (
 
-    <div class=" overflow-hidden rounded-2xl bg-white w-[20em]   md:w-full  p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block ">
+    <div class=" overflow-hidden rounded-2xl bg-white  p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block ">
       <article
         id={"#" + props.title}
         class="flex flex-col overflow-hidden rounded-2xl  p-4  md:block h-[19em]"
       >
         <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
-          <div class="aspect-[16/9] w-fit">
+          <div class="aspect-[16/9] w-full">
             <img
               loading="lazy"
               src={
