@@ -237,7 +237,7 @@ export default component$(() => {
                     {sortedEvents.value.slice(0, 8).map((event) => (
                       <div
                         key={event.eventID}
-                        class="mb-4 flex w-[25em] flex-row justify-center md:justify-start lg:w-1/4 lg:pr-4"
+                        class="mb-4 flex w-full flex-row justify-center md:justify-start lg:w-1/4 lg:pr-4"
                       >
                         <EventCard
                           title={event.name}
