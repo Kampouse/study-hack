@@ -74,7 +74,7 @@ export default component$(() => {
           See who active this week
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit px-10 md:px-0">
+      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit px-5 md:px-0">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <Leaflet popups={placeSignal} />
         </div>
