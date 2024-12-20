@@ -1,16 +1,9 @@
-import {
-  component$,
-  $,
-  useStore,
-  useSignal,
-  useTask$,
-
-} from "@builder.io/qwik";
+import { component$, $, useStore, useSignal, useTask$ } from "@builder.io/qwik";
 import type { Signal } from "@builder.io/qwik";
 import { EventCard } from "@/components/app/eventCard/EventCard";
 import { routeAction$, routeLoader$ } from "@builder.io/qwik-city";
 import { useQueries } from "./layout";
-import { ProfileForm, } from "~/components/profile";
+import { ProfileForm } from "~/components/profile";
 import { getAllReferenceEvents } from "~/api/EndPoint";
 import { updateProfileForm } from "~/api/Forms";
 import type { DocumentHead } from "@builder.io/qwik-city";
@@ -28,10 +21,6 @@ export const useGetAllReferenceEvents = routeLoader$(async (event) => {
   return getAllReferenceEvents(event);
 });
 
-
-
-
-
 type Profile = {
   showEdit?: Signal<boolean>;
   data?: {
@@ -44,18 +33,29 @@ type Profile = {
 const Profile = component$<Profile>((props) => {
   return (
     <div class=" flex">
-      <div class="w-full  max-w-md bg-white/80 backdrop-blur  rounded-lg  overflow-hidden">
-        <div class="p-6" >
+      <div class="w-full  max-w-md overflow-hidden rounded-lg  bg-white/80  backdrop-blur">
+        <div class="p-6">
           <div class="flex items-start gap-6">
             <div class="relative">
-              <div class="w-24 h-24 rounded-full overflow-hidden">
-                <img src={props.data?.image || "https://avatars.githubusercontent.com/u/41765025?v=4"} alt="Profile picture" class="w-full h-full object-cover" width="96" height="96" />
+              <div class="h-24 w-24 overflow-hidden rounded-full">
+                <img
+                  src={
+                    props.data?.image ||
+                    "https://avatars.githubusercontent.com/u/41765025?v=4"
+                  }
+                  alt="Profile picture"
+                  class="h-full w-full object-cover"
+                  width="96"
+                  height="96"
+                />
               </div>
-              <button onClick$={() => {
-                console.log("clicked", props.showEdit?.value);
-                if (props.showEdit) props.showEdit.value = !props.showEdit.value;
-              }}
-                class="absolute -right-2 -bottom-2 p-2 rounded-full bg-white shadow-sm border hover:bg-gray-50 transition-colors"
+              <button
+                onClick$={() => {
+                  console.log("clicked", props.showEdit?.value);
+                  if (props.showEdit)
+                    props.showEdit.value = !props.showEdit.value;
+                }}
+                class="absolute -bottom-2 -right-2 rounded-full border bg-white p-2 shadow-sm transition-colors hover:bg-gray-50"
                 aria-label="Edit profile"
               >
                 <svg
@@ -74,14 +74,19 @@ const Profile = component$<Profile>((props) => {
                 </svg>
               </button>
             </div>
-            <div class="flex-1 min-w-0">
+            <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between gap-4">
-                <h1 class="text-2xl font-semibold text-gray-900 truncate">{props.data?.name}</h1>
+                <h1 class="truncate text-2xl font-semibold text-gray-900">
+                  {props.data?.name}
+                </h1>
               </div>
               <p class="mt-1 text-sm text-gray-500">{props.data?.about}</p>
               <div class="mt-4 flex flex-wrap gap-2">
                 {props.data?.interests.map((interest, index) => (
-                  <span key={index} class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                  <span
+                    key={index}
+                    class="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+                  >
                     {interest}
                   </span>
                 ))}
@@ -90,7 +95,7 @@ const Profile = component$<Profile>((props) => {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 });
 
@@ -100,8 +105,8 @@ export default component$(() => {
   const sortedEvents = useSignal(
     events.value
       ? events.value.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-      )
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        )
       : [],
   );
 
@@ -126,8 +131,6 @@ export default component$(() => {
     store.editMode = false;
   });
 
-
-
   const handleChange = $((e: Event) => {
     const target = e.target as HTMLInputElement;
     if (target.name === "name") {
@@ -146,8 +149,8 @@ export default component$(() => {
   });
 
   return (
-    <main class="grid grid-cols-1 md:grid-cols-[500px_1fr] mt-10 gap-6 px-4 md:px-10 pt-4 md:pt-4">
-      <div class="md:sticky md:top-4 h-fit max-w-full">
+    <main class="mt-10 grid grid-cols-1 gap-6 px-4 pt-4 md:grid-cols-[400px_1fr] md:px-10 md:pt-4">
+      <div class=" h-fit max-w-full   md:top-4">
         <Profile
           showEdit={showEdit}
           data={{
@@ -156,29 +159,25 @@ export default component$(() => {
             interests: store.interests,
             image: data.value.userData?.Image as string,
           }}
-
         />
         <div class="w-full">
           {data.value.activeRequest != null &&
             data.value.activeRequest.length > 0 && (
-              <h2 class="mb-4 text-xl font-bold pt-5 px-2">Active Requests</h2>
+              <h2 class="mb-4 px-2 pt-5 text-xl font-bold">Active Requests</h2>
             )}
           {data.value.activeRequest != null &&
             data.value.activeRequest.map((req) => (
-              <div
-                class="w-full p-2 px-0 sm:px-2"
-                key={req.eventId}
-              >
-                <div class="bg-gray-100 rounded-2xl hover:bg-gray-200 transition-all cursor-pointer">
+              <div class="w-full p-2 px-0 sm:px-2" key={req.eventId}>
+                <div class="cursor-pointer rounded-2xl bg-gray-100 transition-all hover:bg-gray-200">
                   <div class="flex-grow p-4">
                     <Link
                       key={req.requestId}
                       href={`/profile/meet/request/${req.requestId}`}
                       class="block"
                     >
-                      <div class="flex md:flex-col items-center sm:flex-row">
+                      <div class="flex items-center sm:flex-row md:flex-col">
                         <img
-                          class="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover transition-transform hover:scale-105"
+                          class="h-20 w-20 rounded-full object-cover transition-transform hover:scale-105 sm:h-24 sm:w-24"
                           src={
                             req.image ??
                             "https://images.nightcafe.studio/jobs/SU3X3xuYyIfY3Ik1BKd3/SU3X3xuYyIfY3Ik1BKd3--1--k8sy7.jpg?tr=w-1600,c-at_max"
@@ -188,7 +187,7 @@ export default component$(() => {
                           alt={req.username ?? "User"}
                         />
                         <div class="mt-4 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 transition-colors hover:text-indigo-600">
+                          <h1 class="text-lg font-bold tracking-tight text-gray-900 transition-colors hover:text-indigo-600 sm:text-xl">
                             <span class="font-medium text-gray-600">
                               Event:
                             </span>{" "}
@@ -198,10 +197,15 @@ export default component$(() => {
                       </div>
                     </Link>
                   </div>
-                  <div class="bg-white rounded-b-2xl p-3 sm:p-4 hover:bg-gray-100 transition-colors">
+                  <div class="rounded-b-2xl bg-white p-3 transition-colors hover:bg-gray-100 sm:p-4">
                     <Link href={`/profile/${req.username}`} class="block">
-                      <h1 class="truncate text-left text-sm font-semibold text-gray-800 transition-colors hover:text-indigo-600 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <h1 class="flex items-center truncate text-left text-sm font-semibold text-gray-800 transition-colors hover:text-indigo-600">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="mr-1 h-4 w-4"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
                           <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
                         </svg>
                         @{req.username}
@@ -212,8 +216,6 @@ export default component$(() => {
               </div>
             ))}
         </div>
-
-
       </div>
       <div class="">
         <ProfileForm
@@ -222,7 +224,6 @@ export default component$(() => {
           onSave={handleSaveClick}
           onChange={handleChange}
         >
-
           {/*data.value.activeEvent && data.value.activeEvent.length != 0 && (
             <h1 class="px-4 py-2 text-center text-2xl font-bold md:text-start">
               Active Events

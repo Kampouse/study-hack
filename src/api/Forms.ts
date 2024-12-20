@@ -9,8 +9,8 @@ import type { JSONObject } from "@builder.io/qwik-city";
 import * as v from "valibot";
 
 export const eventSchema = v.object({
-  Name: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
-  Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
+  Name: v.pipe(v.string(), v.minLength(3), v.maxLength(50)),
+  Description: v.pipe(v.string(), v.minLength(3), v.maxLength(250)),
   ImageURL: v.optional(v.pipe(v.string(), v.url())),
   Date: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Location: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
@@ -20,7 +20,7 @@ export const eventSchema = v.object({
   EndTime: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
 });
 export const placeSchema = v.object({
-  name: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
+  name: v.pipe(v.string(), v.minLength(5), v.maxLength(100)),
   address: v.pipe(v.string(), v.minLength(1), v.maxLength(200)),
   image: v.optional(v.pipe(v.string(), v.url())),
   description: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
@@ -35,7 +35,7 @@ export type PlaceForm = v.InferOutput<typeof placeSchema>;
 export const joinRequestSchema = v.object({
   ExperienceLevel: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
   Background: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
-  WhyJoin: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
+  WhyJoin: v.pipe(v.string(), v.minLength(8), v.maxLength(500)),
 });
 
 export type JoinRequestForm = v.InferOutput<typeof joinRequestSchema>;

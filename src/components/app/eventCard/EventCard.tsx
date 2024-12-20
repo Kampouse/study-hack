@@ -14,6 +14,32 @@ export type EventCardProps = {
   host?: boolean;
 };
 
+const StatusBadge = component$((props: { status: string }) => {
+  return (
+    <div class="h-full">
+      {props.status === "host" ? (
+        <span class="whitespace-nowrap rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+          Host
+        </span>
+      ) : (
+        <div>
+          {props.status && (
+            <span
+              class={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${
+                props.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {props.status === "pending" ? "Pending" : "Confirmed"}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+});
+
 export const EmptyEventCard = component$(() => {
   return (
     <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
@@ -35,11 +61,10 @@ export const EmptyEventCard = component$(() => {
 
 export const EventCard = component$((props: EventCardProps) => {
   return (
-
     <div class=" overflow-hidden rounded-2xl bg-white  p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block ">
       <article
         id={"#" + props.title}
-        class="flex flex-col overflow-hidden rounded-2xl  p-4  md:block h-[19em]"
+        class="flex h-[17em] flex-col overflow-hidden  rounded-2xl  p-4 md:block"
       >
         <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
           <div class="aspect-[16/9] w-full">
@@ -81,9 +106,11 @@ export const EventCard = component$((props: EventCardProps) => {
               </Link>
             </div>
           </div>
+          <div class="absolute bottom-2 right-2">
+            <StatusBadge status={props.status || ""} />
+          </div>
         </header>
         <div class="flex flex-col  ">
-
           <div class="flex flex-row gap-2 pt-3">
             <h1 class="flex items-center gap-2 text-sm text-gray-600">
               <svg
@@ -110,41 +137,15 @@ export const EventCard = component$((props: EventCardProps) => {
               <span>{props.time}</span>
             </h1>
           </div>
-          <div class="flex items-center gap-2 py-2">
-            <h1 class="font-medium truncate">{props.title}</h1>
-            {props.status == "host" ? (
-              <span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 whitespace-nowrap">
-                Host
-              </span>
-            ) : (
-              <div class="h-full">
-                <div>
-                  {props.status && (
-                    <span
-                      class={`rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${props.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-green-100 text-green-800"
-                        }`}
-                    >
-                      {props.status === "pending" ? "Pending" : "Confirmed"}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          <p class="text-sm text-gray-600 line-clamp-2 min-w-full w-[25em] overflow-hidden">
+          <h1 class=" font-medium">{props.title}</h1>
+          <p class="line-clamp-2  h-full w-96  min-w-full text-sm text-gray-600">
             {props.description}
           </p>
-
-
         </div>
-
-
       </article>
       <Link
         href={`${props.link}`}
-        class="flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 align-self-end"
+        class="align-self-end flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         See Event
       </Link>
