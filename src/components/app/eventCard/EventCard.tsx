@@ -110,7 +110,10 @@ export const EventCard = component$((props: EventCardProps) => {
           </div>
         </header>
         <div class="flex flex-1 flex-col justify-between">
-          <div class="">
+          <Link
+            href={props.link}
+            class="transition-transform duration-300 hover:scale-[1.03] hover:opacity-80 active:scale-[1.01] "
+          >
             <div class="flex flex-row gap-2 px-2 pt-3">
               <h1 class="flex items-center gap-2 text-sm text-gray-600">
                 <svg
@@ -137,23 +140,16 @@ export const EventCard = component$((props: EventCardProps) => {
                 <span>{props.time}</span>
               </h1>
             </div>
-            <h1 class="line-clamp-2 px-2  text-lg font-medium tracking-tight text-gray-800">
+            <h1 class=" px-2 text-lg font-medium tracking-tight text-gray-800">
               {props.title}
             </h1>
-            <p class="line-clamp-2 px-2 text-sm text-gray-600">
+            <p class={`    line-clamp-3 px-2 text-sm text-gray-600 `}>
               {props.description}
             </p>
-          </div>
+          </Link>
         </div>
       </article>
-      <div class="mt-auto">
-        <Link
-          href={`${props.link}`}
-          class="mt-2 flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          See Event
-        </Link>
-      </div>
+      <div class=" absolute   bottom-1  mt-auto pt-2"></div>
     </div>
   );
 });

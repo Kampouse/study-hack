@@ -234,7 +234,7 @@ export default component$(() => {
             <div class="flex flex-col justify-center md:justify-start">
               {events.value != null && events.value.length > 0 && (
                 <>
-                  <div class="lg:flex lg:flex-wrap  lg:justify-start">
+                  <div class="max-w-5xl lg:flex  lg:flex-wrap  lg:justify-start">
                     {sortedEvents.value.slice(0, 8).map((event) => (
                       <div
                         key={event.eventID}
