@@ -5,10 +5,15 @@ export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get("session");
   console.log("session", session);
   if (session) {
-    await CreateUser({ event: event, session: session });
-    throw event.redirect(302, "/app");
+    const worked = await CreateUser({ event: event, session: session });
+    console.log("worked", worked);
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
+    throw event.redirect(302, "/home");
   }
-  throw event.redirect(302, `/`);
 };
 
 //if there is no platform session, we need to create one
