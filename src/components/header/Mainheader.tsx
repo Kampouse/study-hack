@@ -1,5 +1,5 @@
 import { component$, useTask$, useVisibleTask$ } from "@builder.io/qwik";
-import { useAuthSession } from "~/routes/plugin@auth";
+import { useSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
 import { useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
@@ -7,7 +7,7 @@ import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
 import posthog from "posthog-js";
 export default component$(() => {
-  const session = useAuthSession();
+  const session = useSession();
   //eslint-disable-next-line
   useVisibleTask$(() => {
     if (document.location.host.includes("study-hack.vercel.app")) {

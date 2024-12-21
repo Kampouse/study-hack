@@ -1,4 +1,4 @@
-import { useAuthSignin } from "../plugin@auth";
+import { useSignIn } from "../plugin@auth";
 import { component$ } from "@builder.io/qwik";
 import { GoogleIcon, GithubIcon } from "~/components/icons";
 import { Form } from "@builder.io/qwik-city";
@@ -25,7 +25,7 @@ export const onGet: RequestHandler = async (req) => {
 };
 
 export default component$(() => {
-  const signin = useAuthSignin();
+  const signin = useSignIn();
   return (
     <div class="flex h-fit   flex-col items-center justify-around    bg-white py-10 shadow-sm lg:pt-4">
       <JustRnd class="h-72 w-72" />

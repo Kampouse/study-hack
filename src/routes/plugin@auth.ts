@@ -1,15 +1,13 @@
-import { serverAuth$ } from "@builder.io/qwik-auth";
-import GitHub from "@auth/core/providers/github";
-import type { Provider } from "@auth/core/providers";
+import { QwikAuth$ } from "@auth/qwik";
+import GitHub from "@auth/qwik/providers/github";
 
-export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
-  serverAuth$(({ env }) => ({
-    secret: env.get("AUTH_SECRET"),
-    trustHost: true,
+export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
+  (params) => ({
     providers: [
       GitHub({
-        clientId: env.get("GITHUB_ID")!,
-        clientSecret: env.get("GITHUB_SECRET")!,
+        clientId: params.env.get("GITHUB_ID"),
+        clientSecret: params.env.get("GITHUB_SECRET"),
       }),
-    ] as Provider[],
-  }));
+    ],
+  }),
+);

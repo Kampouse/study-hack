@@ -1,6 +1,6 @@
 import { Modal } from "@qwik-ui/headless";
 import { component$, type Signal } from "@builder.io/qwik";
-import { useAuthSession } from "~/routes/plugin@auth";
+import { useSession } from "~/routes/plugin@auth";
 
 type CardProps = {
   data: { name: string; about: string; interests: string[] };
@@ -9,7 +9,7 @@ type CardProps = {
 };
 
 export default component$<CardProps>(({ data }) => {
-  const session = useAuthSession();
+  const session = useSession();
   const image = session.value?.user?.image;
   return (
     <div class="flex flex-col items-center  gap-5  py-8  md:flex-row md:gap-5 md:pt-12 lg:items-start ">

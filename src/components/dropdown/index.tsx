@@ -1,13 +1,12 @@
 import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
-import { useAuthSignout } from "~/routes/plugin@auth";
 import { Dropdown } from "@qwik-ui/headless";
 import { Link } from "@builder.io/qwik-city";
-import { useAuthSession } from "~/routes/plugin@auth";
+import { useSession, useSignOut } from "~/routes/plugin@auth";
 export default component$(() => {
-  type Session = ReturnType<typeof useAuthSession>;
-  const session = useAuthSession() as Session;
-  const signout = useAuthSignout();
+  type Session = ReturnType<typeof useSession>;
+  const session = useSession() as Session;
+  const signout = useSignOut();
   const img = session.value?.user?.image || "https://s6.imgcdn.dev/LyfCg.jpg";
   const actions = [
     { label: "Profile", disabled: false, path: "/profile" },
