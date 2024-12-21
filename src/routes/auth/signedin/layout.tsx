@@ -7,7 +7,7 @@ export const onRequest: RequestHandler = async (event) => {
   if (session) {
     const worked = await CreateUser({ event: event, session: session });
     console.log("worked->>>>>>>>>", worked);
-    throw event.redirect(302, "/wassup");
+    throw event.redirect(302, "/");
   }
 };
 

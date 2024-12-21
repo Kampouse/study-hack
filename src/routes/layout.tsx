@@ -1,11 +1,8 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import MainHeader from "../components/header/Mainheader";
-export const onGet: RequestHandler = async ({
-  sharedMap,
-  redirect,
-  pathname,
-}) => {
+import { GetUser } from "~/api/Query";
+export const onGet: RequestHandler = async (ctx) => {
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform
@@ -20,9 +17,13 @@ export const onGet: RequestHandler = async ({
   //});
   //if (url.pathname == "/" && session) throw redirect (302, "/app");
 
-  const session = sharedMap.get("session");
-  if (session && pathname == "/") {
-    throw redirect(302, "/home");
+  const session = ctx.sharedMap.get("session");
+  if (session && ctx.pathname == "/") {
+    const user = await GetUser({ event: ctx });
+    if (user) {
+      throw ctx.redirect(302, "/home");
+    }
+    ctx.redirect(302, "/auth/signedin");
   }
 };
 
