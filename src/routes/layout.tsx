@@ -1,5 +1,6 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
+import { onRequest } from "./plugin@auth";
 import MainHeader from "../components/header/Mainheader";
 export const onGet: RequestHandler = async ({
   sharedMap,

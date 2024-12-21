@@ -6,12 +6,7 @@ export const onRequest: RequestHandler = async (event) => {
   console.log("session", session);
   if (session) {
     const worked = await CreateUser({ event: event, session: session });
-    console.log("worked", worked);
-
-    await new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-    });
-
+    console.log("worked->>>>>>>>>", worked);
     throw event.redirect(302, "/home");
   }
 };
