@@ -35,7 +35,7 @@ export default component$(() => {
           <input type="hidden" name="providerId" value="github" />
           <input
             type="hidden"
-            name="options.callbackUrl"
+            name="options.redirectTo"
             value="/auth/signedin"
           />
           <button class="button button-auth flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#272c30] px-6 py-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
@@ -45,14 +45,14 @@ export default component$(() => {
             </span>
           </button>
         </Form>
-
         <Form action={signin} class="w-full">
-          <input type="hidden" name="providerId" value="github" />
+          <input type="hidden" name="providerId" value="google" />
           <input
             type="hidden"
-            name="options.callbackUrl"
+            name="options.redirectTo"
             value="/auth/signedin"
           />
+
           <button class="button button-auth flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#2494ec] px-6 py-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
             <GoogleIcon />
             <span class="text-lg font-medium text-white md:text-xl">

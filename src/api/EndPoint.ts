@@ -21,10 +21,12 @@ export const getEvents = async ({
     const user = await GetUser({ event });
 
     console.log("you cant be null ", user);
+
     const data = await QueryEvents({
       event,
       options: { ...options, byUser: user?.ID },
     });
+
     if (data === null) {
       return { success: false, data: null, error: "Failed to get events" };
     }
@@ -105,8 +107,6 @@ export const getPlace = async ({
       event,
       placeId: id,
     });
-    console.log(data);
-
     if (!data.success || !data.data) {
       return { success: false, data: null, error: "Failed to get place" };
     }

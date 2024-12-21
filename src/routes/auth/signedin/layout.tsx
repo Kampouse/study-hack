@@ -3,7 +3,7 @@ import { CreateUser } from "~/api/Query";
 import type { Session } from "~/api/drizzled";
 export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get("session");
-
+  console.log("session", session);
   if (session) {
     await CreateUser({ event: event, session: session });
     throw event.redirect(302, "/app");
