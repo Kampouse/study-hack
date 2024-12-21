@@ -58,13 +58,12 @@ export const EmptyEventCard = component$(() => {
     </article>
   );
 });
-
 export const EventCard = component$((props: EventCardProps) => {
   return (
-    <div class=" overflow-hidden rounded-2xl bg-white  p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block ">
+    <div class="flex h-full max-h-[26em] flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block">
       <article
         id={"#" + props.title}
-        class="flex h-[17em] flex-col overflow-hidden  rounded-2xl  p-4 md:block"
+        class="flex flex-1 flex-col overflow-hidden rounded-2xl  md:block"
       >
         <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
           <div class="aspect-[16/9] w-full">
@@ -110,45 +109,51 @@ export const EventCard = component$((props: EventCardProps) => {
             <StatusBadge status={props.status || ""} />
           </div>
         </header>
-        <div class="flex flex-col  ">
-          <div class="flex flex-row gap-2 pt-3">
-            <h1 class="flex items-center gap-2 text-sm text-gray-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <span>{props.attendees + (props.host ? 0 : 1)}</span>
+        <div class="flex flex-1 flex-col justify-between">
+          <div class="">
+            <div class="flex flex-row gap-2 px-2 pt-3">
+              <h1 class="flex items-center gap-2 text-sm text-gray-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>{props.attendees + (props.host ? 0 : 1)}</span>
+              </h1>
+              <h1 class="flex items-center gap-2 text-sm text-gray-600">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{props.time}</span>
+              </h1>
+            </div>
+            <h1 class="line-clamp-2 px-2  text-lg font-medium tracking-tight text-gray-800">
+              {props.title}
             </h1>
-            <h1 class="flex items-center gap-2 text-sm text-gray-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span>{props.time}</span>
-            </h1>
+            <p class="line-clamp-2 px-2 text-sm text-gray-600">
+              {props.description}
+            </p>
           </div>
-          <h1 class=" font-medium">{props.title}</h1>
-          <p class="line-clamp-2  h-full w-96  min-w-full text-sm text-gray-600">
-            {props.description}
-          </p>
         </div>
       </article>
-      <Link
-        href={`${props.link}`}
-        class="align-self-end flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        See Event
-      </Link>
+      <div class="mt-auto">
+        <Link
+          href={`${props.link}`}
+          class="mt-2 flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          See Event
+        </Link>
+      </div>
     </div>
   );
 });
