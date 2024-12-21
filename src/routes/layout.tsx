@@ -23,7 +23,7 @@ export const onGet: RequestHandler = async (ctx) => {
     if (user) {
       throw ctx.redirect(302, "/home");
     }
-    ctx.redirect(302, "/auth/signedin");
+    throw ctx.redirect(302, "/auth/signedin");
   }
 };
 
