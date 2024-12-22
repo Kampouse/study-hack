@@ -10,15 +10,13 @@ import {
 import { getEvents } from "~/api/EndPoint";
 import { QueryPlaces } from "~/api/Query";
 import { drizzler } from "~/api/drizzled";
-
+import type { Place } from "~/models/map";
 export type Events = Awaited<ReturnType<typeof useEvents>>;
 
 export const head = {
   title: " S&H | Home",
 };
-export const useEventAction = routeAction$((e) => {
-  console.log("hello from event action", e);
-
+export const useEventAction = routeAction$(() => {
   return {
     success: true,
   };
@@ -64,7 +62,21 @@ export default component$(() => {
         number,
       ],
     })) || [];
-  const placeSignal = useSignal(placesData);
+  const Events = useSignal(placesData);
+
+  const placed = places.value.data?.map((el) => {
+    return {
+      name: el.Name,
+      Image: el.ImageURL as string,
+      link: `/places/${el.PlaceID}`,
+      coords: [el.Lat, el.Lng] as [number, number],
+      description: el.Description,
+      place: el.Address,
+    } satisfies Place;
+  });
+
+  const plas = useSignal<Place[] | undefined>(placed);
+
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
       <div class="  px-5  py-2 md:px-2   ">
@@ -76,7 +88,7 @@ export default component$(() => {
       </div>
       <div class="flex flex-col gap-5 px-5 md:gap-2 md:px-0 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
-          <Leaflet popups={placeSignal} />
+          <Leaflet events={Events} places={plas} />
         </div>
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           {events.value.data && events.value.data.length > 0 ? (
@@ -139,7 +151,7 @@ export default component$(() => {
           {first && (
             <LocationCard
               name={first.Name}
-              link={`/location/${first.PlaceID}`}
+              link={`/places/${first.PlaceID}`}
               image={first.ImageURL as string}
               tags={first.Tags || []}
               rating={first.Rating}

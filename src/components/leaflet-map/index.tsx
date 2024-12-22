@@ -9,7 +9,7 @@ import type { MapProps } from "~/models/map";
 import MapWrapper from "./map";
 export { MapWrapper };
 export const LeafletMap = component$<MapProps>(
-  ({ location, popups }: MapProps) => {
+  ({ location, events, places }: MapProps) => {
     //const data = useAuthSession();
     // Modify with your preferences. By default take all screen
 
@@ -52,8 +52,17 @@ export const LeafletMap = component$<MapProps>(
       const { tileLayer, marker, Icon, Popup } = await import("leaflet");
 
       const baseIcon = new Icon({
+        iconSize: [25, 41],
+        className: "w-2 h-2",
         iconUrl: "/marker-icon.png",
       });
+
+      const placeIcon = new Icon({
+        iconUrl: "/redpin.png",
+        iconSize: [25, 25],
+        className: "w-2 h-2",
+      });
+
       const { getBoundaryBox } = await import("../../helpers/boundary-box");
 
       if (mapContainer$.value) {
@@ -81,10 +90,34 @@ export const LeafletMap = component$<MapProps>(
 
       // Assign select boundary box to use in OSM API if you want
       locationData.boundaryBox = getBoundaryBox(map);
+      places?.value?.map((data) => {
+        if (!data) return;
+        const popup = new Popup({}).setLatLng([...data.coords]).setContent(`
+          <div class="popup-content bg-white rounded shadow-sm max-w-xs">
+            <h3 class="popup-title text-base font-medium text-gray-800 mb-1">${data.name} place </h3>
+            <p class="popup-address text-xs text-gray-500 mb-2">${data.description}</p>
+            <p class="popup-description text-xs text-gray-600 mb-2">${data.place || "No description available"}</p>
+            <a href="${data.link || "#"}" class="popup-link text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-300 flex items-center">
+              Learn more
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        `);
 
-      popups?.value.map((pop) => {
+        locationData.marker &&
+          marker([...data.coords], {
+            icon: placeIcon,
+            bubblingMouseEvents: true,
+          })
+            .bindPopup(popup)
+            .addTo(map);
+      });
+
+      events?.value.map((pop) => {
         const popup = new Popup({}).setLatLng([...pop.coords]).setContent(`
-          <div  class="popup-content bg-white rounded shadow-sm  max-w-xs">
+          <div class="popup-content bg-white rounded shadow-sm max-w-xs">
             <h3 class="popup-title text-base font-medium text-gray-800 mb-1">${pop.name}</h3>
             <p class="popup-address text-xs text-gray-500 mb-2">${pop.description}</p>
             <p class="popup-description text-xs text-gray-600 mb-2">${pop.place || "No description available"}</p>
@@ -95,7 +128,7 @@ export const LeafletMap = component$<MapProps>(
               </svg>
             </a>
           </div>
-          `);
+        `);
 
         locationData.marker &&
           marker(pop.coords, { icon: baseIcon, bubblingMouseEvents: true })

@@ -34,7 +34,11 @@ export default component$<MapProps>((props) => {
   });
   return (
     <div class={styled}>
-      <LeafletMap popups={props.popups} location={currentLocation} />
+      <LeafletMap
+        events={props.events}
+        places={props.places}
+        location={currentLocation}
+      />
     </div>
   );
 });

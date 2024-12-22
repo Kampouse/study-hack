@@ -10,8 +10,20 @@ export type popupsData = Array<{
   coords: [number, number];
 }>;
 
+export type Place =
+  | {
+      name: string;
+      Image: string;
+      link: string;
+      coords: [number, number];
+      description: string;
+      place: string;
+    }
+  | undefined;
+
 export type MapProps = {
   // default options
   location?: Signal<LocationsProps>;
-  popups?: Signal<popupsData>;
+  events?: Signal<popupsData>;
+  places?: Signal<Place[] | undefined>;
 };
