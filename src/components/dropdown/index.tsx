@@ -16,7 +16,9 @@ export default component$(() => {
   return (
     <Dropdown.Root class="pr-12">
       <Dropdown.Trigger class="">
-        <img class="rounded-full" width={50} height={50} src={img} />
+        <div class="h-[50px] w-[50px] lg:h-full lg:w-full">
+          <img class="rounded-full" width={50} height={50} src={img} />
+        </div>
       </Dropdown.Trigger>
       <Dropdown.Popover class=" w-32 rounded-b-md p-1 shadow-sm">
         {/*<Dropdown.Arrow class="" />*/}
