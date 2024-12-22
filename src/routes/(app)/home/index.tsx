@@ -32,7 +32,7 @@ export const useEvents = routeLoader$(async (event) => {
       limit: 1000,
     },
   });
-  return data
+  return data;
 });
 export const usePlaces = routeLoader$(async (event) => {
   const client = await drizzler(event);
@@ -67,20 +67,20 @@ export default component$(() => {
   const placeSignal = useSignal(placesData);
   return (
     <div class=" flex h-full flex-col justify-start   md:pb-12  ">
-      <div class="  py-2  md:px-2   ">
-        <h1 class="px-2  text-3xl font-medium md:px-0 ">Community</h1>
+      <div class="  px-5  py-2 md:px-2   ">
+        <h1 class="px-2  text-3xl font-medium md:px-0 "> upcoming Sessions</h1>
         <p class="text-md    px-2 font-thin text-black  md:px-0">
           {" "}
-          See who active this week
+          Find the best co-working spaces and groups near you
         </p>
       </div>
-      <div class="flex flex-col gap-5 md:gap-2 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit px-5 md:px-0">
+      <div class="flex flex-col gap-5 px-5 md:gap-2 md:px-0 lg:grid lg:h-[52em] lg:grid-cols-5 xl:h-fit">
         <div class="order-2 row-span-1 h-fit rounded-full px-2 lg:order-1 lg:col-span-3 lg:pl-2">
           <Leaflet popups={placeSignal} />
         </div>
         <div class="order-1 row-span-1  rounded-xl lg:order-2 lg:col-span-2">
           {events.value.data && events.value.data.length > 0 ? (
-            <div class="grid max-h-[47rem] gap-2 overflow-y-auto md:px-2 md:grid-cols-2 lg:grid-cols-2 lg:gap-2">
+            <div class="grid max-h-[47rem] gap-2 overflow-y-auto md:grid-cols-2 md:px-2 lg:grid-cols-2 lg:gap-2">
               {events.value.data.map((ev) => (
                 <EventCard
                   link={

@@ -77,7 +77,7 @@ export default component$(() => {
   return (
     <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
       <h1 class="p-8 pb-0 text-3xl font-bold text-gray-800">
-        Create your Event
+        Create your Session
       </h1>
       <div class="p-8">
         <p class="mb-6 text-gray-600">Add details and create your event</p>

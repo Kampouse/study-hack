@@ -10,7 +10,10 @@ export default component$(() => {
   const session = useSession();
   //eslint-disable-next-line
   useVisibleTask$(() => {
-    if (document.location.host.includes("study-hack.vercel.app")) {
+    if (
+      document.location.host.includes("study-hack.vercel.app") ||
+      document.location.host.includes("justrnd.com")
+    ) {
       posthog.init("phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74", {
         api_host: "https://us.i.posthog.com",
         capture_heatmaps: true,
@@ -54,7 +57,7 @@ export default component$(() => {
               href={session.value ? "/home" : "/landing"}
               class="hidden bg-gradient-to-r from-black to-gray-600 bg-clip-text p-4 text-2xl font-bold text-transparent transition-opacity hover:opacity-80 md:inline-block"
             >
-              <h1 class="inline-block">{"S & H"} </h1>
+              <h1 class="inline-block">{"R <&> D"} </h1>
             </Link>
 
             {location.url.pathname === "/home" && (
@@ -62,7 +65,7 @@ export default component$(() => {
                 href="/new"
                 class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:hidden"
               >
-                New
+                new Session
               </Link>
             )}
             {session.value && (
@@ -93,12 +96,12 @@ export default component$(() => {
                     href="/new"
                     class="hidden rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:block"
                   >
-                    New
+                    New Session
                   </Link>
                 </div>
               ) : (
                 <Link
-                  href={backSignal.value || "/home"}
+                  href="/home"
                   class="hidden rounded-full bg-black px-3 py-2 text-white transition-colors hover:bg-gray-800 md:block"
                 >
                   <ArrowLeftIcon size={24} />
@@ -106,6 +109,7 @@ export default component$(() => {
               )}
               {location.url.pathname !== "/profile" && (
                 <Link
+                  prefetch="js"
                   href="/profile"
                   class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800"
                 >
