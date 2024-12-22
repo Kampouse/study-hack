@@ -63,9 +63,9 @@ export default component$(() => {
             {location.url.pathname === "/home" && (
               <Link
                 href="/new"
-                class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:hidden"
+                class="overflow-hidden whitespace-nowrap rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:hidden"
               >
-                new Session
+                New Session
               </Link>
             )}
             {session.value && (
