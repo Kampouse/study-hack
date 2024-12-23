@@ -162,7 +162,7 @@ export default component$(() => {
           )}
           <ShareLocationCard />
           {others &&
-            others.map((content) => (
+            others.slice(0, 6).map((content) => (
               <LocationCard
                 key={content.PlaceID}
                 image={content.ImageURL as string}
@@ -175,7 +175,18 @@ export default component$(() => {
                 id={content.PlaceID}
               />
             ))}
+
         </div>
+        <div class="flex justify-center py-5">
+                  {places.value.data && places.value.data.length > 8 && (
+                    <Link
+                      href="/places"
+                      class="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-black rounded-lg shadow-sm hover:bg-gray-800 transition-colors duration-200 w-full md:w-auto"
+                    >
+                      See all places
+                    </Link>
+                  )}
+                  </div>
       </div>
     </div>
   );
