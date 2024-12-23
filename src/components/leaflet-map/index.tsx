@@ -55,12 +55,14 @@ export const LeafletMap = component$<MapProps>(
         iconSize: [25, 41],
         className: "w-2 h-2",
         iconUrl: "/marker-icon.png",
+        zIndexOffset: 1000, // Ensure base icons stay on top
       });
 
       const placeIcon = new Icon({
         iconUrl: "/redpin.png",
-        iconSize: [25, 25],
-        className: "w-2 h-2 rotate-[75deg]",
+        iconSize: [45, 45],
+        className: "w-[100px] h-[200px] rotate-[75deg]",
+        crossOrigin: true,
       });
 
       const { getBoundaryBox } = await import("../../helpers/boundary-box");
@@ -93,10 +95,8 @@ export const LeafletMap = component$<MapProps>(
       locationData.boundaryBox = getBoundaryBox(map);
       places?.value?.map((data) => {
         if (!data) return;
-        const popup = new Popup({}).setLatLng([
-          data.coords[0] + Math.random() * 0.0001,
-          data.coords[1] + Math.random() * 0.0001,
-        ]).setContent(`
+        const popup = new Popup({}).setLatLng([data.coords[0], data.coords[1]])
+          .setContent(`
           <div class="popup-content bg-white rounded shadow-sm max-w-xs">
             <h3 class="popup-title text-base font-medium text-gray-800 mb-1">${data.name} place </h3>
             <p class="popup-address text-xs text-gray-500 mb-2">${data.description}</p>
