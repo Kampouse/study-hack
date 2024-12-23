@@ -60,7 +60,7 @@ export const LeafletMap = component$<MapProps>(
       const placeIcon = new Icon({
         iconUrl: "/redpin.png",
         iconSize: [25, 25],
-        className: "w-2 h-2",
+        className: "w-2 h-2 rotate-[75deg]",
       });
 
       const { getBoundaryBox } = await import("../../helpers/boundary-box");
@@ -84,6 +84,7 @@ export const LeafletMap = component$<MapProps>(
 
       tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
+        crossOrigin: true,
         attribution:
           '&copy; <a href="http://www.openstreetmap.org/copyright">hi</a>',
       }).addTo(map);
