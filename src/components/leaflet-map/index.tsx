@@ -92,7 +92,10 @@ export const LeafletMap = component$<MapProps>(
       locationData.boundaryBox = getBoundaryBox(map);
       places?.value?.map((data) => {
         if (!data) return;
-        const popup = new Popup({}).setLatLng([...data.coords]).setContent(`
+        const popup = new Popup({}).setLatLng([
+          data.coords[0] + Math.random() * 0.0001,
+          data.coords[1] + Math.random() * 0.0001,
+        ]).setContent(`
           <div class="popup-content bg-white rounded shadow-sm max-w-xs">
             <h3 class="popup-title text-base font-medium text-gray-800 mb-1">${data.name} place </h3>
             <p class="popup-address text-xs text-gray-500 mb-2">${data.description}</p>
