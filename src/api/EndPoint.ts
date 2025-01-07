@@ -19,12 +19,13 @@ export const getEvents = async ({
 }) => {
   try {
     const user = await GetUser({ event });
-
-    console.log("you cant be null ", user);
+    if (user === null || user === undefined) {
+      return { success: false, data: null, error: "Failed to get events" };
+    }
 
     const data = await QueryEvents({
       event,
-      options: { ...options, byUser: user?.ID },
+      options: { ...options, byUser: user.ID },
     });
 
     if (data === null) {

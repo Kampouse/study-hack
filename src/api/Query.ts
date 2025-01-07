@@ -1,6 +1,6 @@
 import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, and, ne, or, not, exists } from "drizzle-orm";
+import { eq, and, ne, or, not, exists, gte } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
@@ -249,6 +249,7 @@ export type QueryEventOptions = {
   to?: Date;
   byUser?: number;
   active?: boolean;
+  fromDateTime?: Date;
 };
 
 export const QueryEvent = async (params: {
@@ -275,13 +276,13 @@ export const QueryEvent = async (params: {
     image: Events.ImageURL,
   })
     .from(Events)
-    .where(eq(Events.EventID, params.id))
+    .where(and(eq(Events.EventID, params.id)))
+
     .execute()
     .catch((e) => {
       console.log(e);
       return null;
     });
-
   if (event && event.length > 0) {
     const user = await Client.select()
       .from(Users)
@@ -338,6 +339,7 @@ export const QueryEvents = async (params: {
           ),
         ),
         ne(Events.UserID, params.options.byUser as number),
+        gte(Events.Date, new Date().toISOString()),
       ),
     )
     .limit(params.options.limit ?? 3)
