@@ -104,7 +104,6 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
       lng: data[0].lng,
     },
   });
-  console.log(result);
   if (result.success) {
     return {
       status: "success",

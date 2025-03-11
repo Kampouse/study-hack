@@ -6,11 +6,10 @@ import { component$ } from "@builder.io/qwik";
 interface TagProps {
   text: string;
 }
-
 export const Tag = component$((props: TagProps) => {
   return (
-    <div class="self-stretch overflow-hidden whitespace-nowrap rounded-[999px] bg-slate-50 px-2 py-0.5">
+    <span class="inline-flex items-center whitespace-nowrap rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 transition-colors duration-300 hover:bg-gray-200">
       {props.text}
-    </div>
+    </span>
   );
 });

@@ -7,6 +7,7 @@ export type EventCardProps = {
   time: string;
   tags: string[];
   placeID: number;
+  placeName: string;
   image: string;
   attendees: number;
   link: string;
@@ -18,17 +19,17 @@ const StatusBadge = component$((props: { status: string }) => {
   return (
     <div class="h-full">
       {props.status === "host" ? (
-        <span class="whitespace-nowrap rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+        <span class="whitespace-nowrap rounded-full bg-blue-200 px-3 py-1 text-xs font-semibold text-blue-800 shadow-sm">
           Host
         </span>
       ) : (
         <div>
           {props.status && (
             <span
-              class={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${
+              class={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold shadow-sm ${
                 props.status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-green-100 text-green-800"
+                  ? "bg-yellow-200 text-yellow-800"
+                  : "bg-green-200 text-green-800"
               }`}
             >
               {props.status === "pending" ? "Pending" : "Confirmed"}
@@ -42,8 +43,8 @@ const StatusBadge = component$((props: { status: string }) => {
 
 export const EmptyEventCard = component$(() => {
   return (
-    <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
-      <header class="relative flex w-full flex-col items-center  justify-center overflow-hidden rounded-xl px-14 py-10 lg:aspect-[1.8] xl:aspect-[2.3] 2xl:aspect-[2.35]">
+    <article class="flex w-full flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg transition-all duration-300 hover:shadow-xl md:block lg:w-full [&:nth-child(n+4)]:hidden md:[&:nth-child(n+4)]:block">
+      <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl px-14 py-10 lg:aspect-[1.8] xl:aspect-[2.3] 2xl:aspect-[2.35]">
         <div class="size-full absolute inset-0 animate-pulse bg-gray-200"></div>
       </header>
       <div class="mt-2.5 flex w-full flex-col font-medium text-neutral-400">
@@ -59,11 +60,46 @@ export const EmptyEventCard = component$(() => {
   );
 });
 export const EventCard = component$((props: EventCardProps) => {
+  const getRelativeTime = (timeStr: string) => {
+    const timeParts = timeStr.split(" at ");
+    const datePart = timeParts[0];
+    const timePart = timeParts[1];
+
+    const [month, day, year] = datePart.split("/");
+    const [time, meridiem] = timePart.split(" ");
+    const [hours, minutes] = time.split(":");
+
+    let hour = parseInt(hours);
+    if (meridiem === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (meridiem === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    const date = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+      hour,
+      parseInt(minutes),
+    );
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      hour12: true,
+      timeZone: "UTC",
+    };
+
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return (
-    <div class="flex h-full max-h-[26em] flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.04)] md:block">
+    <div class="flex h-full max-h-[26em] flex-col overflow-hidden rounded-2xl border border-gray-300 bg-gradient-to-br from-white/80 to-gray-100/50 p-4 shadow-sm transition-all duration-300 hover:border-green-100 hover:bg-gradient-to-br hover:from-white/90 hover:to-gray-50/70 hover:shadow-md md:block">
       <article
         id={"#" + props.title}
-        class="flex flex-1 flex-col overflow-hidden rounded-2xl  md:block"
+        class="flex flex-1 flex-col overflow-hidden rounded-2xl md:block"
       >
         <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
           <div class="aspect-[16/9] w-full">
@@ -86,15 +122,15 @@ export const EventCard = component$((props: EventCardProps) => {
             />
           </div>
 
-          <div class="absolute bottom-2 left-2 rounded-lg bg-white bg-opacity-60 px-2 py-1 text-xs font-medium text-gray-800">
+          <div class="absolute bottom-2 left-2 rounded-lg bg-white bg-opacity-80 px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm backdrop-blur-sm">
             <div class="group relative">
               <Link
                 href={`/places/${props.placeID}`}
-                class="flex items-center gap-2 text-sm text-gray-600 transition-colors duration-300 hover:text-blue-500"
+                class="flex items-center gap-2 text-sm text-gray-700 transition-colors duration-300 hover:text-blue-600"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 transition-colors duration-300 group-hover:stroke-blue-500"
+                  class="h-4 w-4 transition-colors duration-300 group-hover:stroke-blue-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,6 +138,7 @@ export const EventCard = component$((props: EventCardProps) => {
                   <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
+                <span>{props.placeName}</span>
               </Link>
             </div>
           </div>
@@ -112,13 +149,13 @@ export const EventCard = component$((props: EventCardProps) => {
         <div class="flex flex-1 flex-col justify-between">
           <Link
             href={props.link}
-            class="transition-transform duration-300 hover:scale-[1.03] hover:opacity-80 active:scale-[1.01] "
+            class="transition-all duration-300 hover:scale-[1.02] hover:opacity-90 active:scale-[1.01]"
           >
-            <div class="flex flex-row gap-2 px-2 pt-3">
-              <h1 class="flex items-center gap-2 text-sm text-gray-600">
+            <div class="flex flex-row gap-3 px-3 pt-4">
+              <h1 class="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
+                  class="h-4 w-4 text-blue-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -127,29 +164,29 @@ export const EventCard = component$((props: EventCardProps) => {
                 </svg>
                 <span>{props.attendees + (props.host ? 0 : 1)}</span>
               </h1>
-              <h1 class="flex items-center gap-2 text-sm text-gray-600">
+              <h1 class="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
+                  class="h-4 w-4 text-blue-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span>{props.time}</span>
+                <span>{getRelativeTime(props.time)}</span>
               </h1>
             </div>
-            <h1 class=" px-2 text-lg font-medium tracking-tight text-gray-800">
+            <h1 class="px-3 py-2 text-lg font-semibold tracking-tight text-gray-900">
               {props.title}
             </h1>
-            <p class={`    line-clamp-3 px-2 text-sm text-gray-600 `}>
+            <p class="line-clamp-3 px-3 text-sm leading-relaxed text-gray-600">
               {props.description}
             </p>
           </Link>
         </div>
       </article>
-      <div class=" absolute   bottom-1  mt-auto pt-2"></div>
+      <div class="absolute bottom-1 mt-auto pt-2"></div>
     </div>
   );
 });

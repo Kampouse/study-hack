@@ -1,7 +1,4 @@
-import {
-  component$,
-  Slot,
-} from "@builder.io/qwik";
+import { component$, Slot } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 
 import type { RequestEventLoader } from "@builder.io/qwik-city";
@@ -13,7 +10,6 @@ import {
 } from "~/api/Query";
 export const useQueries = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
-    console.log("ran->");
     const user = await GetUser({ event: event });
     const [activeRequest, activeEvent, completedRequest] = await Promise.all([
       QueryActiveRequest({ event: event, user: user }),

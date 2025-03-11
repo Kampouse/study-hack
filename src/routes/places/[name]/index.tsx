@@ -4,7 +4,6 @@ import { getPlace } from "~/api/EndPoint";
 export const useloadPlace = routeLoader$(async (context) => {
   const placeName = context.params.name;
   const data = await getPlace({ event: context, id: parseInt(placeName) });
-  console.log(data);
 
   return { ...data };
 });
