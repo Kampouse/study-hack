@@ -40,6 +40,7 @@ export default component$(() => {
             title={event.name}
             description={event.description}
             image={event.image as string}
+            placeName={event.place?.Name as string}
             time={event.date}
             tags={event.tags}
             placeID={event.placeId as number}

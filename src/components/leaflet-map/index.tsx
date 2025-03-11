@@ -18,29 +18,36 @@ export const LeafletMap = component$<MapProps>(
                 #map {
                   border-radius: 1rem;
                   width: 100%;
-                    }
-                  @media (max-width: 768px) {
-                      #map {
-                        border-radius: 5px;
-                        width: 100%;
-                      }
-                      color: red;
-                      }
-                    }
-                    .my-profile {
+                  height: calc(100vh - 160px);
+                  min-height: 400px;
+                  max-height: 800px;
+                }
+                @media (max-width: 768px) {
                   #map {
-                        border-radius: 10px;
-                        width: 100%;
-                        height: 59em;
-                        }
-                      @media (max-width: 768px) {
-                      #map {
-                      border-radius: 5px;
-                      width: 100%;
-                    }
-                    color: red;
+                    border-radius: 5px;
+                    width: 100%;
+                    height: calc(100vh - 120px);
+                    min-height: 300px;
                   }
-                                    }
+                }
+              }
+              .my-profile {
+                #map {
+                  border-radius: 10px;
+                  width: 100%;
+                  height: 100%;
+                  min-height: 500px;
+                  max-height: 1000px;
+                }
+                @media (max-width: 768px) {
+                  #map {
+                    border-radius: 5px;
+                    width: 100%;
+                    height: calc(100vh - 80px);
+                    min-height: 400px;
+                  }
+                }
+              }
   `,
     );
 
@@ -140,11 +147,6 @@ export const LeafletMap = component$<MapProps>(
             .addTo(map);
       });
     });
-    return (
-      <div
-        id="map"
-        class="h-[27em] border shadow-md lg:h-[59em]  2xl:h-[64em]"
-      ></div>
-    );
+    return <div id="map" class="h-[100em]"></div>;
   },
 );

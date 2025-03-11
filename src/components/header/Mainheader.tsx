@@ -19,7 +19,7 @@ export default component$(() => {
         capture_heatmaps: true,
         capture_pageview: true,
         capture_performance: true,
-        disable_external_dependency_loading: true, // Optional - will ensure we never try to load extensions lazily
+        disable_external_dependency_loading: true,
       });
     }
   });
@@ -48,85 +48,71 @@ export default component$(() => {
   return (
     <header class="fixed top-0 z-50 h-fit w-full bg-white/80 backdrop-blur-sm">
       <nav
-        class=" flex w-full  items-center justify-between  py-3"
+        class="container mx-auto flex w-full items-center justify-between px-4 py-3"
         role="navigation"
       >
-        <div class="flex flex-col items-center">
-          <div class="pl-10 md:pl-8">
-            <Link
-              href={session.value ? "/home" : "/landing"}
-              class="hidden bg-gradient-to-r from-black to-gray-600 bg-clip-text p-4 text-2xl font-bold text-transparent transition-opacity hover:opacity-80 md:inline-block"
-            >
-              <h1 class="inline-block">{"R <&> D"} </h1>
-            </Link>
+        <div class="flex items-center gap-4">
+          <Link
+            href={session.value ? "/home" : "/landing"}
+            class="hidden bg-gradient-to-r from-neutral-700 to-neutral-900 bg-clip-text text-xl font-semibold text-transparent transition-colors hover:from-neutral-800 hover:to-neutral-950 md:block"
+          >
+            Justd R&D
+          </Link>
 
-            {location.url.pathname === "/home" && (
-              <Link
-                href="/new"
-                class="overflow-hidden whitespace-nowrap rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:hidden"
-              >
-                New Session
-              </Link>
-            )}
-            {session.value && (
-              <Link href="/home" class="p-4 pl-5 text-white md:hidden">
-                {location.url.pathname !== "/home" && (
-                  <div class="rounded-full bg-black px-3 py-2 transition-colors hover:bg-gray-800">
-                    <ArrowLeftIcon size={24} />
-                  </div>
-                )}
-              </Link>
-            )}
-          </div>
-          {!session.value && (
-            <a
-              href="/"
-              class="hidden p-4 text-gray-600 transition-colors hover:text-black"
+          {location.url.pathname === "/home" && (
+            <Link
+              href="/new"
+              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:hidden"
             >
-              Learn more
-            </a>
+              New Session
+            </Link>
+          )}
+          {session.value && location.url.pathname !== "/home" && (
+            <Link
+              href="/home"
+              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 p-2 text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:hidden"
+            >
+              <ArrowLeftIcon size={20} />
+            </Link>
           )}
         </div>
-        <div class="flex flex-row content-center justify-end">
-          {session.value && (
-            <div class="flex items-center gap-4">
+
+        <div class="flex items-center gap-4">
+          {session.value ? (
+            <>
               {location.url.href.includes("home") ? (
-                <div>
-                  <Link
-                    href="/new"
-                    class="hidden rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800 md:block"
-                  >
-                    New Session
-                  </Link>
-                </div>
+                <Link
+                  href="/new"
+                  class="hidden rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:block"
+                >
+                  New Session
+                </Link>
               ) : (
                 <Link
                   href="/home"
-                  class="hidden rounded-full bg-black px-3 py-2 text-white transition-colors hover:bg-gray-800 md:block"
+                  class="hidden rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 p-2 text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:block"
                 >
-                  <ArrowLeftIcon size={24} />
+                  <ArrowLeftIcon size={20} />
                 </Link>
               )}
               {location.url.pathname !== "/profile" && (
                 <Link
                   prefetch="js"
                   href="/profile"
-                  class="rounded-full bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800"
+                  class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md"
                 >
                   Profile
                 </Link>
-              )}{" "}
+              )}
               <Dropdown />
-            </div>
-          )}
-
-          {!session.value && (
-            <a
+            </>
+          ) : (
+            <Link
               href="/login"
-              class="p-4 text-gray-600 transition-colors hover:text-black"
+              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md"
             >
               Sign In
-            </a>
+            </Link>
           )}
         </div>
       </nav>
