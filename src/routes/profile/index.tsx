@@ -6,7 +6,6 @@ import { useQueries } from "./layout";
 import { ProfileForm } from "~/components/profile";
 import { getAllReferenceEvents } from "~/api/EndPoint";
 import { updateProfileForm } from "~/api/Forms";
-import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 
 export const useUpdateUser = routeAction$(async (data, event) => {
@@ -244,17 +243,3 @@ export default component$(() => {
     </main>
   );
 });
-
-export const head: DocumentHead = {
-  title: "S&H | Dashboard",
-  meta: [
-    {
-      name: "description",
-      content: "View and edit your user profile",
-    },
-    {
-      name: "keywords",
-      content: "profile, user, edit, interests",
-    },
-  ],
-};
