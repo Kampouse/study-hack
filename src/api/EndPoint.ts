@@ -3,6 +3,7 @@ import {
   type QueryEventOptions,
   QueryEvents,
   QueryEvent,
+  QueryConfirmedUsers,
   QueryAllReferenceEvents,
   QueryPlaces,
   GetUser,
@@ -128,5 +129,28 @@ export const getPlaces = async (event: Requested) => {
   } catch (e) {
     console.log(e);
     return { success: false, data: null, error: "Failed to get places" };
+  }
+};
+export const getConfirmedUsers = async (event: Requested, eventId: number) => {
+  try {
+    const data = await QueryConfirmedUsers({
+      event: event,
+      eventId: eventId,
+    });
+    if (!data.success || !data.data) {
+      return {
+        success: false,
+        data: null,
+        error: "Failed to get confirmed user",
+      };
+    }
+    return { success: true, data: data.data };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      data: null,
+      error: "Failed to get confirmed user",
+    };
   }
 };

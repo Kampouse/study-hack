@@ -913,3 +913,57 @@ export const DeletePlace = async (params: {
     };
   }
 };
+export const QueryConfirmedUsers = async (params: {
+  event: Requested | undefined;
+  eventId: number;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+      data: null,
+    };
+  }
+
+  try {
+    const requests = await Client.select({
+      requestId: Requests.RequestID,
+      userId: Requests.UserID,
+      status: Requests.Status,
+      background: Requests.Background,
+      experience: Requests.Experience,
+      whyJoin: Requests.WhyJoin,
+      createdAt: Requests.CreatedAt,
+      user: {
+        name: Users.Name,
+        email: Users.Email,
+        image: Users.ImageURL,
+        description: Users.Description,
+      },
+    })
+      .from(Requests)
+      .leftJoin(Users, eq(Users.UserID, Requests.UserID))
+      .where(
+        and(
+          eq(Requests.EventID, params.eventId),
+          eq(Requests.Status, "confirmed"),
+        ),
+      )
+      .execute();
+
+    return {
+      success: true,
+      message: "Requests found",
+      data: requests,
+    };
+  } catch (error) {
+    console.error("Error getting requests:", error);
+    return {
+      success: false,
+      message: "Error getting requests",
+      data: null,
+    };
+  }
+};

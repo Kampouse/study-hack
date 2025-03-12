@@ -172,7 +172,7 @@ export default component$(() => {
                     <EventCard
                       key={event.eventID}
                       title={event.name}
-                      link={`/join/${event.eventID}`}
+                      link={`/details/${event.eventID}`}
                       description={event.description}
                       image={event.image as string}
                       time={event.date}

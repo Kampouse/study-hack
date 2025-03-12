@@ -176,6 +176,7 @@ export default component$(() => {
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
                     type="date"
+                    min={new Date().toISOString().split("T")[0]}
                     value={field.value}
                   />
                 </div>
@@ -188,14 +189,29 @@ export default component$(() => {
                   <label class="text-sm font-medium text-gray-700">
                     Start Time
                   </label>
-                  <input
+                  <select
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
-                    type="time"
                     value={field.value}
-                  />
+                  >
+                    <option value="">Select time...</option>
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <option
+                        key={i}
+                        value={`${i.toString().padStart(2, "0")}:00`}
+                      >
+                        {i === 0
+                          ? "12:00 AM"
+                          : i < 12
+                            ? `${i}:00 AM`
+                            : i === 12
+                              ? "12:00 PM"
+                              : `${i - 12}:00 PM`}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
             </Field>
@@ -206,14 +222,29 @@ export default component$(() => {
                   <label class="text-sm font-medium text-gray-700">
                     End Time
                   </label>
-                  <input
+                  <select
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
-                    type="time"
                     value={field.value}
-                  />
+                  >
+                    <option value="">Select time...</option>
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <option
+                        key={i}
+                        value={`${i.toString().padStart(2, "0")}:00`}
+                      >
+                        {i === 0
+                          ? "12:00 AM"
+                          : i < 12
+                            ? `${i}:00 AM`
+                            : i === 12
+                              ? "12:00 PM"
+                              : `${i - 12}:00 PM`}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
             </Field>
