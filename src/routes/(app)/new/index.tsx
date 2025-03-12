@@ -10,7 +10,7 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 import type * as v from "valibot";
 import { GetUser, QueryPlaces } from "~/api/Query";
-//get the type from event schema
+
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
   const user = await GetUser({ event: req });
@@ -29,7 +29,6 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
   };
 });
 
-//take the return type of createEventForm and return it and remove the promise from it
 type Data =
   ReturnType<typeof createEventForm> extends Promise<infer T> ? T : never;
 
@@ -75,26 +74,29 @@ export default component$(() => {
   });
   const places = useloadPlaces();
   return (
-    <div class="m-4 mx-auto max-w-4xl overflow-hidden rounded-xl border bg-white shadow-lg">
-      <h1 class="p-8 pb-0 text-3xl font-bold text-gray-800">
-        Create your Session
-      </h1>
-      <div class="p-8">
-        <p class="mb-6 text-gray-600">Add details and create your event</p>
-        <Form class="flex flex-col gap-6">
+    <div class="container mx-auto max-w-4xl px-4 py-8">
+      <div class="w-full rounded-2xl border border-gray-300 bg-gradient-to-br from-white/80 to-gray-100/50 p-8 shadow-sm transition-all duration-300 hover:border-green-100 hover:bg-gradient-to-br hover:from-white/90 hover:to-gray-50/70">
+        <h1 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900">
+          Create Your Study Session
+        </h1>
+        <p class="mb-8 text-sm leading-relaxed text-gray-600">
+          Share your study plans and connect with others
+        </p>
+
+        <Form class="space-y-6">
           <Field name="Name">
             {(field, props) => (
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-bold text-gray-700">
-                  Event name
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">
+                  Session Name
                 </label>
                 <input
                   {...props}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                     field.error ? "border-red-500" : "border-gray-300"
                   }`}
                   type="text"
-                  placeholder="Just studyin' for fun :/"
+                  placeholder="e.g. Finals Prep Session"
                   value={field.value}
                 />
               </div>
@@ -103,17 +105,17 @@ export default component$(() => {
 
           <Field name="Description">
             {(field, props) => (
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-bold text-gray-700">
-                  What will you be working on?
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">
+                  Study Plan
                 </label>
                 <textarea
                   {...props}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                     field.error ? "border-red-500" : "border-gray-300"
                   }`}
                   rows={3}
-                  placeholder="I will be learning about machine learning."
+                  placeholder="What topics are you planning to cover?"
                   value={field.value}
                 />
               </div>
@@ -122,18 +124,18 @@ export default component$(() => {
 
           <Field name="Location">
             {(field, props) => (
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-bold text-gray-700">
-                  Where will you be?
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">
+                  Study Location
                 </label>
                 <select
                   {...props}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                     field.error ? "border-red-500" : "border-gray-300"
                   }`}
                   value={field.value}
                 >
-                  <option value="">Select a location...</option>
+                  <option value="">Choose a study spot...</option>
                   {places.value.data?.map((place) => (
                     <option key={place.PlaceID} value={place.Name}>
                       {place.Name}
@@ -146,92 +148,97 @@ export default component$(() => {
 
           <Field name="ImageURL">
             {(field, props) => (
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-bold text-gray-700">
-                  Image link (optional)
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700">
+                  Cover Image URL (Optional)
                 </label>
                 <input
                   {...props}
-                  class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                     field.error ? "border-red-500" : "border-gray-300"
                   }`}
                   type="text"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Paste an image URL here"
                   value={field.value}
                 />
               </div>
             )}
           </Field>
 
-          <div class="flex items-center gap-4">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <Field name="Date">
               {(field, props) => (
-                <div class="flex w-full flex-col gap-2">
-                  <label class="text-sm font-bold text-gray-700">Date</label>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700">Date</label>
                   <input
                     {...props}
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
                     type="date"
-                    placeholder="03/03/24"
                     value={field.value}
                   />
                 </div>
               )}
             </Field>
+
             <Field name="StartTime">
               {(field, props) => (
-                <div class="flex w-full flex-col gap-2">
-                  <label class="text-sm font-bold text-gray-700">
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700">
                     Start Time
                   </label>
                   <input
                     {...props}
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
                     type="time"
-                    placeholder="16:30"
                     value={field.value}
                   />
                 </div>
               )}
             </Field>
+
             <Field name="EndTime">
               {(field, props) => (
-                <div class="flex w-full flex-col gap-2">
-                  <label class="text-sm font-bold text-gray-700">
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700">
                     End Time
                   </label>
                   <input
                     {...props}
-                    class={`w-full rounded-md border px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    class={`w-full rounded-xl border bg-white/50 px-4 py-2.5 text-gray-700 shadow-sm transition-colors duration-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
                       field.error ? "border-red-500" : "border-gray-300"
                     }`}
                     type="time"
-                    placeholder="16:30"
                     value={field.value}
                   />
                 </div>
               )}
             </Field>
           </div>
+
           <button
-            class="w-full rounded-md bg-green-500 px-4 py-2 font-bold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-8 py-3 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-[0.98]"
             type="submit"
           >
-            Create a public Session
+            Create Study Session
           </button>
         </Form>
       </div>
     </div>
   );
 });
+
 export const head: DocumentHead = {
-  // This will be used to resolve the <title> of the page
-  title: "S&H | New Event",
-  meta: [],
+  title: "S&H | New Session",
+  meta: [
+    {
+      name: "description",
+      content: "Create a new study session and connect with others",
+    },
+  ],
   links: [
     {
       rel: "canonical",
