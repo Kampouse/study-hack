@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import OG from "/just-rnd.png";
+import OG from "~/assets/just-rnd.png";
 import Landing from "./landing";
 export default component$(() => {
   return <Landing />;
