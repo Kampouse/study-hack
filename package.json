@@ -91,6 +91,7 @@
   },
   "nx": {},
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "better-sqlite3": "^11.3.0",
     "test": "^3.3.0"
   }

@@ -14,7 +14,7 @@ export default component$(() => {
     { label: "Home Page", disabled: false, path: "/landing" },
   ];
   return (
-    <Dropdown.Root class="pr-12">
+    <Dropdown.Root>
       <Dropdown.Trigger class="">
         <div class="h-[50px] w-[50px] lg:h-full lg:w-full">
           <img class="rounded-full" width={50} height={50} src={img} />

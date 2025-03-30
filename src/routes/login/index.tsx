@@ -27,39 +27,64 @@ export const onGet: RequestHandler = async (req) => {
 export default component$(() => {
   const signin = useSignIn();
   return (
-    <div class="flex h-fit   flex-col items-center justify-around    bg-white py-10 shadow-sm lg:pt-4">
-      <JustRnd class="h-72 w-72" />
+    <div class="relative min-h-screen bg-gradient-to-b from-[#A67C52] to-[#C49A6C] px-4 py-12 sm:px-6 lg:px-8">
+      {/* Background pattern and glow effects */}
+      <div class="absolute inset-0 bg-[url('/cozy-pattern.svg')] opacity-10"></div>
+      <div class="opacity-15 absolute inset-0">
+        <div class="absolute left-1/4 top-1/4 h-32 w-32 animate-pulse rounded-full bg-[#DDB892] blur-xl"></div>
+        <div class="absolute right-1/4 top-3/4 h-24 w-24 animate-pulse rounded-full bg-[#C8976E] blur-xl"></div>
+      </div>
 
-      <div class="order-last mx-auto flex w-full max-w-md flex-col items-center justify-center gap-6 p-8">
-        <Form action={signin} class="w-full">
-          <input type="hidden" name="providerId" value="github" />
-          <input
-            type="hidden"
-            name="options.redirectTo"
-            value="/auth/signedin"
-          />
-          <button class="button button-auth flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#272c30] px-6 py-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
-            <GithubIcon />
-            <span class="text-lg font-medium text-white md:text-xl">
-              Continue with GitHub
-            </span>
-          </button>
-        </Form>
-        <Form action={signin} class="w-full">
-          <input type="hidden" name="providerId" value="google" />
-          <input
-            type="hidden"
-            name="options.redirectTo"
-            value="/auth/signedin"
-          />
+      {/* Main content */}
+      <div class="relative flex min-h-[80vh] flex-col items-center justify-center">
+        <div class="w-full max-w-md space-y-8">
+          {/* Logo container with glow effect */}
+          <div class="relative">
+            <div class="absolute -inset-4 rounded-3xl bg-gradient-to-r from-[#F0D9B5] to-[#C8976E] opacity-20 blur-xl"></div>
+            <div class="relative flex justify-center">
+              <JustRnd class="h-64 w-64" />
+            </div>
+          </div>
 
-          <button class="button button-auth flex w-full transform items-center justify-center gap-3 rounded-xl bg-[#2494ec] px-6 py-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
-            <GoogleIcon />
-            <span class="text-lg font-medium text-white md:text-xl">
-              Continue with Google
-            </span>
-          </button>
-        </Form>
+          {/* Welcome text */}
+          <div class="text-center">
+            <h2 class="text-3xl font-bold text-[#FEFAF6]">Welcome Back</h2>
+            <p class="mt-2 text-[#E6CCB2]">
+              Sign in to continue your cozy journey
+            </p>
+          </div>
+
+          {/* Auth buttons */}
+          <div class="mt-8 space-y-4">
+            <Form action={signin} class="w-full">
+              <input type="hidden" name="providerId" value="github" />
+              <input
+                type="hidden"
+                name="options.redirectTo"
+                value="/auth/signedin"
+              />
+              <button class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#2D333B] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(45,51,59,0.4)]">
+                <GithubIcon />
+                <span class="text-lg font-semibold">Continue with GitHub</span>
+                <span class="absolute inset-0 z-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-10"></span>
+              </button>
+            </Form>
+
+            <Form action={signin} class="w-full">
+              <input type="hidden" name="providerId" value="google" />
+              <input
+                type="hidden"
+                name="options.redirectTo"
+                value="/auth/signedin"
+              />
+              <button class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#DDB892] to-[#C8976E] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(221,184,146,0.4)]">
+                <GoogleIcon />
+                <span class="text-lg font-semibold">Continue with Google</span>
+                <span class="absolute inset-0 z-0 bg-gradient-to-r from-[#C8976E] to-[#DDB892] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+              </button>
+            </Form>
+          </div>
+        </div>
       </div>
     </div>
   );

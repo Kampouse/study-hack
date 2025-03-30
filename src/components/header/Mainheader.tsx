@@ -46,31 +46,31 @@ export default component$(() => {
         : "/home";
   });
   return (
-    <header class="fixed top-0 z-50 h-fit w-full bg-white/80 backdrop-blur-sm">
+    <header class="fixed top-0 z-50 h-fit w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <nav
-        class="container mx-auto flex w-full items-center justify-between px-4 py-3"
+        class=" mx-auto flex w-full items-center justify-between px-4 py-3"
         role="navigation"
       >
         <div class="flex items-center gap-4">
           <Link
             href={session.value ? "/home" : "/landing"}
-            class="hidden bg-gradient-to-r from-neutral-700 to-neutral-900 bg-clip-text text-xl font-semibold text-transparent transition-colors hover:from-neutral-800 hover:to-neutral-950 md:block"
+            class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
           >
-            Justd R&D
+            Just R&D
           </Link>
 
           {location.url.pathname === "/home" && (
             <Link
               href="/new"
-              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:hidden"
+              class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
             >
-              New Session
+              Start New Session
             </Link>
           )}
           {session.value && location.url.pathname !== "/home" && (
             <Link
               href="/home"
-              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 p-2 text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:hidden"
+              class="rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
             >
               <ArrowLeftIcon size={20} />
             </Link>
@@ -83,14 +83,14 @@ export default component$(() => {
               {location.url.href.includes("home") ? (
                 <Link
                   href="/new"
-                  class="hidden rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:block"
+                  class="hidden rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:block"
                 >
-                  New Session
+                  Start New Session
                 </Link>
               ) : (
                 <Link
                   href="/home"
-                  class="hidden rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 p-2 text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md md:block"
+                  class="hidden rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:block"
                 >
                   <ArrowLeftIcon size={20} />
                 </Link>
@@ -99,9 +99,9 @@ export default component$(() => {
                 <Link
                   prefetch="js"
                   href="/profile"
-                  class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md"
+                  class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
                 >
-                  Profile
+                  My Profile
                 </Link>
               )}
               <Dropdown />
@@ -109,9 +109,9 @@ export default component$(() => {
           ) : (
             <Link
               href="/login"
-              class="rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-neutral-800 hover:to-neutral-900 hover:shadow-md"
+              class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
             >
-              Sign In
+              Get Started
             </Link>
           )}
         </div>

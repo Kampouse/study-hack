@@ -149,7 +149,7 @@ export const EventCard = component$((props: EventCardProps) => {
         <div class="flex flex-1 flex-col justify-between">
           <Link
             href={props.link}
-            class="transition-all duration-300 hover:scale-[1.02] hover:opacity-90 active:scale-[1.01]"
+            class="transition-all duration-300  hover:opacity-90 active:scale-[1.01]"
           >
             <div class="flex flex-row gap-3 px-3 pt-4">
               <h1 class="flex items-center gap-2 text-sm font-medium text-gray-700">

@@ -7,60 +7,59 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --primary: 191.6 91.4% 36.5%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --alert: 0 84.2% 60.2%;
-    --alert-foreground: 210 40% 98%;
-    --ring: 222.2 47.4% 11.2%;
-    --border-width: 0px;
-    --border-radius: 0px;
-    --shadow-base: 0 1px 2px 0 rgba(0, 0, 0, 0.01);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 1);
-    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01);
-    --transform-press: scale(0.95);
-  }
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --primary: 191.6 91.4% 36.5%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 0 0% 0%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --alert: 0 84.2% 60.2%;
-    --alert-foreground: 210 40% 98%;
-    --ring: 212.7 26.8% 83.9;
+    /* Base colors */
+    --background: 32 33% 98%; /* Cream white */
+    --foreground: 28 45% 29%; /* Warm brown text */
+
+    /* Surface colors */
+    --card: 32 33% 98%;
+    --card-foreground: 28 45% 29%;
+    --popover: 32 33% 98%;
+    --popover-foreground: 28 45% 29%;
+
+    /* Primary action colors */
+    --primary: 33 47% 49%; /* Cozy brown */
+    --primary-foreground: 36 100% 99%;
+
+    /* Secondary and accent colors */
+    --secondary: 33 56% 85%; /* Light brown */
+    --secondary-foreground: 28 45% 29%;
+    --accent: 32 47% 75%; /* Muted brown */
+    --accent-foreground: 28 45% 29%;
+
+    /* Feedback colors */
+    --destructive: 0 84% 60%; /* Warm red */
+    --destructive-foreground: 36 100% 99%;
+    --success: 142 76% 36%; /* Earthy green */
+    --success-foreground: 36 100% 99%;
+    --warning: 43 96% 56%; /* Warm yellow */
+    --warning-foreground: 28 45% 29%;
+
+    /* UI element colors */
+    --muted: 33 56% 93%; /* Very light brown */
+    --muted-foreground: 28 29% 49%;
+    --border: 33 47% 85%;
+    --input: 33 47% 85%;
+    --ring: 33 47% 49%;
+
+    /* Sidebar specific */
+    --sidebar-background: 32 33% 98%;
+    --sidebar-foreground: 28 45% 29%;
+    --sidebar-muted: 33 29% 49%;
+    --sidebar-accent: 33 47% 49%;
+    --sidebar-border: 33 47% 85%;
+
+    /* Chart colors */
+    --chart-1: 33 47% 49%; /* Primary brown */
+    --chart-2: 27 56% 75%; /* Light brown */
+    --chart-3: 43 74% 66%; /* Warm yellow */
+    --chart-4: 15 43% 58%; /* Terra cotta */
+    --chart-5: 35 36% 69%; /* Taupe */
+
+    /* Misc */
+    --radius: 0.75rem;
+
+    /* Shadows and effects */
     --border-width: 0px;
     --border-radius: 0;
     --shadow-base: 0 1px 2px 0 rgba(0, 0, 0, 0.01);
@@ -76,10 +75,86 @@
     --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01);
     --transform-press: scale(0.95);
   }
+
+  .dark {
+    /* Base colors */
+    --background: 28 45% 15%; /* Dark brown */
+    --foreground: 33 56% 85%; /* Light cream */
+
+    /* Surface colors */
+    --card: 28 45% 18%;
+    --card-foreground: 33 56% 85%;
+    --popover: 28 45% 18%;
+    --popover-foreground: 33 56% 85%;
+
+    /* Primary action colors */
+    --primary: 32 47% 75%; /* Light cozy brown */
+    --primary-foreground: 28 45% 15%;
+
+    /* Secondary and accent colors */
+    --secondary: 28 35% 25%; /* Darker brown */
+    --secondary-foreground: 33 56% 85%;
+    --accent: 32 47% 35%; /* Deep brown */
+    --accent-foreground: 33 56% 85%;
+
+    /* Feedback colors */
+    --destructive: 0 62% 45%; /* Dark warm red */
+    --destructive-foreground: 33 56% 85%;
+    --success: 142 50% 30%; /* Dark earthy green */
+    --success-foreground: 33 56% 85%;
+    --warning: 43 76% 46%; /* Dark warm yellow */
+    --warning-foreground: 33 56% 85%;
+
+    /* UI element colors */
+    --muted: 28 35% 25%;
+    --muted-foreground: 33 40% 75%;
+    --border: 28 35% 30%;
+    --input: 28 35% 30%;
+    --ring: 32 47% 75%;
+
+    /* Sidebar specific */
+    --sidebar-background: 28 45% 12%;
+    --sidebar-foreground: 33 56% 85%;
+    --sidebar-muted: 33 40% 75%;
+    --sidebar-accent: 32 47% 75%;
+    --sidebar-border: 28 35% 30%;
+
+    /* Chart colors */
+    --chart-1: 32 47% 75%; /* Light brown */
+    --chart-2: 27 46% 65%; /* Muted brown */
+    --chart-3: 43 54% 56%; /* Warm gold */
+    --chart-4: 15 33% 48%; /* Dark terra cotta */
+    --chart-5: 35 26% 59%; /* Dark taupe */
+  }
 }
 
 :root {
   --color-primary: #f4f9f4;
   --color-secondary: #0f0;
   background-color: var(--color-primary);
+}
+/* Customize scrollbar for WebKit browsers */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: var(--radius);
+  border: 3px solid var(--secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Customize scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--secondary);
 }

@@ -62,7 +62,7 @@ export default component$<FormProps>(({ data, active }) => {
               {data.interests.map((interest, index) => (
                 <span
                   key={index}
-                  class="group flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700"
+                  class="flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-300"
                 >
                   {interest}
                   <button
@@ -88,7 +88,7 @@ export default component$<FormProps>(({ data, active }) => {
               <div class="relative">
                 <input
                   type="text"
-                  class="w-40 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm placeholder:text-gray-400"
+                  class="flex w-32 items-center rounded-full bg-gray-100 px-2.5 py-2 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-300"
                   placeholder="Add interest..."
                   onKeyDown$={(e) => {
                     if (e.key === "Enter") {
