@@ -37,10 +37,10 @@ export default component$(() => {
 
       {/* Main content */}
       <div class="relative flex min-h-[80vh] flex-col items-center justify-center">
-        <div class="w-full max-w-md space-y-8">
+        <div class="w-full max-w-md space-y-4">
           {/* Logo container with glow effect */}
           <div class="relative">
-            <div class="absolute -inset-4 rounded-3xl bg-gradient-to-r from-[#F0D9B5] to-[#C8976E] opacity-20 blur-xl"></div>
+            <div class="absolute -inset-6 rounded-3xl bg-gradient-to-r from-[#F0D9B5] to-[#C8976E] opacity-20 blur-xl"></div>
             <div class="relative flex justify-center">
               <JustRnd class="h-64 w-64" />
             </div>
@@ -78,9 +78,14 @@ export default component$(() => {
                 value="/auth/signedin"
               />
               <button class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#DDB892] to-[#C8976E] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(221,184,146,0.4)]">
-                <GoogleIcon />
-                <span class="text-lg font-semibold">Continue with Google</span>
-                <span class="absolute inset-0 z-0 bg-gradient-to-r from-[#C8976E] to-[#DDB892] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+                <span class="relative z-10 flex flex-row gap-2">
+                  <GoogleIcon />
+                  <span class="relative z-10 text-lg font-semibold">
+                    Continue with Google
+                  </span>
+                </span>
+
+                <span class="absolute inset-0 bg-gradient-to-r from-[#C8976E] to-[#DDB892] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
               </button>
             </Form>
           </div>

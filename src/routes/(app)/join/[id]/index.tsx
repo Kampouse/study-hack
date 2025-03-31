@@ -133,7 +133,7 @@ export default component$(() => {
               alt={event.value.data.event?.location || "Event Image"}
               height={400}
               width={800}
-              class="size-full absolute inset-0 object-cover transition-transform duration-300 hover:scale-105"
+              class="size-full absolute inset-0 object-cover transition-transform duration-300 "
               onError$={(e) => {
                 const img = e.target as HTMLImageElement;
                 img.src =

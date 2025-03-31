@@ -2,7 +2,7 @@ import { component$ } from "@builder.io/qwik";
 
 export const TestimonialsSection = component$(() => {
   return (
-    <section class="py-24">
+    <section class="py-12">
       <div class="container mx-auto px-4">
         <h2 class="mb-16 text-center text-4xl font-bold tracking-tight text-[#5B3E29]">
           <span class="border-b-4 border-[#D98E73] pb-2">

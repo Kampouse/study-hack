@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { JoinCommunity } from "./JoinCommunity";
 import { CommunityEventsSection } from "./CommunityEvent";
 import { CommunitySpacesSection } from "./CommunitySpaceSection";
 import { ThreePillarsSection } from "./ThreePillarsSection";
@@ -83,6 +84,7 @@ export default component$(() => {
       <CommunitySpacesSection spaces={demoSpaces} />
       <TestimonialsSection />
       <CommunityEventsSection events={demoEvent} />
+      <JoinCommunity />
     </>
   );
 });

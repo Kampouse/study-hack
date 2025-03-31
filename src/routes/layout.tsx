@@ -30,7 +30,7 @@ export const onGet: RequestHandler = async (ctx) => {
 export default component$(() => {
   return (
     <div class="">
-      <div class="pt-16">
+      <div class="">
         <MainHeader />
       </div>
       <Slot />

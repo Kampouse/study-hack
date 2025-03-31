@@ -1,19 +1,18 @@
 import { component$ } from "@builder.io/qwik";
-
 export const ThreePillarsSection = component$(() => {
   return (
-    <section class="bg-white py-24">
+    <section class="bg-[hsl(33,56%,93%)] py-24">
       <div class="container mx-auto px-4">
-        <h2 class="mb-16 text-center text-4xl font-bold tracking-tight text-[#5B3E29]">
-          <span class="border-b-4 border-[#D98E73] pb-2">
+        <h2 class="mb-16 text-center text-4xl font-bold tracking-tight text-[hsl(28,45%,29%)]">
+          <span class="border-b-4 border-[hsl(32,47%,75%)] pb-2">
             Our Three Pillars
           </span>
         </h2>
         <div class="grid gap-8 md:grid-cols-3">
-          <div class="rounded-2xl bg-[#FFF8F0] p-8 text-center transition-all duration-300 hover:-translate-y-2">
-            <div class="mb-6 inline-block rounded-full bg-[#D98E73] p-4">
+          <div class="rounded-2xl bg-[hsl(32,47%,85%)] p-8 text-center shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-[hsl(32,47%,80%)] hover:shadow-xl">
+            <div class="mb-6 inline-block rounded-full bg-[hsl(32,33%,98%)] p-4">
               <svg
-                class="h-8 w-8 text-white"
+                class="h-8 w-8 text-[hsl(28,45%,29%)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -26,16 +25,18 @@ export const ThreePillarsSection = component$(() => {
                 />
               </svg>
             </div>
-            <h3 class="mb-4 text-2xl font-semibold text-[#5B3E29]">Create</h3>
-            <p class="text-[#6D5D4E]">
+            <h3 class="mb-4 text-2xl font-semibold text-[hsl(28,45%,29%)]">
+              Create
+            </h3>
+            <p class="text-[hsl(28,29%,49%)]">
               Share your favorite cozy spots and organize meaningful events that
               bring people together.
             </p>
           </div>
-          <div class="rounded-2xl bg-[#FFF8F0] p-8 text-center transition-all duration-300 hover:-translate-y-2">
-            <div class="mb-6 inline-block rounded-full bg-[#D98E73] p-4">
+          <div class="rounded-2xl bg-[hsl(32,47%,85%)] p-8 text-center shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-[hsl(32,47%,80%)] hover:shadow-xl">
+            <div class="mb-6 inline-block rounded-full bg-[hsl(32,33%,98%)] p-4">
               <svg
-                class="h-8 w-8 text-white"
+                class="h-8 w-8 text-[hsl(28,45%,29%)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -48,16 +49,18 @@ export const ThreePillarsSection = component$(() => {
                 />
               </svg>
             </div>
-            <h3 class="mb-4 text-2xl font-semibold text-[#5B3E29]">Share</h3>
-            <p class="text-[#6D5D4E]">
+            <h3 class="mb-4 text-2xl font-semibold text-[hsl(28,45%,29%)]">
+              Share
+            </h3>
+            <p class="text-[hsl(28,29%,49%)]">
               Connect with like-minded individuals and build a community around
               your favorite spaces.
             </p>
           </div>
-          <div class="rounded-2xl bg-[#FFF8F0] p-8 text-center transition-all duration-300 hover:-translate-y-2">
-            <div class="mb-6 inline-block rounded-full bg-[#D98E73] p-4">
+          <div class="rounded-2xl bg-[hsl(32,47%,85%)] p-8 text-center shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-[hsl(32,47%,80%)] hover:shadow-xl">
+            <div class="mb-6 inline-block rounded-full bg-[hsl(32,33%,98%)] p-4">
               <svg
-                class="h-8 w-8 text-white"
+                class="h-8 w-8 text-[hsl(28,45%,29%)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -70,8 +73,10 @@ export const ThreePillarsSection = component$(() => {
                 />
               </svg>
             </div>
-            <h3 class="mb-4 text-2xl font-semibold text-[#5B3E29]">Join</h3>
-            <p class="text-[#6D5D4E]">
+            <h3 class="mb-4 text-2xl font-semibold text-[hsl(28,45%,29%)]">
+              Join
+            </h3>
+            <p class="text-[hsl(28,29%,49%)]">
               Discover and participate in events that match your interests and
               expand your social circle.
             </p>

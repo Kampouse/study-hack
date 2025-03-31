@@ -18,7 +18,7 @@ const colors = {
 export const CommunityEventsSection = component$<CommunityEventsSectionProps>(
   ({ events }) => {
     return (
-      <section class={`bg-[${colors.background}] py-24`}>
+      <section class={`bg-[${colors.background}] py-12`}>
         <div class="container mx-auto px-4">
           <h2
             class={`mb-16 text-center text-4xl font-bold tracking-tight text-[${colors.text.heading}]`}
