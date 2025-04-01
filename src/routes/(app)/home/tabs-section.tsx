@@ -29,7 +29,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
   const allEventsLoaded = visibleEventsCount.value >= props.eventsData.length;
 
   return (
-    <section class="container px-4 py-8 md:px-6">
+    <section class=" px-4 py-8 pt-0 md:px-6">
       <div class="w-full">
         {/* Tab Triggers */}
         <div class="mb-8 rounded-lg bg-[#F8EDE3] p-1">
