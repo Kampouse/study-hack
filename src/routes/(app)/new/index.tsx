@@ -36,11 +36,10 @@ const action = formAction$<Event, Data>(async (data, event) => {
   console.log("hello", data);
   const places = await QueryPlaces({ event: event });
 
-  const place = places.data?.find((el) => el.Name === data.Location);
+  const place = places.data?.find((el) => el.Places?.Name === data.Location);
 
-  place?.PlaceID;
   const output = await createEventForm(
-    { ...data, PlaceId: place?.PlaceID as number },
+    { ...data, PlaceId: place?.Places?.PlaceID as number },
     event,
   );
 
@@ -137,8 +136,11 @@ export default component$(() => {
                 >
                   <option value="">Choose a study spot...</option>
                   {places.value.data?.map((place) => (
-                    <option key={place.PlaceID} value={place.Name}>
-                      {place.Name}
+                    <option
+                      key={place.Places?.PlaceID}
+                      value={place.Places?.Name}
+                    >
+                      {place.Places?.Name}
                     </option>
                   ))}
                 </select>

@@ -1,5 +1,5 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { routeLoader$, routeAction$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@builder.io/qwik-city";
 import { MapPinIcon as MapPin } from "lucide-qwik"; // Keep MapPin for the modal button
 
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
@@ -16,14 +16,6 @@ export type Events = Awaited<ReturnType<typeof useEvents>>;
 export const head = {
   title: " S&H | Home",
 };
-
-export const useEventAction = routeAction$(() => {
-  // Placeholder for potential future actions
-  return {
-    success: true,
-  };
-});
-export type EventAction = ReturnType<typeof useEventAction>;
 
 export const useEvents = routeLoader$(async (event) => {
   const data = await getEvents({
@@ -51,23 +43,20 @@ export default component$(() => {
   const events = useEvents();
   const places = usePlaces();
   const showMap = useSignal(false);
-  // Note: searchTerm, startDate, endDate signals are defined in SearchFilterBar component now.
-  // If filtering needs to happen at this level, these signals would need to be passed down or managed globally.
-  // For now, assuming filtering logic is handled within TabsSection/SearchFilterBar.
-
+  const combinedMapData = useSignal<unknown>();
   // --- Data Transformation (Remains the same) ---
   const placesDataForMap =
     places.value.data?.map((place) => ({
-      id: place.PlaceID,
-      name: place.Name,
-      image: (place.ImageURL as string) || "/placeholder.svg",
+      id: place.Places?.PlaceID,
+      name: place.Places?.Name,
+      image: (place.Places?.ImageURL as string) || "/placeholder.svg",
       badge: "Place",
-      location: place.Address,
-      description: place.Description,
+      location: place.Places?.Address,
+      description: place.Places?.Description,
       tags: ["Quiet", "WiFi", "Coffee"], // Example tags, ideally fetch from DB
-      creator: "Community", // Placeholder
+      creator: place.Users?.Username, // Placeholder
       rating: 4.8, // Placeholder, fetch actual rating if available
-      coords: [place.Lat, place.Lng] as [number, number],
+      coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
     })) || [];
 
   // Add events to the map data as well
@@ -77,18 +66,18 @@ export default component$(() => {
       name: event.name,
       image: event.image || "/placeholder.svg",
       badge: "Event",
-      location: event.place?.Name || "Location TBD",
+      location: event.place?.Places?.Name || "Location TBD",
       description: event.description,
       tags: ["Study", "Meetup"],
-      creator: event.host || "Anonymous",
+      creator: event.creator || "Anonymous",
       rating: 4.7, // Placeholder for events
-      coords: [event.place?.Lat ?? 0, event.place?.Lng ?? 0] as [
-        number,
-        number,
-      ],
+      coords: [
+        event.place?.Places?.Lat ?? 0,
+        event.place?.Places?.Lng ?? 0,
+      ] as [number, number],
     })) || [];
-
-  const combinedMapData = [...placesDataForMap, ...eventsDataForMap];
+  console.log(events.value);
+  combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
 
   const eventsDataForCards =
     events.value.data?.map((event) => ({
@@ -97,13 +86,10 @@ export default component$(() => {
       image: event.image || "/placeholder.svg",
       badge: "Event", // Or derive from event type/tags
       type: "Study Group", // Or derive from event type
-      date: new Date(event.date).toLocaleDateString(),
-      time: new Date(event.date).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      location: event.place?.Name || "Location TBD",
-      creator: event.host || "Anonymous",
+      date: event.date,
+      time: event.date,
+      location: event.location || "Location TBD",
+      creator: event.creator || "Anonymous",
       attendees: event.attendees ?? 8, // Fetch real attendee count if available
       spotsLeft: 5, // Fetch real spots left if available
     })) || [];
@@ -111,44 +97,29 @@ export default component$(() => {
   const placesApiDataForCards =
     places.value.data?.map((place) => {
       return {
-        id: place.PlaceID,
-        name: place.Name,
-        image: (place.ImageURL as string) || "/placeholder.svg",
+        id: place.Places?.PlaceID,
+        name: place.Places?.Name,
+        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
         badge: "Popular", // Or derive dynamically
-        location: place.Address,
-        description: place.Description,
+        location: place.Places?.Address,
+        description: place.Places?.Description,
         tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
-        creator: "Community", // Placeholder
+        creator: place.Users?.Username, // Placeholder
         rating: 4.8, // Fetch real rating if available
-        coords: [place.Lat, place.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
+        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
       };
     }) || [];
-
-  // --- Filtering Logic (Example - might be better placed within TabsSection/SearchFilterBar) ---
-  // const searchTerm = useSignal("");
-  // const startDate = useSignal("");
-  // const endDate = useSignal("");
-  // const filteredEvents = eventsDataForCards.filter(event => { /* ... filtering logic ... */ });
-  // const filteredPlaces = placesApiDataForCards.filter(place => { /* ... filtering logic ... */ });
-
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
-      {/* Hero Section */}
       <HeroSection />
 
-      {/* Main Content with Tabs and Filtering */}
-      {/* Pass the transformed data to TabsSection */}
       <TabsSection
         placesApiData={placesApiDataForCards}
         eventsData={eventsDataForCards}
       />
 
-      {/* Community Suggestions */}
       <CommunitySection />
 
-      {/* Quick Filters (Floating) */}
-
-      {/* Map Modal */}
       {showMap.value && (
         <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
           <div class="relative h-[90vh] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
@@ -180,16 +151,9 @@ export default component$(() => {
             <div class="h-[calc(90vh-6rem)] w-full overflow-hidden rounded-md border border-[#E6D7C3]">
               <Leaflet
                 // Pass combined places and events data for markers
-                places={combinedMapData}
+                places={combinedMapData as any}
                 // TODO: Get user's actual location or a default center
-                userLocation={[51.505, -0.09]} // Default location
-                onPlaceClick$={(place) => {
-                  // Handle marker click, e.g., show details or navigate
-                  console.log("Map marker clicked:", place);
-                  // Potentially close map and navigate:
-                  // showMap.value = false;
-                  // navigate(place.badge === 'Event' ? `/events/${place.id}` : `/places/${place.id}`);
-                }}
+                location={[51.505, -0.09] as any} // Default location
               />
             </div>
           </div>

@@ -32,6 +32,7 @@ export const QueryPlaces = async (params: {
   try {
     const result = await Client.select()
       .from(Places)
+      .fullJoin(Users, eq(Users.UserID, Places.UserID))
       .where(eq(Places.IsPublic, 1))
       .limit(params.params?.limit ?? 100)
       .offset(params.params?.offset ?? 0)
@@ -166,30 +167,53 @@ export const GetUserFromEmail = async (params: {
   }
 };
 
-export const GetUser = async (params: { event: Requested }) => {
+export const GetUser = async (params: {
+  event: Requested;
+  userId?: string | undefined;
+}) => {
   const Client = await drizzler(params.event);
   const data = serverSession(params.event);
-  if (data !== null && Client !== null) {
-    const userData = await Client.select({
-      ID: Users.UserID,
-      Name: Users.Name,
-      Description: Users.Description,
-      Image: Users.ImageURL,
-      Intrests: Users.Intrestets,
-    })
-      .from(Users)
-      .where(eq(Users.Email, data.user.email))
-      .execute()
-      .catch((e) => {
-        console.log(e);
-        return [];
-      });
-    if (userData.length > 0) {
-      return userData[0];
-    } else {
+  if (data !== null && Client !== null && !params.userId) {
+    try {
+      const userData = await Client.select({
+        ID: Users.UserID,
+        Name: Users.Name,
+        Description: Users.Description,
+        Image: Users.ImageURL,
+        Intrests: Users.Intrestets,
+      })
+        .from(Users)
+        .where(eq(Users.Email, data.user.email))
+        .execute();
+
+      if (userData.length > 0) {
+        return userData[0];
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  } else if (params.userId && Client != null) {
+    try {
+      const userData = await Client.select({
+        ID: Users.UserID,
+        Name: Users.Name,
+        Description: Users.Description,
+        Image: Users.ImageURL,
+        Intrests: Users.Intrestets,
+      })
+        .from(Users)
+        .where(eq(Users.UserID, parseInt(params.userId)))
+        .execute();
+      if (userData.length > 0) {
+        return userData[0];
+      }
+    } catch (e) {
+      console.log(e);
       return null;
     }
   }
+  return null;
 };
 
 export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>;
@@ -321,9 +345,10 @@ export const QueryEvents = async (params: {
     eventID: Events.EventID,
     image: Events.ImageURL,
     userID: Events.UserID,
+    creator: Users.Username,
   })
-
     .from(Events)
+    .leftJoin(Users, eq(Users.UserID, Events.UserID))
     .where(
       and(
         not(
@@ -375,7 +400,9 @@ export const QueryEvents = async (params: {
       ...event,
       attendees: resultEvents.find((e) => e.eventID === event.eventID)
         ?.confirmedCount,
-      place: places.data.find((place) => place.PlaceID === event.placeId),
+      place: places.data.find(
+        (place) => place.Places?.PlaceID === event.placeId,
+      ),
     }));
   }
 

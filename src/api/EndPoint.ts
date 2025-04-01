@@ -28,7 +28,6 @@ export const getEvents = async ({
       event,
       options: { ...options, byUser: user.ID },
     });
-
     if (data === null) {
       return { success: false, data: null, error: "Failed to get events" };
     }

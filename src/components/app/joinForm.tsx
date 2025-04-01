@@ -1,7 +1,6 @@
 import { component$, Slot, useSignal } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { Modal } from "@qwik-ui/headless";
-import { useEventAction } from "~/routes/(app)/home";
 interface EventProps {
   eventLocation: string;
   eventDate: string;
@@ -10,7 +9,6 @@ interface EventProps {
 }
 
 export default component$<EventProps>((props) => {
-  const action = useEventAction();
   const status = useSignal(false);
   return (
     <Modal.Root bind:show={status} class="">
@@ -26,7 +24,6 @@ export default component$<EventProps>((props) => {
 
         <Form
           onSubmitCompleted$={() => (status.value = false)}
-          action={action}
           class="space-y-4"
         >
           <div class="jus flex flex-col gap-2">
@@ -66,11 +63,7 @@ export default component$<EventProps>((props) => {
           <button
             class="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md bg-green-400 bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             type="submit"
-          >
-            {!action.value?.success && action.submitted
-              ? "Saving..."
-              : "Send RSVP"}
-          </button>
+          ></button>
         </Form>
       </Modal.Panel>
     </Modal.Root>
