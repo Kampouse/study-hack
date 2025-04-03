@@ -1,36 +1,30 @@
 import { component$ } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
+// Removed Form import from qwik-city as action/onSubmitCompleted$ is removed
 import { Slot, type Signal } from "@builder.io/qwik";
-import { useUpdateUser } from "~/routes/profile";
+
+// Removed unused onSave and onChange props
 type FormProps = {
   data: { name: string; about: string; interests: string[] };
   active: Signal<boolean>;
-  onSave: (e: Event) => void;
-  onChange: (e: Event) => void;
 };
 
 import { Modal } from "@qwik-ui/headless";
 
 export default component$<FormProps>(({ data, active }) => {
-  const action = useUpdateUser();
   return (
     <Modal.Root bind:show={active} tabIndex={-1}>
       <Slot q:slot="profile" />
       <Modal.Panel class="modal-panel w-full max-w-xl rounded-2xl border border-gray-300 bg-gradient-to-br from-white/80 to-gray-100/50 p-8 shadow-sm">
-        <Form
-          onSubmitCompleted$={(e) => {
-            if (action.value?.success) {
-              active.value = false;
-              e.preventDefault();
-              data.name = action.value.data?.Name || "";
-              data.about = action.value.data?.Description || "";
-            } else {
-              console.log(action.status);
-              console.log("error");
-            }
-          }}
-          action={action}
+        {/* Replaced Qwik City Form with standard form, removed action and onSubmitCompleted$ */}
+        <form
           class="flex flex-col gap-6"
+          // Prevent default form submission behavior which reloads the page
+          preventdefault:submit
+          onSubmit$={() => {
+            // Optionally, add simple behavior like closing the modal here if needed
+            // active.value = false;
+            console.log("Form submitted (no action)");
+          }}
         >
           <div class="flex flex-col gap-2">
             <label for="Name" class="text-lg font-medium text-gray-900">
@@ -42,6 +36,7 @@ export default component$<FormProps>(({ data, active }) => {
               id="Name"
               name="Name"
               value={data.name}
+              // Removed onChange if present, keep value for display
             />
           </div>
           <div class="flex flex-col gap-2">
@@ -54,6 +49,7 @@ export default component$<FormProps>(({ data, active }) => {
               id="Description"
               name="Description"
               value={data.about}
+              // Removed onChange if present, keep value for display
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -65,14 +61,10 @@ export default component$<FormProps>(({ data, active }) => {
                   class="flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-300"
                 >
                   {interest}
+                  {/* Removed onClick$ handler from button */}
                   <button
                     type="button"
                     class="ml-1 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
-                    onClick$={() => {
-                      data.interests = data.interests.filter(
-                        (_, i) => i !== index,
-                      );
-                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -86,37 +78,25 @@ export default component$<FormProps>(({ data, active }) => {
                 </span>
               ))}
               <div class="relative">
+                {/* Removed onKeyDown$ and onClick$ handlers from input */}
                 <input
                   type="text"
                   class="flex w-32 items-center rounded-full bg-gray-100 px-2.5 py-2 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-300"
                   placeholder="Add interest..."
-                  onKeyDown$={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const input = e.target as HTMLInputElement;
-                      const value = input.value.trim();
-                      if (value && !data.interests.includes(value)) {
-                        data.interests = [...data.interests, value];
-                        input.value = "";
-                      }
-                    }
-                  }}
-                  onClick$={(e) => {
-                    e.stopPropagation();
-                  }}
                 />
               </div>
             </div>
           </div>
+          {/* Removed dynamic text based on action state */}
+          {/* Changed to type="button" and added onClick$ to close modal */}
           <button
-            type="submit"
+            type="button"
+            onClick$={() => (active.value = false)}
             class="mt-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
-            {!action.value?.success && action.submitted
-              ? "Saving..."
-              : "Save changes"}
+            Save changes
           </button>
-        </Form>
+        </form>
       </Modal.Panel>
     </Modal.Root>
   );

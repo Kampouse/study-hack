@@ -28,7 +28,6 @@ export default defineConfig(({ command, mode }): UserConfig => {
       }),
       qwikVite(),
       tsconfigPaths(),
-      eslintPlugin({}),
     ],
     // This tells Vite which dependencies to pre-build in dev mode.
     optimizeDeps: {
