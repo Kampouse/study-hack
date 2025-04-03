@@ -20,7 +20,7 @@ export const getEvents = async ({
 }) => {
   try {
     const user = await GetUser({ event });
-    if (user === null || user === undefined) {
+    if (user === null) {
       return { success: false, data: null, error: "Failed to get events" };
     }
 

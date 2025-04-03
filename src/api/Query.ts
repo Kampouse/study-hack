@@ -226,7 +226,7 @@ export const CreateEvent = async (params: {
   const userData =
     params.userData ?? (await GetUser({ event: params.event as Requested }));
   const Client = params.Client ?? (await drizzler(params.event as Requested));
-  if (userData === undefined || Client === null || userData === null) return;
+  if (Client === null || userData === null) return;
   return await Client.insert(Events)
     .values({
       Name: params.session.Name,

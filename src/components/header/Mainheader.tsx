@@ -54,7 +54,7 @@ export default component$(() => {
         >
           <div class="flex items-center gap-4">
             <Link
-              href={session.value ? "/home" : "/landing"}
+              href={session.value.user ? "/home" : "/landing"}
               class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
             >
               Just R&D
@@ -68,7 +68,7 @@ export default component$(() => {
                 Start New Session
               </Link>
             )}
-            {session.value && location.url.pathname !== "/home" && (
+            {session.value.user && location.url.pathname !== "/home" && (
               <Link
                 href="/home"
                 class="rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
@@ -79,7 +79,7 @@ export default component$(() => {
           </div>
 
           <div class="flex items-center gap-4">
-            {session.value ? (
+            {session.value.user ? (
               <>
                 {location.url.href.includes("home") ? (
                   <Link
