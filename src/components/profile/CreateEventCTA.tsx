@@ -33,20 +33,7 @@ export const CreateEventCTA = component$(() => {
             {" "}
             {/* Increased gap */}
             <div class="w-full md:w-1/3 lg:w-1/4">
-              <div class="aspect-square overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105">
-                <img
-                  // Use a more relevant placeholder or actual image
-                  src="/cta-placeholder.jpg"
-                  width={300}
-                  height={300}
-                  alt="Illustration for creating an event"
-                  class="h-full w-full object-cover"
-                  onError$={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "/placeholder.svg?text=Host+Event";
-                  }}
-                />
-              </div>
+              <div class="aspect-square overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105"></div>
             </div>
             <div class="flex-1 text-center md:text-left">
               <h2 class="mb-4 text-3xl font-bold text-[#5B3E29] md:text-4xl">
