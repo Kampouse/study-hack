@@ -9,7 +9,7 @@ export const CommunitySection = component$(() => {
             <div class="md:w-1/3">
               <div class="overflow-hidden rounded-xl">
                 <img
-                  src="/placeholder.svg?height=300&width=400"
+                  src=""
                   width={400}
                   height={300}
                   alt="Community suggestions"
