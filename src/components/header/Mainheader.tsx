@@ -5,24 +5,10 @@ import { useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
-import posthog from "posthog-js";
 export default component$(() => {
   const session = useSession();
   //eslint-disable-next-line
-  useVisibleTask$(() => {
-    if (
-      document.location.host.includes("study-hack.vercel.app") ||
-      document.location.host.includes("justrnd.com")
-    ) {
-      posthog.init("phc_4TyE0DMk3m3zjsaAxXOKlPZAGeqBuuGrVxfTDUQCK74", {
-        api_host: "https://us.i.posthog.com",
-        capture_heatmaps: true,
-        capture_pageview: true,
-        capture_performance: true,
-        disable_external_dependency_loading: true,
-      });
-    }
-  });
+
   const location = useLocation();
   const backSignal = useSignal<string | null>("/home");
 
@@ -98,7 +84,6 @@ export default component$(() => {
                 )}
                 {location.url.pathname !== "/profile" && (
                   <Link
-                    prefetch="js"
                     href="/profile"
                     class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
                   >
