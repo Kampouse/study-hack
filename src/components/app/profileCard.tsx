@@ -1,4 +1,3 @@
-
 import { Modal } from "@qwik-ui/headless";
 import { component$, type Signal } from "@builder.io/qwik";
 
@@ -7,9 +6,6 @@ type CardProps = {
   active: Signal<boolean>;
   onEdit: () => void;
 };
-
-
-
 
 export default component$<CardProps>(({ data }) => {
   return (
@@ -26,9 +22,7 @@ export default component$<CardProps>(({ data }) => {
               />
             </Modal.Trigger>
 
-            <Modal.Trigger
-              class="self-end rounded-full bg-white p-3 pl-4 text-sm text-black shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:bg-[#90EE90] hover:text-white"
-            >
+            <Modal.Trigger class="self-end rounded-full bg-white p-3 pl-4 text-sm text-black shadow-[0_8px_15px_rgba(0,0,0,0.1)] transition-all hover:bg-[#90EE90] hover:text-white">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

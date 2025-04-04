@@ -1,12 +1,12 @@
 # Juat R & D
+
 ![image](https://github.com/user-attachments/assets/a1c2a4e5-6c11-44b2-8544-d4bb8a3c0979)
 
+# Find & share great study location while coworking
 
-# Find & share  great  study location while  coworking
+### Why
 
-
-###  Why
-"is  there anyone coworking this week?"
+"is there anyone coworking this week?"
 
 "does anyone know a good place to study?"
 
@@ -15,12 +15,10 @@ Your answer might be a long silence like mine...
 I want to make it easier to find a place to study and cowork with others.!
 
 ### Name
+
 is a combination of "Just" and "chat" and "R&D" is "Research & Development".
 
-
-
 ### Tech Stack mind
-
 
 - Built with `Qwik` `drizzle` `qwik-ui` `modular-form-qwik`
 - Deployed on `Vercel`
