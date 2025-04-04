@@ -76,7 +76,6 @@ export default component$(() => {
         event.place?.Places?.Lng ?? 0,
       ] as [number, number],
     })) || [];
-  console.log(events.value);
   combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
 
   const eventsDataForCards =
@@ -99,7 +98,7 @@ export default component$(() => {
       return {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
-        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
+        image: place.Places?.ImageURL as string,
         badge: "Popular", // Or derive dynamically
         location: place.Places?.Address,
         description: place.Places?.Description,

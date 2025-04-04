@@ -40,6 +40,7 @@ export default component$(() => {
         >
           <div class="flex items-center gap-4">
             <Link
+              prefetch={false}
               href={session.value.user ? "/home" : "/landing"}
               class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
             >
@@ -56,6 +57,7 @@ export default component$(() => {
             )}
             {session.value.user && location.url.pathname !== "/home" && (
               <Link
+                prefetch={false}
                 href="/home"
                 class="rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
               >
@@ -76,6 +78,7 @@ export default component$(() => {
                   </Link>
                 ) : (
                   <Link
+                    prefetch={false}
                     href="/home"
                     class="hidden rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:block"
                   >
@@ -85,6 +88,7 @@ export default component$(() => {
                 {location.url.pathname !== "/profile" && (
                   <Link
                     href="/profile"
+                    prefetch={false}
                     class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
                   >
                     My Profile
@@ -95,6 +99,7 @@ export default component$(() => {
             ) : (
               <Link
                 href="/login"
+                prefetch={false}
                 class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg"
               >
                 Get Started
