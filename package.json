@@ -37,10 +37,8 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@auth/core": "0.31.0",
-    "@auth/qwik": "0.2.2",
+    "@auth/qwik": "latest",
     "@builder.io/qwik": "latest",
-    "@builder.io/qwik-auth": "0.2.2",
     "@builder.io/qwik-city": "latest",
     "@dagger.io/dagger": "^0.13.3",
     "@faker-js/faker": "^9.0.3",
