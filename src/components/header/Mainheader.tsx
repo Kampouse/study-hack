@@ -1,4 +1,4 @@
-import { component$, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, useTask$ } from "@builder.io/qwik";
 import { useSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
 import { useSignal } from "@builder.io/qwik";
