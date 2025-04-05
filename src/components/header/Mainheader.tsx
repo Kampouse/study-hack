@@ -39,7 +39,6 @@ export default component$(() => {
         >
           <div class="flex items-center gap-4">
             <Link
-              prefetch={false}
               href={session.value.user ? "/home" : "/landing"}
               class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
             >
@@ -56,7 +55,6 @@ export default component$(() => {
             )}
             {session.value.user && location.url.pathname !== "/home" && (
               <Link
-                prefetch={false}
                 href="/home"
                 class="rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
 
@@ -93,7 +91,6 @@ export default component$(() => {
                     My Profile
                   </Link>
                 )}
-                <Dropdown />
               </>
             ) : (
               <Link
