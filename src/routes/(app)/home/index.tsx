@@ -1,15 +1,11 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 
-import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { getEvents } from "~/api/EndPoint";
 import { QueryPlaces } from "~/api/Query";
 import { drizzler } from "~/api/drizzled";
 
 // Import components from the same directory
-import { HeroSection } from "./hero-section";
-import { CommunitySection } from "./community-section";
-import { TabsSection } from "./tabs-section";
 export type Events = Awaited<ReturnType<typeof useEvents>>;
 
 export const head = {
@@ -40,144 +36,8 @@ export const usePlaces = routeLoader$(async (event) => {
 
 
 export default component$(() => {
-  const events = useEvents();
-  const places = usePlaces();
-  const showMap = useSignal(false);
-  const combinedMapData = useSignal([]);
-  const eventsDataForCards = useSignal<any[]>([]);
-  const placesApiDataForCards = useSignal<any[]>([]);
-
-  useTask$(({ track }) => {
-    track(() => places.value.data);
-    track(() => events.value.data);
-
-    const placesDataForMap =
-      places.value.data?.map((place) => ({
-        id: place.Places?.PlaceID,
-        name: place.Places?.Name,
-        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
-        badge: "Place",
-        location: place.Places?.Address,
-        description: place.Places?.Description,
-        tags: ["Quiet", "WiFi", "Coffee"], // Example tags, ideally fetch from DB
-        creator: place.Users?.Username, // Placeholder
-        rating: 4.8, // Placeholder, fetch actual rating if available
-        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
-      })) || [];
-
-    // Add events to the map data as well
-    const eventsDataForMap =
-      events.value.data?.map((event) => ({
-        id: event.eventID,
-        name: event.name,
-        image: event.image || "/placeholder.svg",
-        badge: "Event",
-        location: event.place?.Places?.Name || "Location TBD",
-        description: event.description,
-        tags: ["Study", "Meetup"],
-        creator: event.creator || "Anonymous",
-        rating: 4.7, // Placeholder for events
-        coords: [
-          event.place?.Places?.Lat ?? 0,
-          event.place?.Places?.Lng ?? 0,
-        ] as [number, number],
-      })) || [];
-    //  @ts-ignore
-    combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
-
-    eventsDataForCards.value =
-      events.value.data?.map((event) => ({
-        id: event.eventID,
-        title: event.name,
-        image: event.image || "/placeholder.svg",
-        badge: "Event", // Or derive from event type/tags
-        type: "Study Group", // Or derive from event type
-        date: event.date,
-        time: event.date,
-        location: event.location || "Location TBD",
-        creator: event.creator || "Anonymous",
-        attendees: event.attendees ?? 8, // Fetch real attendee count if available
-        spotsLeft: 5, // Fetch real spots left if available
-      })) || [];
-
-    placesApiDataForCards.value =
-      places.value.data?.map((place) => {
-        return {
-          id: place.Places?.PlaceID,
-          name: place.Places?.Name,
-          image: place.Places?.ImageURL as string,
-          badge: "Popular", // Or derive dynamically
-          location: place.Places?.Address,
-          description: place.Places?.Description,
-          tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
-          creator: place.Users?.Username, // Placeholder
-          rating: 4.8, // Fetch real rating if available
-          coords: [place.Places?.Lat, place.Places?.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
-        };
-      }) || [];
-  });
 
   return (
-    <div class="min-h-screen bg-[#FFF8F0]">
-      <HeroSection />
-
-      <TabsSection
-        placesApiData={placesApiDataForCards.value}
-        eventsData={eventsDataForCards.value}
-      />
-
-      <CommunitySection />
-
-      {showMap.value && (
-        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-          <div class="relative h-[90vh] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
-            <div class="mb-2 flex items-center justify-between border-b pb-2">
-              <h2 class="text-xl font-semibold text-[#5B3E29]">
-                Locations Map
-              </h2>
-              <button
-                onClick$={() => (showMap.value = false)}
-                class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
-                aria-label="Close map"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-            <div class="h-[calc(90vh-6rem)] w-full overflow-hidden rounded-md border border-[#E6D7C3]">
-              <Leaflet
-                // Pass combined places and events data for markers
-                places={combinedMapData.value as any}
-                // TODO: Get user's actual location or a default center
-                location={[51.505, -0.09] as any} // Default location
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Button to Open Map - Could be placed in Hero or Tabs section header */}
-      {/* Example placement: Fixed bottom right */}
-      <button
-        type="button"
-        onClick$={() => (showMap.value = true)}
-        class="fixed bottom-24 right-6 z-40 inline-flex h-12 items-center justify-center rounded-full bg-[#D98E73] px-5 py-2 text-sm font-medium text-white shadow-lg ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-      >
-        View Map
-      </button>
-
-    </div>
+    <div class="min-h-screen bg-[#FFF8F0]"></div>
   );
 });
