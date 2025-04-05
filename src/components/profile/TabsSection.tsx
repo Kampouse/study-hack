@@ -1,13 +1,8 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import {
-  CalendarIcon as Calendar,
-  UserPlusIcon as UserPlus,
-  HeartIcon as Heart,
-} from "lucide-qwik";
+
 import type { DetailedEventType, PlaceType } from "~/routes/profile/types";
 import { EventCard } from "./EventCard";
 import { PlaceCard } from "./PlaceCard";
-import { EmptyState } from "./EmptyState";
 
 interface TabsSectionProps {
   upcomingEvents: DetailedEventType[];
@@ -46,28 +41,24 @@ export const TabsSection = component$<TabsSectionProps>(
     const tabs: {
       id: string;
       label: string;
-      icon: any;
       count: number;
     }[] = [
-      {
-        id: "upcoming",
-        label: "Upcoming",
-        icon: Calendar,
-        count: upcomingEvents.length,
-      },
-      {
-        id: "hosted",
-        label: "Hosted",
-        icon: UserPlus,
-        count: hostedEvents.length,
-      },
-      {
-        id: "saved",
-        label: "Saved Places",
-        icon: Heart,
-        count: savedPlaces.length,
-      },
-    ];
+        {
+          id: "upcoming",
+          label: "Upcoming",
+          count: upcomingEvents.length,
+        },
+        {
+          id: "hosted",
+          label: "Hosted",
+          count: hostedEvents.length,
+        },
+        {
+          id: "saved",
+          label: "Saved Places",
+          count: savedPlaces.length,
+        },
+      ];
 
     return (
       <div class="w-full">
@@ -80,7 +71,6 @@ export const TabsSection = component$<TabsSectionProps>(
               // Capture serializable values and component reference outside the JSX scope
               // to avoid potential serialization issues with the entire 'tab' object in onClick$.
               const tabId = tab.id;
-              const TabIcon = tab.icon;
               const tabLabel = tab.label;
               const tabCount = tab.count;
 
@@ -88,29 +78,22 @@ export const TabsSection = component$<TabsSectionProps>(
                 <button
                   key={tabId}
                   onClick$={() => (activeTab.value = tabId)} // Use captured primitive value
-                  class={`group inline-flex shrink-0 items-center whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium transition-colors duration-150 ease-in-out focus:outline-none ${
-                    activeTab.value === tabId // Use captured primitive value
-                      ? "border-[#D98E73] text-[#C27B62]"
-                      : "border-transparent text-[#6D5D4E] hover:border-gray-300 hover:text-[#5B3E29]"
-                  }`}
+                  class={`group inline-flex shrink-0 items-center whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium transition-colors duration-150 ease-in-out focus:outline-none ${activeTab.value === tabId // Use captured primitive value
+                    ? "border-[#D98E73] text-[#C27B62]"
+                    : "border-transparent text-[#6D5D4E] hover:border-gray-300 hover:text-[#5B3E29]"
+                    }`}
                   aria-current={activeTab.value === tabId ? "page" : undefined} // Use captured primitive value
                 >
-                  <TabIcon // Render the component directly
-                    class={`mr-2 h-5 w-5 ${
-                      activeTab.value === tabId // Use captured primitive value
-                        ? "text-[#D98E73]"
-                        : "text-gray-400 group-hover:text-gray-500"
-                    }`}
-                    aria-hidden="true"
-                  />
+
+
+
                   <span>{tabLabel}</span>
                   {tabCount > 0 && (
                     <span
-                      class={`ml-2.5 hidden rounded-full px-2.5 py-1 text-xs font-semibold md:inline-block ${
-                        activeTab.value === tabId // Use captured primitive value
-                          ? "bg-[#FFF1E6] text-[#C27B62]"
-                          : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
-                      }`}
+                      class={`ml-2.5 hidden rounded-full px-2.5 py-1 text-xs font-semibold md:inline-block ${activeTab.value === tabId // Use captured primitive value
+                        ? "bg-[#FFF1E6] text-[#C27B62]"
+                        : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                        }`}
                     >
                       {tabCount}
                     </span>
@@ -130,11 +113,7 @@ export const TabsSection = component$<TabsSectionProps>(
                 ))}
               </div>
             ) : (
-              <EmptyState
-                context="CalendarIcon" // Use context instead of icon
-                title="No Upcoming Events"
-                message="You haven't joined or been invited to any events yet. Explore events to join!"
-              />
+              <h1 class="text-2xl font-bold text-center">No joined events</h1>
             ))}
 
           {activeTab.value === "hosted" &&
@@ -149,12 +128,7 @@ export const TabsSection = component$<TabsSectionProps>(
                 ))}
               </div>
             ) : (
-              <EmptyState
-                context="UsersIcon" // Use context instead of icon (UserPlus mapped to UsersIcon context)
-                title="No Hosted Events Yet"
-                message="Ready to gather some folks? Host your first event and bring people together."
-                actionButton={{ label: "Host an Event", href: "/create-event" }}
-              />
+              <h1 class="text-2xl font-bold text-center">No Hosted Events</h1>
             ))}
 
           {activeTab.value === "saved" &&
@@ -165,12 +139,7 @@ export const TabsSection = component$<TabsSectionProps>(
                 ))}
               </div>
             ) : (
-              <EmptyState
-                context="MapPinIcon" // Use context instead of icon (Heart mapped to MapPinIcon context for places)
-                title="No Saved Places"
-                message="Discover and save your favorite spots to easily find them later."
-                actionButton={{ label: "Browse Spaces", href: "/spaces" }} // Assuming a browse spaces route
-              />
+              <h1 class="text-2xl font-bold text-center">No Saved Places</h1>
             ))}
         </div>
       </div>

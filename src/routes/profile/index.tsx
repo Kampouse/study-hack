@@ -24,7 +24,6 @@ import type {
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { TabsSection } from "@/components/profile/TabsSection";
 import { CreateEventCTA } from "@/components/profile/CreateEventCTA";
-import { ActiveRequestsSidebar } from "@/components/profile/ActiveRequestsSidebar";
 
 // --- Qwik Actions & Loaders ---
 
@@ -84,8 +83,8 @@ export default component$(() => {
       profileStore.skills =
         typeof user.Intrests === "string"
           ? user.Intrests.split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
+            .map((s) => s.trim())
+            .filter(Boolean)
           : Array.isArray(user.Intrests)
             ? user.Intrests
             : [];
@@ -205,14 +204,6 @@ export default component$(() => {
             hostedEvents={hostedEvents.value}
             savedPlaces={savedPlaces.value} // Use dynamic savedPlaces from loader
           />
-
-          {data.value.activeRequest && data.value.activeRequest.length > 0 && (
-            <div class="mt-8 lg:mt-0 lg:pl-8">
-              {" "}
-              {/* Add margin top for spacing */}
-              <ActiveRequestsSidebar requests={data.value.activeRequest} />
-            </div>
-          )}
         </div>
       </div>
       <CreateEventCTA />

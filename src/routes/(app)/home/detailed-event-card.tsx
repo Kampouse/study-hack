@@ -35,7 +35,7 @@ export const DetailedEventCard = component$(
               width={400}
               height={300}
               alt={props.event.title}
-              class="h-full w-full object-cover"
+              class="  h-auto md:h-56 lg:h-64 w-full object-cover max-h-full"
             />
             <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
               {props.event.badge}
