@@ -3,7 +3,6 @@ import { useSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
 import { useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
-import { ArrowLeftIcon } from "lucide-qwik";
 import Dropdown from "@/components/dropdown";
 export default component$(() => {
   const session = useSession();
@@ -60,8 +59,9 @@ export default component$(() => {
                 prefetch={false}
                 href="/home"
                 class="rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
+
               >
-                <ArrowLeftIcon size={20} />
+                Back
               </Link>
             )}
           </div>
@@ -82,7 +82,6 @@ export default component$(() => {
                     href="/home"
                     class="hidden rounded-lg bg-secondary p-2 text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:block"
                   >
-                    <ArrowLeftIcon size={20} />
                   </Link>
                 )}
                 {location.url.pathname !== "/profile" && (
