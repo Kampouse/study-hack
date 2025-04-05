@@ -11,29 +11,22 @@ export default component$(() => {
         >
           <div class="flex items-center gap-4">
             <Link
-              href={"/landing"}
+              href={"/home"}
               class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
             >
-              Just R&D
+              Just hello
             </Link>
           </div>
-
           <div class="flex items-center gap-4">
             <Link
-              href="/profile"
-              class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
+              href={"/profile"}
+              class="hidden bg-gradient-to-r from-primary to-primary bg-clip-text px-1 text-xl font-bold text-transparent transition-colors hover:from-primary/90 hover:to-primary/90 md:block"
             >
               Profile
             </Link>
-
-
-
-
-
-
-
-
           </div>
+
+
         </nav>
       </header>
     )
