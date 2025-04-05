@@ -1,5 +1,4 @@
 import { component$, type Signal } from "@builder.io/qwik";
-import { EditIcon as Edit, XIcon } from "lucide-qwik";
 import type { UserProfileType } from "~/routes/profile/types";
 import { BetaBadge } from "./BetaBadge";
 
@@ -41,12 +40,6 @@ export const ProfileHeader = component$<ProfileHeaderProps>(
                 aria-label={showEdit.value ? "Cancel edit" : "Edit profile"}
                 title={showEdit.value ? "Cancel edit" : "Edit profile"}
               >
-                {showEdit.value ? (
-                  // Smaller icon for smaller button on mobile
-                  <XIcon class="h-3 w-3 md:h-5 md:w-5" />
-                ) : (
-                  <Edit class="h-3 w-3 md:h-5 md:w-5" />
-                )}
               </button>
             </div>
             <div class="flex-1 text-left md:pt-2">

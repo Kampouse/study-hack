@@ -1,6 +1,5 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal, useTask$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { MapPinIcon as MapPin } from "lucide-qwik"; // Keep MapPin for the modal button
 
 import { MapWrapper as Leaflet } from "@/components/leaflet-map";
 import { getEvents } from "~/api/EndPoint";
@@ -39,82 +38,92 @@ export const usePlaces = routeLoader$(async (event) => {
   return { data: data.data, success: data.success };
 });
 
+
 export default component$(() => {
   const events = useEvents();
   const places = usePlaces();
   const showMap = useSignal(false);
-  const combinedMapData = useSignal<unknown>();
-  // --- Data Transformation (Remains the same) ---
-  const placesDataForMap =
-    places.value.data?.map((place) => ({
-      id: place.Places?.PlaceID,
-      name: place.Places?.Name,
-      image: (place.Places?.ImageURL as string) || "/placeholder.svg",
-      badge: "Place",
-      location: place.Places?.Address,
-      description: place.Places?.Description,
-      tags: ["Quiet", "WiFi", "Coffee"], // Example tags, ideally fetch from DB
-      creator: place.Users?.Username, // Placeholder
-      rating: 4.8, // Placeholder, fetch actual rating if available
-      coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
-    })) || [];
+  const combinedMapData = useSignal([]);
+  const eventsDataForCards = useSignal<any[]>([]);
+  const placesApiDataForCards = useSignal<any[]>([]);
 
-  // Add events to the map data as well
-  const eventsDataForMap =
-    events.value.data?.map((event) => ({
-      id: event.eventID,
-      name: event.name,
-      image: event.image || "/placeholder.svg",
-      badge: "Event",
-      location: event.place?.Places?.Name || "Location TBD",
-      description: event.description,
-      tags: ["Study", "Meetup"],
-      creator: event.creator || "Anonymous",
-      rating: 4.7, // Placeholder for events
-      coords: [
-        event.place?.Places?.Lat ?? 0,
-        event.place?.Places?.Lng ?? 0,
-      ] as [number, number],
-    })) || [];
-  combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
+  useTask$(({ track }) => {
+    track(() => places.value.data);
+    track(() => events.value.data);
 
-  const eventsDataForCards =
-    events.value.data?.map((event) => ({
-      id: event.eventID,
-      title: event.name,
-      image: event.image || "/placeholder.svg",
-      badge: "Event", // Or derive from event type/tags
-      type: "Study Group", // Or derive from event type
-      date: event.date,
-      time: event.date,
-      location: event.location || "Location TBD",
-      creator: event.creator || "Anonymous",
-      attendees: event.attendees ?? 8, // Fetch real attendee count if available
-      spotsLeft: 5, // Fetch real spots left if available
-    })) || [];
-
-  const placesApiDataForCards =
-    places.value.data?.map((place) => {
-      return {
+    const placesDataForMap =
+      places.value.data?.map((place) => ({
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
-        image: place.Places?.ImageURL as string,
-        badge: "Popular", // Or derive dynamically
+        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
+        badge: "Place",
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
+        tags: ["Quiet", "WiFi", "Coffee"], // Example tags, ideally fetch from DB
         creator: place.Users?.Username, // Placeholder
-        rating: 4.8, // Fetch real rating if available
-        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
-      };
-    }) || [];
+        rating: 4.8, // Placeholder, fetch actual rating if available
+        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
+      })) || [];
+
+    // Add events to the map data as well
+    const eventsDataForMap =
+      events.value.data?.map((event) => ({
+        id: event.eventID,
+        name: event.name,
+        image: event.image || "/placeholder.svg",
+        badge: "Event",
+        location: event.place?.Places?.Name || "Location TBD",
+        description: event.description,
+        tags: ["Study", "Meetup"],
+        creator: event.creator || "Anonymous",
+        rating: 4.7, // Placeholder for events
+        coords: [
+          event.place?.Places?.Lat ?? 0,
+          event.place?.Places?.Lng ?? 0,
+        ] as [number, number],
+      })) || [];
+    //  @ts-ignore
+    combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
+
+    eventsDataForCards.value =
+      events.value.data?.map((event) => ({
+        id: event.eventID,
+        title: event.name,
+        image: event.image || "/placeholder.svg",
+        badge: "Event", // Or derive from event type/tags
+        type: "Study Group", // Or derive from event type
+        date: event.date,
+        time: event.date,
+        location: event.location || "Location TBD",
+        creator: event.creator || "Anonymous",
+        attendees: event.attendees ?? 8, // Fetch real attendee count if available
+        spotsLeft: 5, // Fetch real spots left if available
+      })) || [];
+
+    placesApiDataForCards.value =
+      places.value.data?.map((place) => {
+        return {
+          id: place.Places?.PlaceID,
+          name: place.Places?.Name,
+          image: place.Places?.ImageURL as string,
+          badge: "Popular", // Or derive dynamically
+          location: place.Places?.Address,
+          description: place.Places?.Description,
+          tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
+          creator: place.Users?.Username, // Placeholder
+          rating: 4.8, // Fetch real rating if available
+          coords: [place.Places?.Lat, place.Places?.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
+        };
+      }) || [];
+  });
+
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <HeroSection />
 
       <TabsSection
-        placesApiData={placesApiDataForCards}
-        eventsData={eventsDataForCards}
+        placesApiData={placesApiDataForCards.value}
+        eventsData={eventsDataForCards.value}
       />
 
       <CommunitySection />
@@ -150,7 +159,7 @@ export default component$(() => {
             <div class="h-[calc(90vh-6rem)] w-full overflow-hidden rounded-md border border-[#E6D7C3]">
               <Leaflet
                 // Pass combined places and events data for markers
-                places={combinedMapData as any}
+                places={combinedMapData.value as any}
                 // TODO: Get user's actual location or a default center
                 location={[51.505, -0.09] as any} // Default location
               />
@@ -166,9 +175,9 @@ export default component$(() => {
         onClick$={() => (showMap.value = true)}
         class="fixed bottom-24 right-6 z-40 inline-flex h-12 items-center justify-center rounded-full bg-[#D98E73] px-5 py-2 text-sm font-medium text-white shadow-lg ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
       >
-        <MapPin class="mr-2 h-5 w-5" />
         View Map
       </button>
+
     </div>
   );
 });

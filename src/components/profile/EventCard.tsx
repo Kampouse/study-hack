@@ -1,15 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import JustRnD from "../../assets/just-rnd.png?url";
-import {
-  CalendarIcon as Calendar,
-  MapPinIcon as MapPin,
-  UsersIcon as Users,
-  UserPlusIcon as UserPlus,
-  CheckCircleIcon as CheckCircle,
-  Clock3Icon as Clock3,
-  InfoIcon,
-} from "lucide-qwik";
 import type { DetailedEventType } from "~/routes/profile/types";
 
 interface EventCardProps {
@@ -73,7 +64,6 @@ export const EventCard = component$<EventCardProps>(
           {/* Location Badge - Adjusted padding, position, max-width */}
           {event.location && (
             <div class="absolute left-3 top-3 flex max-w-[calc(100%-6rem)] items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-[#5B3E29] shadow-sm backdrop-blur-sm sm:left-4 sm:top-4">
-              <MapPin class="mr-1.5 h-3.5 w-3.5 flex-shrink-0 text-[#D98E73]" />
               <span class="truncate">{event.location}</span>
             </div>
           )}
@@ -83,15 +73,6 @@ export const EventCard = component$<EventCardProps>(
             <span
               class={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${currentStatusStyle}`} // Adjusted padding slightly
             >
-              {/* Increased icon margin */}
-              {status === "Host" && <UserPlus class="mr-1.5 h-3.5 w-3.5" />}
-              {status === "Confirmed" && (
-                <CheckCircle class="mr-1.5 h-3.5 w-3.5" />
-              )}
-              {status === "Pending" && <Clock3 class="mr-1.5 h-3.5 w-3.5" />}
-              {status !== "Host" &&
-                status !== "Confirmed" &&
-                status !== "Pending" && <InfoIcon class="mr-1.5 h-3.5 w-3.5" />}
               {status}
             </span>
           </div>
@@ -104,16 +85,12 @@ export const EventCard = component$<EventCardProps>(
             {/* Stack date/attendees vertically on small screens */}
             <div class="flex flex-col gap-1 text-xs opacity-95 sm:flex-row sm:items-center sm:justify-between sm:gap-2 sm:text-sm">
               <div class="flex items-center gap-1.5">
-                <Calendar class="h-4 w-4 flex-shrink-0" />{" "}
-                {/* Prevent icon shrinking */}
                 <span>
                   {displayDate} {displayTime ? `at ${displayTime}` : ""}
                 </span>
               </div>
               {typeof event.attendees === "number" && event.attendees > 0 && (
                 <div class="flex items-center gap-1">
-                  <Users class="h-4 w-4 flex-shrink-0" />{" "}
-                  {/* Prevent icon shrinking */}
                   {/* Added context "Attendees" */}
                   <span>
                     {event.attendees} Attendee{event.attendees !== 1 ? "s" : ""}

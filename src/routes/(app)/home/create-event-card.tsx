@@ -1,12 +1,10 @@
 import { component$ } from "@builder.io/qwik";
-import { CalendarIcon as Calendar } from "lucide-qwik";
 
 export const CreateEventCard = component$(() => {
   return (
     <div class="overflow-hidden rounded-xl border-2 border-dashed border-[#E6D7C3] bg-white/50">
       <div class="flex h-full flex-col items-center justify-center p-8 text-center">
         <div class="mb-4 rounded-full bg-[#F8D7BD] p-6">
-          <Calendar class="h-8 w-8 text-[#D98E73]" />
         </div>
         <h3 class="mb-2 text-xl font-semibold text-[#5B3E29]">
           Host Your Own Session

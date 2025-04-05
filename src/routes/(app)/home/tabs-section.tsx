@@ -35,31 +35,28 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         <div class="mb-8 rounded-lg bg-[#F8EDE3] p-1">
           <button
             onClick$={() => (activeTab.value = "all")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
-              activeTab.value === "all"
+            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${activeTab.value === "all"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
-            }`}
+              }`}
           >
             All
           </button>
           <button
             onClick$={() => (activeTab.value = "places")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
-              activeTab.value === "places"
+            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${activeTab.value === "places"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
-            }`}
+              }`}
           >
             Places
           </button>
           <button
             onClick$={() => (activeTab.value = "events")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
-              activeTab.value === "events"
+            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${activeTab.value === "events"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
-            }`}
+              }`}
           >
             Events
           </button>
@@ -108,7 +105,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                     activeTab.value = "events"; // Switch to the events tab
                   }}
                 >
-                  View all events <ArrowRight class="ml-1 h-4 w-4" />
+                  View all events
                 </a>
               </div>
               <div class="grid gap-6 md:grid-cols-2">

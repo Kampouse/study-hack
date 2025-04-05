@@ -1,10 +1,4 @@
 import { component$ } from "@builder.io/qwik";
-import {
-  CalendarIcon as Calendar,
-  ClockIcon as Clock,
-  MapPinIcon as MapPin,
-  UsersIcon as Users,
-} from "lucide-qwik";
 
 export const EventCard = component$(
   (props: {
@@ -43,9 +37,6 @@ export const EventCard = component$(
           <div class="flex flex-col justify-between bg-white p-5 md:w-3/5">
             <div>
               <div class="mb-2 flex items-center gap-2">
-                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-[#F8D7BD]">
-                  <Users class="h-3 w-3 text-[#8B5A2B]" />
-                </div>
                 <span class="text-sm text-[#8B5A2B]">
                   By {props.event.creator}
                 </span>
@@ -57,20 +48,16 @@ export const EventCard = component$(
                 {props.event.title}
               </h3>
               <div class="grid grid-cols-2 gap-2 text-sm text-[#6D5D4E]">
-                <div class="flex items-center gap-2">
-                  <Calendar class="h-4 w-4 text-[#D98E73]" />
+                <div>
                   <span>{props.event.date}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <Clock class="h-4 w-4 text-[#D98E73]" />
+                <div>
                   <span>{props.event.time}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <MapPin class="h-4 w-4 text-[#D98E73]" />
+                <div>
                   <span>{props.event.location}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <Users class="h-4 w-4 text-[#D98E73]" />
+                <div>
                   <span>{props.event.spotsLeft} spots left</span>
                 </div>
               </div>

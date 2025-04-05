@@ -1,6 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
-import { CalendarIcon as Calendar, MapPinIcon as MapPin } from "lucide-qwik";
 
 export const CreateEventCTA = component$(() => {
   return (
@@ -36,14 +35,14 @@ export const CreateEventCTA = component$(() => {
                   // Larger padding
                   class="inline-flex items-center justify-center rounded-lg bg-[#D98E73] px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
                 >
-                  <Calendar class="-ml-1 mr-2 h-5 w-5" /> Create an Event
+                  Create an Event
                 </Link>
                 <Link
                   href="/spaces"
                   // Larger padding
                   class="inline-flex items-center justify-center rounded-lg border border-[#D98E73]/80 px-6 py-3 text-base font-medium text-[#D98E73] transition-colors hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
                 >
-                  <MapPin class="-ml-1 mr-2 h-5 w-5" /> Browse Spaces
+                  Browse Spaces
                 </Link>
               </div>
             </div>
