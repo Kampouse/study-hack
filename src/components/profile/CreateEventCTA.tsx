@@ -2,31 +2,13 @@ import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { CalendarIcon as Calendar, MapPinIcon as MapPin } from "lucide-qwik";
 
-/**
- * Renders a Call to Action (CTA) section encouraging users to create an event
- * or browse spaces. Includes an illustrative image and action buttons.
- *
- * Takes: No arguments.
- *
- * Example Usage:
- * ```tsx
- * <CreateEventCTA />
- * ```
- */
 export const CreateEventCTA = component$(() => {
   return (
-    // Increased padding for CTA section
     <section class="mt-16 bg-gradient-to-b from-[#F8EDE3]/50 to-[#FFF8F0]/30 py-20 md:mt-20 md:py-24">
       <div class="container px-4 md:px-6">
-        {/* Increased padding inside CTA card */}
         <div class="relative overflow-hidden rounded-2xl bg-white p-10 shadow-lg md:p-16">
-          {/* Subtle background pattern */}
           <div
             class="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D98E73' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-            }}
           ></div>
 
           <div class="relative z-10 flex flex-col items-center gap-10 md:flex-row md:gap-12">

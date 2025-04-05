@@ -8,37 +8,17 @@ interface ProfileHeaderProps {
   showEdit: Signal<boolean>;
 }
 
-/**
- * Displays the user's profile header including avatar, name, bio, and skills.
- * Provides a button to toggle the edit mode.
- *
- * Takes:
- * - `userProfile`: An object containing the user's profile data (`name`, `bio`, `avatar`, `skills`).
- * - `showEdit`: A Qwik Signal (`Signal<boolean>`) indicating whether the edit form should be shown.
- *               The component toggles this signal's value when the edit/cancel button is clicked.
- *
- * Example Usage:
- * ```tsx
- * const showEditSignal = useSignal(false);
- * const profileData = useComputed$(() => ({ name: '...', bio: '...', ... }));
- * <ProfileHeader userProfile={profileData.value} showEdit={showEditSignal} />
- * ```
- */
 export const ProfileHeader = component$<ProfileHeaderProps>(
   ({ userProfile, showEdit }) => {
     const defaultAvatar =
       "https://avatars.githubusercontent.com/u/41765025?v=4";
 
     return (
-      // Adjusted padding for potentially better mobile spacing
       <section class="relative overflow-hidden pb-4 pt-20 md:pb-1 md:pt-12 ">
         <div class="absolute -bottom-10 -left-10 h-72 w-72 rounded-full bg-[#F8D7BD]/20 blur-3xl filter"></div>
-        {/* Adjusted container padding for mobile */}
         <div class="container relative z-10 px-4 pb-4 pt-2 md:px-6 md:pb-1 md:pt-16">
-          {/* Horizontal layout on mobile, row layout preserved on larger screens */}
           <div class="flex flex-row items-start gap-4 md:gap-6 lg:gap-10">
             <div class="relative flex-shrink-0">
-              {/* Smaller avatar on mobile for horizontal layout */}
               <div class="h-20 w-20 overflow-hidden rounded-full border-2 border-white shadow-md md:h-36 md:w-36 md:border-4 lg:h-40 lg:w-40">
                 <img
                   src={userProfile.avatar || defaultAvatar}
@@ -69,23 +49,16 @@ export const ProfileHeader = component$<ProfileHeaderProps>(
                 )}
               </button>
             </div>
-            {/* Text block: Left-aligned on all screens */}
             <div class="flex-1 text-left md:pt-2">
-              {/* Name and Badge: Row layout on all screens */}
-              {/* Adjusted margin for mobile */}
               <div class="mb-1 flex flex-row items-center justify-start gap-2 md:mb-2">
-                {/* Smaller heading on mobile */}
                 <h1 class="text-xl font-bold tracking-tight text-[#5B3E29] md:text-3xl lg:text-4xl">
                   {userProfile.name || "User Name"}
                 </h1>
                 <BetaBadge />
               </div>
-              {/* Bio: Smaller text and margin on mobile */}
               <p class="mb-2 text-sm leading-relaxed text-[#6D5D4E] md:mb-4 md:text-lg">
                 {userProfile.bio || "No bio provided yet."}
               </p>
-              {/* Skills: Left-aligned wrap on all screens */}
-              {/* Adjusted margin and skill tag size for mobile */}
               <div class="mb-2 flex flex-wrap justify-start gap-x-1.5 gap-y-1 md:mb-4 md:gap-x-2 md:gap-y-3">
                 {userProfile.skills?.length > 0 ? (
                   userProfile.skills.map((skill: string) => (

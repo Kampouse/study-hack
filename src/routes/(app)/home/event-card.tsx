@@ -27,14 +27,14 @@ export const EventCard = component$(
         key={props.event.id}
         class="overflow-hidden rounded-xl border-none shadow-md transition-shadow hover:shadow-lg"
       >
-        <div class="flex h-full flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row h-auto md:h-56 lg:h-64">
           <div class="relative md:w-2/5">
             <img
               src={props.event.image || "/placeholder.svg"}
               width={400}
               height={300}
               alt={props.event.title}
-              class="h-full w-full object-cover"
+              class="h-full md:h-full w-full object-cover max-h-56 md:max-h-none"
             />
             <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
               {props.event.badge}
