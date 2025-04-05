@@ -3,7 +3,6 @@ import { useSession } from "~/routes/plugin@auth";
 import { useLocation } from "@builder.io/qwik-city";
 import { useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
-import Dropdown from "@/components/dropdown";
 export default component$(() => {
   const session = useSession();
   //eslint-disable-next-line
