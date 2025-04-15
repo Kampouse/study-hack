@@ -47,3 +47,4 @@ lerna-debug.log*
 
 .nx/cache
 .nx/workspace-data
+.env*.local
