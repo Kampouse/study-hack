@@ -5,6 +5,7 @@ import {
   HeartIcon as Heart,
   StarIcon as Star,
 } from "lucide-qwik";
+import { Link } from "@builder.io/qwik-city";
 
 export const PlaceCard = component$(
   (props: {
@@ -43,17 +44,19 @@ export const PlaceCard = component$(
             <Heart class="h-5 w-5" />
           </button>
         </div>
-        <div class="bg-white p-5">
+        <div class="p-5">
           <div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin class="h-4 w-4 text-[#D98E73]" />
             <span class="truncate">{props.place.location}</span>
           </div>
-          <h3 class="mb-1 text-lg font-semibold text-[#5B3E29]">
-            {props.place.name}
-          </h3>
-          <p class="mb-3 line-clamp-2 text-sm text-[#6D5D4E]">
-            {props.place.description}
-          </p>
+          <Link href={"/places/" + props.place.id}>
+            <h3 class="mb-1 text-lg font-semibold text-[#5B3E29]">
+              {props.place.name}
+            </h3>
+            <p class="mb-3 line-clamp-2 text-sm text-[#6D5D4E]">
+              {props.place.description}
+            </p>
+          </Link>
           <div class="mb-3 flex flex-wrap gap-2">
             {props.place.tags.map((tag: string) => (
               <span
