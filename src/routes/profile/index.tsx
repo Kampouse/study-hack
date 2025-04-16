@@ -75,7 +75,7 @@ export default component$(() => {
 
     const user = data.value.userData;
     if (user) {
-      profileStore.name = user.Name ?? "";
+      profileStore.name = user.Name;
       // Assuming Username might exist, otherwise fallback to something else or leave blank
       // profileStore.username = user.Username ?? user.Name?.toLowerCase().replace(/\s+/g, '') ?? "";
       profileStore.username = user.Description ?? "user"; // Fallback using Description if no Username
