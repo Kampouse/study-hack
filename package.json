@@ -90,13 +90,12 @@
     "vercel": "^29.1.1",
     "vite": "^5.3.6",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^2.1.1"
-  },
-  "nx": {},
-  "dependencies": {
+    "vitest": "^2.1.1",
     "@tailwindcss/typography": "^0.5.16",
     "better-sqlite3": "^11.3.0",
     "express": "4.20.0",
     "test": "^3.3.0"
-  }
+  },
+  "nx": {},
+  "dependencies": {}
 }
