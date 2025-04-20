@@ -16,14 +16,14 @@ export const useEventDetails = routeLoader$(async (event) => {
 export default component$(() => {
   const data = useEventDetails();
   return (
-    <div class="container mx-auto min-h-screen px-4 py-8">
-      <div class="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-xl">
+    <div class="container mx-auto min-h-screen bg-gradient-to-b from-blue-50/30 to-white px-4 py-10">
+      <div class="mx-auto max-w-3xl rounded-3xl border border-blue-50 bg-white p-8 shadow-lg shadow-blue-100/50">
         <header class="mb-10 space-y-6">
-          <div class="flex flex-col items-start justify-between gap-4 border-b border-gray-100 pb-6">
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <div class="flex flex-col items-start justify-between gap-4 border-b border-blue-50 pb-6">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">
               {data.value.event.data?.event.name}
             </h1>
-            <span class="inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm">
+            <span class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-5 py-2.5 text-sm font-medium text-blue-600 transition-all duration-200 hover:bg-blue-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4"
@@ -47,7 +47,7 @@ export default component$(() => {
             </span>
           </div>
 
-          <div class="relative aspect-[21/9] w-full overflow-hidden rounded-2xl">
+          <div class="relative aspect-[21/9] w-full overflow-hidden rounded-3xl shadow-md">
             <img
               src={
                 data.value.event.data?.event.image ||
@@ -61,12 +61,12 @@ export default component$(() => {
           </div>
         </header>
 
-        <div class="space-y-8">
+        <div class="space-y-10">
           <section class="space-y-4">
-            <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
+            <h2 class="flex items-center gap-3 text-2xl font-semibold text-gray-800">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-blue-600"
+                class="h-6 w-6 text-blue-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -80,7 +80,7 @@ export default component$(() => {
               </svg>
               Event Details
             </h2>
-            <div class="rounded-xl bg-gray-50 p-6 shadow-inner">
+            <div class="rounded-2xl bg-blue-50/50 p-7 shadow-sm">
               <p class="whitespace-pre-wrap text-lg leading-relaxed text-gray-700">
                 {data.value.event.data?.event.description}
               </p>
@@ -88,10 +88,10 @@ export default component$(() => {
           </section>
 
           <section class="space-y-4">
-            <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
+            <h2 class="flex items-center gap-3 text-2xl font-semibold text-gray-800">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-blue-600"
+                class="h-6 w-6 text-blue-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -111,7 +111,7 @@ export default component$(() => {
               </svg>
               Location
             </h2>
-            <div class="rounded-xl bg-gray-50 p-6 shadow-inner">
+            <div class="rounded-2xl bg-blue-50/50 p-7 shadow-sm">
               {data.value.event.data?.location && (
                 <div class="mt-1 space-y-2">
                   <div class="h-48 overflow-hidden rounded-xl">
@@ -126,7 +126,7 @@ export default component$(() => {
                       height={300}
                     />
                   </div>
-                  <p class="text-lg font-medium text-gray-900">
+                  <p class="text-lg font-medium text-gray-800">
                     {data.value.event.data?.event.location}
                   </p>
                   <p class="text-base text-gray-600">
@@ -138,26 +138,42 @@ export default component$(() => {
           </section>
 
           <section class="space-y-4">
-            <h2 class="text-2xl font-semibold text-gray-900">Attendees</h2>
+            <h2 class="flex items-center gap-3 text-2xl font-semibold text-gray-800">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-blue-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Attendees
+            </h2>
             <div class="grid gap-4">
               {data.value.confirmed.data &&
               data.value.confirmed.data.length > 0 ? (
                 data.value.confirmed.data.map((attendee) => (
                   <div
                     key={attendee.requestId}
-                    class="flex items-start gap-4 rounded-xl bg-gray-50 p-6 shadow-inner"
+                    class="flex items-start gap-4 rounded-2xl bg-blue-50/50 p-6 shadow-sm transition-all duration-300 hover:bg-blue-50"
                   >
                     <img
                       src={
                         attendee.user?.image ?? "https://via.placeholder.com/40"
                       }
                       alt={attendee.user?.name ?? "Anonymous"}
-                      class="h-12 w-12 rounded-full object-cover shadow-md"
+                      class="h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-white"
                       width={48}
                       height={48}
                     />
                     <div class="flex-1 space-y-2">
-                      <p class="font-medium text-gray-900">
+                      <p class="font-medium text-gray-800">
                         {attendee.user?.name}
                       </p>
                       <p class="text-sm text-gray-600">{attendee.whyJoin}</p>
@@ -166,10 +182,10 @@ export default component$(() => {
                   </div>
                 ))
               ) : (
-                <div class="flex flex-col items-center justify-center rounded-xl bg-gray-50 p-10 text-center shadow-inner">
+                <div class="flex flex-col items-center justify-center rounded-2xl bg-blue-50/50 p-10 text-center shadow-sm">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="mb-4 h-16 w-16 text-gray-400"
+                    class="mb-4 h-16 w-16 text-blue-300"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -177,11 +193,11 @@ export default component$(() => {
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      stroke-width="2"
+                      stroke-width="1.5"
                       d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  <h3 class="mb-1 text-xl font-semibold text-gray-900">
+                  <h3 class="mb-1 text-xl font-semibold text-gray-800">
                     No attendees yet
                   </h3>
                   <p class="mb-6 text-gray-600">
@@ -189,7 +205,7 @@ export default component$(() => {
                   </p>
                   <Link
                     href={`/join/${data.value.event.data?.event.eventID}`}
-                    class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    class="inline-flex items-center rounded-full bg-blue-500 px-6 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:bg-blue-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                   >
                     Join Event
                   </Link>
