@@ -33,7 +33,6 @@ type Data =
   ReturnType<typeof createEventForm> extends Promise<infer T> ? T : never;
 
 const action = formAction$<Event, Data>(async (data, event) => {
-  console.log("hello", data);
   const places = await QueryPlaces({ event: event });
 
   const place = places.data?.find((el) => el.Places?.Name === data.Location);

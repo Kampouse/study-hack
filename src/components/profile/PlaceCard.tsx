@@ -27,7 +27,6 @@ interface PlaceCardProps {
  */
 export const PlaceCard = component$<PlaceCardProps>(({ place }) => {
   const handleLikeClick = $(() => {
-    console.log("Like button clicked for place:", place.id);
     // Implement like/unlike logic here
   });
 

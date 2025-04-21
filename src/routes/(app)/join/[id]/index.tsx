@@ -69,161 +69,202 @@ export default component$(() => {
   });
 
   return (
-    <div class="container mx-auto max-w-4xl px-4 py-8">
-      <div class="overflow-hidden rounded-2xl border border-gray-300 bg-gradient-to-br from-white/80 to-gray-100/50 shadow-sm transition-all duration-300 hover:border-green-100 hover:bg-gradient-to-br hover:from-white/90 hover:to-gray-50/70">
-        <div class="p-8">
-          <div class="flex items-start justify-between">
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 transition-colors duration-300">
-              {event.value.data.event?.name || "Event Name"}
-            </h1>
+    <div class="my-12 min-h-screen bg-white py-8">
+      <div class="container mx-auto max-w-4xl px-4">
+        <div class="overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-md">
+          <div class="p-8">
+            <div class="flex items-start justify-between">
+              <h1 class="text-3xl font-bold text-[#5B3E29]">
+                {event.value.data.event?.name || "Event Name"}
+              </h1>
 
-            <div class="flex items-center gap-4">
-              <div class="flex items-center rounded-full bg-blue-50 px-4 py-1">
-                <Icons.UserIcon class="mr-2 h-4 w-4 text-blue-600" />
+              <div class="flex items-center gap-4">
+                <div class="flex items-center rounded-full bg-[#F8EDE3] px-4 py-1">
+                  <Icons.UserIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
+                  <Link
+                    class="text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
+                    href={"/user/" + userid}
+                  >
+                    {event.value.data.user?.Name}
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex gap-6">
+              <div class="flex items-center rounded-full bg-[#F8EDE3] px-4 py-1">
+                <Icons.CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
+                <p class="text-sm font-medium text-[#6D5D4E]">
+                  {(() => {
+                    const eventDate = event.value.data.event?.date;
+                    if (!eventDate) return "Event Date";
+                    const date = new Date(eventDate);
+                    return date.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    });
+                  })() || "Event Date"}{" "}
+                </p>
+              </div>
+
+              <div class="flex items-center rounded-full bg-[#F8EDE3] px-4 py-1">
+                <Icons.MapPinIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
                 <Link
-                  class="text-sm font-medium text-blue-600 transition-colors duration-300 hover:text-blue-800"
-                  href={"/user/" + userid}
+                  class="text-sm font-medium text-[#6D5D4E] hover:text-[#D98E73]"
+                  href={
+                    "/places/" + event.value.data.location?.PlaceID.toString()
+                  }
                 >
-                  {event.value.data.user?.Name}
+                  {event.value.data.event?.location || "Event place"}
                 </Link>
               </div>
             </div>
-          </div>
 
-          <div class="mt-6 flex gap-6">
-            <div class="flex items-center rounded-full bg-gray-50 px-4 py-1">
-              <Icons.CalendarIcon class="mr-2 h-4 w-4 text-gray-600" />
-              <p class="text-sm font-medium text-gray-600">
-                {(() => {
-                  const eventDate = event.value.data.event?.date;
-                  if (!eventDate) return "Event Date";
-                  const date = new Date(eventDate);
-                  return date.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  });
-                })() || "Event Date"}{" "}
-              </p>
-            </div>
-
-            <div class="flex items-center rounded-full bg-gray-50 px-4 py-1">
-              <Icons.MapPinIcon class="mr-2 h-4 w-4 text-gray-600" />
-              <Link
-                class="text-sm font-medium text-gray-600 transition-colors duration-300 hover:text-blue-600"
-                href={
-                  "/places/" + event.value.data.location?.PlaceID.toString()
+            <div class="relative mt-8 aspect-[21/9] w-full overflow-hidden rounded-xl bg-[#F8EDE3]">
+              <img
+                src={
+                  event.value.data.event?.image ||
+                  "https://via.placeholder.com/800"
                 }
-              >
-                {event.value.data.event?.location || "Event place"}
-              </Link>
+                alt={event.value.data.event?.location || "Event Image"}
+                height={400}
+                width={800}
+                class="absolute inset-0 h-full w-full object-cover transition-transform duration-300"
+                onError$={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.src =
+                    "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
+                }}
+              />
             </div>
+
+            <p class="mt-8 text-base leading-relaxed text-[#6D5D4E]">
+              {event.value.data.event?.description || "hello"}
+            </p>
           </div>
 
-          <div class="relative mt-8 aspect-[21/9] w-full overflow-hidden rounded-2xl bg-gray-100">
-            <img
-              src={
-                event.value.data.event?.image ||
-                "https://via.placeholder.com/800"
-              }
-              alt={event.value.data.event?.location || "Event Image"}
-              height={400}
-              width={800}
-              class="size-full absolute inset-0 object-cover transition-transform duration-300 "
-              onError$={(e) => {
-                const img = e.target as HTMLImageElement;
-                img.src =
-                  "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
-              }}
-            />
-          </div>
-
-          <p class="mt-8 text-base leading-relaxed text-gray-600">
-            {event.value.data.event?.description || "hello"}
-          </p>
+          <Form class="border-t border-[#E6D7C3] bg-[#F8EDE3]/50 p-6">
+            <div class="space-y-4">
+              <Field name="ExperienceLevel">
+                {(field, props) => (
+                  <div class="space-y-2">
+                    <label
+                      for={props.name}
+                      class="text-sm font-medium text-[#5B3E29]"
+                    >
+                      Experience Level
+                      {field.error && <span class="ml-1 text-red-600">*</span>}
+                    </label>
+                    <div class="relative">
+                      <select
+                        {...props}
+                        class={`w-full rounded-xl ${
+                          field.error
+                            ? "border-2 border-red-600 bg-red-50"
+                            : "border border-[#E6D7C3] bg-white"
+                        } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
+                        value={field.value}
+                      >
+                        <option value="">Select your experience level</option>
+                        <option value="curious">Curious</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                      </select>
+                      {field.error && (
+                        <Icons.AlertCircleIcon class="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-red-600" />
+                      )}
+                    </div>
+                    {field.error && (
+                      <p class="text-sm font-medium text-red-600">
+                        {field.error}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </Field>
+              <Field name="Background">
+                {(field, props) => (
+                  <div class="space-y-2">
+                    <label
+                      for={props.name}
+                      class="text-sm font-medium text-[#5B3E29]"
+                    >
+                      Background
+                      {field.error && <span class="ml-1 text-red-600">*</span>}
+                    </label>
+                    <div class="relative">
+                      <textarea
+                        {...props}
+                        rows={3}
+                        class={`w-full rounded-xl ${
+                          field.error
+                            ? "border-2 border-red-600 bg-red-50"
+                            : "border border-[#E6D7C3] bg-white"
+                        } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
+                        placeholder="Share your background"
+                        value={field.value}
+                      />
+                      {field.error && (
+                        <Icons.AlertCircleIcon class="absolute right-3 top-3 h-5 w-5 text-red-600" />
+                      )}
+                    </div>
+                    {field.error && (
+                      <p class="text-sm font-medium text-red-600">
+                        {field.error}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </Field>
+              <Field name="WhyJoin">
+                {(field, props) => (
+                  <div class="space-y-2">
+                    <label
+                      for={props.name}
+                      class="text-sm font-medium text-[#5B3E29]"
+                    >
+                      Why do you want to join?
+                      {field.error && <span class="ml-1 text-red-600">*</span>}
+                    </label>
+                    <div class="relative">
+                      <textarea
+                        {...props}
+                        rows={3}
+                        class={`w-full rounded-xl ${
+                          field.error
+                            ? "border-2 border-red-600 bg-red-50"
+                            : "border border-[#E6D7C3] bg-white"
+                        } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
+                        placeholder="Tell us why you want to join"
+                        value={field.value}
+                      />
+                      {field.error && (
+                        <Icons.AlertCircleIcon class="absolute right-3 top-3 h-5 w-5 text-red-600" />
+                      )}
+                    </div>
+                    {field.error && (
+                      <p class="text-sm font-medium text-red-600">
+                        {field.error}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </Field>
+            </div>
+            <button
+              type="submit"
+              class="mt-4 w-full rounded-xl bg-[#D98E73] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            >
+              Join Session
+            </button>
+          </Form>
         </div>
-
-        <Form class="border-t border-gray-200 p-6">
-          <div class="space-y-4">
-            <Field name="ExperienceLevel">
-              {(field, props) => (
-                <div class="space-y-2">
-                  <label
-                    for={props.name}
-                    class="text-sm font-medium text-gray-700"
-                  >
-                    Experience Level
-                  </label>
-                  <select
-                    {...props}
-                    class={`w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-300 hover:border-green-100 focus:border-gray-300 focus:outline-none focus:ring-0 ${
-                      field.error ? "border-red-500" : ""
-                    }`}
-                    value={field.value}
-                  >
-                    <option value="">Select your experience level</option>
-                    <option value="curious">Curious</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
-                </div>
-              )}
-            </Field>
-            <Field name="Background">
-              {(field, props) => (
-                <div class="space-y-2">
-                  <label
-                    for={props.name}
-                    class="text-sm font-medium text-gray-700"
-                  >
-                    Background
-                  </label>
-                  <textarea
-                    {...props}
-                    rows={3}
-                    class={`w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-300 hover:border-green-100 focus:border-gray-300 focus:outline-none focus:ring-0 ${
-                      field.error ? "border-red-500" : ""
-                    }`}
-                    placeholder="Share your background"
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-            <Field name="WhyJoin">
-              {(field, props) => (
-                <div class="space-y-2">
-                  <label
-                    for={props.name}
-                    class="text-sm font-medium text-gray-700"
-                  >
-                    Why do you want to join?
-                  </label>
-                  <textarea
-                    {...props}
-                    rows={3}
-                    class={`w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-300 hover:border-green-100 focus:border-gray-300 focus:outline-none focus:ring-0 ${
-                      field.error ? "border-red-500" : ""
-                    }`}
-                    placeholder="Tell us why you want to join"
-                    value={field.value}
-                  />
-                </div>
-              )}
-            </Field>
-          </div>
-          <button
-            type="submit"
-            class="mt-4 w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:from-blue-700 hover:to-blue-800 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Register
-          </button>
-        </Form>
       </div>
     </div>
   );

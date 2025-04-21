@@ -4,7 +4,6 @@ import { getEvent, getConfirmedUsers } from "~/api/EndPoint";
 
 export const useEventDetails = routeLoader$(async (event) => {
   const id = event.params.id;
-  console.log(id);
   const eventData = await getEvent(event, id);
   const confirmData = await getConfirmedUsers(event, parseInt(id));
   return {
@@ -31,12 +30,12 @@ export default component$(() => {
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white px-4 py-12">
+    <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
       <div class="container mx-auto">
         <div class="mb-6 flex items-center">
           <Link
             href="/home"
-            class="flex items-center gap-2 text-blue-600 transition hover:text-blue-800"
+            class="flex items-center gap-2 text-[#D98E73] transition hover:text-[#C27B62]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,17 +43,13 @@ export default component$(() => {
               viewBox="0 0 20 20"
               fill="currentColor"
             >
-              <path
-                fillRule="evenodd"
-                d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
-              />
+              <path d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" />
             </svg>
             <span>Back to Events</span>
           </Link>
         </div>
 
-        <div class="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-300 hover:shadow-xl">
+        <div class="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
           <div class="relative aspect-[21/9] w-full overflow-hidden">
             <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/50 to-transparent"></div>
             <img
@@ -68,7 +63,7 @@ export default component$(() => {
               height={400}
             />
             <div class="absolute bottom-0 left-0 z-20 p-8 text-white">
-              <div class="mb-2 inline-flex items-center rounded-full bg-blue-600/80 px-3 py-1 text-sm backdrop-blur-sm">
+              <div class="mb-2 inline-flex items-center rounded-full bg-[#D98E73]/80 px-3 py-1 text-sm backdrop-blur-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="mr-1.5 h-4 w-4"
@@ -94,7 +89,7 @@ export default component$(() => {
                     <span class="flex items-center gap-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-blue-500"
+                        class="h-5 w-5 text-[#D98E73]"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -124,7 +119,7 @@ export default component$(() => {
               <div class="flex gap-2">
                 <Link
                   href={`/join/${data.value.event.data?.event.eventID}`}
-                  class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-blue-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                  class="inline-flex items-center gap-2 rounded-lg bg-[#D98E73] px-5 py-2.5 text-center text-sm font-medium text-white shadow-lg transition-all hover:bg-[#C27B62] hover:shadow-[#F8D7BD] focus:outline-none focus:ring-4 focus:ring-[#F8D7BD]"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +133,7 @@ export default component$(() => {
                 </Link>
                 <button
                   type="button"
-                  class="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-center text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100"
+                  class="inline-flex items-center rounded-lg border border-[#E6D7C3] bg-white px-3 py-2.5 text-center text-sm font-medium text-[#6D5D4E] shadow-sm hover:bg-[#FFF8F0] focus:outline-none focus:ring-4 focus:ring-[#F8EDE3]"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -155,10 +150,10 @@ export default component$(() => {
             <div class="grid gap-8 md:grid-cols-3">
               <section class="space-y-8 md:col-span-2">
                 <div class="space-y-4">
-                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
+                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-[#5B3E29]">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-blue-600"
+                      class="h-6 w-6 text-[#D98E73]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -172,7 +167,7 @@ export default component$(() => {
                     </svg>
                     About This Event
                   </h2>
-                  <div class="rounded-xl bg-gray-50 p-6 shadow-sm">
+                  <div class="rounded-xl bg-[#F8EDE3] p-6 shadow-sm">
                     <p class="whitespace-pre-wrap text-lg leading-relaxed text-gray-700">
                       {data.value.event.data?.event.description}
                     </p>
@@ -183,7 +178,7 @@ export default component$(() => {
                   <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-blue-600"
+                      class="h-6 w-6 text-[#D98E73]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -203,7 +198,7 @@ export default component$(() => {
                       data.value.confirmed.data.map((attendee) => (
                         <div
                           key={attendee.requestId}
-                          class="flex items-start gap-4 rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+                          class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all hover:shadow-md"
                         >
                           <img
                             src={
@@ -211,17 +206,17 @@ export default component$(() => {
                               "https://via.placeholder.com/40"
                             }
                             alt={attendee.user?.name ?? "Anonymous"}
-                            class="h-14 w-14 rounded-full object-cover shadow-md ring-2 ring-blue-100"
+                            class="h-14 w-14 rounded-full object-cover shadow-md ring-2 ring-[#F8D7BD]"
                             width={56}
                             height={56}
                           />
                           <div class="flex-1 space-y-2">
-                            <p class="font-medium text-gray-900">
+                            <p class="font-medium text-[#5B3E29]">
                               {attendee.user?.name}
                             </p>
                             {attendee.whyJoin && (
                               <div>
-                                <p class="mb-1 text-xs font-semibold uppercase text-blue-600">
+                                <p class="mb-1 text-xs font-semibold uppercase text-[#D98E73]">
                                   Why I'm attending
                                 </p>
                                 <p class="text-sm italic text-gray-600">
@@ -231,10 +226,10 @@ export default component$(() => {
                             )}
                             {attendee.background && (
                               <div>
-                                <p class="mb-1 mt-2 text-xs font-semibold uppercase text-blue-600">
+                                <p class="mb-1 mt-2 text-xs font-semibold uppercase text-[#D98E73]">
                                   Background
                                 </p>
-                                <p class="text-sm text-gray-600">
+                                <p class="text-sm text-[#6D5D4E]">
                                   {attendee.background}
                                 </p>
                               </div>
@@ -243,11 +238,11 @@ export default component$(() => {
                         </div>
                       ))
                     ) : (
-                      <div class="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white p-12 text-center">
-                        <div class="mb-4 rounded-full bg-blue-50 p-4">
+                      <div class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#E6D7C3] bg-white p-12 text-center">
+                        <div class="mb-4 rounded-full bg-[#F8D7BD] p-4">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-10 w-10 text-blue-500"
+                            class="h-10 w-10 text-[#D98E73]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -260,16 +255,16 @@ export default component$(() => {
                             />
                           </svg>
                         </div>
-                        <h3 class="mb-2 text-xl font-semibold text-gray-900">
+                        <h3 class="mb-2 text-xl font-semibold text-[#5B3E29]">
                           No attendees yet
                         </h3>
-                        <p class="mb-8 max-w-md text-gray-600">
+                        <p class="mb-8 max-w-md text-[#6D5D4E]">
                           Be the first to join this exciting event! Connect with
                           others who share your interests.
                         </p>
                         <Link
                           href={`/join/${data.value.event.data?.event.eventID}`}
-                          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                          class="inline-flex items-center gap-2 rounded-lg bg-[#D98E73] px-6 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#F8D7BD] focus:ring-offset-2"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -292,7 +287,7 @@ export default component$(() => {
                   <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-blue-600"
+                      class="h-6 w-6 text-[#D98E73]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -312,7 +307,7 @@ export default component$(() => {
                     </svg>
                     Location
                   </h2>
-                  <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                  <div class="overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-sm">
                     {data.value.event.data?.location && (
                       <div class="space-y-4">
                         <div class="h-48 overflow-hidden">
@@ -328,7 +323,7 @@ export default component$(() => {
                           />
                         </div>
                         <div class="p-4">
-                          <h3 class="mb-2 font-semibold text-gray-900">
+                          <h3 class="mb-2 font-semibold text-[#5B3E29]">
                             {data.value.event.data.location.Name}
                           </h3>
                           <p class="text-sm text-gray-600">
@@ -336,7 +331,7 @@ export default component$(() => {
                           </p>
                           <a
                             href="#"
-                            class="mt-4 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                            class="mt-4 inline-flex items-center text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
                           >
                             <span>Get directions</span>
                             <svg
@@ -358,15 +353,15 @@ export default component$(() => {
                   </div>
                 </section>
 
-                <section class="rounded-xl bg-blue-50 p-6">
-                  <h3 class="mb-4 font-semibold text-blue-900">
+                <section class="rounded-xl bg-[#F8EDE3] p-6">
+                  <h3 class="mb-4 font-semibold text-[#5B3E29]">
                     Event Details
                   </h3>
                   <ul class="space-y-3">
                     <li class="flex items-start gap-3">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="mt-0.5 h-5 w-5 text-blue-600"
+                        class="mt-0.5 h-5 w-5 text-[#D98E73]"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
@@ -377,10 +372,10 @@ export default component$(() => {
                         />
                       </svg>
                       <div class="text-sm">
-                        <span class="font-medium text-blue-900">
+                        <span class="font-medium text-[#5B3E29]">
                           Date & Time:
                         </span>
-                        <div class="text-blue-800">
+                        <div class="text-[#8B5A2B]">
                           {formatEventDate(
                             data.value.event.data?.event.date || "",
                           )}
@@ -390,17 +385,17 @@ export default component$(() => {
                     <li class="flex items-start gap-3">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="mt-0.5 h-5 w-5 text-blue-600"
+                        class="mt-0.5 h-5 w-5 text-[#D98E73]"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                       >
                         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                       </svg>
                       <div class="text-sm">
-                        <span class="font-medium text-blue-900">
+                        <span class="font-medium text-[#D98E73]">
                           Attendees:
                         </span>
-                        <div class="text-blue-800">
+                        <div class="text-[#D98E73]">
                           {data.value.confirmed.data?.length || 0} registered
                         </div>
                       </div>
