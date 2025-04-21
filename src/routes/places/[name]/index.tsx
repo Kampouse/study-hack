@@ -10,7 +10,7 @@ export const useloadPlace = routeLoader$(async (context) => {
 export default component$(() => {
   const place = useloadPlace();
   return (
-    <div class="mx-auto mt-2 flex max-w-3xl flex-col gap-4 rounded-lg bg-white p-4 pt-10 shadow-lg">
+    <div class="mx-auto my-24 flex max-w-3xl flex-col gap-4 rounded-lg bg-white p-4 pt-10 shadow-lg">
       <h1 class="px-2 text-left text-2xl font-bold text-gray-900 md:text-3xl">
         {place.value.data?.Name}
       </h1>
