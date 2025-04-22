@@ -1,14 +1,8 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { getPlace } from "~/api/EndPoint";
 import { StarIcon } from "lucide-qwik";
-import {
-  MapPinIcon,
-  CalendarIcon,
-  UsersIcon,
-  InfoIcon,
-  ArrowLeftIcon,
-} from "lucide-qwik";
+import { MapPinIcon, CalendarIcon, InfoIcon, ArrowLeftIcon } from "lucide-qwik";
 
 export const useloadPlace = routeLoader$(async (context) => {
   const placeName = context.params.name;
@@ -20,119 +14,145 @@ export const useloadPlace = routeLoader$(async (context) => {
 export default component$(() => {
   const place = useloadPlace();
   return (
-    <div class="min-h-screen bg-[#FFF8F0]">
-      {/* Hero Header with Image */}
-      <div class="relative">
-        <div class="absolute left-0 top-0 z-10 w-full">
-          <div class="container mx-auto px-4 py-4 md:px-6">
-            <a
-              href="/places"
-              class="inline-flex items-center rounded-lg bg-[#5B3E29]/50 px-3 py-2 text-white transition-colors hover:bg-[#5B3E29]/70"
-            >
-              <ArrowLeftIcon class="mr-2 h-4 w-4" />
-              <span>Back to Places</span>
-            </a>
-          </div>
+    <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
+      <div class="container mx-auto">
+        <div class="mb-8 flex items-center">
+          <Link
+            href="/places"
+            class="flex items-center gap-2 text-[#D98E73] transition hover:text-[#C27B62]"
+          >
+            <ArrowLeftIcon class="h-5 w-5" />
+            <span>Back to Places</span>
+          </Link>
         </div>
-        <div class="relative h-[50vh] overflow-hidden">
-          <div class="absolute inset-0 z-[5] bg-gradient-to-b from-[#5B3E29]/50 to-transparent"></div>
-          <img
-            width="1920"
-            height="1000"
-            src={place.value.data?.ImageURL as string}
-            alt={place.value.data?.Description}
-            class="h-full w-full object-cover"
-          />
-          <div class="absolute bottom-0 left-0 right-0 z-[5] bg-gradient-to-t from-[#FFF8F0] to-transparent p-8">
-            <div class="container mx-auto">
-              <h1 class="mb-2 text-3xl font-bold text-[#5B3E29] drop-shadow-sm md:text-4xl lg:text-5xl">
-                {place.value.data?.Name}
-              </h1>
-              <div class="flex w-fit items-center rounded-full bg-white/70 px-3 py-1 text-[#5B3E29] backdrop-blur-sm">
-                <MapPinIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
-                <span class="font-medium">{place.value.data?.Address}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Content Section */}
-      <div class="container mx-auto px-4 py-8 md:px-6">
-        <div class="mx-auto max-w-4xl">
-          <div class="grid gap-6 md:grid-cols-3">
-            {/* Main Content - 2/3 width */}
-            <div class="space-y-6 md:col-span-2">
-              <div class="rounded-xl border border-[#E6D7C3]/50 bg-white p-8 shadow-md transition-all hover:shadow-lg">
-                <div class="mb-4 flex items-center">
-                  <InfoIcon class="mr-2 h-6 w-6 text-[#D98E73]" />
-                  <h2 class="text-xl font-semibold text-[#5B3E29]">
-                    About this Place
-                  </h2>
+        {/* Main content card */}
+        <div class="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
+          {/* Hero card section with image and title */}
+          <div class="rounded-3xl bg-white p-6 shadow-md">
+            <div class="relative mb-6 overflow-hidden rounded-2xl">
+              <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-black/10"></div>
+              <img
+                src={
+                  (place.value.data?.ImageURL as string) ||
+                  "https://via.placeholder.com/1200x400"
+                }
+                alt={place.value.data?.Name}
+                class="h-[400px] w-full object-cover transition duration-700 hover:scale-105"
+                width={1200}
+                height={400}
+              />
+              <div class="absolute bottom-0 left-0 z-20 p-8 text-white">
+                <div class="mb-3 inline-flex items-center rounded-full bg-[#D98E73]/90 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
+                  <MapPinIcon class="mr-2 h-4 w-4" />
+                  {place.value.data?.Address}
                 </div>
-                <p class="mb-6 leading-relaxed text-[#6D5D4E]">
-                  {place.value.data?.Description}
-                </p>
-              </div>
-
-              <div class="rounded-xl border border-[#E6D7C3]/50 bg-white p-8 shadow-md transition-all hover:shadow-lg">
-                <div class="mb-6 flex items-center justify-between">
-                  <div class="flex items-center">
-                    <CalendarIcon class="mr-2 h-6 w-6 text-[#D98E73]" />
-                    <h2 class="text-xl font-semibold text-[#5B3E29]">
-                      Previous Events
-                    </h2>
-                  </div>
-                </div>
-                <div class="rounded-lg border border-[#E6D7C3] bg-[#F8EDE3]/50 p-4 transition-all hover:shadow-md">
-                  <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
-                    Summer Meetup 2023
-                  </h3>
-                  <p class="mb-4 text-[#6D5D4E]">
-                    A fantastic gathering of local community members for food,
-                    music and networking. Featured live performances and local
-                    food vendors.
-                  </p>
-                  <div class="grid grid-cols-2 gap-2 rounded-lg bg-white/50 p-3 text-sm text-[#6D5D4E]">
-                    <div class="flex items-center">
-                      <CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
-                      <span>August 15, 2023</span>
-                    </div>
-                    <div class="flex items-center">
-                      <UsersIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
-                      <span>250 attendees</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar - 1/3 width */}
-            <div class="md:col-span-1">
-              <div class="sticky top-6 rounded-xl border border-[#E6D7C3]/50 bg-white p-6 shadow-md">
-                <h3 class="mb-4 border-b border-[#E6D7C3] pb-2 text-lg font-semibold text-[#5B3E29]">
-                  Quick Info
-                </h3>
-                <div class="space-y-3">
-                  <div class="flex items-center">
-                    <MapPinIcon class="mr-2 h-5 w-5 text-[#D98E73]" />
-                    <span class="text-[#6D5D4E]">
-                      {place.value.data?.Address}
-                    </span>
-                  </div>
-                  <div class="flex items-center">
-                    <StarIcon class="mr-2 h-5 w-5 text-[#D98E73]" />
-                    <span class="text-[#6D5D4E]">
+                <h1 class="text-4xl font-bold tracking-tight drop-shadow-lg sm:text-5xl">
+                  {place.value.data?.Name}
+                </h1>
+                <div class="mt-3 flex items-center gap-2">
+                  <div class="inline-flex items-center rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
+                    <StarIcon class="mr-1 h-5 w-5 text-yellow-400" />
+                    <span class="font-medium">
                       {Math.floor(place.value.data?.Rating || 0)} out of 5 stars
                     </span>
                   </div>
-                  <a
-                    href={`/events/create/at/${place.value.data?.PlaceID}`}
-                    class="mt-4 block w-full rounded-md bg-[#D98E73] px-4 py-2 text-center font-medium text-white transition-colors hover:bg-[#C27B62]"
-                  >
-                    Create Event Here
-                  </a>
                 </div>
+              </div>
+            </div>
+
+            {/* Content grid */}
+            <div class="grid gap-8 md:grid-cols-3">
+              <section class="space-y-8 md:col-span-2">
+                <div class="space-y-4">
+                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-[#5B3E29]">
+                    <InfoIcon class="h-6 w-6 text-[#D98E73]" />
+                    About This Place
+                  </h2>
+                  <div class="rounded-xl bg-[#F8EDE3] p-6 shadow-sm">
+                    <p class="whitespace-pre-wrap text-lg leading-relaxed text-gray-700">
+                      {place.value.data?.Description}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-[#5B3E29]">
+                    <CalendarIcon class="h-6 w-6 text-[#D98E73]" />
+                    Previous Events
+                  </h2>
+                  <div class="space-y-4">
+                    <div class="rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm">
+                      <ul class="space-y-4">
+                        <li class="flex items-start gap-4 border-l-2 border-[#D98E73] pl-4">
+                          <div class="flex-1">
+                            <h3 class="mb-2 text-lg font-medium text-[#5B3E29]">
+                              Summer Meetup 2023
+                            </h3>
+                            <div class="flex items-center text-sm text-[#6D5D4E]">
+                              <CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
+                              <span>August 15, 2023</span>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="flex items-start gap-4 border-l-2 border-[#D98E73] pl-4">
+                          <div class="flex-1">
+                            <h3 class="mb-2 text-lg font-medium text-[#5B3E29]">
+                              Spring Art Exhibition
+                            </h3>
+                            <div class="flex items-center text-sm text-[#6D5D4E]">
+                              <CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
+                              <span>May 22, 2023</span>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="flex items-start gap-4 border-l-2 border-[#D98E73] pl-4">
+                          <div class="flex-1">
+                            <h3 class="mb-2 text-lg font-medium text-[#5B3E29]">
+                              Winter Workshop
+                            </h3>
+                            <div class="flex items-center text-sm text-[#6D5D4E]">
+                              <CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
+                              <span>December 8, 2022</span>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <div class="space-y-6">
+                <section class="rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                      <MapPinIcon class="h-5 w-5 text-[#D98E73]" />
+                      <div class="text-sm text-[#6D5D4E]">
+                        <div class="font-medium text-[#5B3E29]">Address:</div>
+                        <div>{place.value.data?.Address}</div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <StarIcon class="h-5 w-5 text-[#D98E73]" />
+                      <div class="text-sm text-[#6D5D4E]">
+                        <div class="font-medium text-[#5B3E29]">Rating:</div>
+                        <div>
+                          {Math.floor(place.value.data?.Rating || 0)} out of 5
+                          stars
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-6">
+                    <a
+                      href={`/events/create/at/${place.value.data?.PlaceID}`}
+                      class="block w-full rounded-lg bg-[#D98E73] px-4 py-3 text-center font-medium text-white transition-all hover:bg-[#C27B62] hover:shadow-md"
+                    >
+                      Create Event Here
+                    </a>
+                  </div>
+                </section>
               </div>
             </div>
           </div>

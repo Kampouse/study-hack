@@ -44,7 +44,7 @@ export const PlaceCard = component$(
             <Heart class="h-5 w-5" />
           </button>
         </div>
-        <div class="p-5">
+        <div class="bg-white p-5">
           <div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin class="h-4 w-4 text-[#D98E73]" />
             <span class="truncate">{props.place.location}</span>
