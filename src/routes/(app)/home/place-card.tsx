@@ -49,7 +49,7 @@ export const PlaceCard = component$(
             <MapPin class="h-4 w-4 text-[#D98E73]" />
             <span class="truncate">{props.place.location}</span>
           </div>
-          <Link href={"/places/" + props.place.id}>
+          <Link href={"/places/" + encodeURI(props.place.name)}>
             <h3 class="mb-1 text-lg font-semibold text-[#5B3E29]">
               {props.place.name}
             </h3>

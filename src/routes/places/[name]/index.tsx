@@ -5,14 +5,15 @@ import { StarIcon } from "lucide-qwik";
 import { MapPinIcon, CalendarIcon, InfoIcon, ArrowLeftIcon } from "lucide-qwik";
 
 export const useloadPlace = routeLoader$(async (context) => {
-  const placeName = context.params.name;
-  const data = await getPlace({ event: context, id: parseInt(placeName) });
+  const output = decodeURIComponent(context.params.name);
+  const data = await getPlace({ event: context, placeName: output });
 
   return { ...data };
 });
 
 export default component$(() => {
   const place = useloadPlace();
+
   return (
     <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
       <div class="container mx-auto">
@@ -124,7 +125,7 @@ export default component$(() => {
               </section>
 
               <div class="space-y-6">
-                <section class="rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all hover:shadow-md">
+                <section class="rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm">
                   <div class="space-y-3">
                     <div class="flex items-center gap-3">
                       <MapPinIcon class="h-5 w-5 text-[#D98E73]" />
@@ -146,7 +147,7 @@ export default component$(() => {
                   </div>
                   <div class="mt-6">
                     <a
-                      href={`/events/create/at/${place.value.data?.PlaceID}`}
+                      href={`/new?placeId=${place.value.data?.PlaceID}`}
                       class="block w-full rounded-lg bg-[#D98E73] px-4 py-3 text-center font-medium text-white transition-all hover:bg-[#C27B62] hover:shadow-md"
                     >
                       Create Event Here

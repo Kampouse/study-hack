@@ -99,14 +99,17 @@ export const getAllReferenceEvents = async (event: Requested) => {
 export const getPlace = async ({
   event,
   id,
+  placeName,
 }: {
   event: Requested;
-  id: number;
+  id?: number | undefined;
+  placeName?: string | undefined;
 }) => {
   try {
     const data = await QueryPlace({
       event,
       placeId: id,
+      name: placeName,
     });
     if (!data.success || !data.data) {
       return { success: false, data: null, error: "Failed to get place" };

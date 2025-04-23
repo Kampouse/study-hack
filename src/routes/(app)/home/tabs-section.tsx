@@ -44,16 +44,6 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             All
           </button>
           <button
-            onClick$={() => (activeTab.value = "places")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
-              activeTab.value === "places"
-                ? "bg-white text-[#5B3E29] shadow-sm"
-                : "hover:bg-[#F1DFC6]/50"
-            }`}
-          >
-            Places
-          </button>
-          <button
             onClick$={() => (activeTab.value = "events")}
             class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
               activeTab.value === "events"
@@ -62,6 +52,16 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             }`}
           >
             Events
+          </button>
+          <button
+            onClick$={() => (activeTab.value = "places")}
+            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+              activeTab.value === "places"
+                ? "bg-white text-[#5B3E29] shadow-sm"
+                : "hover:bg-[#F1DFC6]/50"
+            }`}
+          >
+            Places
           </button>
         </div>
 

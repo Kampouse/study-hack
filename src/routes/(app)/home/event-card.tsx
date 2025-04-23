@@ -54,9 +54,11 @@ export const EventCard = component$(
               <span class="mb-2 inline-block rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
                 {props.event.type}
               </span>
-              <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
-                {props.event.title}
-              </h3>
+              <Link href={`/details/${props.event.id}`}>
+                <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
+                  {props.event.title}
+                </h3>
+              </Link>
               <div class="grid grid-cols-2 gap-2 text-sm text-[#6D5D4E]">
                 <div class="flex items-center gap-2">
                   <Calendar class="h-4 w-4 text-[#D98E73]" />

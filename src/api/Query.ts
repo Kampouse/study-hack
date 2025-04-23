@@ -867,7 +867,8 @@ export const UpdatePlace = async (params: {
 };
 export const QueryPlace = async (params: {
   event: Requested | undefined;
-  placeId: number;
+  name?: string;
+  placeId?: number;
   client?: ClientType | null;
 }) => {
   const Client = params.client ?? (await drizzler(params.event as Requested));
@@ -878,29 +879,54 @@ export const QueryPlace = async (params: {
     };
   }
   try {
-    const result = await Client.select()
-      .from(Places)
-      .where(eq(Places.PlaceID, params.placeId))
-      .execute();
+    if (params.name) {
+      const result = await Client.select()
+        .from(Places)
+        .where(eq(Places.Name, params.name))
+        .execute();
 
-    if (result.length === 0) {
+      if (result.length === 0) {
+        return {
+          success: false,
+          message: "Place not found",
+        };
+      }
+
       return {
-        success: false,
-        message: "Place not found",
+        success: true,
+        data: { ...result[0] },
       };
     }
+    if (params.placeId) {
+      const result = await Client.select()
+        .from(Places)
+        .where(eq(Places.PlaceID, params.placeId))
+        .execute();
 
-    return {
-      success: true,
-      data: { ...result[0] },
-    };
+      if (result.length === 0) {
+        return {
+          success: false,
+          message: "Place not found",
+        };
+      }
+
+      return {
+        success: true,
+        data: { ...result[0] },
+      };
+    }
   } catch (error) {
     console.error("Error getting a place:", error);
     return {
       success: false,
-      message: "Error getting something",
+      message: "invalid request",
     };
   }
+  return {
+    success: true,
+    data: null,
+    message: "Place retrieved successfully",
+  };
 };
 export const DeletePlace = async (params: {
   event: Requested | undefined;
