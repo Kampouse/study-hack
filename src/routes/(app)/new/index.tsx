@@ -14,13 +14,17 @@ import { GetUser, QueryPlaces } from "~/api/Query";
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
   const user = await GetUser({ event: req });
-
+  const urlData = req.url.searchParams.get("placeId") ?? "0";
+  const places = await QueryPlaces({ event: req });
+  const place = places.data?.find(
+    (el) => el.Places?.PlaceID === parseInt(urlData),
+  );
   return {
-    Name: "chill with " + user?.Name,
+    Name: "just chilling with  " + user?.Name,
     Description: "",
-    Location: "",
-    PlaceId: 0,
-    ImageURL: "https://example.com/image.jpg",
+    Location: place?.Places?.Name || "",
+    PlaceId: parseInt(urlData) || 0,
+    ImageURL: place?.Places?.ImageURL || "",
     Date: new Date().toISOString().split("T")[0],
     StartTime: "",
     EndTime: "",
@@ -61,7 +65,11 @@ const action = formAction$<Event, Data>(async (data, event) => {
 
 export const useloadPlaces = routeLoader$(async (req) => {
   const places = await QueryPlaces({ event: req });
-  return places;
+  const urlData = req.url.searchParams.get("placeId") ?? "0";
+  const basePlace = places.data?.find(
+    (el) => el.Places?.PlaceID === parseInt(urlData),
+  );
+  return { places: places, basePlace: basePlace };
 });
 
 export default component$(() => {
@@ -70,7 +78,8 @@ export default component$(() => {
     validate: valiForm$(eventSchema),
     action: action(),
   });
-  const places = useloadPlaces();
+  const data = useloadPlaces();
+  const { places, basePlace } = data.value;
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <section class="relative bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] pt-8">
@@ -145,8 +154,16 @@ export default component$(() => {
                     }`}
                     value={field.value}
                   >
-                    <option value="">Choose a cozy study spot...</option>
-                    {places.value.data?.map((place) => (
+                    {basePlace && (
+                      <option
+                        key={basePlace.Places?.PlaceID}
+                        value={field.value}
+                      >
+                        {basePlace.Places?.Name}
+                      </option>
+                    )}
+
+                    {places.data?.map((place) => (
                       <option
                         key={place.Places?.PlaceID}
                         value={place.Places?.Name}
