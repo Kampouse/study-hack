@@ -6,11 +6,19 @@ import { MapPinIcon, CalendarIcon, InfoIcon, ArrowLeftIcon } from "lucide-qwik";
 
 export const useloadPlace = routeLoader$(async (context) => {
   const output = decodeURIComponent(context.params.name);
-  const data = await getPlace({ event: context, placeName: output });
+  // Check if the output is a valid number
+  const id = parseInt(output, 10);
+  const isId = !isNaN(id);
+
+  // Query getPlace with id when output is a number, otherwise use placeName
+  const data = await getPlace({
+    event: context,
+    placeName: isId ? undefined : output,
+    id: isId ? id : undefined,
+  });
 
   return { ...data };
 });
-
 export default component$(() => {
   const place = useloadPlace();
 
@@ -34,10 +42,7 @@ export default component$(() => {
             <div class="relative mb-6 overflow-hidden rounded-2xl">
               <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-black/10"></div>
               <img
-                src={
-                  (place.value.data?.ImageURL as string) ||
-                  "https://via.placeholder.com/1200x400"
-                }
+                src={(place.value.data?.ImageURL as string) || ""}
                 alt={place.value.data?.Name}
                 class="h-[400px] w-full object-cover transition duration-700 hover:scale-105"
                 width={1200}

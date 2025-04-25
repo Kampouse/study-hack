@@ -16,32 +16,69 @@ interface EventCardProps {
   event: DetailedEventType;
   isHosted?: boolean;
 }
+const formatEventDate = (dateString: string) => {
+  try {
+    // Parse the date string "3/31/2025 at 8:00 AM" format
+    const dateTimeParts = dateString.split(" at ");
+    const datePart = dateTimeParts[0];
+    const timePart = dateTimeParts[1];
+
+    // Create a valid date object
+    const dateObj = new Date(datePart);
+
+    // Round time to nearest 15-minute interval (00, 15, 30, 45)
+    let roundedTimePart = timePart;
+    if (timePart) {
+      const timeMatch = timePart.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (timeMatch) {
+        const hour = parseInt(timeMatch[1], 10);
+        const minute = parseInt(timeMatch[2], 10);
+        const ampm = timeMatch[3].toUpperCase();
+
+        // Round minutes to nearest 15
+        const roundedMinutes = Math.ceil(minute / 15) * 15;
+        let adjustedHour = hour;
+        let adjustedAmPm = ampm;
+
+        // Handle case where minutes round to 60
+        if (roundedMinutes === 60) {
+          adjustedHour = hour + 1;
+          // Handle noon/midnight transitions
+          if (adjustedHour === 12 && ampm === "AM") {
+            adjustedAmPm = "PM";
+          } else if (adjustedHour === 12 && ampm === "PM") {
+            adjustedAmPm = "AM";
+          } else if (adjustedHour > 12) {
+            adjustedHour = 1;
+          }
+        }
+
+        roundedTimePart = `${adjustedHour}:${roundedMinutes === 60 ? "00" : roundedMinutes.toString().padStart(2, "0")} ${adjustedAmPm}`;
+      }
+    }
+
+    // Format the date and time for display
+    return {
+      displayDate: dateObj.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
+      displayTime: roundedTimePart || "",
+    };
+  } catch (e) {
+    console.error("Error parsing date:", e);
+    return { displayDate: "", displayTime: "" };
+  }
+};
 
 export const EventCard = component$<EventCardProps>(
   ({ event, isHosted = false }) => {
     const status = isHosted ? "Host" : event.role || event.status || "Pending";
 
-    // Error handling for date parsing remains the same
-    let displayDate = "Invalid Date";
-    let displayTime = "";
-    try {
-      const dateTime = new Date(event.date);
-      if (!isNaN(dateTime.getTime())) {
-        displayDate = dateTime.toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-        displayTime = dateTime.toLocaleTimeString(undefined, {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        });
-      }
-    } catch (e) {
-      console.error("Failed to parse event date:", event.date, e);
-    }
-
+    // Use the improved date formatting function
+    const { displayDate, displayTime } = formatEventDate(event.date);
+    console.log(displayDate, displayTime);
     // Status styles remain the same
     const statusStyles: Record<string, string> = {
       Host: "bg-[#E6F2FF] text-[#5B8CB7]",
@@ -107,7 +144,7 @@ export const EventCard = component$<EventCardProps>(
                 <Calendar class="h-4 w-4 flex-shrink-0" />{" "}
                 {/* Prevent icon shrinking */}
                 <span>
-                  {displayDate} {displayTime ? `at ${displayTime}` : ""}
+                  {displayDate} {displayTime ? `- ${displayTime}` : ""}
                 </span>
               </div>
               {typeof event.attendees === "number" && event.attendees > 0 && (

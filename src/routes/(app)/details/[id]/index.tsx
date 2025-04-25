@@ -14,21 +14,40 @@ export const useEventDetails = routeLoader$(async (event) => {
 
 export default component$(() => {
   const data = useEventDetails();
+  console.log(data.value.event.data?.event.starttime);
 
-  // Format date function
-  const formatEventDate = (dateString: string) => {
-    const date = new Date(dateString || "");
-    const dateOptions: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    };
-    return date.toLocaleDateString("en-US", dateOptions);
+  const formatEventDate = (dateString: string, starttime?: string) => {
+    if (!dateString) return "TBD";
+
+    try {
+      const date = new Date(dateString);
+
+      // Add time information if starttime is provided
+      if (starttime) {
+        const [hours, minutes] = starttime
+          .split(":")
+          .map((part) => parseInt(part, 10));
+        if (!isNaN(hours) && !isNaN(minutes)) {
+          date.setHours(hours, minutes);
+        }
+      }
+
+      const dateOptions: Intl.DateTimeFormatOptions = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+      };
+
+      return date.toLocaleDateString("en-US", dateOptions);
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString; // Return original string if parsing fails
+    }
   };
-
   return (
     <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
       <div class="container mx-auto">
@@ -73,7 +92,10 @@ export default component$(() => {
                 >
                   <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                {formatEventDate(data.value.event.data?.event.date || "")}
+                {formatEventDate(
+                  data.value.event.data?.event.date || "",
+                  data.value.event.data?.event.starttime || "",
+                )}
               </div>
               <h1 class="text-3xl font-bold tracking-tight drop-shadow-md sm:text-5xl">
                 {data.value.event.data?.event.name}

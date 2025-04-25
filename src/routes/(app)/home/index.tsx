@@ -85,8 +85,8 @@ export default component$(() => {
       image: event.image || "/placeholder.svg",
       badge: "Event", // Or derive from event type/tags
       type: "Study Group", // Or derive from event type
-      date: event.date,
-      time: event.date,
+      date: event.date.split(" ")[0],
+      time: event.starttime.split(":")[0] + ":" + event.starttime.split(":")[1],
       location: event.location || "Location TBD",
       creator: event.creator || "Anonymous",
       attendees: event.attendees ?? 8, // Fetch real attendee count if available

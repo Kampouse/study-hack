@@ -879,7 +879,7 @@ export const QueryPlace = async (params: {
     };
   }
   try {
-    if (params.name) {
+    if (params.name && params.name !== "") {
       const result = await Client.select()
         .from(Places)
         .where(eq(Places.Name, params.name))
@@ -898,6 +898,7 @@ export const QueryPlace = async (params: {
       };
     }
     if (params.placeId) {
+      console.log(params.placeId);
       const result = await Client.select()
         .from(Places)
         .where(eq(Places.PlaceID, params.placeId))
