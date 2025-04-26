@@ -1,14 +1,15 @@
 import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 // Import specific icons you might need
-import { CalendarIcon, MapPinIcon, UsersIcon, PackageIcon } from "lucide-qwik"; // Example icons
+import { CalendarIcon, MapPinIcon, UsersIcon, PackageIcon, BellIcon } from "lucide-qwik";
 
 // Define possible contexts for the empty state, using icon names for clarity
 type EmptyStateContext =
   | "CalendarIcon"
   | "MapPinIcon"
   | "UsersIcon"
-  | "PackageIcon";
+  | "PackageIcon"
+  | "BellIcon";
 
 interface EmptyStateProps {
   context: EmptyStateContext; // Determines which icon to show
@@ -28,6 +29,8 @@ const getIconForContext = (context: EmptyStateContext): any => {
       return MapPinIcon;
     case "UsersIcon": // Represents friends or groups
       return UsersIcon;
+    case "BellIcon": // Represents requests
+      return BellIcon;
     case "PackageIcon": // Represents a generic or default state
     default:
       // Fallback for safety, though type checking should prevent invalid values
@@ -46,25 +49,33 @@ const getIconForContext = (context: EmptyStateContext): any => {
  * Can optionally include an action button.
  *
  * Takes:
- * - `context`: A string literal ('events', 'places', 'friends', 'generic') to determine the icon.
+ * - `context`: A string literal representing an icon name (e.g., 'CalendarIcon', 'BellIcon') to determine the icon.
  * - `title`: The main heading for the empty state message.
  * - `message`: A descriptive message explaining the empty state.
  * - `actionButton`: (Optional) An object with `label` and `href` for a call-to-action Link button.
  *
  * Example Usage:
  * ```tsx
- * // ...
+ * // For events
  * <EmptyState
- *   context="events"
+ *   context="CalendarIcon"
  *   title="No Upcoming Events"
  *   message="You haven't joined any events yet."
  *   actionButton={{ label: "Explore Events", href: "/events" }}
  * />
  *
+ * // For places
  * <EmptyState
- *   context="places"
+ *   context="MapPinIcon"
  *   title="No Saved Places"
  *   message="You haven't saved any places yet."
+ * />
+ * 
+ * // For requests
+ * <EmptyState
+ *   context="BellIcon"
+ *   title="No Pending Requests"
+ *   message="You don't have any pending requests at the moment."
  * />
  * ```
  */

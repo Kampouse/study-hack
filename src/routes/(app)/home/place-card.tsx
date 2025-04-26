@@ -24,7 +24,7 @@ export const PlaceCard = component$(
     return (
       <div
         key={props.place.id}
-        class="group overflow-hidden rounded-xl border-none shadow-md transition-shadow hover:shadow-lg"
+        class="group overflow-hidden rounded-xl border-none bg-white shadow-md transition-shadow hover:shadow-lg"
       >
         <div class="relative aspect-[4/3] overflow-hidden">
           <img
@@ -77,7 +77,7 @@ export const PlaceCard = component$(
             <div class="flex items-center gap-1">
               <Star class="h-4 w-4 fill-[#D98E73] text-[#D98E73]" />
               <span class="font-medium text-[#5B3E29]">
-                {props.place.rating}
+                {Math.round(props.place.rating * 10) / 10}
               </span>
             </div>
           </div>

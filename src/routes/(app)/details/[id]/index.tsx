@@ -14,7 +14,6 @@ export const useEventDetails = routeLoader$(async (event) => {
 
 export default component$(() => {
   const data = useEventDetails();
-  console.log(data.value.event.data?.event.starttime);
 
   const formatEventDate = (dateString: string, starttime?: string) => {
     if (!dateString) return "TBD";
@@ -51,23 +50,6 @@ export default component$(() => {
   return (
     <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
       <div class="container mx-auto">
-        <div class="mb-6 flex items-center">
-          <Link
-            href="/home"
-            class="flex items-center gap-2 text-[#D98E73] transition hover:text-[#C27B62]"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" />
-            </svg>
-            <span>Back to Events</span>
-          </Link>
-        </div>
-
         <div class="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
           <div class="relative aspect-[21/9] w-full overflow-hidden">
             <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/50 to-transparent"></div>
@@ -220,7 +202,7 @@ export default component$(() => {
                       data.value.confirmed.data.map((attendee) => (
                         <div
                           key={attendee.requestId}
-                          class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all hover:shadow-md"
+                          class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all"
                         >
                           <img
                             src={

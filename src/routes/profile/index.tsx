@@ -58,7 +58,6 @@ export default component$(() => {
   const eventsResource = useGetAllReferenceEvents(); // Fetched reference events
 
   // --- State Signals and Stores ---
-  console.log(data.value.activeRequest);
   const showEdit = useSignal(false);
   const profileStore = useStore({
     name: "",
@@ -204,6 +203,7 @@ export default component$(() => {
             upcomingEvents={upcomingEvents.value}
             hostedEvents={hostedEvents.value}
             savedPlaces={savedPlaces.value} // Use dynamic savedPlaces from loader
+            requests={data.value.activeRequest || []}
           />
 
           {data.value.activeRequest && data.value.activeRequest.length > 0 && (

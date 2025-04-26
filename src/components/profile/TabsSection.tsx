@@ -3,8 +3,13 @@ import {
   CalendarIcon as Calendar,
   UserPlusIcon as UserPlus,
   HeartIcon as Heart,
+  BellIcon as Bell,
 } from "lucide-qwik";
-import type { DetailedEventType, PlaceType } from "~/routes/profile/types";
+import type {
+  DetailedEventType,
+  PlaceType,
+  ActiveRequestType,
+} from "~/routes/profile/types";
 import { EventCard } from "./EventCard";
 import { PlaceCard } from "./PlaceCard";
 import { EmptyState } from "./EmptyState";
@@ -13,6 +18,7 @@ interface TabsSectionProps {
   upcomingEvents: DetailedEventType[];
   hostedEvents: DetailedEventType[];
   savedPlaces: PlaceType[];
+  requests?: ActiveRequestType[];
 }
 
 /**
@@ -39,7 +45,7 @@ interface TabsSectionProps {
  * ```
  */
 export const TabsSection = component$<TabsSectionProps>(
-  ({ upcomingEvents, hostedEvents, savedPlaces }) => {
+  ({ upcomingEvents, hostedEvents, savedPlaces, requests = [] }) => {
     const activeTab = useSignal("upcoming");
 
     // Ensure icons match IconComponent type
@@ -66,6 +72,12 @@ export const TabsSection = component$<TabsSectionProps>(
         label: "Saved Places",
         icon: Heart,
         count: savedPlaces.length,
+      },
+      {
+        id: "requests",
+        label: "Requests",
+        icon: Bell,
+        count: requests.length,
       },
     ];
 
@@ -170,6 +182,17 @@ export const TabsSection = component$<TabsSectionProps>(
                 title="No Saved Places"
                 message="Discover and save your favorite spots to easily find them later."
                 actionButton={{ label: "Browse Spaces", href: "/spaces" }} // Assuming a browse spaces route
+              />
+            ))}
+
+          {activeTab.value === "requests" &&
+            (requests.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+            ) : (
+              <EmptyState
+                context="BellIcon" // Use Bell icon context for requests
+                title="No Pending Requests"
+                message="You don't have any pending requests at the moment."
               />
             ))}
         </div>

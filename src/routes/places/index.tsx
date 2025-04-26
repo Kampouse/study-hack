@@ -1,85 +1,302 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
+import { routeLoader$, Link } from "@builder.io/qwik-city";
+import { MapPinIcon as MapPin, FilterIcon, XIcon } from "lucide-qwik";
+import { PlaceCard } from "~/routes/(app)/home/place-card";
+import { QueryPlaces } from "~/api/Query";
+import { drizzler } from "~/api/drizzled";
+
+export const head = {
+  title: "S&H | Places",
+};
+
+export const usePlaces = routeLoader$(async (event) => {
+  const client = await drizzler(event);
+  const data = await QueryPlaces({
+    event: event,
+    client: client,
+    params: {
+      limit: 100, // Increased limit for the dedicated places page
+    },
+  });
+  return { data: data.data, success: data.success };
+});
 
 export default component$(() => {
-  // https://maps.googleapis.com/maps/api/geocode/json
+  const places = usePlaces();
+  const showMap = useSignal(false);
+  const searchTerm = useSignal("");
+  const filterCategory = useSignal("all");
+  const visiblePlacesCount = useSignal(12);
+  const sidebarOpen = useSignal(false);
+
+  // Transform places data for use with PlaceCard component
+  const placesDataForCards =
+    places.value.data?.map((place) => {
+      return {
+        id: place.Places?.PlaceID,
+        name: place.Places?.Name,
+        image: place.Places?.ImageURL as string,
+        badge: "New",
+        location: place.Places?.Address,
+        description: place.Places?.Description,
+        tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
+        creator: place.Users?.Username, // Placeholder
+        rating: place.Places?.Rating || 4.8, // Fetch real rating
+        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
+      };
+    }) || [];
+
+  // Filter places based on search term and category
+  const filteredPlaces = placesDataForCards.filter((place) => {
+    const matchesSearch =
+      place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      place.description
+        ?.toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
+      place.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+
+    const matchesCategory =
+      filterCategory.value === "all" ||
+      (filterCategory.value === "new" && place.badge === "New") ||
+      (filterCategory.value === "popular" && place.badge === "Popular");
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const allPlacesLoaded = visiblePlacesCount.value >= filteredPlaces.length;
+
   return (
-    <div class="container mx-auto px-4 py-8">
-      <h2 class="mb-6 text-2xl font-bold">Discover New and Popular Places</h2>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Recent Place */}
-        <div class="h-fit overflow-hidden rounded-xl bg-white shadow-md">
-          <img
-            width="1536"
-            height="1024"
-            class="h-48 w-full object-cover"
-            src="https://nashvilleguru.com/officialwebsite/wp-content/uploads/2022/09/Nashville-Coffee-Shops-1536x1024.jpg"
-            alt="New place"
-          />
-          <div class="p-6">
-            <div class="text-sm font-semibold uppercase tracking-wide text-indigo-500">
-              New
-            </div>
-            <a
-              href="#"
-              class="mt-2 block text-xl font-semibold text-gray-900 hover:underline"
+    <div class="flex min-h-screen flex-col bg-[#FFF8F0] md:flex-row">
+      {/* Mobile Filter Button */}
+      <div class="fixed bottom-4 right-4 z-30 md:hidden">
+        <button
+          onClick$={() => (sidebarOpen.value = true)}
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-[#D98E73] text-white shadow-lg"
+          aria-label="Open filters"
+        >
+          <FilterIcon class="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Mobile Search Overlay */}
+      {sidebarOpen.value && (
+        <div
+          class="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          onClick$={() => (sidebarOpen.value = false)}
+        ></div>
+      )}
+
+      {/* Left Search Panel - Hidden on mobile by default, revealed with slide-in animation */}
+      <div
+        class={`md:min-w-80 fixed inset-y-0 left-0 z-50 w-80  transform overflow-y-auto border-r border-[#E6D7C3] bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out md:sticky md:left-0 md:top-0 md:z-0 md:h-screen md:translate-x-0 ${
+          sidebarOpen.value ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div class="flex items-center justify-between md:mt-20">
+          <h2 class="text-xl font-semibold text-[#5B3E29]">Find Places</h2>
+          <button
+            onClick$={() => (sidebarOpen.value = false)}
+            class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 md:hidden"
+            aria-label="Close filters"
+          >
+            <XIcon class="h-6 w-6" />
+          </button>
+        </div>
+
+        <div class="mt-6">
+          <div class="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#D98E73]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              Skyline Terrace
-            </a>
-            <p class="mt-3 text-gray-500">
-              A rooftop haven with panoramic city views, perfect for sunset
-              gazing.
-            </p>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search places..."
+              class="h-12 w-full rounded-lg border-2 border-[#E6D7C3] bg-white py-3 pl-10 pr-4 text-[#5B3E29] placeholder-[#A99D8F] shadow-sm transition-all focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+              bind:value={searchTerm}
+            />
           </div>
         </div>
 
-        {/* Popular Place */}
-        <div class="overflow-hidden rounded-xl bg-white shadow-md">
-          <img
-            class="h-48 w-full object-cover"
-            src="/img/popular-place.jpg"
-            alt="Popular place"
-          />
-          <div class="p-6">
-            <div class="text-sm font-semibold uppercase tracking-wide text-orange-500">
-              Popular
-            </div>
-            <a
-              href="#"
-              class="mt-2 block text-xl font-semibold text-gray-900 hover:underline"
+        <div class="mt-6 space-y-6">
+          <div class="space-y-3">
+            <h3 class="text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
+              Filter By
+            </h3>
+            <select
+              class="h-10 w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+              bind:value={filterCategory}
             >
-              Artisan Alley
-            </a>
-            <p class="mt-3 text-gray-500">
-              A vibrant street filled with local art galleries and boutique
-              shops.
-            </p>
+              <option value="all">All Places</option>
+              <option value="new">New Places</option>
+              <option value="popular">Popular Places</option>
+            </select>
           </div>
-        </div>
 
-        {/* Featured Place */}
-        <div class="overflow-hidden rounded-xl bg-white shadow-md">
-          <img
-            class="h-48 w-full object-cover"
-            src="/img/featured-place.jpg"
-            alt="Featured place"
-          />
-          <div class="p-6">
-            <div class="text-sm font-semibold uppercase tracking-wide text-green-500">
-              Featured
+          <div class="space-y-3">
+            <h3 class="text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
+              Amenities
+            </h3>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-[#E6D7C3] text-[#D98E73]"
+                />
+                <span class="ml-2 text-sm text-[#5B3E29]">
+                  Quiet Environment
+                </span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-[#E6D7C3] text-[#D98E73]"
+                />
+                <span class="ml-2 text-sm text-[#5B3E29]">WiFi Available</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-[#E6D7C3] text-[#D98E73]"
+                />
+                <span class="ml-2 text-sm text-[#5B3E29]">Coffee Served</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-[#E6D7C3] text-[#D98E73]"
+                />
+                <span class="ml-2 text-sm text-[#5B3E29]">Study-Friendly</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-[#E6D7C3] text-[#D98E73]"
+                />
+                <span class="ml-2 text-sm text-[#5B3E29]">
+                  Outlets Available
+                </span>
+              </label>
             </div>
-            <a
-              href="#"
-              class="mt-2 block text-xl font-semibold text-gray-900 hover:underline"
+          </div>
+
+          <div class="border-t border-[#E6D7C3] pt-4">
+            <button
+              type="button"
+              onClick$={() => {
+                showMap.value = true;
+                sidebarOpen.value = false; // Close sidebar when opening map on mobile
+              }}
+              class="inline-flex h-10 w-full items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             >
-              Eco Park
-            </a>
-            <p class="mt-3 text-gray-500">
-              An urban green space promoting sustainability and outdoor
-              activities.
-            </p>
+              <MapPin class="mr-2 h-4 w-4" />
+              View on Map
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Main Content Area */}
+      <div class="flex-1 overflow-auto">
+        <section class="container px-4 py-8 pt-16 md:px-6 md:pt-24">
+          {filteredPlaces.length > 0 ? (
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredPlaces
+                .slice(0, visiblePlacesCount.value)
+                .map((place) => (
+                  <PlaceCard key={place.id} place={place as any} />
+                ))}
+
+              {/* Always include the share card at the end */}
+              {visiblePlacesCount.value < filteredPlaces.length ||
+                filteredPlaces.length === 0 ||
+                filteredPlaces.length % 4 !== 0}
+            </div>
+          ) : (
+            <div class="rounded-lg bg-[#F8EDE3] p-8 text-center">
+              <h3 class="text-lg font-semibold text-[#5B3E29]">
+                No places found
+              </h3>
+              <p class="mt-2 text-[#6D5D4E]">
+                Try adjusting your search terms or filters, or be the first to
+                share a new place!
+              </p>
+              <div class="mt-6">
+                <Link
+                  href="/places/new"
+                  class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                >
+                  Share a New Place
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Load more button */}
+          {!allPlacesLoaded && filteredPlaces.length > 0 && (
+            <div class="mt-10 text-center">
+              <button
+                type="button"
+                onClick$={() => {
+                  visiblePlacesCount.value += 8; // Load 8 more places
+                }}
+                class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              >
+                Load More Places
+              </button>
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* Map modal (simplified - you would integrate with your existing map component) */}
+      {showMap.value && (
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div class="relative h-[90vh] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
+            <div class="mb-2 flex items-center justify-between border-b pb-2">
+              <h2 class="text-xl font-semibold text-[#5B3E29]">
+                Locations Map
+              </h2>
+              <button
+                onClick$={() => (showMap.value = false)}
+                class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+                aria-label="Close map"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div class="h-[calc(90vh-6rem)] w-full overflow-hidden rounded-md border border-[#E6D7C3]">
+              {/* Map component would go here - similar to what's in home/index.tsx */}
+              <div class="flex h-full items-center justify-center bg-[#F8EDE3]">
+                <p class="text-[#5B3E29]">Map View Coming Soon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 });

@@ -4,11 +4,6 @@ import Google from "@auth/qwik/providers/google";
 
 export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
   (params) => ({
-    session: {
-      strategy: "jwt",
-      secure: true,
-    },
-
     providers: [
       GitHub({
         clientId: params.env.get("GITHUB_ID"),

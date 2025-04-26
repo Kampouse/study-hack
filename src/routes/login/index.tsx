@@ -56,20 +56,16 @@ export default component$(() => {
 
           {/* Auth buttons */}
           <div class="mt-8 space-y-4">
-            <Form action={signin} class="w-full">
-              <input type="hidden" name="providerId" value="github" />
-              <input
-                type="hidden"
-                name="options.redirectTo"
-                value="/auth/signedin"
-              />
-              <button class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#2D333B] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(45,51,59,0.4)]">
-                <GithubIcon />
-                <span class="text-lg font-semibold">Continue with GitHub</span>
-                <span class="absolute inset-0 z-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-10"></span>
-              </button>
-            </Form>
-
+            <button
+              onClick$={() => {
+                signin.submit({ providerId: "github" });
+              }}
+              class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#2D333B] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(45,51,59,0.4)]"
+            >
+              <GithubIcon />
+              <span class="text-lg font-semibold">Continue with GitHub</span>
+              <span class="absolute inset-0 z-0 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-10"></span>
+            </button>
             <Form action={signin} class="w-full">
               <input type="hidden" name="providerId" value="google" />
               <input

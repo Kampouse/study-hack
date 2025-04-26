@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import {
   CalendarIcon as Calendar,
   ClockIcon as Clock,
@@ -35,7 +36,7 @@ export const DetailedEventCard = component$(
               width={400}
               height={300}
               alt={props.event.title}
-              class=" h-96 w-full object-cover"
+              class=" h-72 w-full object-cover"
             />
             <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
               {props.event.badge}
@@ -109,12 +110,13 @@ export const DetailedEventCard = component$(
                   +{props.event.attendees - 3}
                 </div>
               </div>
-              <button
+              <Link
+                href={`/join/${props.event.id}`}
                 type="button"
                 class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
                 Join Session
-              </button>
+              </Link>
             </div>
           </div>
         </div>
