@@ -24,10 +24,7 @@ export const EventCard = component$<EventCardProps>((props) => {
   };
 
   const user = props.data || defaultUserCard;
-  const onFocused = $(() => {
-    console.log("focused");
-  });
-  console.log("event card", props.eventId);
+  const onFocused = $(() => {});
   return (
     <div
       id={user.name}

@@ -2,8 +2,10 @@ import { component$, useSignal } from "@builder.io/qwik";
 import {
   CalendarIcon as Calendar,
   UserPlusIcon as UserPlus,
-  HeartIcon as Heart,
   BellIcon as Bell,
+  ClockIcon as Clock,
+  BookmarkIcon as Bookmark,
+  MapPinIcon,
 } from "lucide-qwik";
 import type {
   DetailedEventType,
@@ -17,35 +19,45 @@ import { EmptyState } from "./EmptyState";
 interface TabsSectionProps {
   upcomingEvents: DetailedEventType[];
   hostedEvents: DetailedEventType[];
+  pastEvents: DetailedEventType[];
   savedPlaces: PlaceType[];
+  likedPlaces: PlaceType[];
   requests?: ActiveRequestType[];
 }
 
 /**
  * Renders a tabbed interface to display lists of upcoming events, hosted events,
- * and saved places. Uses `EventCard` and `PlaceCard` for display, and `EmptyState`
+ * past events, saved places, liked places, and requests. Uses `EventCard` and `PlaceCard` for display, and `EmptyState`
  * when a list is empty.
  *
  * Takes:
  * - `upcomingEvents`: An array of `DetailedEventType` objects for events the user is attending.
  * - `hostedEvents`: An array of `DetailedEventType` objects for events the user is hosting.
+ * - `pastEvents`: An array of `DetailedEventType` objects for events the user has attended in the past.
  * - `savedPlaces`: An array of `PlaceType` objects for places the user has saved.
+ * - `likedPlaces`: An array of `PlaceType` objects for places the user has liked.
+ * - `requests`: An array of `ActiveRequestType` objects for pending requests.
  *
  * Example Usage:
  * ```tsx
  * const upcoming = useComputed$(() => [ ...eventData... ]);
  * const hosted = useComputed$(() => [ ...eventData... ]);
- * const places = useComputed$(() => [ ...placeData... ]);
+ * const past = useComputed$(() => [ ...pastEventData... ]);
+ * const savedPlaces = useComputed$(() => [ ...placeData... ]);
+ * const likedPlaces = useComputed$(() => [ ...likedPlaceData... ]);
  *
  * <TabsSection
  *   upcomingEvents={upcoming.value}
  *   hostedEvents={hosted.value}
- *   savedPlaces={places.value}
+ *   pastEvents={past.value}
+ *   savedPlaces={savedPlaces.value}
+ *   likedPlaces={likedPlaces.value}
+ *   requests={activeRequests}
  * />
  * ```
  */
 export const TabsSection = component$<TabsSectionProps>(
-  ({ upcomingEvents, hostedEvents, savedPlaces, requests = [] }) => {
+  ({ upcomingEvents, hostedEvents, pastEvents, savedPlaces, likedPlaces, requests = [] }) => {
     const activeTab = useSignal("upcoming");
 
     // Ensure icons match IconComponent type
@@ -68,10 +80,22 @@ export const TabsSection = component$<TabsSectionProps>(
         count: hostedEvents.length,
       },
       {
+        id: "past",
+        label: "Past Events",
+        icon: Clock,
+        count: pastEvents.length,
+      },
+      {
         id: "saved",
         label: "Saved Places",
-        icon: Heart,
+        icon: MapPinIcon,
         count: savedPlaces.length,
+      },
+      {
+        id: "liked",
+        label: "Liked Places",
+        icon: Bookmark,
+        count: likedPlaces.length,
       },
       {
         id: "requests",
@@ -169,6 +193,25 @@ export const TabsSection = component$<TabsSectionProps>(
               />
             ))}
 
+          {activeTab.value === "past" &&
+            (pastEvents.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {pastEvents.map((event) => (
+                  <EventCard
+                    key={event.eventID ?? event.id}
+                    event={event}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                context="CalendarIcon"
+                title="No Past Events"
+                message="You haven't attended any events yet. Join some events to build your history!"
+                actionButton={{ label: "Find Events", href: "/events" }}
+              />
+            ))}
+
           {activeTab.value === "saved" &&
             (savedPlaces.length > 0 ? (
               <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -182,6 +225,22 @@ export const TabsSection = component$<TabsSectionProps>(
                 title="No Saved Places"
                 message="Discover and save your favorite spots to easily find them later."
                 actionButton={{ label: "Browse Spaces", href: "/spaces" }} // Assuming a browse spaces route
+              />
+            ))}
+
+          {activeTab.value === "liked" &&
+            (likedPlaces.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {likedPlaces.map((place) => (
+                  <PlaceCard key={place.placeId ?? place.id} place={place} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                context="MapPinIcon"
+                title="No Liked Places"
+                message="You haven't liked any places yet. Browse places and click the heart icon to add them here."
+                actionButton={{ label: "Discover Places", href: "/places" }}
               />
             ))}
 

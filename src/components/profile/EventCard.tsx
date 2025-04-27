@@ -78,7 +78,6 @@ export const EventCard = component$<EventCardProps>(
 
     // Use the improved date formatting function
     const { displayDate, displayTime } = formatEventDate(event.date);
-    console.log(displayDate, displayTime);
     // Status styles remain the same
     const statusStyles: Record<string, string> = {
       Host: "bg-[#E6F2FF] text-[#5B8CB7]",

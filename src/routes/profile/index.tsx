@@ -20,6 +20,79 @@ import type {
   DetailedEventType,
 } from "./types";
 
+// 3/31/2025 at 8:00 AM
+//
+//
+
+const formatEventDate = (dateString: string) => {
+  try {
+    // Parse the date string "3/31/2025 at 8:00 AM" format
+    const dateTimeParts = dateString.split(" at ");
+    const datePart = dateTimeParts[0];
+    const timePart = dateTimeParts[1];
+
+    // Create a valid date object from the date part
+    const dateObj = new Date(datePart);
+
+    // Set the time part if available
+    if (timePart) {
+      const timeMatch = timePart.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (timeMatch) {
+        const hour = parseInt(timeMatch[1], 10);
+        const minute = parseInt(timeMatch[2], 10);
+        const ampm = timeMatch[3].toUpperCase();
+
+        // Convert to 24-hour format
+        let hours24 = hour;
+        if (ampm === "PM" && hour < 12) hours24 += 12;
+        if (ampm === "AM" && hour === 12) hours24 = 0;
+
+        // Round minutes to nearest 15
+        const roundedMinutes = Math.ceil(minute / 15) * 15;
+        let adjustedHour = hours24;
+
+        // Handle case where minutes round to 60
+        if (roundedMinutes === 60) {
+          adjustedHour = (hours24 + 1) % 24;
+        }
+
+        // Set hours and minutes on the date object
+        dateObj.setHours(adjustedHour);
+        dateObj.setMinutes(roundedMinutes === 60 ? 0 : roundedMinutes);
+        dateObj.setSeconds(0);
+        dateObj.setMilliseconds(0);
+      }
+    }
+
+    // Generate display strings
+    const displayDate = dateObj.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+    const displayTime = dateObj.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    // Return both the formatted date object for comparison and display strings
+    return {
+      date: dateObj,
+      displayDate,
+      displayTime,
+    };
+  } catch (e) {
+    console.error("Error parsing date:", e);
+    return {
+      date: new Date(), // Return current date as fallback
+      displayDate: "",
+      displayTime: "",
+    };
+  }
+};
+
 // --- UI Components ---
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { TabsSection } from "@/components/profile/TabsSection";
@@ -33,7 +106,6 @@ export const useGetAllReferenceEvents = routeLoader$(
     try {
       // Assume getAllReferenceEvents returns RawEventType[] or something castable
       const events: unknown = await getAllReferenceEvents(event);
-
       // Add runtime validation
       if (!Array.isArray(events)) {
         console.warn("getAllReferenceEvents did not return an array:", events);
@@ -134,14 +206,49 @@ export default component$(() => {
   });
 
   const hostedEvents = useComputed$(() =>
-    allEvents.value.filter((event) => event.role === "Host"),
+    allEvents.value.filter((event) => event.role === "host"),
   );
+  const currentDate = new Date();
+  // Filter for upcoming events (future date)
   const upcomingEvents = useComputed$(() =>
-    allEvents.value.filter((event) => event.role !== "Host"),
-  ); // Assuming upcoming means events user attends
+    allEvents.value.filter((event) => {
+      try {
+        const eventDate = formatEventDate(event.date).date;
+        return (
+          !isNaN(formatEventDate(event.date).date.getTime()) &&
+          eventDate > currentDate &&
+          event.role !== "Host"
+        );
+      } catch (e) {
+        return false; // Invalid dates are not upcoming
+      }
+    }),
+  );
+
+  // Filter for past events (date has passed)
+  const pastEvents = useComputed$(() =>
+    allEvents.value.filter((event) => {
+      try {
+        const eventDate = formatEventDate(event.date).date;
+        return (
+          !isNaN(eventDate.getTime()) &&
+          eventDate < currentDate &&
+          event.role !== "Host"
+        );
+      } catch (e) {
+        return false; // Invalid dates are not past
+      }
+    }),
+  );
 
   // Saved places from the routeLoader
   const savedPlaces = useComputed$(() => {
+    return [];
+  });
+
+  // Liked places - similar structure to saved places but different source
+  const likedPlaces = useComputed$(() => {
+    // In a real implementation, this would pull from the API
     return [];
   });
 
@@ -202,7 +309,9 @@ export default component$(() => {
           <TabsSection
             upcomingEvents={upcomingEvents.value}
             hostedEvents={hostedEvents.value}
-            savedPlaces={savedPlaces.value} // Use dynamic savedPlaces from loader
+            pastEvents={pastEvents.value}
+            savedPlaces={savedPlaces.value}
+            likedPlaces={likedPlaces.value}
             requests={data.value.activeRequest || []}
           />
 
