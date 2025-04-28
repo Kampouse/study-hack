@@ -1,11 +1,12 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { useLocation } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
 import {
   CalendarIcon as Calendar,
   UserPlusIcon as UserPlus,
   BellIcon as Bell,
   ClockIcon as Clock,
   BookmarkIcon as Bookmark,
-  MapPinIcon,
 } from "lucide-qwik";
 import type {
   DetailedEventType,
@@ -57,8 +58,17 @@ interface TabsSectionProps {
  * ```
  */
 export const TabsSection = component$<TabsSectionProps>(
-  ({ upcomingEvents, hostedEvents, pastEvents, savedPlaces, likedPlaces, requests = [] }) => {
-    const activeTab = useSignal("upcoming");
+  ({
+    upcomingEvents,
+    hostedEvents,
+    pastEvents,
+    likedPlaces,
+    requests = [],
+  }) => {
+    const loc = useLocation();
+
+    const tab = loc.url.searchParams.get("tab") ?? "upcoming";
+    const activeTab = useSignal(tab);
 
     // Ensure icons match IconComponent type
     const tabs: {
@@ -80,17 +90,12 @@ export const TabsSection = component$<TabsSectionProps>(
         count: hostedEvents.length,
       },
       {
-        id: "past",
-        label: "Past Events",
-        icon: Clock,
-        count: pastEvents.length,
+        id: "requests",
+        label: "Requests",
+        icon: Bell,
+        count: requests.length,
       },
-      {
-        id: "saved",
-        label: "Saved Places",
-        icon: MapPinIcon,
-        count: savedPlaces.length,
-      },
+
       {
         id: "liked",
         label: "Liked Places",
@@ -98,10 +103,10 @@ export const TabsSection = component$<TabsSectionProps>(
         count: likedPlaces.length,
       },
       {
-        id: "requests",
-        label: "Requests",
-        icon: Bell,
-        count: requests.length,
+        id: "past",
+        label: "Past Events",
+        icon: Clock,
+        count: pastEvents.length,
       },
     ];
 
@@ -121,7 +126,8 @@ export const TabsSection = component$<TabsSectionProps>(
               const tabCount = tab.count;
 
               return (
-                <button
+                <Link
+                  href={"/profile?tab=" + tabId}
                   key={tabId}
                   onClick$={() => (activeTab.value = tabId)} // Use captured primitive value
                   class={`group inline-flex shrink-0 items-center whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium transition-colors duration-150 ease-in-out focus:outline-none ${
@@ -151,7 +157,7 @@ export const TabsSection = component$<TabsSectionProps>(
                       {tabCount}
                     </span>
                   )}
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -197,10 +203,7 @@ export const TabsSection = component$<TabsSectionProps>(
             (pastEvents.length > 0 ? (
               <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {pastEvents.map((event) => (
-                  <EventCard
-                    key={event.eventID ?? event.id}
-                    event={event}
-                  />
+                  <EventCard key={event.eventID ?? event.id} event={event} />
                 ))}
               </div>
             ) : (
@@ -211,20 +214,14 @@ export const TabsSection = component$<TabsSectionProps>(
                 actionButton={{ label: "Find Events", href: "/events" }}
               />
             ))}
-
-          {activeTab.value === "saved" &&
-            (savedPlaces.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {savedPlaces.map((place) => (
-                  <PlaceCard key={place.placeId ?? place.id} place={place} />
-                ))}
-              </div>
+          {activeTab.value === "requests" &&
+            (requests.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
             ) : (
               <EmptyState
-                context="MapPinIcon" // Use context instead of icon (Heart mapped to MapPinIcon context for places)
-                title="No Saved Places"
-                message="Discover and save your favorite spots to easily find them later."
-                actionButton={{ label: "Browse Spaces", href: "/spaces" }} // Assuming a browse spaces route
+                context="BellIcon" // Use Bell icon context for requests
+                title="No Pending Requests"
+                message="You don't have any pending requests at the moment."
               />
             ))}
 
@@ -241,17 +238,6 @@ export const TabsSection = component$<TabsSectionProps>(
                 title="No Liked Places"
                 message="You haven't liked any places yet. Browse places and click the heart icon to add them here."
                 actionButton={{ label: "Discover Places", href: "/places" }}
-              />
-            ))}
-
-          {activeTab.value === "requests" &&
-            (requests.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
-            ) : (
-              <EmptyState
-                context="BellIcon" // Use Bell icon context for requests
-                title="No Pending Requests"
-                message="You don't have any pending requests at the moment."
               />
             ))}
         </div>

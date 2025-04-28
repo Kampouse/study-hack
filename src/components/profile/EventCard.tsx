@@ -169,20 +169,18 @@ export const EventCard = component$<EventCardProps>(
             {event.description || "No description provided."}
           </p>
           {/* Button Area - Responsive layout (stack vertically on small screens) */}
-          <div class="mt-auto flex flex-col items-stretch justify-start gap-3 pt-4 sm:flex-row sm:items-center">
+          <div class="mt-auto flex flex-row items-stretch justify-start gap-3 pt-4">
             {isHosted ? (
               <>
                 <Link
                   href={`/event/edit/${event.eventID ?? event.id}`}
-                  // Full width on mobile, auto width on sm+ but takes available space
-                  class="w-full whitespace-nowrap rounded-lg border border-[#D98E73]/70 px-4 py-2.5 text-center text-sm font-medium text-[#D98E73] transition-colors duration-200 hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2 sm:flex-1" // Adjusted padding, focus ring
+                  class="w-full whitespace-nowrap rounded-lg border border-[#D98E73]/70 px-4 py-3 text-center text-sm font-medium text-[#D98E73] transition-colors duration-200 hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
                 >
                   Edit
                 </Link>
                 <Link
                   href={`/event/manage/${event.eventID ?? event.id}`}
-                  // Full width on mobile, auto width on sm+ but takes available space
-                  class="w-full whitespace-nowrap rounded-lg bg-[#D98E73] px-4 py-2.5 text-center text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2 sm:flex-1" // Adjusted padding, focus ring
+                  class="w-full whitespace-nowrap rounded-lg bg-[#D98E73] px-4 py-3 text-center text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
                 >
                   Manage
                 </Link>
@@ -191,8 +189,7 @@ export const EventCard = component$<EventCardProps>(
               <>
                 <Link
                   href={`/details/${event.eventID ?? event.id}`}
-                  // Keep button left-aligned, adjust padding
-                  class="self-start rounded-lg bg-[#D98E73] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2" // Adjusted padding, focus ring
+                  class="w-full rounded-lg bg-[#D98E73] px-5 py-3 text-center text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
                 >
                   Details
                 </Link>

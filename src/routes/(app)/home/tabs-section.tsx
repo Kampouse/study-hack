@@ -1,4 +1,5 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import { ArrowRightIcon as ArrowRight } from "lucide-qwik";
 import { PlaceCard } from "./place-card";
 import { SharePlaceCard } from "./share-place-card";
@@ -7,6 +8,7 @@ import { CreateEventCard } from "./create-event-card";
 import { DetailedEventCard } from "./detailed-event-card";
 import { LargeCreateEventCard } from "./large-create-event-card";
 import { SearchFilterBar } from "./search-filter";
+import { useLocation } from "@builder.io/qwik-city";
 
 export interface TabsSectionProps {
   placesApiData: any[];
@@ -20,7 +22,17 @@ const INITIAL_EVENTS_COUNT = 4; // Show 4 events initially
 const EVENTS_INCREMENT = 4;
 
 export const TabsSection = component$((props: TabsSectionProps) => {
-  const activeTab = useSignal("all"); // Initialize active tab state
+  const loc = useLocation();
+
+  // Get the active tab from URL or default to "all"
+  const activeTab = useSignal(loc.url.searchParams.get("tab") ?? "all");
+
+  // Keep tab state in sync with URL parameter
+  useTask$(({ track }) => {
+    const tab = track(() => loc.url.searchParams.get("tab"));
+    activeTab.value = tab ?? "all";
+  });
+
   const visiblePlacesCount = useSignal(INITIAL_PLACES_COUNT);
   const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT);
 
@@ -33,36 +45,36 @@ export const TabsSection = component$((props: TabsSectionProps) => {
       <div class="w-full">
         {/* Tab Triggers */}
         <div class="mb-8 rounded-lg bg-[#F8EDE3] p-1">
-          <button
-            onClick$={() => (activeTab.value = "all")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+          <Link
+            href="/home?tab=all"
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
               activeTab.value === "all"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
             }`}
           >
             All
-          </button>
-          <button
-            onClick$={() => (activeTab.value = "events")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+          </Link>
+          <Link
+            href="/home?tab=events"
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
               activeTab.value === "events"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
             }`}
           >
             Events
-          </button>
-          <button
-            onClick$={() => (activeTab.value = "places")}
-            class={`rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+          </Link>
+          <Link
+            href="/home?tab=places"
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
               activeTab.value === "places"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
             }`}
           >
             Places
-          </button>
+          </Link>
         </div>
 
         <SearchFilterBar />
@@ -74,16 +86,12 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             <div>
               <div class="mb-6 flex items-end justify-between">
                 <h2 class="text-2xl font-bold text-[#5B3E29]">Cozy Places</h2>
-                <a
-                  href="/places" // Link to a dedicated places page
+                <Link
+                  href="/places"
                   class="flex items-center text-[#D98E73] hover:underline"
-                  onClick$={(e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    activeTab.value = "places"; // Switch to the places tab
-                  }}
                 >
                   View all places <ArrowRight class="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
               <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Show first 3 places + Share Card */}
@@ -100,16 +108,12 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                 <h2 class="text-2xl font-bold text-[#5B3E29]">
                   Upcoming Events
                 </h2>
-                <a
-                  href="/events" // Link to a dedicated events page
+                <Link
+                  href="/events"
                   class="flex items-center text-[#D98E73] hover:underline"
-                  onClick$={(e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    activeTab.value = "events"; // Switch to the events tab
-                  }}
                 >
                   View all events <ArrowRight class="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
               <div class="grid gap-6 md:grid-cols-2">
                 {/* Show first 2 events + Create Card */}

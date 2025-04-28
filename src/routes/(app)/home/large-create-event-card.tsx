@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import { CalendarIcon as Calendar } from "lucide-qwik";
 
 export const LargeCreateEventCard = component$(() => {
@@ -15,12 +16,12 @@ export const LargeCreateEventCard = component$(() => {
           Have a project you're working on? Invite others to join you at your
           favorite cozy spot!
         </p>
-        <button
-          type="button"
+        <Link
+          href="/create-event"
           class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
         >
           Create Event
-        </button>
+        </Link>
       </div>
     </div>
   );
