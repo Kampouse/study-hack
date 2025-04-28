@@ -127,6 +127,7 @@ export const TabsSection = component$<TabsSectionProps>(
 
               return (
                 <Link
+                  scroll={false}
                   href={"/profile?tab=" + tabId}
                   key={tabId}
                   onClick$={() => (activeTab.value = tabId)} // Use captured primitive value

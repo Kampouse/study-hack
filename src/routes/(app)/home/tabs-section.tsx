@@ -41,13 +41,14 @@ export const TabsSection = component$((props: TabsSectionProps) => {
   const allEventsLoaded = visibleEventsCount.value >= props.eventsData.length;
 
   return (
-    <section class=" px-4 py-8 pt-0 md:px-6">
+    <section class="px-4 py-8 pt-0 md:px-6">
       <div class="w-full">
         {/* Tab Triggers */}
-        <div class="mb-8 rounded-lg bg-[#F8EDE3] p-1">
+        <div class="relative mb-8 rounded-lg bg-[#F8EDE3] p-1">
           <Link
             href="/home?tab=all"
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+            scroll={false}
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "all"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
@@ -56,8 +57,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             All
           </Link>
           <Link
+            scroll={false}
             href="/home?tab=events"
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "events"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
@@ -66,8 +68,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             Events
           </Link>
           <Link
+            scroll={false}
             href="/home?tab=places"
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all ${
+            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "places"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
