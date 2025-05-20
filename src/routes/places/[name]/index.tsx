@@ -105,8 +105,8 @@ export default component$(() => {
                 width={1200}
                 height={400}
               />
-              <div class="absolute bottom-0 left-0 z-20 p-8 text-white">
-                <h1 class="text-4xl font-bold tracking-tight drop-shadow-lg sm:text-5xl">
+              <div class="absolute bottom-0 left-0 z-20 w-full bg-gradient-to-t from-black/70 p-8">
+                <h1 class="text-4xl font-bold tracking-tight text-white drop-shadow-lg sm:text-5xl">
                   {place.value.data?.Name}
                 </h1>
                 <div class="mt-3 flex items-center gap-2">
