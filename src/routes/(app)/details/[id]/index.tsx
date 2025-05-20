@@ -333,8 +333,8 @@ export default component$(() => {
                           <p class="text-sm text-gray-600">
                             {data.value.event.data.location.Description}
                           </p>
-                          <a
-                            href="#"
+                          <Link
+                            href={`/places/${data.value.event.data.location.Name}`}
                             class="mt-4 inline-flex items-center text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
                           >
                             <span>Get directions</span>
@@ -350,7 +350,7 @@ export default component$(() => {
                                 clip-rule="evenodd"
                               />
                             </svg>
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     )}
@@ -400,7 +400,9 @@ export default component$(() => {
                           Attendees:
                         </span>
                         <div class="text-[#D98E73]">
-                          {data.value.confirmed.data?.length || 0} registered
+                          {data.value.confirmed.data?.length
+                            ? `${data.value.confirmed.data.length} registered`
+                            : "Be the first to join!"}
                         </div>
                       </div>
                     </li>

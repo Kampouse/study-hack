@@ -97,7 +97,7 @@ export const EventCard = component$<EventCardProps>(
             width={400} // Keep explicit dimensions for performance
             height={250}
             alt={`Image for ${event.name}`}
-            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            class="h-full w-full object-cover transition-transform duration-500 "
             loading="lazy" // Added lazy loading
             onError$={(e) => {
               (e.target as HTMLImageElement).src = JustRnD;

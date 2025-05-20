@@ -9,11 +9,11 @@ export const CommunitySection = component$(() => {
             <div class="md:w-1/3">
               <div class="overflow-hidden rounded-xl">
                 <img
-                  src=""
+                  src="https://static.vecteezy.com/system/resources/previews/017/458/891/large_2x/light-bulb-with-shining-light-cartoon-style-flat-style-hand-drawn-style-doodle-style-symbol-of-creativity-innovation-inspiration-invention-and-ideas-illustration-vector.jpg"
                   width={400}
                   height={300}
                   alt="Community suggestions"
-                  class="h-auto w-full"
+                  class="h-56 w-56"
                 />
               </div>
             </div>

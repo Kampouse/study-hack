@@ -10,7 +10,6 @@ import {
 import { routeLoader$ } from "@builder.io/qwik-city";
 // --- Layout & API Imports ---
 import { useQueries } from "./layout"; // Assuming layout defines useQueries returning QueriesDataType
-import { ProfileForm } from "~/components/profile"; // Assuming this component exists
 import { getAllReferenceEvents } from "~/api/EndPoint"; // Assuming API endpoint functions exist
 // --- Type Definitions ---
 import type {
@@ -285,24 +284,6 @@ export default component$(() => {
       <ProfileHeader userProfile={userProfile.value} showEdit={showEdit} />
       {/* Conditionally render ProfileForm with transition */}
       {/* Add a container for positioning and potential animations */}
-      <div
-        // Increased padding when shown
-        class={`container px-4 transition-all duration-300 ease-in-out md:px-6 ${showEdit.value ? "max-h-[1000px] py-10 opacity-100" : "max-h-0 overflow-hidden py-0 opacity-0"}`}
-      >
-        {showEdit.value && (
-          <section>
-            {/* Pass necessary props to ProfileForm */}
-            <ProfileForm
-              data={{
-                name: userProfile.value.name,
-                interests: userProfile.value.skills,
-                about: userProfile.value.bio,
-              }}
-              active={showEdit}
-            />
-          </section>
-        )}
-      </div>
       <div class="">
         <div class="lg:col-span-1">
           {/* Use resolved values from signals/stores */}
