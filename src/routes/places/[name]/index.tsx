@@ -5,10 +5,69 @@ import { StarIcon } from "lucide-qwik";
 import {
   MapPinIcon,
   InfoIcon,
-  ArrowLeftIcon,
   MessageSquareIcon,
   ClipboardIcon,
 } from "lucide-qwik";
+
+const reviewsData = [
+  {
+    initials: "SJ",
+    name: "Sarah Johnson",
+    timeAgo: "2 days ago",
+    rating: 5,
+    comment: "Great atmosphere and friendly staff! The coffee here is amazing.",
+  },
+  {
+    initials: "MC",
+    name: "Michael Chen",
+    timeAgo: "1 week ago",
+    rating: 4,
+    comment:
+      "Perfect spot for working remotely. The WiFi is reliable and there are plenty of power outlets.",
+  },
+  {
+    initials: "ED",
+    name: "Emma Davis",
+    timeAgo: "2 weeks ago",
+    rating: 5,
+    comment:
+      "Love the ambiance here! It's become my go-to place for meeting friends.",
+  },
+];
+
+const ReviewCard = component$(
+  (props: {
+    initials: string;
+    name: string;
+    timeAgo: string;
+    rating: number;
+    comment: string;
+  }) => {
+    return (
+      <div class="rounded-xl bg-gray-50 p-6">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D98E73] font-semibold text-white">
+              {props.initials}
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium text-gray-900">{props.name}</h3>
+              <p class="text-sm text-gray-500">{props.timeAgo}</p>
+            </div>
+            <div class="mt-1 flex items-center">
+              {[...Array(props.rating)].map((_, i) => (
+                <StarIcon key={i} class="h-4 w-4 text-yellow-400" />
+              ))}
+            </div>
+            <p class="mt-2 text-gray-700">{props.comment}</p>
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
 
 export const useloadPlace = routeLoader$(async (context) => {
   const output = decodeURIComponent(context.params.name);
@@ -25,63 +84,28 @@ export const useloadPlace = routeLoader$(async (context) => {
 
   return { ...data };
 });
+
 export default component$(() => {
   const place = useloadPlace();
 
   return (
     <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
       <div class="container mx-auto">
-        <div class="mb-8 flex items-center">
-          <Link
-            href="/places"
-            class="flex items-center gap-2 text-[#D98E73] transition hover:text-[#C27B62]"
-          >
-            <ArrowLeftIcon class="h-5 w-5" />
-            <span>Back to Places</span>
-          </Link>
-        </div>
+        <div class="mb-8 flex items-center"></div>
 
         {/* Main content card */}
         <div class="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
           {/* Hero card section with image and title */}
           <div class="rounded-3xl bg-white p-6 shadow-md">
             <div class="relative mb-6 overflow-hidden rounded-2xl">
-              <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-black/10"></div>
               <img
                 src={(place.value.data?.ImageURL as string) || ""}
                 alt={place.value.data?.Name}
-                class="h-[400px] w-full object-cover transition duration-700 hover:scale-105"
+                class="h-[400px] w-full object-cover"
                 width={1200}
                 height={400}
               />
               <div class="absolute bottom-0 left-0 z-20 p-8 text-white">
-                <div class="mb-3 inline-flex items-center rounded-full bg-[#D98E73]/90 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
-                  <MapPinIcon class="mr-2 h-4 w-4" />
-                  <div
-                    class="group relative"
-                    onClick$={async () => {
-                      await navigator.clipboard.writeText(
-                        place.value.data?.Address || "",
-                      );
-                      const el = document.querySelector(".copy-feedback");
-                      if (el) {
-                        el.classList.remove("opacity-0");
-                        el.classList.add("opacity-100");
-                        setTimeout(() => {
-                          el.classList.remove("opacity-100");
-                          el.classList.add("opacity-0");
-                        }, 1000);
-                      }
-                    }}
-                  >
-                    <span class="cursor-pointer">
-                      {place.value.data?.Address}
-                    </span>
-                    <span class="copy-feedback absolute -right-16 -top-1 rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-200">
-                      Copied!
-                    </span>
-                  </div>
-                </div>
                 <h1 class="text-4xl font-bold tracking-tight drop-shadow-lg sm:text-5xl">
                   {place.value.data?.Name}
                 </h1>
@@ -117,95 +141,9 @@ export default component$(() => {
                     Reviews & Comments
                   </h2>
                   <div class="space-y-6">
-                    <div class="rounded-xl bg-gray-50 p-6">
-                      <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D98E73] font-semibold text-white">
-                            SJ
-                          </div>
-                        </div>
-                        <div class="flex-1">
-                          <div class="flex items-center justify-between">
-                            <h3 class="font-medium text-gray-900">
-                              Sarah Johnson
-                            </h3>
-                            <p class="text-sm text-gray-500">2 days ago</p>
-                          </div>
-                          <div class="mt-1 flex items-center">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <StarIcon
-                                key={star}
-                                class="h-4 w-4 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <p class="mt-2 text-gray-700">
-                            Great atmosphere and friendly staff! The coffee here
-                            is amazing.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="rounded-xl bg-gray-50 p-6">
-                      <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D98E73] font-semibold text-white">
-                            MC
-                          </div>
-                        </div>
-                        <div class="flex-1">
-                          <div class="flex items-center justify-between">
-                            <h3 class="font-medium text-gray-900">
-                              Michael Chen
-                            </h3>
-                            <p class="text-sm text-gray-500">1 week ago</p>
-                          </div>
-                          <div class="mt-1 flex items-center">
-                            {[1, 2, 3, 4].map((star) => (
-                              <StarIcon
-                                key={star}
-                                class="h-4 w-4 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <p class="mt-2 text-gray-700">
-                            Perfect spot for working remotely. The WiFi is
-                            reliable and there are plenty of power outlets.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="rounded-xl bg-gray-50 p-6">
-                      <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0">
-                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D98E73] font-semibold text-white">
-                            ED
-                          </div>
-                        </div>
-                        <div class="flex-1">
-                          <div class="flex items-center justify-between">
-                            <h3 class="font-medium text-gray-900">
-                              Emma Davis
-                            </h3>
-                            <p class="text-sm text-gray-500">2 weeks ago</p>
-                          </div>
-                          <div class="mt-1 flex items-center">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <StarIcon
-                                key={star}
-                                class="h-4 w-4 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <p class="mt-2 text-gray-700">
-                            Love the ambiance here! It's become my go-to place
-                            for meeting friends.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    {reviewsData.map((review) => (
+                      <ReviewCard key={review.initials} {...review} />
+                    ))}
                   </div>
                 </div>
               </section>
@@ -217,19 +155,17 @@ export default component$(() => {
                       <MapPinIcon class="h-5 w-5 text-[#D98E73]" />
                       <div class="text-sm text-[#6D5D4E]">
                         <div class="font-medium text-[#5B3E29]">Address:</div>
-                        <div class="group flex items-center gap-2">
+                        <button
+                          onClick$={() => {
+                            navigator.clipboard.writeText(
+                              place.value.data?.Address || "",
+                            );
+                          }}
+                          class="group flex w-full items-center gap-2 rounded-lg p-1 transition hover:bg-gray-100"
+                        >
                           <div>{place.value.data?.Address}</div>
-                          <button
-                            onClick$={() => {
-                              navigator.clipboard.writeText(
-                                place.value.data?.Address || "",
-                              );
-                            }}
-                            class="rounded-full p-1 hover:bg-gray-100"
-                          >
-                            <ClipboardIcon class="h-4 w-4 text-[#D98E73]" />
-                          </button>
-                        </div>
+                          <ClipboardIcon class="h-4 w-4 text-[#D98E73]" />
+                        </button>
                       </div>
                     </div>
                     <div class="flex items-center gap-3">
