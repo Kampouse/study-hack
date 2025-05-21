@@ -22,9 +22,10 @@ export const PlaceCard = component$(
     };
   }) => {
     return (
-      <div
+      <Link
         key={props.place.id}
-        class="group overflow-hidden rounded-xl border-none bg-white shadow-md transition-shadow hover:shadow-lg"
+        href={"/places/" + encodeURI(props.place.name)}
+        class="group overflow-hidden rounded-xl border-none bg-white shadow-md transition-all duration-300 ease-in-out "
       >
         <div class="relative aspect-[4/3] overflow-hidden">
           <img
@@ -32,7 +33,7 @@ export const PlaceCard = component$(
             width={400}
             height={300}
             alt={props.place.name}
-            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            class="h-full w-full  object-cover transition-transform"
           />
           <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
             {props.place.badge}
@@ -49,14 +50,14 @@ export const PlaceCard = component$(
             <MapPin class="h-4 w-4 text-[#D98E73]" />
             <span class="truncate">{props.place.location}</span>
           </div>
-          <Link href={"/places/" + encodeURI(props.place.name)}>
-            <h3 class="mb-1 text-lg font-semibold text-[#5B3E29]">
+          <div>
+            <h3 class="mb-1 text-lg font-semibold text-[#5B3E29] transition-colors duration-300 group-hover:text-[#D98E73]">
               {props.place.name}
             </h3>
             <p class="mb-3 line-clamp-2 text-sm text-[#6D5D4E]">
               {props.place.description}
             </p>
-          </Link>
+          </div>
           <div class="mb-3 flex flex-wrap gap-2">
             {props.place.tags.map((tag: string) => (
               <span
@@ -82,7 +83,7 @@ export const PlaceCard = component$(
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     );
   },
 );

@@ -89,7 +89,10 @@ export const EventCard = component$<EventCardProps>(
 
     return (
       // Added h-full for flex/grid consistency, adjusted shadow and border slightly
-      <div class="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-md transition-all duration-300 ease-in-out hover:shadow-lg">
+      <Link
+        href={`/details/${event.id}`}
+        class="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-md transition-all duration-300 ease-in-out"
+      >
         {/* Image Section */}
         <div class="relative aspect-[16/10] overflow-hidden">
           <img
@@ -161,7 +164,7 @@ export const EventCard = component$<EventCardProps>(
         </div>
 
         {/* Content Area - Adjusted padding, text size, line height, spacing */}
-        <div class="flex flex-1 flex-col bg-stone-100/25 p-4 sm:p-5 md:p-6">
+        <div class="flex flex-1 flex-col bg-white p-4 sm:p-5 md:p-6">
           {" "}
           {/* Added subtle background for content area */}
           <p class="mb-5 line-clamp-3 flex-grow rounded-lg border-stone-200/25 bg-stone-200/10 px-2 text-sm leading-relaxed text-gray-600 sm:line-clamp-4 sm:text-base">
@@ -169,35 +172,8 @@ export const EventCard = component$<EventCardProps>(
             {event.description || "No description provided."}
           </p>
           {/* Button Area - Responsive layout (stack vertically on small screens) */}
-          <div class="mt-auto flex flex-row items-stretch justify-start gap-3 pt-4">
-            {isHosted ? (
-              <>
-                <Link
-                  href={`/event/edit/${event.eventID ?? event.id}`}
-                  class="w-full whitespace-nowrap rounded-lg border border-[#D98E73]/70 px-4 py-3 text-center text-sm font-medium text-[#D98E73] transition-colors duration-200 hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
-                >
-                  Edit
-                </Link>
-                <Link
-                  href={`/event/manage/${event.eventID ?? event.id}`}
-                  class="w-full whitespace-nowrap rounded-lg bg-[#D98E73] px-4 py-3 text-center text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
-                >
-                  Manage
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  href={`/details/${event.eventID ?? event.id}`}
-                  class="w-full rounded-lg bg-[#D98E73] px-5 py-3 text-center text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/50 focus:ring-offset-2"
-                >
-                  Details
-                </Link>
-              </>
-            )}
-          </div>
         </div>
-      </div>
+      </Link>
     );
   },
 );

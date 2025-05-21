@@ -2,12 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { getPlace } from "~/api/EndPoint";
 import { StarIcon } from "lucide-qwik";
-import {
-  MapPinIcon,
-  InfoIcon,
-  MessageSquareIcon,
-  ClipboardIcon,
-} from "lucide-qwik";
+import { MapPinIcon, MessageSquareIcon, ClipboardIcon } from "lucide-qwik";
 
 const reviewsData = [
   {
@@ -34,6 +29,68 @@ const reviewsData = [
       "Love the ambiance here! It's become my go-to place for meeting friends.",
   },
 ];
+
+const suggestedPlaces = [
+  {
+    id: 1,
+    name: "The Coffee House",
+    image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
+    rating: 4.5,
+    description: "Cozy coffee shop with great atmosphere",
+  },
+  {
+    id: 2,
+    name: "Study Central Library",
+    image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f",
+    rating: 4.8,
+    description: "Quiet study space with plenty of resources",
+  },
+];
+
+const SuggestedPlaceCard = component$(
+  (props: {
+    id: number;
+    name: string;
+    image: string;
+    rating: number;
+    description: string;
+  }) => {
+    return (
+      <Link
+        href={`/place/${props.id}`}
+        class="group block overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-sm transition-all duration-300 hover:border-[#D98E73] hover:shadow-lg"
+      >
+        <div class="flex flex-col">
+          <div class="h-32 w-full overflow-hidden">
+            <img
+              src={props.image}
+              alt={props.name}
+              class="h-full w-full object-cover transition-transform duration-300 "
+              width={300}
+              height={128}
+            />
+          </div>
+          <div class="flex flex-col gap-2 p-4">
+            <div class="flex items-center justify-between">
+              <h4 class="line-clamp-1 text-lg font-medium text-[#5B3E29] group-hover:text-[#D98E73]">
+                {props.name}
+              </h4>
+              <div class="flex items-center rounded-full bg-[#F8EDE3] px-2 py-1">
+                <StarIcon class="mr-1 h-4 w-4 text-yellow-400" />
+                <span class="text-sm font-medium text-[#6D5D4E]">
+                  {props.rating}
+                </span>
+              </div>
+            </div>
+            <p class="line-clamp-2 text-sm leading-relaxed text-[#8B7355]">
+              {props.description}
+            </p>
+          </div>
+        </div>
+      </Link>
+    );
+  },
+);
 
 const ReviewCard = component$(
   (props: {
@@ -94,7 +151,7 @@ export default component$(() => {
         <div class="mb-8 flex items-center"></div>
 
         {/* Main content card */}
-        <div class="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
+        <div class="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white  shadow-sm">
           {/* Hero card section with image and title */}
           <div class="rounded-3xl bg-white p-6 shadow-md">
             <div class="relative mb-6 overflow-hidden rounded-2xl">
@@ -124,14 +181,18 @@ export default component$(() => {
             <div class="grid gap-8 md:grid-cols-3">
               <section class="space-y-8 md:col-span-2">
                 <div class="space-y-4">
-                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-[#5B3E29]">
-                    <InfoIcon class="h-6 w-6 text-[#D98E73]" />
-                    About This Place
-                  </h2>
                   <div class="rounded-xl bg-[#F8EDE3] p-6 shadow-sm">
                     <p class="whitespace-pre-wrap text-lg leading-relaxed text-gray-700">
                       {place.value.data?.Description}
                     </p>
+                  </div>
+                  <div class="mt-6">
+                    <Link
+                      href={`/new?placeId=${place.value.data?.PlaceID}`}
+                      class="block w-full rounded-lg bg-[#D98E73] px-4 py-3 text-center font-medium text-white transition-all hover:bg-[#C27B62] hover:shadow-md"
+                    >
+                      Create Event Here
+                    </Link>
                   </div>
                 </div>
 
@@ -179,13 +240,16 @@ export default component$(() => {
                       </div>
                     </div>
                   </div>
-                  <div class="mt-6">
-                    <Link
-                      href={`/new?placeId=${place.value.data?.PlaceID}`}
-                      class="block w-full rounded-lg bg-[#D98E73] px-4 py-3 text-center font-medium text-white transition-all hover:bg-[#C27B62] hover:shadow-md"
-                    >
-                      Create Event Here
-                    </Link>
+                </section>
+
+                <section class="mt-6 space-y-4">
+                  <h3 class="text-xl font-semibold text-[#5B3E29]">
+                    You might also like:
+                  </h3>
+                  <div class="space-y-4">
+                    {suggestedPlaces.map((place) => (
+                      <SuggestedPlaceCard key={place.id} {...place} />
+                    ))}
                   </div>
                 </section>
               </div>

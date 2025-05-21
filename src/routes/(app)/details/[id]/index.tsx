@@ -88,35 +88,21 @@ export default component$(() => {
           <div class="p-8">
             <div class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-6">
               <div class="flex items-center gap-3">
-                <div class="text-sm text-gray-500">
-                  {data.value.confirmed.data ? (
-                    <span class="flex items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-[#D98E73]"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                      </svg>
-                      {data.value.confirmed.data.length}{" "}
-                      {data.value.confirmed.data.length === 1
-                        ? "Attendee"
-                        : "Attendees"}
-                    </span>
-                  ) : (
-                    <span class="flex items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-blue-500"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                      </svg>
-                      No attendees yet
-                    </span>
-                  )}
+                <div class="flex items-center rounded-full bg-[#F8EDE3] px-4 py-2 shadow-sm">
+                  <svg
+                    class="mr-2 h-4 w-4 text-[#D98E73]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                  </svg>
+                  <span class="text-sm font-medium text-[#5B3E29]">
+                    {data.value.confirmed.data &&
+                    data.value.confirmed.data.length > 0
+                      ? `${data.value.confirmed.data.length} lovely people attending`
+                      : "Be the first to join this cozy gathering!"}
+                  </span>
                 </div>
               </div>
 

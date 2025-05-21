@@ -112,7 +112,7 @@ export const TabsSection = component$<TabsSectionProps>(
 
     return (
       <div class="w-full">
-        <div class="mb-8 border-b border-[#F8EDE3]">
+        <div class="mb-8 border-b border-[#F8EDE3] shadow-sm">
           <nav
             class="justify-left -mb-px flex space-x-8 overflow-x-auto px-4 pb-1"
             aria-label="Tabs"
