@@ -33,7 +33,7 @@ export default component$(() => {
   });
   return (
     session.value != null && (
-      <header class="fixed top-0 z-50 h-fit w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
+      <header class="fixed top-0 z-[9999] h-fit w-full border-b border-border/40 bg-background/80 backdrop-blur-sm">
         <nav
           class=" mx-auto flex w-full items-center justify-between px-4 py-3"
           role="navigation"

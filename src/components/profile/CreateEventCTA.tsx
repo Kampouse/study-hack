@@ -16,7 +16,7 @@ import { CalendarIcon as Calendar, MapPinIcon as MapPin } from "lucide-qwik";
 export const CreateEventCTA = component$(() => {
   return (
     // Increased padding for CTA section
-    <section class="mt-16 bg-gradient-to-b from-[#F8EDE3]/50 to-[#FFF8F0]/30 py-20 md:mt-20 md:py-24">
+    <section class="bg-gradient-to-b from-[#F8EDE3]/50 to-[#FFF8F0]/30 pt-20">
       <div class="container px-4 md:px-6">
         {/* Increased padding inside CTA card */}
         <div class="relative overflow-hidden rounded-2xl bg-white p-10 shadow-lg md:p-16">
@@ -33,7 +33,13 @@ export const CreateEventCTA = component$(() => {
             {" "}
             {/* Increased gap */}
             <div class="w-full md:w-1/3 lg:w-1/4">
-              <div class="aspect-square overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105"></div>
+              <div class="aspect-square overflow-hidden rounded-xl shadow-md ">
+                <img
+                  width={400}
+                  height={400}
+                  src="https://images.nightcafe.studio/jobs/p6WPW87nQmyRhhS7H4nS/p6WPW87nQmyRhhS7H4nS--0--escmw.jpg?tr=w-1600,c-at_max"
+                ></img>
+              </div>
             </div>
             <div class="flex-1 text-center md:text-left">
               <h2 class="mb-4 text-3xl font-bold text-[#5B3E29] md:text-4xl">
@@ -50,14 +56,13 @@ export const CreateEventCTA = component$(() => {
               </p>
               <div class="flex flex-wrap justify-center gap-4 md:justify-start">
                 <Link
-                  href="/create-event"
-                  // Larger padding
+                  href="/new"
                   class="inline-flex items-center justify-center rounded-lg bg-[#D98E73] px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
                 >
                   <Calendar class="-ml-1 mr-2 h-5 w-5" /> Create an Event
                 </Link>
                 <Link
-                  href="/spaces"
+                  href="/places"
                   // Larger padding
                   class="inline-flex items-center justify-center rounded-lg border border-[#D98E73]/80 px-6 py-3 text-base font-medium text-[#D98E73] transition-colors hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
                 >

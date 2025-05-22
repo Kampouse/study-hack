@@ -86,14 +86,13 @@ export default component$(() => {
         ></div>
       )}
 
-      {/* Left Search Panel - Hidden on mobile by default, revealed with slide-in animation */}
+      {/* Left Search Panel - Fixed position instead of sticky */}
       <div
-        class={`md:min-w-80 fixed inset-y-0 left-0 z-50 w-80  transform overflow-y-auto border-r border-[#E6D7C3] bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out md:sticky md:left-0 md:top-0 md:z-0 md:h-screen md:translate-x-0 ${
+        class={`fixed inset-y-0 left-0  z-50 w-80 transform overflow-y-auto border-r border-[#E6D7C3] bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out ${
           sidebarOpen.value ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } md:translate-x-0`}
       >
         <div class="flex items-center justify-between md:mt-20">
-          <h2 class="text-xl font-semibold text-[#5B3E29]">Find Places</h2>
           <button
             onClick$={() => (sidebarOpen.value = false)}
             class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 md:hidden"
@@ -207,10 +206,10 @@ export default component$(() => {
       </div>
 
       {/* Main Content Area */}
-      <div class="flex-1 overflow-auto">
+      <div class="ml-80 flex-1 overflow-auto">
         <section class="container px-4 py-8 pt-16 md:px-6 md:pt-24">
           {filteredPlaces.length > 0 ? (
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredPlaces
                 .slice(0, visiblePlacesCount.value)
                 .map((place) => (
@@ -220,7 +219,7 @@ export default component$(() => {
               {/* Always include the share card at the end */}
               {visiblePlacesCount.value < filteredPlaces.length ||
                 filteredPlaces.length === 0 ||
-                filteredPlaces.length % 4 !== 0}
+                filteredPlaces.length % 3 !== 0}
             </div>
           ) : (
             <div class="rounded-lg bg-[#F8EDE3] p-8 text-center">

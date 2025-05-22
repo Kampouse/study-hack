@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
-import { getPlace } from "~/api/EndPoint";
+import { getPlace, getPlaces } from "~/api/EndPoint";
 import { StarIcon } from "lucide-qwik";
 import { MapPinIcon, MessageSquareIcon, ClipboardIcon } from "lucide-qwik";
 
@@ -30,23 +30,6 @@ const reviewsData = [
   },
 ];
 
-const suggestedPlaces = [
-  {
-    id: 1,
-    name: "The Coffee House",
-    image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
-    rating: 4.5,
-    description: "Cozy coffee shop with great atmosphere",
-  },
-  {
-    id: 2,
-    name: "Study Central Library",
-    image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f",
-    rating: 4.8,
-    description: "Quiet study space with plenty of resources",
-  },
-];
-
 const SuggestedPlaceCard = component$(
   (props: {
     id: number;
@@ -57,7 +40,7 @@ const SuggestedPlaceCard = component$(
   }) => {
     return (
       <Link
-        href={`/place/${props.id}`}
+        href={`/places/${props.name}`}
         class="group block overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-sm transition-all duration-300 hover:border-[#D98E73] hover:shadow-lg"
       >
         <div class="flex flex-col">
@@ -78,7 +61,7 @@ const SuggestedPlaceCard = component$(
               <div class="flex items-center rounded-full bg-[#F8EDE3] px-2 py-1">
                 <StarIcon class="mr-1 h-4 w-4 text-yellow-400" />
                 <span class="text-sm font-medium text-[#6D5D4E]">
-                  {props.rating}
+                  {Number(props.rating).toFixed(1)}{" "}
                 </span>
               </div>
             </div>
@@ -142,8 +125,24 @@ export const useloadPlace = routeLoader$(async (context) => {
   return { ...data };
 });
 
+export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
+  const currentPlace = await getPlace({
+    event: context,
+    placeName: context.params.name,
+  });
+  const currentId = currentPlace.data?.PlaceID || 0;
+  const places = await getPlaces(context, { limit: 2, offset: currentId + 1 });
+  return places.data?.slice(0, 2).map((place) => ({
+    id: place.Places?.PlaceID || 0,
+    name: place.Places?.Name || "",
+    image: place.Places?.ImageURL || "https://via.placeholder.com/300x200",
+    rating: place.Places?.Rating || 0,
+    description: place.Places?.Description || "",
+  }));
+});
 export default component$(() => {
   const place = useloadPlace();
+  const suggestedPlaces = useLoadSuggestedPlaces();
 
   return (
     <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
@@ -247,7 +246,7 @@ export default component$(() => {
                     You might also like:
                   </h3>
                   <div class="space-y-4">
-                    {suggestedPlaces.map((place) => (
+                    {suggestedPlaces.value?.map((place) => (
                       <SuggestedPlaceCard key={place.id} {...place} />
                     ))}
                   </div>

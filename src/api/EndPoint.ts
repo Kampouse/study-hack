@@ -121,9 +121,15 @@ export const getPlace = async ({
   }
 };
 
-export const getPlaces = async (event: Requested) => {
+export const getPlaces = async (
+  event: Requested,
+  params: { limit?: number; offset?: number },
+) => {
   try {
-    const data = await QueryPlaces({ event: event as Requested });
+    const data = await QueryPlaces({
+      event: event as Requested,
+      params: { limit: params.limit, offset: params.offset },
+    });
     if (!data.success || !data.data) {
       return { success: false, data: null, error: "Failed to get places" };
     }
