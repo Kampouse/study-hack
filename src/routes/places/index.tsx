@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, $, useSignal } from "@builder.io/qwik";
 import { routeLoader$, Link } from "@builder.io/qwik-city";
 import { MapPinIcon as MapPin, FilterIcon, XIcon } from "lucide-qwik";
 import { PlaceCard } from "~/routes/(app)/home/place-card";
@@ -15,7 +15,7 @@ export const usePlaces = routeLoader$(async (event) => {
     event: event,
     client: client,
     params: {
-      limit: 100, // Increased limit for the dedicated places page
+      limit: 100,
     },
   });
   return { data: data.data, success: data.success };
@@ -28,8 +28,8 @@ export default component$(() => {
   const filterCategory = useSignal("all");
   const visiblePlacesCount = useSignal(12);
   const sidebarOpen = useSignal(false);
+  const selectedAmenities = useSignal<string[]>([]);
 
-  // Transform places data for use with PlaceCard component
   const placesDataForCards =
     places.value.data?.map((place) => {
       return {
@@ -39,9 +39,9 @@ export default component$(() => {
         badge: "New",
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
-        creator: place.Users?.Username, // Placeholder
-        rating: place.Places?.Rating || 4.8, // Fetch real rating
+        tags: ["Quiet", "WiFi", "Coffee"],
+        creator: place.Users?.Username,
+        rating: place.Places?.Rating || 4.8,
         coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
       };
     }) || [];
@@ -60,15 +60,29 @@ export default component$(() => {
       (filterCategory.value === "new" && place.badge === "New") ||
       (filterCategory.value === "popular" && place.badge === "Popular");
 
-    return matchesSearch && matchesCategory;
+    const matchesAmenities =
+      selectedAmenities.value.length === 0 ||
+      selectedAmenities.value.every((amenity) => place.tags.includes(amenity));
+
+    return matchesSearch && matchesCategory && matchesAmenities;
   });
 
   const allPlacesLoaded = visiblePlacesCount.value >= filteredPlaces.length;
 
+  const toggleAmenity = $((amenity: string) => {
+    const currentAmenities = [...selectedAmenities.value];
+    const index = currentAmenities.indexOf(amenity);
+    if (index === -1) {
+      currentAmenities.push(amenity);
+    } else {
+      currentAmenities.splice(index, 1);
+    }
+    selectedAmenities.value = currentAmenities;
+  });
+
   return (
     <div class="flex min-h-screen flex-col bg-[#FFF8F0] md:flex-row">
-      {/* Mobile Filter Button */}
-      <div class="fixed bottom-4 right-4 z-30 md:hidden">
+      <div class="fixed bottom-4 right-4 z-30 flex gap-2 md:hidden">
         <button
           onClick$={() => (sidebarOpen.value = true)}
           class="flex h-12 w-12 items-center justify-center rounded-full bg-[#D98E73] text-white shadow-lg"
@@ -78,7 +92,6 @@ export default component$(() => {
         </button>
       </div>
 
-      {/* Mobile Search Overlay */}
       {sidebarOpen.value && (
         <div
           class="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
@@ -86,127 +99,126 @@ export default component$(() => {
         ></div>
       )}
 
-      {/* Left Search Panel - Fixed position instead of sticky */}
       <div
-        class={`fixed inset-y-0 left-0  z-50 w-80 transform overflow-y-auto border-r border-[#E6D7C3] bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out ${
+        class={`fixed inset-y-0 left-0 top-20 z-50 h-[calc(100vh-80px)] w-full transform overflow-y-auto border-r border-[#E6D7C3] bg-white shadow-lg transition-transform duration-300 ease-in-out md:sticky md:h-[calc(100vh-80px)] md:w-80 ${
           sidebarOpen.value ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        <div class="flex items-center justify-between md:mt-20">
-          <button
-            onClick$={() => (sidebarOpen.value = false)}
-            class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 md:hidden"
-            aria-label="Close filters"
-          >
-            <XIcon class="h-6 w-6" />
-          </button>
-        </div>
-
-        <div class="mt-6">
-          <div class="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#D98E73]"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div class="   flex  h-full flex-col p-6 md:mt-0">
+          <div class="flex items-center justify-between">
+            {" "}
+            <h2 class="text-xl font-semibold text-[#5B3E29]">Filters</h2>
+            <button
+              onClick$={() => (sidebarOpen.value = false)}
+              class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 md:hidden"
+              aria-label="Close filters"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              <XIcon class="h-6 w-6" />
+            </button>
+          </div>
+
+          <div class="mt-6 space-y-6">
+            <div class="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#D98E73]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search places..."
+                class="h-12 w-full rounded-lg border-2 border-[#E6D7C3] bg-white py-3 pl-10 pr-4 text-[#5B3E29] placeholder-[#A99D8F] shadow-sm transition-all focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                bind:value={searchTerm}
+                onKeyDown$={(e) => {
+                  if (e.key === "Enter") {
+                    sidebarOpen.value = false;
+                  }
+                }}
               />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search places..."
-              class="h-12 w-full rounded-lg border-2 border-[#E6D7C3] bg-white py-3 pl-10 pr-4 text-[#5B3E29] placeholder-[#A99D8F] shadow-sm transition-all focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-              bind:value={searchTerm}
-            />
-          </div>
-        </div>
+            </div>
 
-        <div class="mt-6 space-y-6">
-          <div class="space-y-3">
-            <h3 class="text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
-              Filter By
-            </h3>
-            <select
-              class="h-10 w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-              bind:value={filterCategory}
-            >
-              <option value="all">All Places</option>
-              <option value="new">New Places</option>
-              <option value="popular">Popular Places</option>
-            </select>
-          </div>
+            <div class="space-y-4">
+              <div>
+                <h3 class="mb-3 text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
+                  Sort By
+                </h3>
+                <select
+                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2.5 text-sm text-[#5B3E29] focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  bind:value={filterCategory}
+                >
+                  <option value="all">All Places</option>
+                  <option value="new">Newest First</option>
+                  <option value="popular">Most Popular</option>
+                  <option value="rating">Highest Rated</option>
+                </select>
+              </div>
 
-          <div class="space-y-3">
-            <h3 class="text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
-              Amenities
-            </h3>
-            <div class="space-y-2">
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="rounded border-[#E6D7C3] text-[#D98E73]"
-                />
-                <span class="ml-2 text-sm text-[#5B3E29]">
-                  Quiet Environment
-                </span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="rounded border-[#E6D7C3] text-[#D98E73]"
-                />
-                <span class="ml-2 text-sm text-[#5B3E29]">WiFi Available</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="rounded border-[#E6D7C3] text-[#D98E73]"
-                />
-                <span class="ml-2 text-sm text-[#5B3E29]">Coffee Served</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="rounded border-[#E6D7C3] text-[#D98E73]"
-                />
-                <span class="ml-2 text-sm text-[#5B3E29]">Study-Friendly</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  class="rounded border-[#E6D7C3] text-[#D98E73]"
-                />
-                <span class="ml-2 text-sm text-[#5B3E29]">
-                  Outlets Available
-                </span>
-              </label>
+              <div>
+                <h3 class="mb-3 text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
+                  Amenities
+                </h3>
+                <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                  {["Quiet", "WiFi", "Coffee", "Study-Friendly", "Outlets"].map(
+                    (amenity) => (
+                      <button
+                        key={amenity}
+                        onClick$={() => toggleAmenity(amenity)}
+                        class={`w-full rounded-full px-3 py-2 text-center text-sm transition-all sm:w-auto sm:px-4 ${
+                          selectedAmenities.value.includes(amenity)
+                            ? "bg-[#D98E73] text-white"
+                            : "bg-[#F8EDE3] text-[#5B3E29] hover:bg-[#E6D7C3]"
+                        }`}
+                      >
+                        {amenity}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="border-t border-[#E6D7C3] pt-4">
+          <div class="mt-auto space-y-3 border-t border-[#E6D7C3] pt-4">
+            <div class="mb-4 text-center text-sm text-[#8B5A2B] md:hidden">
+              {filteredPlaces.length} places found
+            </div>
+            <button
+              type="button"
+              onClick$={() => {
+                searchTerm.value = "";
+                filterCategory.value = "all";
+                selectedAmenities.value = [];
+                sidebarOpen.value = false;
+              }}
+              class="inline-flex h-11 w-full items-center justify-center rounded-md border border-[#D98E73] bg-white px-4 py-2 text-sm font-medium text-[#D98E73] shadow-sm transition-colors hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
+            >
+              Reset Filters
+            </button>
             <button
               type="button"
               onClick$={() => {
                 showMap.value = true;
-                sidebarOpen.value = false; // Close sidebar when opening map on mobile
+                sidebarOpen.value = false;
               }}
-              class="inline-flex h-10 w-full items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              class="inline-flex h-11 w-full items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
             >
               <MapPin class="mr-2 h-4 w-4" />
-              View on Map
+              View Map
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div class="ml-80 flex-1 overflow-auto">
+      <div class="flex-1">
         <section class="container px-4 py-8 pt-16 md:px-6 md:pt-24">
           {filteredPlaces.length > 0 ? (
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -216,7 +228,6 @@ export default component$(() => {
                   <PlaceCard key={place.id} place={place as any} />
                 ))}
 
-              {/* Always include the share card at the end */}
               {visiblePlacesCount.value < filteredPlaces.length ||
                 filteredPlaces.length === 0 ||
                 filteredPlaces.length % 3 !== 0}
@@ -241,13 +252,12 @@ export default component$(() => {
             </div>
           )}
 
-          {/* Load more button */}
           {!allPlacesLoaded && filteredPlaces.length > 0 && (
             <div class="mt-10 text-center">
               <button
                 type="button"
                 onClick$={() => {
-                  visiblePlacesCount.value += 8; // Load 8 more places
+                  visiblePlacesCount.value += 8;
                 }}
                 class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
@@ -258,7 +268,6 @@ export default component$(() => {
         </section>
       </div>
 
-      {/* Map modal (simplified - you would integrate with your existing map component) */}
       {showMap.value && (
         <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
           <div class="relative h-[90vh] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
@@ -288,7 +297,6 @@ export default component$(() => {
               </button>
             </div>
             <div class="h-[calc(90vh-6rem)] w-full overflow-hidden rounded-md border border-[#E6D7C3]">
-              {/* Map component would go here - similar to what's in home/index.tsx */}
               <div class="flex h-full items-center justify-center bg-[#F8EDE3]">
                 <p class="text-[#5B3E29]">Map View Coming Soon</p>
               </div>
