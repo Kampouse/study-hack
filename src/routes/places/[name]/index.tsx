@@ -2,6 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { getPlace, getPlaces } from "~/api/EndPoint";
 import { StarIcon } from "lucide-qwik";
+import type { DocumentHead } from "@builder.io/qwik-city";
 import { MapPinIcon, MessageSquareIcon, ClipboardIcon } from "lucide-qwik";
 
 const reviewsData = [
@@ -262,3 +263,48 @@ export default component$(() => {
     </div>
   );
 });
+
+export const head: DocumentHead = ({ resolveValue }) => {
+  const place = resolveValue(useloadPlace);
+  return {
+    title: `JustRND | ${place.data?.Name || "Place Details"}`,
+    meta: [
+      {
+        name: "description",
+        content: place.data?.Description || "",
+      },
+      {
+        name: "id",
+        content: place.data?.PlaceID?.toString() || "",
+      },
+      {
+        property: "og:title",
+        content: `JustRND | ${place.data?.Name || "Place Details"}`,
+      },
+      {
+        property: "og:description",
+        content: place.data?.Description || "",
+      },
+      {
+        property: "og:image",
+        content: place.data?.ImageURL || "",
+      },
+      {
+        property: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        property: "twitter:title",
+        content: `JustRND | ${place.data?.Name || "Place Details"}`,
+      },
+      {
+        property: "twitter:description",
+        content: place.data?.Description || "",
+      },
+      {
+        property: "twitter:image",
+        content: place.data?.ImageURL || "",
+      },
+    ],
+  };
+};
