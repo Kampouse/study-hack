@@ -131,7 +131,10 @@ export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
     placeName: context.params.name,
   });
   const currentId = currentPlace.data?.PlaceID || 0;
-  const places = await getPlaces(context, { limit: 2, offset: currentId + 1 });
+  const places = await getPlaces(context, {
+    limit: 2,
+    offset: currentId,
+  });
   return places.data?.slice(0, 2).map((place) => ({
     id: place.Places?.PlaceID || 0,
     name: place.Places?.Name || "",
@@ -212,7 +215,7 @@ export default component$(() => {
                 <section class="rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm">
                   <div class="space-y-3">
                     <div class="flex items-center gap-3">
-                      <MapPinIcon class="h-5 w-5 text-[#D98E73]" />
+                      <MapPinIcon class=" text-[#D98E73]" />
                       <div class="text-sm text-[#6D5D4E]">
                         <div class="font-medium text-[#5B3E29]">Address:</div>
                         <button
@@ -224,12 +227,12 @@ export default component$(() => {
                           class="group flex w-full items-center gap-2 rounded-lg p-1 transition hover:bg-gray-100"
                         >
                           <div>{place.value.data?.Address}</div>
-                          <ClipboardIcon class="h-4 w-4 text-[#D98E73]" />
+                          <ClipboardIcon class=" text-[#D98E73]" />
                         </button>
                       </div>
                     </div>
                     <div class="flex items-center gap-3">
-                      <StarIcon class="h-5 w-5 text-[#D98E73]" />
+                      <StarIcon class="h-4 w-4 text-[#D98E73]" />
                       <div class="text-sm text-[#6D5D4E]">
                         <div class="font-medium text-[#5B3E29]">Rating:</div>
                         <div>

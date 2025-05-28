@@ -30,12 +30,17 @@ export const QueryPlaces = async (params: {
   }
 
   try {
+    const lenght = (await Client.select().from(Places)).length;
+    let offset = params.params?.offset ?? 0;
+
+    offset = offset == lenght ? 0 : offset;
+
     const result = await Client.select()
       .from(Places)
       .fullJoin(Users, eq(Users.UserID, Places.UserID))
       .where(eq(Places.IsPublic, 1))
       .limit(params.params?.limit ?? 100)
-      .offset(params.params?.offset ?? 0)
+      .offset(offset)
       .execute();
 
     if (result.length === 0) {
