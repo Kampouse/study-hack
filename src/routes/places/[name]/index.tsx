@@ -127,14 +127,9 @@ export const useloadPlace = routeLoader$(async (context) => {
 });
 
 export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
-  const currentPlace = await getPlace({
-    event: context,
-    placeName: context.params.name,
-  });
-  const currentId = currentPlace.data?.PlaceID || 0;
+  //  const currentId = currentPlace.data?.PlaceID || 0;
   const places = await getPlaces(context, {
     limit: 2,
-    offset: currentId,
   });
   return places.data?.slice(0, 2).map((place) => ({
     id: place.Places?.PlaceID || 0,
@@ -275,7 +270,7 @@ export const head: DocumentHead = ({ resolveValue }) => {
       },
       {
         name: "id",
-        content: place.data?.PlaceID?.toString() || "",
+        content: place.data?.PlaceID.toString() || "",
       },
       {
         property: "og:title",
