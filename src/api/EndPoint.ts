@@ -123,12 +123,16 @@ export const getPlace = async ({
 
 export const getPlaces = async (
   event: Requested,
-  params: { limit?: number; offset?: number },
+  params: { limit?: number; offset?: number; exclude?: number[] },
 ) => {
   try {
     const data = await QueryPlaces({
       event: event as Requested,
-      params: { limit: params.limit, offset: params.offset },
+      params: {
+        limit: params.limit,
+        offset: params.offset,
+        exclude: params.exclude,
+      },
     });
     if (!data.success || !data.data) {
       return { success: false, data: null, error: "Failed to get places" };

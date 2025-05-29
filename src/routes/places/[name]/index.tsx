@@ -127,9 +127,14 @@ export const useloadPlace = routeLoader$(async (context) => {
 });
 
 export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
+  const currentPlace = await getPlace({
+    event: context,
+    placeName: context.params.name,
+  });
   //  const currentId = currentPlace.data?.PlaceID || 0;
   const places = await getPlaces(context, {
     limit: 2,
+    exclude: [currentPlace.data?.PlaceID || 0],
   });
   return places.data?.slice(0, 2).map((place) => ({
     id: place.Places?.PlaceID || 0,

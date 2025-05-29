@@ -1,6 +1,16 @@
 import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import { eq, and, ne, or, not, exists, gte } from "drizzle-orm";
+import {
+  eq,
+  and,
+  ne,
+  or,
+  not,
+  exists,
+  gte,
+  sql,
+  notInArray,
+} from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
@@ -19,7 +29,7 @@ export type ClientType = Awaited<ReturnType<typeof drizzler>>;
 export const QueryPlaces = async (params: {
   event: Requested | undefined;
   client?: ClientType | null;
-  params?: { limit?: number; offset?: number };
+  params?: { limit?: number; offset?: number; exclude?: number[] };
 }) => {
   const Client = params.client ?? (await drizzler(params.event as Requested));
   if (Client === null) {
@@ -38,7 +48,15 @@ export const QueryPlaces = async (params: {
     const result = await Client.select()
       .from(Places)
       .fullJoin(Users, eq(Users.UserID, Places.UserID))
-      .where(eq(Places.IsPublic, 1))
+      .where(
+        and(
+          eq(Places.IsPublic, 1),
+          params.params?.exclude
+            ? notInArray(Places.PlaceID, params.params.exclude)
+            : undefined,
+        ),
+      )
+      .orderBy(sql`RANDOM()`)
       .limit(params.params?.limit ?? 100)
       .offset(offset)
       .execute();
