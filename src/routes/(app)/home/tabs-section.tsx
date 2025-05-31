@@ -44,11 +44,11 @@ export const TabsSection = component$((props: TabsSectionProps) => {
     <section class="px-4 py-8 pt-0 md:px-6">
       <div class="w-full">
         {/* Tab Triggers */}
-        <div class="relative mb-8 rounded-lg bg-[#F8EDE3] p-1">
+        <div class="relative mb-8 grid grid-cols-3 rounded-lg bg-[#F8EDE3] p-1">
           <Link
             href="/home?tab=all"
             scroll={false}
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
+            class={`rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "all"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
@@ -59,7 +59,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
           <Link
             scroll={false}
             href="/home?tab=events"
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
+            class={`inline-block rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "events"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
@@ -70,7 +70,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
           <Link
             scroll={false}
             href="/home?tab=places"
-            class={`inline-block rounded-lg px-6 py-2 text-[#6D5D4E] transition-all duration-300 ease-in-out ${
+            class={`rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
               activeTab.value === "places"
                 ? "bg-white text-[#5B3E29] shadow-sm"
                 : "hover:bg-[#F1DFC6]/50"
@@ -118,9 +118,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                   View all events <ArrowRight class="ml-1 h-4 w-4" />
                 </Link>
               </div>
-              <div class="grid gap-6 md:grid-cols-2">
-                {/* Show first 2 events + Create Card */}
-                {props.eventsData.slice(0, 2).map((event) => (
+              <div class="grid gap-6 md:grid-cols-4">
+                {/* Show first 4 events + Create Card */}
+                {props.eventsData.slice(0, 3).map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
                 <CreateEventCard />

@@ -7,7 +7,6 @@ import {
   MapPinIcon,
   MessageSquareIcon,
   HeartIcon,
-  Share2Icon,
   UsersIcon,
 } from "lucide-qwik";
 
@@ -85,9 +84,6 @@ const SuggestedPlaceCard = component$(
           <div class="absolute right-3 top-3 flex gap-2">
             <button class="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 p-0 hover:bg-white">
               <HeartIcon class="h-4 w-4 text-[#D98E73]" />
-            </button>
-            <button class="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 p-0 hover:bg-white">
-              <Share2Icon class="h-4 w-4 text-[#D98E73]" />
             </button>
           </div>
 
@@ -407,10 +403,6 @@ export default component$(() => {
                       <MapPinIcon class="h-4 w-4" />
                       Directions
                     </a>
-                    <button class="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[#E6D7C3] px-4 py-2 text-sm font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20">
-                      <Share2Icon class="h-4 w-4" />
-                      Share
-                    </button>
                   </div>
                 </div>
               </div>

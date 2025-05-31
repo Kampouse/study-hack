@@ -2,11 +2,23 @@ import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import {
   CalendarIcon as Calendar,
-  ClockIcon as Clock,
   MapPinIcon as MapPin,
   UsersIcon as Users,
 } from "lucide-qwik";
 
+/**
+ * Displays a card for an event, showing image, title, type, date, time,
+ * location, creator, attendees, and a "Join" button.
+ *
+ * Takes:
+ * - `event`: An object containing the event details.
+ *
+ * Example Usage:
+ * ```tsx
+ * const eventData = { id: 1, title: 'Study Group', image: '...', ... };
+ * <EventCard event={eventData} />
+ * ```
+ */
 export const EventCard = component$(
   (props: {
     event: {
@@ -26,81 +38,61 @@ export const EventCard = component$(
     return (
       <div
         key={props.event.id}
-        class="overflow-hidden rounded-xl border-none shadow-md transition-shadow hover:shadow-lg"
+        class="group flex flex-col overflow-hidden rounded-2xl border border-[#F0E6DA] bg-white transition-all duration-300 ease-in-out "
       >
-        <div class="flex h-full flex-col md:flex-row">
-          <div class="relative md:w-2/5">
+        <Link href={`/details/${props.event.id}`}>
+          <div class="relative aspect-[16/10] overflow-hidden">
             <img
               src={props.event.image || "/placeholder.svg"}
               width={400}
-              height={300}
+              height={250}
               alt={props.event.title}
-              class="h-96 w-full object-cover"
+              class="h-full w-full object-cover transition-transform duration-500"
+              onError$={(e) => {
+                (e.target as HTMLImageElement).src = "/placeholder.svg";
+              }}
             />
-            <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+            <div class="absolute bottom-4 left-4 z-10 flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-[#5B3E29] shadow-sm backdrop-blur-sm">
+              <Calendar class="mr-1.5 h-4 w-4 text-[#D98E73]" />
+              {props.event.date}
+            </div>
+            <div class="absolute bottom-4 right-4 z-10 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#5B3E29] shadow-sm backdrop-blur-sm">
+              <Users class="h-4 w-4 text-[#D98E73]" />
+              <span>{props.event.spotsLeft} spots left</span>
+            </div>
+            <div class="absolute left-4 top-4 z-10 rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-[#D98E73] shadow-sm backdrop-blur-sm">
               {props.event.badge}
             </div>
           </div>
-          <div class="flex flex-col justify-between bg-white p-5 md:w-3/5">
-            <div>
-              <div class="mb-2 flex items-center gap-2">
-                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-[#F8D7BD]">
-                  <Users class="h-3 w-3 text-[#8B5A2B]" />
-                </div>
-                <span class="text-sm text-[#8B5A2B]">
-                  By {props.event.creator}
-                </span>
+          <div class="flex flex-1 flex-col p-5 md:p-6">
+            <div class="mb-2 flex items-center gap-2 text-sm text-gray-500">
+              <MapPin class="h-4 w-4 flex-shrink-0 text-[#D98E73]" />
+              <span class="truncate" title={props.event.location}>
+                {props.event.location}
+              </span>
+            </div>
+            <h3 class="mb-2 line-clamp-2 text-xl font-semibold text-[#5B3E29] group-hover:text-[#C27B62]">
+              {props.event.title}
+            </h3>
+
+            <div class="mb-4 flex items-center gap-2">
+              <div class="flex h-5 w-5 items-center justify-center rounded-full bg-[#F8D7BD]">
+                <Users class="h-3 w-3 text-[#8B5A2B]" />
               </div>
-              <span class="mb-2 inline-block rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
+              <span class="text-sm text-[#8B5A2B]">
+                By {props.event.creator}
+              </span>
+            </div>
+
+            <div class="mb-5">
+              <span class="rounded-full bg-[#F8D7BD]/70 px-3 py-1 text-xs font-medium text-[#8B5A2B]">
                 {props.event.type}
               </span>
-              <Link href={`/details/${props.event.id}`}>
-                <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
-                  {props.event.title}
-                </h3>
-              </Link>
-              <div class="grid grid-cols-2 gap-2 text-sm text-[#6D5D4E]">
-                <div class="flex items-center gap-2">
-                  <Calendar class="h-4 w-4 text-[#D98E73]" />
-                  <span>{props.event.date}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <Clock class="h-4 w-4 text-[#D98E73]" />
-                  <span>{props.event.time}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <MapPin class="h-4 w-4 text-[#D98E73]" />
-                  <span>{props.event.location}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <Users class="h-4 w-4 text-[#D98E73]" />
-                  <span>{props.event.spotsLeft} spots left</span>
-                </div>
-              </div>
-            </div>
-            <div class="mt-4 flex items-center justify-between">
-              <div class="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#F8D7BD] text-xs font-medium text-[#8B5A2B]"
-                  >
-                    {i}
-                  </div>
-                ))}
-                <div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#E6F2FF] text-xs font-medium text-[#5B8CB7]">
-                  +{props.event.attendees - 3}
-                </div>
-              </div>
-              <Link
-                href={`/details/${props.event.id}`}
-                class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                Join
-              </Link>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
     );
   },

@@ -1,6 +1,14 @@
 import { component$ } from "@builder.io/qwik";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { getEvent, getConfirmedUsers } from "~/api/EndPoint";
+import {
+  StarIcon,
+  MapPinIcon,
+  MessageSquareIcon,
+  Share2Icon,
+  UsersIcon,
+} from "lucide-qwik";
+import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useEventDetails = routeLoader$(async (event) => {
   const id = event.params.id;
@@ -47,358 +55,387 @@ export default component$(() => {
       return dateString; // Return original string if parsing fails
     }
   };
+
   return (
-    <div class="min-h-screen bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] px-4 py-12">
-      <div class="container mx-auto">
-        <div class="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:shadow-lg">
-          <div class="relative aspect-[21/9] w-full overflow-hidden">
-            <div class="absolute inset-0 z-10 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <img
-              src={
-                data.value.event.data?.event.image ||
-                "https://via.placeholder.com/1200x400"
-              }
-              alt="Event cover"
-              class="absolute inset-0 h-full w-full object-cover transition duration-700 hover:scale-105"
-              width={1200}
-              height={400}
-            />
-            <div class="absolute bottom-0 left-0 z-20 p-8 text-white">
-              <div class="mb-2 inline-flex items-center rounded-full bg-[#D98E73]/80 px-3 py-1 text-sm backdrop-blur-sm">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="mr-1.5 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                {formatEventDate(
-                  data.value.event.data?.event.date || "",
-                  data.value.event.data?.event.starttime || "",
-                )}
+    <div class="min-h-screen bg-gradient-to-br from-[#F8EDE3] to-[#FFF8F0] md:pt-20">
+      <div class="mx-auto flex max-w-7xl flex-col px-4 py-4 pt-32 lg:flex-row lg:gap-6 lg:p-6">
+        {/* Main Content */}
+        <div class="flex-1 space-y-6">
+          {/* Hero Section */}
+          <div class="overflow-hidden rounded-xl border-[#E6D7C3]/40 bg-white/90 shadow-xl backdrop-blur-sm">
+            <div class="relative">
+              <img
+                src={
+                  data.value.event.data?.event.image ||
+                  "https://via.placeholder.com/1200x400"
+                }
+                alt="Event cover"
+                class="h-[250px] w-full object-cover sm:h-[350px] md:h-[450px]"
+                width={1200}
+                height={450}
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
+              {/* Overlay Content */}
+              <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
+                <div class="flex items-end justify-between">
+                  <div class="rounded-xl bg-black/20 px-3 py-2 text-white backdrop-blur-sm sm:px-6 sm:py-4">
+                    <div class="mb-2 inline-flex items-center rounded-full bg-[#D98E73]/90 px-3 py-1 text-sm font-medium">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="mr-2 h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {formatEventDate(
+                        data.value.event.data?.event.date || "",
+                        data.value.event.data?.event.starttime || "",
+                      )}
+                    </div>
+                    <h2 class="mb-1 text-xl font-bold sm:mb-2 sm:text-2xl">
+                      {data.value.event.data?.event.name}
+                    </h2>
+                  </div>
+                </div>
               </div>
-              <h1 class="text-3xl font-bold tracking-tight drop-shadow-md sm:text-5xl">
-                {data.value.event.data?.event.name}
-              </h1>
             </div>
           </div>
 
-          <div class="p-8">
-            <div class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-6">
-              <div class="flex items-center gap-3">
-                <div class="flex items-center rounded-full bg-[#F8EDE3] px-4 py-2 shadow-sm">
-                  <svg
-                    class="mr-2 h-4 w-4 text-[#D98E73]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                  </svg>
-                  <span class="text-sm font-medium text-[#5B3E29]">
-                    {data.value.confirmed.data &&
-                    data.value.confirmed.data.length > 0
-                      ? `${data.value.confirmed.data.length} lovely people attending`
-                      : "Be the first to join this cozy gathering!"}
-                  </span>
-                </div>
+          {/* Create Event Section */}
+          <div class="rounded-xl border-[#E6D7C3]/40 bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-6">
+            <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#D98E73]">
+                <UsersIcon class="h-6 w-6 text-white" />
               </div>
-
-              <div class="flex gap-2">
-                <Link
-                  href={`/join/${data.value.event.data?.event.eventID}`}
-                  class="inline-flex items-center gap-2 rounded-lg bg-[#D98E73] px-5 py-2.5 text-center text-sm font-medium text-white shadow-lg transition-all hover:bg-[#C27B62] hover:shadow-[#F8D7BD] focus:outline-none focus:ring-4 focus:ring-[#F8D7BD]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                  </svg>
-                  Join Event
-                </Link>
-                <button
-                  type="button"
-                  class="inline-flex items-center rounded-lg border border-[#E6D7C3] bg-white px-3 py-2.5 text-center text-sm font-medium text-[#6D5D4E] shadow-sm hover:bg-[#FFF8F0] focus:outline-none focus:ring-4 focus:ring-[#F8EDE3]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-                  </svg>
-                </button>
+              <div class="flex-1">
+                <h3 class="mb-1 text-lg font-semibold text-[#5B3E29]">
+                  {data.value.confirmed.data &&
+                  data.value.confirmed.data.length > 0
+                    ? `${data.value.confirmed.data.length} lovely people attending`
+                    : "Be the first to join this event!"}
+                </h3>
+                <p class="text-sm text-[#6D5D4E]/70">
+                  Connect with like-minded people at this event
+                </p>
               </div>
+              <Link
+                href={`/join/${data.value.event.data?.event.eventID}`}
+                class="mt-2 w-full rounded-lg bg-[#D98E73] px-6 py-2 text-center text-white hover:bg-[#C27B62] sm:mt-0 sm:w-auto"
+              >
+                Join This Event
+              </Link>
             </div>
+          </div>
 
-            <div class="grid gap-8 md:grid-cols-3">
-              <section class="space-y-8 md:col-span-2">
-                <div class="space-y-4">
-                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-[#5B3E29]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-[#D98E73]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width={2}
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    About This Event
-                  </h2>
-                  <div class="rounded-xl bg-[#F8EDE3] p-6 shadow-sm">
-                    <p class="whitespace-pre-wrap text-lg leading-relaxed text-gray-700">
-                      {data.value.event.data?.event.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div class="space-y-4">
-                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-[#D98E73]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    Attendees
-                  </h2>
-                  <div class="space-y-4">
-                    {data.value.confirmed.data &&
-                    data.value.confirmed.data.length > 0 ? (
-                      data.value.confirmed.data.map((attendee) => (
-                        <div
-                          key={attendee.requestId}
-                          class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-6 shadow-sm transition-all"
-                        >
-                          <img
-                            src={
-                              attendee.user?.image ??
-                              "https://via.placeholder.com/40"
-                            }
-                            alt={attendee.user?.name ?? "Anonymous"}
-                            class="h-14 w-14 rounded-full object-cover shadow-md ring-2 ring-[#F8D7BD]"
-                            width={56}
-                            height={56}
-                          />
-                          <div class="flex-1 space-y-2">
-                            <p class="font-medium text-[#5B3E29]">
-                              {attendee.user?.name}
-                            </p>
-                            {attendee.whyJoin && (
-                              <div>
-                                <p class="mb-1 text-xs font-semibold uppercase text-[#D98E73]">
-                                  Why I'm attending
-                                </p>
-                                <p class="text-sm italic text-gray-600">
-                                  "{attendee.whyJoin}"
-                                </p>
-                              </div>
-                            )}
-                            {attendee.background && (
-                              <div>
-                                <p class="mb-1 mt-2 text-xs font-semibold uppercase text-[#D98E73]">
-                                  Background
-                                </p>
-                                <p class="text-sm text-[#6D5D4E]">
-                                  {attendee.background}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#E6D7C3] bg-white p-12 text-center">
-                        <div class="mb-4 rounded-full bg-[#F8D7BD] p-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-10 w-10 text-[#D98E73]"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                            />
-                          </svg>
-                        </div>
-                        <h3 class="mb-2 text-xl font-semibold text-[#5B3E29]">
-                          No attendees yet
-                        </h3>
-                        <p class="mb-8 max-w-md text-[#6D5D4E]">
-                          Be the first to join this exciting event! Connect with
-                          others who share your interests.
-                        </p>
-                        <Link
-                          href={`/join/${data.value.event.data?.event.eventID}`}
-                          class="inline-flex items-center gap-2 rounded-lg bg-[#D98E73] px-6 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#F8D7BD] focus:ring-offset-2"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                          </svg>
-                          Join Now
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </section>
-
-              <div class="space-y-6">
-                <section class="space-y-4">
-                  <h2 class="flex items-center gap-2 text-2xl font-semibold text-gray-900">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6 text-[#D98E73]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Location
-                  </h2>
-                  <div class="overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-sm">
-                    {data.value.event.data?.location && (
-                      <div class="space-y-4">
-                        <div class="h-48 overflow-hidden">
-                          <img
-                            src={
-                              data.value.event.data.location.ImageURL ||
-                              "https://via.placeholder.com/400x300"
-                            }
-                            alt={data.value.event.data.location.Name}
-                            class="h-full w-full object-cover transition duration-700 hover:scale-105"
-                            width={400}
-                            height={300}
-                          />
-                        </div>
-                        <div class="p-4">
-                          <h3 class="mb-2 font-semibold text-[#5B3E29]">
-                            {data.value.event.data.location.Name}
-                          </h3>
-                          <p class="text-sm text-gray-600">
-                            {data.value.event.data.location.Description}
-                          </p>
-                          <Link
-                            href={`/places/${data.value.event.data.location.Name}`}
-                            class="mt-4 inline-flex items-center text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
-                          >
-                            <span>Get directions</span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="ml-1 h-4 w-4"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                <section class="rounded-xl bg-[#F8EDE3] p-6">
-                  <h3 class="mb-4 font-semibold text-[#5B3E29]">
+          {/* Event Details Section */}
+          <div class="rounded-xl border-[#E6D7C3]/40 bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6">
+            {/* Description Section with improved spacing */}
+            <div class="mb-6">
+              <h3 class="mb-3 text-lg font-semibold text-[#5B3E29] md:text-xl">
+                About this event
+              </h3>
+              <p class="leading-relaxed text-[#6D5D4E]/80 md:text-base">
+                {data.value.event.data?.event.description}
+              </p>
+            </div>
+            <div class="border-t border-[#E6D7C3]/50 pt-6">
+              {/* Combined Quick Info and Details in one box */}
+              <div class="rounded-lg bg-[#F8EDE3]/30 p-4">
+                <div class="mb-4 flex items-center justify-between">
+                  <h3 class="flex items-center gap-2 text-lg font-semibold text-[#5B3E29]">
+                    <StarIcon class="h-5 w-5 text-[#D98E73]" />
                     Event Details
                   </h3>
-                  <ul class="space-y-3">
-                    <li class="flex items-start gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="mt-0.5 h-5 w-5 text-[#D98E73]"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      <div class="text-sm">
-                        <span class="font-medium text-[#5B3E29]">
-                          Date & Time:
+                </div>
+
+                <div class="space-y-3">
+                  {/* Date & Time */}
+                  <div class="flex items-center justify-between rounded-md bg-white/50 p-2.5">
+                    <span class="text-sm text-[#6D5D4E]/80 md:text-base">
+                      Date & Time
+                    </span>
+                    <span class="font-medium text-[#5B3E29]">
+                      {formatEventDate(
+                        data.value.event.data?.event.date || "",
+                        data.value.event.data?.event.starttime || "",
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Attendees */}
+                  <div class="flex items-center justify-between rounded-md bg-white/50 p-2.5">
+                    <span class="text-sm text-[#6D5D4E]/80 md:text-base">
+                      Attendees
+                    </span>
+                    <span class="font-medium text-[#5B3E29]">
+                      {data.value.confirmed.data?.length
+                        ? `${data.value.confirmed.data.length} registered`
+                        : "Be the first to join!"}
+                    </span>
+                  </div>
+
+                  {/* Location */}
+                  {data.value.event.data?.location && (
+                    <div class="rounded-md bg-white/50 p-2.5">
+                      <div class="mb-1 flex items-center justify-between">
+                        <span class="text-sm text-[#6D5D4E]/80 md:text-base">
+                          Location
                         </span>
-                        <div class="text-[#8B5A2B]">
-                          {formatEventDate(
-                            data.value.event.data?.event.date || "",
-                          )}
-                        </div>
                       </div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="mt-0.5 h-5 w-5 text-[#D98E73]"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                      <div class="text-[#6D5D4E]">
+                        <p class="text-sm font-medium md:text-base">
+                          {data.value.event.data.location.Name}
+                        </p>
+                        <p class="text-xs text-[#6D5D4E]/80 md:text-sm">
+                          {data.value.event.data.location.Address}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action buttons */}
+                  <div class="mt-2 flex justify-between gap-3">
+                    {data.value.event.data?.location && (
+                      <Link
+                        href={`/places/${data.value.event.data.location.Name}`}
+                        class="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#D98E73] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#C27B62]"
                       >
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                      </svg>
-                      <div class="text-sm">
-                        <span class="font-medium text-[#D98E73]">
-                          Attendees:
-                        </span>
-                        <div class="text-[#D98E73]">
-                          {data.value.confirmed.data?.length
-                            ? `${data.value.confirmed.data.length} registered`
-                            : "Be the first to join!"}
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </section>
+                        <MapPinIcon class="h-4 w-4" />
+                        View Location
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      class="inline-flex items-center rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-center text-sm font-medium text-[#6D5D4E] shadow-sm hover:bg-[#FFF8F0]"
+                      aria-label="Share event"
+                    >
+                      <Share2Icon class="mr-1 h-4 w-4" />
+                      Share
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Attendees Section */}
+          <div class="rounded-xl border-[#E6D7C3]/40 bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:p-6">
+            <div class="mb-4">
+              <div class="flex items-center justify-between">
+                <h2 class="flex items-center gap-2 text-lg font-semibold text-[#5B3E29] sm:text-xl">
+                  <MessageSquareIcon class="h-5 w-5" />
+                  Attendees
+                </h2>
+                <span class="inline-block rounded-full bg-[#F8D7BD] px-2 py-0.5 text-sm text-[#8B5A2B]">
+                  {data.value.confirmed.data?.length || 0} registered
+                </span>
+              </div>
+            </div>
+            <div class="space-y-6">
+              {data.value.confirmed.data &&
+              data.value.confirmed.data.length > 0 ? (
+                <div class="grid gap-4 sm:grid-cols-2">
+                  {data.value.confirmed.data.map((attendee) => (
+                    <div
+                      key={attendee.requestId}
+                      class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-5 shadow-sm transition-all hover:shadow-md"
+                    >
+                      <img
+                        src={
+                          attendee.user?.image ??
+                          "https://via.placeholder.com/40"
+                        }
+                        alt={attendee.user?.name ?? "Anonymous"}
+                        class="h-16 w-16 rounded-full object-cover shadow-md ring-2 ring-[#F8D7BD]"
+                        width={64}
+                        height={64}
+                      />
+                      <div class="flex-1 space-y-2">
+                        <p class="text-lg font-medium text-[#5B3E29]">
+                          {attendee.user?.name}
+                        </p>
+                        {attendee.whyJoin && (
+                          <div>
+                            <p class="mb-1 text-xs font-semibold uppercase text-[#D98E73]">
+                              Why I'm attending
+                            </p>
+                            <p class="text-sm italic text-gray-600">
+                              "{attendee.whyJoin}"
+                            </p>
+                          </div>
+                        )}
+                        {attendee.background && (
+                          <div>
+                            <p class="mb-1 mt-2 text-xs font-semibold uppercase text-[#D98E73]">
+                              Background
+                            </p>
+                            <p class="text-sm text-[#6D5D4E]">
+                              {attendee.background}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#E6D7C3] bg-white p-12 text-center">
+                  <div class="mb-4 rounded-full bg-[#F8D7BD] p-4">
+                    <UsersIcon class="h-12 w-12 text-[#D98E73]" />
+                  </div>
+                  <h3 class="mb-3 text-2xl font-semibold text-[#5B3E29]">
+                    No attendees yet
+                  </h3>
+                  <p class="mb-8 max-w-md text-lg text-[#6D5D4E]">
+                    Be the first to join this exciting event! Connect with
+                    others who share your interests.
+                  </p>
+                  <Link
+                    href={`/join/${data.value.event.data?.event.eventID}`}
+                    class="inline-flex items-center gap-2 rounded-lg bg-[#D98E73] px-6 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#F8D7BD] focus:ring-offset-2"
+                  >
+                    <UsersIcon class="h-5 w-5" />
+                    Join Now
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Location Section (only visible on mobile) */}
+          <div class="block rounded-xl border-[#E6D7C3]/40 bg-white/90 p-4 shadow-lg backdrop-blur-sm lg:hidden">
+            <div class="mb-4">
+              <h3 class="text-lg font-semibold text-[#5B3E29] sm:text-xl">
+                Location
+              </h3>
+            </div>
+            {data.value.event.data?.location ? (
+              <div class="overflow-hidden rounded-xl border border-[#E6D7C3]">
+                <div class="h-48 overflow-hidden">
+                  <img
+                    src={
+                      data.value.event.data.location.ImageURL ||
+                      "https://via.placeholder.com/400x300"
+                    }
+                    alt={data.value.event.data.location.Name}
+                    class="h-full w-full object-cover transition duration-700 hover:scale-105"
+                    width={400}
+                    height={300}
+                  />
+                </div>
+                <div class="p-4">
+                  <h3 class="mb-2 font-semibold text-[#5B3E29]">
+                    {data.value.event.data.location.Name}
+                  </h3>
+                  <p class="line-clamp-2 text-sm text-gray-600">
+                    {data.value.event.data.location.Description}
+                  </p>
+                  <Link
+                    href={`/places/${data.value.event.data.location.Name}`}
+                    class="mt-4 inline-flex items-center text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
+                  >
+                    <span>View Location Details</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="ml-1 h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <p class="text-[#6D5D4E]">No location information available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar - Location Details (only visible on desktop) */}
+        <div class="hidden w-96 space-y-6 lg:block">
+          <div class="sticky top-24 rounded-xl border-[#E6D7C3]/40 bg-white/90 p-6 shadow-lg backdrop-blur-sm">
+            <div class="mb-4">
+              <h3 class="text-xl font-semibold text-[#5B3E29]">Location</h3>
+            </div>
+            {data.value.event.data?.location ? (
+              <div class="space-y-4">
+                <div class="overflow-hidden rounded-xl border border-[#E6D7C3]">
+                  <div class="h-48 overflow-hidden">
+                    <img
+                      src={
+                        data.value.event.data.location.ImageURL ||
+                        "https://via.placeholder.com/400x300"
+                      }
+                      alt={data.value.event.data.location.Name}
+                      class="h-full w-full object-cover transition duration-700 hover:scale-105"
+                      width={400}
+                      height={300}
+                    />
+                  </div>
+                  <div class="p-4">
+                    <h3 class="mb-2 font-semibold text-[#5B3E29]">
+                      {data.value.event.data.location.Name}
+                    </h3>
+                    <p class="text-sm text-[#6D5D4E]/80">
+                      {data.value.event.data.location.Description}
+                    </p>
+                    <div class="mt-4 flex items-center gap-1 text-sm text-[#6D5D4E]/70">
+                      <MapPinIcon class="h-4 w-4" />
+                      <span>{data.value.event.data.location.Address}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-4">
+                  <Link
+                    href={`/places/${data.value.event.data.location.Name}`}
+                    class="block w-full rounded-xl bg-gradient-to-r from-[#D98E73] to-[#C27B62] py-3 text-center font-medium text-white shadow-lg hover:from-[#C27B62] hover:to-[#A6654E]"
+                  >
+                    View Location Details
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div class="rounded-lg bg-[#F8EDE3]/30 p-4 text-center">
+                <p class="text-[#6D5D4E]">No location information available</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 });
+
+export const head: DocumentHead = ({ resolveValue }) => {
+  const event = resolveValue(useEventDetails);
+  return {
+    title: `Study & Hack | ${event.event.data?.event.name || "Event Details"}`,
+    meta: [
+      {
+        name: "description",
+        content: event.event.data?.event.description || "",
+      },
+      {
+        property: "og:title",
+        content: `Study & Hack | ${event.event.data?.event.name || "Event Details"}`,
+      },
+      {
+        property: "og:description",
+        content: event.event.data?.event.description || "",
+      },
+      {
+        property: "og:image",
+        content: event.event.data?.event.image || "",
+      },
+    ],
+  };
+};
