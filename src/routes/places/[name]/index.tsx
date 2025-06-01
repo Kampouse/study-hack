@@ -247,7 +247,7 @@ export default component$(() => {
                 src={(place.value.data?.ImageURL as string) || ""}
                 alt={place.value.data?.Name}
                 class="h-[250px] w-full object-cover sm:h-[350px] md:h-[450px]"
-                width={1200}
+                width={900}
                 height={450}
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
