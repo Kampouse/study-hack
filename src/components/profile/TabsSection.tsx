@@ -36,10 +36,12 @@ interface ProfileViewProps {
 const ProfileView = component$<ProfileViewProps>(
   ({ profileData, isEditing }) => {
     return (
-      <div class="flex flex-col rounded-lg bg-white p-8 shadow-sm">
-        <div class="flex flex-col items-center justify-center md:flex-row md:items-start md:justify-start">
-          <div class="relative mb-6 md:mb-0 md:mr-8">
-            <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-[#D98E73] bg-[#F8D7BD]">
+      <div class="flex flex-col rounded-lg bg-white p-4 shadow-sm sm:p-6 md:p-8">
+        {/* Profile header with avatar and basic info */}
+        <div class="flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-8">
+          {/* Avatar container - centered on mobile, left-aligned on desktop */}
+          <div class="relative flex justify-center md:justify-start">
+            <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-[#D98E73] bg-[#F8D7BD] shadow-md">
               <img
                 src={profileData.avatar}
                 alt="Profile avatar"
@@ -54,73 +56,95 @@ const ProfileView = component$<ProfileViewProps>(
             </div>
           </div>
 
-          <div class="flex flex-1 flex-col text-center md:text-left">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+          {/* Profile info container - takes remaining width */}
+          <div class="flex w-full flex-1 flex-col text-center md:text-left">
+            {/* Name, username and edit button */}
+            <div class="flex flex-col items-center space-y-2 md:flex-row md:items-start md:justify-between md:space-y-0">
               <div>
                 <h2 class="mb-1 text-2xl font-bold text-[#5B3E29]">
                   {profileData.name}
                 </h2>
                 <p class="text-[#D98E73]">@{profileData.username}</p>
+                <p class="mt-2 text-sm text-[#6D5D4E]">
+                  Member since {profileData.joinedDate}
+                </p>
               </div>
+
               <button
                 type="button"
                 onClick$={() => {
                   isEditing.value = !isEditing.value;
                 }}
-                class="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 md:mt-0"
+                class="mx-auto mt-4 inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 md:mx-0 md:mt-0"
               >
                 <Pencil class="mr-2 h-4 w-4" /> Edit Profile
               </button>
             </div>
 
-            <p class="mt-2 text-[#6D5D4E]">
-              Member since {profileData.joinedDate}
-            </p>
-
-            <div class="my-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
-                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
-                <span class="text-sm text-[#6D5D4E]">Events Attended</span>
+            {/* Stats cards - single column on small screens, 3 columns on larger screens */}
+            <div class="my-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+              <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
+                <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
+                  {}
+                </span>
+                <span class="text-xs text-[#6D5D4E] sm:text-sm">
+                  Events Attended
+                </span>
               </div>
-              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
-                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
-                <span class="text-sm text-[#6D5D4E]">Events Hosted</span>
+              <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
+                <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
+                  {}
+                </span>
+                <span class="text-xs text-[#6D5D4E] sm:text-sm">
+                  Events Hosted
+                </span>
               </div>
-              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
-                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
-                <span class="text-sm text-[#6D5D4E]">Places Found</span>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
-                About Me
-              </h3>
-              <p class="text-[#6D5D4E]">{profileData.bio}</p>
-            </div>
-
-            <div class="mt-6">
-              <h3 class="mb-3 text-lg font-semibold text-[#5B3E29]">
-                Skills & Interests
-              </h3>
-              <div class="flex flex-wrap gap-2">
-                {profileData.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    class="rounded-full bg-[#F8D7BD] px-3 py-1 text-sm text-[#8B5A2B]"
-                  >
-                    {skill}
-                  </span>
-                ))}
+              <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
+                <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
+                  {}
+                </span>
+                <span class="text-xs text-[#6D5D4E] sm:text-sm">
+                  Places Found
+                </span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* About section */}
+        <div class="mt-6 border-t border-[#F8EDE3] pt-6">
+          <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">About Me</h3>
+          <p class="whitespace-pre-line text-[#6D5D4E]">
+            {profileData.bio || "No bio added yet."}
+          </p>
+        </div>
+
+        {/* Skills section */}
+        <div class="mt-6 border-t border-[#F8EDE3] pt-6">
+          <h3 class="mb-3 text-lg font-semibold text-[#5B3E29]">
+            Skills & Interests
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            {profileData.skills.length > 0 ? (
+              profileData.skills.map((skill) => (
+                <span
+                  key={skill}
+                  class="rounded-full bg-[#F8D7BD] px-3 py-1 text-sm text-[#8B5A2B] shadow-sm"
+                >
+                  {skill}
+                </span>
+              ))
+            ) : (
+              <p class="text-sm italic text-[#6D5D4E]">
+                No skills or interests added yet.
+              </p>
+            )}
           </div>
         </div>
       </div>
     );
   },
 );
-
 // Define props interface for ProfileEdit component
 interface ProfileEditProps {
   profileData: UserProfileType;
