@@ -1,12 +1,19 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal, $, useStore } from "@builder.io/qwik";
+import type { Signal } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
+import type { UserProfileType } from "~/routes/profile/types";
 import {
   CalendarIcon as Calendar,
   UserPlusIcon as UserPlus,
   BellIcon as Bell,
   ClockIcon as Clock,
   BookmarkIcon as Bookmark,
+  UserIcon as User,
+  PencilIcon as Pencil,
+  CameraIcon as Camera,
+  CheckIcon as Check,
+  XIcon as X,
 } from "lucide-qwik";
 import type {
   DetailedEventType,
@@ -17,7 +24,301 @@ import { EventCard } from "./EventCard";
 import { PlaceCard } from "./PlaceCard";
 import { EmptyState } from "./EmptyState";
 
+// Profile data type
+
+// Define props interface for ProfileView component
+interface ProfileViewProps {
+  profileData: UserProfileType;
+  isEditing: Signal<boolean>;
+}
+
+// Profile View component
+const ProfileView = component$<ProfileViewProps>(
+  ({ profileData, isEditing }) => {
+    return (
+      <div class="flex flex-col rounded-lg bg-white p-8 shadow-sm">
+        <div class="flex flex-col items-center justify-center md:flex-row md:items-start md:justify-start">
+          <div class="relative mb-6 md:mb-0 md:mr-8">
+            <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-[#D98E73] bg-[#F8D7BD]">
+              <img
+                src={profileData.avatar}
+                alt="Profile avatar"
+                class="h-full w-full object-cover"
+                width={128}
+                height={128}
+                onError$={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "/placeholder-avatar.svg";
+                }}
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-1 flex-col text-center md:text-left">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 class="mb-1 text-2xl font-bold text-[#5B3E29]">
+                  {profileData.name}
+                </h2>
+                <p class="text-[#D98E73]">@{profileData.username}</p>
+              </div>
+              <button
+                type="button"
+                onClick$={() => {
+                  isEditing.value = !isEditing.value;
+                }}
+                class="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 md:mt-0"
+              >
+                <Pencil class="mr-2 h-4 w-4" /> Edit Profile
+              </button>
+            </div>
+
+            <p class="mt-2 text-[#6D5D4E]">
+              Member since {profileData.joinedDate}
+            </p>
+
+            <div class="my-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
+                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
+                <span class="text-sm text-[#6D5D4E]">Events Attended</span>
+              </div>
+              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
+                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
+                <span class="text-sm text-[#6D5D4E]">Events Hosted</span>
+              </div>
+              <div class="rounded-lg bg-[#FFF8F0] p-4 text-center">
+                <span class="block text-2xl font-bold text-[#D98E73]">{}</span>
+                <span class="text-sm text-[#6D5D4E]">Places Found</span>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">
+                About Me
+              </h3>
+              <p class="text-[#6D5D4E]">{profileData.bio}</p>
+            </div>
+
+            <div class="mt-6">
+              <h3 class="mb-3 text-lg font-semibold text-[#5B3E29]">
+                Skills & Interests
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {profileData.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    class="rounded-full bg-[#F8D7BD] px-3 py-1 text-sm text-[#8B5A2B]"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
+// Define props interface for ProfileEdit component
+interface ProfileEditProps {
+  profileData: UserProfileType;
+  isEditing: Signal<boolean>;
+}
+
+// Profile Edit component
+const ProfileEdit = component$<ProfileEditProps>(
+  ({ profileData, isEditing }) => {
+    // Local state management within the component
+    const editableProfile = useStore({
+      name: profileData.name,
+      username: profileData.username,
+      bio: profileData.bio,
+      skills: [...profileData.skills],
+    });
+
+    const newSkill = useSignal("");
+
+    // Self-contained functions
+    const addSkill = $(() => {
+      if (
+        newSkill.value.trim() &&
+        !editableProfile.skills.includes(newSkill.value.trim())
+      ) {
+        editableProfile.skills.push(newSkill.value.trim());
+        newSkill.value = "";
+      }
+    });
+
+    const removeSkill = $((skill: string) => {
+      editableProfile.skills = editableProfile.skills.filter(
+        (s) => s !== skill,
+      );
+    });
+
+    const handleSave = $(() => {
+      // Return the updated profile data to the parent component
+      isEditing.value = false;
+    });
+
+    return (
+      <div class="rounded-lg bg-white p-8 shadow-sm">
+        <h2 class="mb-6 text-2xl font-bold text-[#5B3E29]">Edit Profile</h2>
+        <div class="flex flex-col space-y-6">
+          <div class="flex flex-col items-center md:flex-row md:items-start">
+            <div class="relative mb-6 md:mb-0 md:mr-8">
+              <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-[#D98E73] bg-[#F8D7BD]">
+                <img
+                  src={profileData.avatar}
+                  alt="Profile avatar"
+                  class="h-full w-full object-cover"
+                  width={128}
+                  height={128}
+                  onError$={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "/placeholder-avatar.svg";
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                class="absolute bottom-0 right-0 rounded-full bg-[#D98E73] p-2 text-white shadow-md transition-colors hover:bg-[#C27B62]"
+              >
+                <Camera class="h-5 w-5" />
+              </button>
+            </div>
+
+            <div class="flex-1 space-y-4">
+              <div>
+                <label class="mb-2 block font-medium text-[#5B3E29]" for="name">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={editableProfile.name}
+                  onInput$={(e) =>
+                    (editableProfile.name = (
+                      e.target as HTMLInputElement
+                    ).value)
+                  }
+                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="mb-2 block font-medium text-[#5B3E29]"
+                  for="username"
+                >
+                  Username
+                </label>
+                <div class="flex items-center">
+                  <input
+                    id="username"
+                    type="text"
+                    value={editableProfile.username}
+                    onInput$={(e) =>
+                      (editableProfile.username = (
+                        e.target as HTMLInputElement
+                      ).value)
+                    }
+                    class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block font-medium text-[#5B3E29]" for="bio">
+              About Me
+            </label>
+            <textarea
+              id="bio"
+              value={editableProfile.bio}
+              onInput$={(e) =>
+                (editableProfile.bio = (e.target as HTMLTextAreaElement).value)
+              }
+              rows={4}
+              class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block font-medium text-[#5B3E29]">
+              Skills & Interests
+            </label>
+            <div class="mb-4 flex flex-wrap gap-2">
+              {editableProfile.skills.map((skill) => (
+                <div
+                  key={skill}
+                  class="group flex items-center rounded-full bg-[#F8D7BD] px-3 py-1"
+                >
+                  <span class="text-sm text-[#8B5A2B]">{skill}</span>
+                  <button
+                    type="button"
+                    onClick$={() => removeSkill(skill)}
+                    class="ml-1 rounded-full p-0.5 text-[#8B5A2B] opacity-70 transition-opacity hover:opacity-100"
+                  >
+                    <X class="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div class="flex gap-2">
+              <input
+                type="text"
+                placeholder="Add a skill or interest..."
+                value={newSkill.value}
+                onInput$={(e) =>
+                  (newSkill.value = (e.target as HTMLInputElement).value)
+                }
+                onKeyUp$={(e) => {
+                  if (e.key === "Enter") {
+                    addSkill();
+                  }
+                }}
+                class="flex-1 rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
+              />
+              <button
+                type="button"
+                onClick$={addSkill}
+                class="rounded-md bg-[#D98E73] px-4 py-2 text-white transition-colors hover:bg-[#C27B62]"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick$={() => {
+                isEditing.value = !isEditing.value;
+              }}
+              class="rounded-md border border-[#E6D7C3] bg-white px-6 py-2 text-[#6D5D4E] shadow-sm hover:bg-[#F8EDE3] focus:outline-none focus:ring-2 focus:ring-[#D98E73]"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick$={handleSave}
+              class="inline-flex items-center rounded-md bg-[#D98E73] px-6 py-2 text-white shadow-sm hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]"
+            >
+              <Check class="mr-2 h-4 w-4" /> Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
 interface TabsSectionProps {
+  profile: UserProfileType;
   upcomingEvents: DetailedEventType[];
   hostedEvents: DetailedEventType[];
   pastEvents: DetailedEventType[];
@@ -26,40 +327,10 @@ interface TabsSectionProps {
   requests?: ActiveRequestType[];
 }
 
-/**
- * Renders a tabbed interface to display lists of upcoming events, hosted events,
- * past events, saved places, liked places, and requests. Uses `EventCard` and `PlaceCard` for display, and `EmptyState`
- * when a list is empty.
- *
- * Takes:
- * - `upcomingEvents`: An array of `DetailedEventType` objects for events the user is attending.
- * - `hostedEvents`: An array of `DetailedEventType` objects for events the user is hosting.
- * - `pastEvents`: An array of `DetailedEventType` objects for events the user has attended in the past.
- * - `savedPlaces`: An array of `PlaceType` objects for places the user has saved.
- * - `likedPlaces`: An array of `PlaceType` objects for places the user has liked.
- * - `requests`: An array of `ActiveRequestType` objects for pending requests.
- *
- * Example Usage:
- * ```tsx
- * const upcoming = useComputed$(() => [ ...eventData... ]);
- * const hosted = useComputed$(() => [ ...eventData... ]);
- * const past = useComputed$(() => [ ...pastEventData... ]);
- * const savedPlaces = useComputed$(() => [ ...placeData... ]);
- * const likedPlaces = useComputed$(() => [ ...likedPlaceData... ]);
- *
- * <TabsSection
- *   upcomingEvents={upcoming.value}
- *   hostedEvents={hosted.value}
- *   pastEvents={past.value}
- *   savedPlaces={savedPlaces.value}
- *   likedPlaces={likedPlaces.value}
- *   requests={activeRequests}
- * />
- * ```
- */
 export const TabsSection = component$<TabsSectionProps>(
   ({
     upcomingEvents,
+    profile,
     hostedEvents,
     pastEvents,
     likedPlaces,
@@ -69,7 +340,9 @@ export const TabsSection = component$<TabsSectionProps>(
 
     const tab = loc.url.searchParams.get("tab") ?? "upcoming";
     const activeTab = useSignal(tab);
+    const isEditing = useSignal(false);
 
+    // Self-contained functions for profile editing
     // Ensure icons match IconComponent type
     const tabs: {
       id: string;
@@ -77,6 +350,12 @@ export const TabsSection = component$<TabsSectionProps>(
       icon: any;
       count: number;
     }[] = [
+      {
+        id: "profile",
+        label: "Profile",
+        icon: User,
+        count: 0,
+      },
       {
         id: "upcoming",
         label: "Upcoming",
@@ -112,7 +391,7 @@ export const TabsSection = component$<TabsSectionProps>(
 
     return (
       <div class="w-full">
-        <div class="mb-8 border-b border-[#F8EDE3] shadow-sm">
+        <div class="mb-8 mt-10 border-b border-[#F8EDE3] shadow-sm">
           <nav
             class="justify-left -mb-px flex space-x-8 overflow-x-auto px-4 pb-1"
             aria-label="Tabs"
@@ -164,7 +443,15 @@ export const TabsSection = component$<TabsSectionProps>(
           </nav>
         </div>
 
-        <div class=" max-w-screen-xl px-4">
+        <div class="max-w-screen-xl px-4">
+          {activeTab.value === "profile" && !isEditing.value && (
+            <ProfileView isEditing={isEditing} profileData={profile} />
+          )}
+
+          {activeTab.value === "profile" && isEditing.value && (
+            <ProfileEdit profileData={profile} isEditing={isEditing} />
+          )}
+
           {activeTab.value === "upcoming" &&
             (upcomingEvents.length > 0 ? (
               <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -174,7 +461,7 @@ export const TabsSection = component$<TabsSectionProps>(
               </div>
             ) : (
               <EmptyState
-                context="CalendarIcon" // Use context instead of icon
+                context="CalendarIcon" // Use conte
                 title="No Upcoming Events"
                 message="You haven't joined or been invited to any events yet. Explore events to join!"
               />

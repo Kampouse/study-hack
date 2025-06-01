@@ -1,10 +1,4 @@
-import {
-  component$,
-  useStore,
-  useSignal,
-  useTask$,
-  useComputed$,
-} from "@builder.io/qwik";
+import { component$, useStore, useTask$, useComputed$ } from "@builder.io/qwik";
 
 // --- Routing & Data Fetching ---
 import { routeLoader$ } from "@builder.io/qwik-city";
@@ -93,7 +87,6 @@ const formatEventDate = (dateString: string) => {
 };
 
 // --- UI Components ---
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { TabsSection } from "@/components/profile/TabsSection";
 import { CreateEventCTA } from "@/components/profile/CreateEventCTA";
 import { ActiveRequestsSidebar } from "@/components/profile/ActiveRequestsSidebar";
@@ -120,16 +113,12 @@ export const useGetAllReferenceEvents = routeLoader$(
   },
 );
 
-// Loader for Saved Places
-
-// --- Lucide Icons ---
 export default component$(() => {
   // --- Backend Data Hooks ---
   const data = useQueries(); // From layout: { userData, activeRequest, ... }
   const eventsResource = useGetAllReferenceEvents(); // Fetched reference events
 
   // --- State Signals and Stores ---
-  const showEdit = useSignal(false);
   const profileStore = useStore({
     name: "",
     username: "", // Needs to be populated if username is distinct from description
@@ -277,17 +266,12 @@ export default component$(() => {
 
   return (
     // Keep the main background color, the warmth is part of the theme
-    <div class="min-h-screen bg-[#FFF8F0] pb-16 md:pb-20">
-      {" "}
-      {/* Increased bottom padding */}
-      {/* Pass profile data and edit signal */}
-      <ProfileHeader userProfile={userProfile.value} showEdit={showEdit} />
-      {/* Conditionally render ProfileForm with transition */}
-      {/* Add a container for positioning and potential animations */}
-      <div class="">
+    <div class="min-h-screen bg-[#FFF8F0] pb-16 pt-10 md:pb-20">
+      <div class="container px-4 md:px-6">
         <div class="lg:col-span-1">
           {/* Use resolved values from signals/stores */}
           <TabsSection
+            profile={userProfile.value}
             upcomingEvents={upcomingEvents.value}
             hostedEvents={hostedEvents.value}
             pastEvents={pastEvents.value}
