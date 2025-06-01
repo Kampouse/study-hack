@@ -467,7 +467,7 @@ export const TabsSection = component$<TabsSectionProps>(
           </nav>
         </div>
 
-        <div class="max-w-screen-xl px-4">
+        <div class=" px-4">
           {activeTab.value === "profile" && !isEditing.value && (
             <ProfileView isEditing={isEditing} profileData={profile} />
           )}

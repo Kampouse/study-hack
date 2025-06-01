@@ -267,7 +267,7 @@ export default component$(() => {
   return (
     // Keep the main background color, the warmth is part of the theme
     <div class="min-h-screen bg-[#FFF8F0] pb-16 pt-10 md:pb-20">
-      <div class="container px-4 md:px-6">
+      <div class=" px-4 md:px-6">
         <div class="lg:col-span-1">
           {/* Use resolved values from signals/stores */}
           <TabsSection

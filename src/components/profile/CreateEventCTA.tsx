@@ -16,8 +16,8 @@ import { CalendarIcon as Calendar, MapPinIcon as MapPin } from "lucide-qwik";
 export const CreateEventCTA = component$(() => {
   return (
     // Increased padding for CTA section
-    <section class="bg-gradient-to-b from-[#F8EDE3]/50 to-[#FFF8F0]/30 pt-20">
-      <div class="container px-4 md:px-6">
+    <section class="bg-gradient-to-b from-[#F8EDE3]/50 to-[#FFF8F0]/30 pt-10">
+      <div class=" px-4 md:px-8">
         {/* Increased padding inside CTA card */}
         <div class="relative overflow-hidden rounded-2xl bg-white p-10 shadow-lg md:p-16">
           {/* Subtle background pattern */}
@@ -33,7 +33,7 @@ export const CreateEventCTA = component$(() => {
             {" "}
             {/* Increased gap */}
             <div class="w-full md:w-1/3 lg:w-1/4">
-              <div class="aspect-square overflow-hidden rounded-xl shadow-md ">
+              <div class="aspect-square overflow-hidden rounded-xl  ">
                 <img
                   width={400}
                   height={400}
