@@ -46,7 +46,7 @@ export const userSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(100)),
   Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   ImageURL: v.optional(v.pipe(v.string(), v.url())),
-  Intrests: v.array(v.pipe(v.string(), v.minLength(3), v.maxLength(20))),
+  Intrests: v.array(v.pipe(v.string(), v.minLength(2), v.maxLength(20))),
 });
 export type UpdateUserForm = v.InferOutput<typeof userSchema>;
 

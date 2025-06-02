@@ -1,7 +1,10 @@
 import { component$, useSignal, $, useStore } from "@builder.io/qwik";
+import type * as v from "valibot";
+import { useForm, formAction$, valiForm$ } from "@modular-forms/qwik";
 import type { Signal } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
+import { userSchema, type UpdateUserForm } from "~/api/Forms";
 import type { UserProfileType } from "~/routes/profile/types";
 import {
   CalendarIcon as Calendar,
@@ -15,17 +18,62 @@ import {
   CheckIcon as Check,
   XIcon as X,
 } from "lucide-qwik";
-import type {
-  DetailedEventType,
-  PlaceType,
-  ActiveRequestType,
-} from "~/routes/profile/types";
+import type { DetailedEventType, PlaceType } from "~/routes/profile/types";
 import { EventCard } from "./EventCard";
 import { PlaceCard } from "./PlaceCard";
 import { EmptyState } from "./EmptyState";
 
-// Profile data type
+type ProfileSchemaType = v.InferInput<typeof userSchema>;
+type ActiveRequestType = any; // Temporary type definition
 
+// Function to update profile form (to be implemented)
+const updateProfileForm = async (formData: any) => {
+  // Mock implementation
+  return {
+    success: true,
+    data: formData,
+  };
+};
+
+// Define form action for profile updates
+export const useUpdateProfileAction = formAction$<UpdateUserForm>(
+  async (values) => {
+    try {
+      // Convert values to the format expected by the backend
+      console.log("Profile updated:", values);
+      const formData = {
+        Name: values.Name,
+        Description: values.Description,
+        ImageURL: values.ImageURL || undefined,
+        Intrests: values.Intrests || [],
+      };
+
+      // Log the formatted data being sent to the backend
+
+      const result = await updateProfileForm(formData);
+
+      if (!result.success) {
+        console.error("Profile update failed:", "Unknown error");
+        return {
+          status: "error" as const,
+          message: "Failed to update profile",
+        };
+      }
+
+      return {
+        status: "success" as const,
+        message: "Profile updated successfully",
+      };
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return {
+        status: "error" as const,
+        message: "An unexpected error occurred",
+      };
+    }
+  },
+  valiForm$(userSchema),
+);
 // Define props interface for ProfileView component
 interface ProfileViewProps {
   profileData: UserProfileType;
@@ -145,6 +193,7 @@ const ProfileView = component$<ProfileViewProps>(
     );
   },
 );
+
 // Define props interface for ProfileEdit component
 interface ProfileEditProps {
   profileData: UserProfileType;
@@ -154,24 +203,66 @@ interface ProfileEditProps {
 // Profile Edit component
 const ProfileEdit = component$<ProfileEditProps>(
   ({ profileData, isEditing }) => {
+    // Get the form action
+    const updateProfileAction = useUpdateProfileAction();
+
     // Local state management within the component
-    const editableProfile = useStore({
+    const editableProfile = useStore<UserProfileType>({
       name: profileData.name,
       username: profileData.username,
       bio: profileData.bio,
-      skills: [...profileData.skills],
+      avatar: profileData.avatar,
+      skills: profileData.skills,
+      joinedDate: profileData.joinedDate,
+    });
+
+    // Form state tracking
+    const isSubmitting = useSignal(false);
+    const formSuccess = useSignal(false);
+
+    // Create the form with initial values from profileData
+    const [form, { Form, Field }] = useForm<UpdateUserForm>({
+      loader: {
+        value: {
+          Name: editableProfile.name,
+          Description: editableProfile.bio,
+          ImageURL: editableProfile.avatar,
+          Intrests: editableProfile.skills,
+        },
+      },
+      action: updateProfileAction,
+      validate: valiForm$(userSchema),
     });
 
     const newSkill = useSignal("");
+    const validationErrors = useStore<
+      Partial<Record<keyof ProfileSchemaType, string>>
+    >({});
 
     // Self-contained functions
-    const addSkill = $(() => {
+    const addSkill = $((arr: any) => {
       if (
         newSkill.value.trim() &&
         !editableProfile.skills.includes(newSkill.value.trim())
       ) {
-        editableProfile.skills.push(newSkill.value.trim());
-        newSkill.value = "";
+        // Check max skills validation
+        if (editableProfile.skills.length >= 20) {
+          validationErrors["Intrests"] = "Maximum 20 skills allowed";
+          return;
+        }
+
+        // Validate skill length
+        if (newSkill.value.trim().length > 20) {
+          validationErrors["Intrests"] =
+            "Skill must be less than 20 characters";
+          return;
+        }
+
+        editableProfile.skills = [
+          ...editableProfile.skills,
+          newSkill.value.trim(),
+        ];
+        arr.value = editableProfile.skills;
       }
     });
 
@@ -179,17 +270,22 @@ const ProfileEdit = component$<ProfileEditProps>(
       editableProfile.skills = editableProfile.skills.filter(
         (s) => s !== skill,
       );
-    });
-
-    const handleSave = $(() => {
-      // Return the updated profile data to the parent component
-      isEditing.value = false;
+      // Clear skill validation error when removing skills
     });
 
     return (
       <div class="rounded-lg bg-white p-8 shadow-sm">
         <h2 class="mb-6 text-2xl font-bold text-[#5B3E29]">Edit Profile</h2>
-        <div class="flex flex-col space-y-6">
+        <Form
+          onSubmit$={() => {
+            if (form.submitted && !form.invalid) {
+              isEditing.value = false;
+            }
+
+            // Handle form submission logic here
+          }}
+          class="flex flex-col space-y-6"
+        >
           <div class="flex flex-col items-center md:flex-row md:items-start">
             <div class="relative mb-6 md:mb-0 md:mr-8">
               <div class="h-32 w-32 overflow-hidden rounded-full border-4 border-[#D98E73] bg-[#F8D7BD]">
@@ -200,7 +296,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                   width={128}
                   height={128}
                   onError$={(e) => {
-                    (e.target as HTMLImageElement).src =
+                    (e.target as HTMLInputElement).src =
                       "/placeholder-avatar.svg";
                   }}
                 />
@@ -214,22 +310,30 @@ const ProfileEdit = component$<ProfileEditProps>(
             </div>
 
             <div class="flex-1 space-y-4">
-              <div>
-                <label class="mb-2 block font-medium text-[#5B3E29]" for="name">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={editableProfile.name}
-                  onInput$={(e) =>
-                    (editableProfile.name = (
-                      e.target as HTMLInputElement
-                    ).value)
-                  }
-                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
-                />
-              </div>
+              <Field name="Name">
+                {(field, props) => (
+                  <div>
+                    <label
+                      class="mb-2 block font-medium text-[#5B3E29]"
+                      for="Name"
+                    >
+                      Name
+                    </label>
+                    <input
+                      {...props}
+                      id="Name"
+                      type="text"
+                      value={field.value}
+                      class={`w-full rounded-md border ${
+                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
+                    />
+                    {field.error && (
+                      <p class="mt-1 text-sm text-red-500">{field.error}</p>
+                    )}
+                  </div>
+                )}
+              </Field>
 
               <div>
                 <label
@@ -242,105 +346,345 @@ const ProfileEdit = component$<ProfileEditProps>(
                   <input
                     id="username"
                     type="text"
-                    value={editableProfile.username}
-                    onInput$={(e) =>
-                      (editableProfile.username = (
-                        e.target as HTMLInputElement
-                      ).value)
-                    }
-                    class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
+                    value={profileData.username}
+                    disabled
+                    class="w-full rounded-md border border-[#E6D7C3] bg-gray-50 px-4 py-2 text-gray-500 shadow-sm"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div>
-            <label class="mb-2 block font-medium text-[#5B3E29]" for="bio">
-              About Me
-            </label>
-            <textarea
-              id="bio"
-              value={editableProfile.bio}
-              onInput$={(e) =>
-                (editableProfile.bio = (e.target as HTMLTextAreaElement).value)
-              }
-              rows={4}
-              class="w-full rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
-            />
-          </div>
+          <Field name="Description">
+            {(field, props) => (
+              <div>
+                <label class="mb-2 block font-medium text-[#5B3E29]" for="bio">
+                  About Me
+                </label>
+                <textarea
+                  {...props}
+                  id="bio"
+                  value={field.value}
+                  rows={4}
+                  class={`w-full rounded-md border ${
+                    field.error ? "border-red-500" : "border-[#E6D7C3]"
+                  } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
+                />
+                {field.error && (
+                  <p class="mt-1 text-sm text-red-500">{field.error}</p>
+                )}
+              </div>
+            )}
+          </Field>
 
-          <div>
-            <label class="mb-2 block font-medium text-[#5B3E29]">
-              Skills & Interests
-            </label>
-            <div class="mb-4 flex flex-wrap gap-2">
-              {editableProfile.skills.map((skill) => (
-                <div
-                  key={skill}
-                  class="group flex items-center rounded-full bg-[#F8D7BD] px-3 py-1"
-                >
-                  <span class="text-sm text-[#8B5A2B]">{skill}</span>
-                  <button
-                    type="button"
-                    onClick$={() => removeSkill(skill)}
-                    class="ml-1 rounded-full p-0.5 text-[#8B5A2B] opacity-70 transition-opacity hover:opacity-100"
-                  >
-                    <X class="h-3 w-3" />
-                  </button>
+          <Field type="string[]" name="Intrests">
+            {(field) => (
+              <div>
+                <label class="mb-2 block font-medium text-[#5B3E29]">
+                  Skills & Interests
+                </label>
+                <div class="mb-4 flex flex-wrap gap-2">
+                  {editableProfile.skills.map((skill) => (
+                    <div
+                      key={skill}
+                      class="group flex items-center rounded-full bg-[#F8D7BD] px-3 py-1"
+                    >
+                      <span class="text-sm text-[#8B5A2B]">{skill}</span>
+                      <button
+                        type="button"
+                        onClick$={() => removeSkill(skill)}
+                        class="ml-1 rounded-full p-0.5 text-[#8B5A2B] opacity-70 transition-opacity hover:opacity-100"
+                      >
+                        <X class="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div class="flex gap-2">
-              <input
-                type="text"
-                placeholder="Add a skill or interest..."
-                value={newSkill.value}
-                onInput$={(e) =>
-                  (newSkill.value = (e.target as HTMLInputElement).value)
-                }
-                onKeyUp$={(e) => {
-                  if (e.key === "Enter") {
-                    addSkill();
-                  }
-                }}
-                class="flex-1 rounded-md border border-[#E6D7C3] bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]"
-              />
-              <button
-                type="button"
-                onClick$={addSkill}
-                class="rounded-md bg-[#D98E73] px-4 py-2 text-white transition-colors hover:bg-[#C27B62]"
-              >
-                Add
-              </button>
-            </div>
-          </div>
+                <div class="flex flex-col gap-2">
+                  <div class="grid grid-cols-2 gap-2 md:grid-cols-3">
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Networking"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Networking";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Networking");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes("Networking")}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Networking</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Web Development"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Web Development";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Web Development");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Web Development",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Web Development</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Marketing"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Marketing";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Marketing");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes("Marketing")}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Marketing</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Startups"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Startups";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Startups");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes("Startups")}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Startups</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Graphic Design"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Graphic Design";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Graphic Design");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Graphic Design",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Graphic Design</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Business Strategy"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Business Strategy";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Business Strategy");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Business Strategy",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Business Strategy</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Remote Work"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Remote Work";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Remote Work");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes("Remote Work")}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Remote Work</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Productivity"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Productivity";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Productivity");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Productivity",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Productivity</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Project Management"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Project Management";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Project Management");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Project Management",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Project Management</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Digital Nomad"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Digital Nomad";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Digital Nomad");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Digital Nomad",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Digital Nomad</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="Content Creation"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "Content Creation";
+                            addSkill(field);
+                          } else {
+                            removeSkill("Content Creation");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "Content Creation",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">Content Creation</span>
+                    </label>
+                    <label class="flex cursor-pointer items-center rounded-md border border-[#E6D7C3] bg-white p-2 transition-colors hover:bg-[#FFF8F0]">
+                      <input
+                        type="checkbox"
+                        value="UI/UX Design"
+                        onChange$={(e) => {
+                          if ((e.target as HTMLInputElement).checked) {
+                            newSkill.value = "UI/UX Design";
+                            addSkill(field);
+                          } else {
+                            removeSkill("UI/UX Design");
+                          }
+                        }}
+                        checked={editableProfile.skills.includes(
+                          "UI/UX Design",
+                        )}
+                        class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
+                      />
+                      <span class="text-sm">UI/UX Design</span>
+                    </label>
+                  </div>
+                </div>
+                {field.error && (
+                  <p class="mt-1 text-sm text-red-500">{field.error}</p>
+                )}
+                {validationErrors["Intrests"] && !field.error && (
+                  <p class="mt-1 text-sm text-red-500">
+                    {validationErrors["Intrests"]}
+                  </p>
+                )}
+              </div>
+            )}
+          </Field>
 
-          <div class="flex justify-end space-x-4">
+          <div class="mt-6 flex justify-end space-x-4">
             <button
               type="button"
               onClick$={() => {
-                isEditing.value = !isEditing.value;
+                isEditing.value = false;
               }}
-              class="rounded-md border border-[#E6D7C3] bg-white px-6 py-2 text-[#6D5D4E] shadow-sm hover:bg-[#F8EDE3] focus:outline-none focus:ring-2 focus:ring-[#D98E73]"
+              class="rounded-md bg-white px-4 py-2 text-sm font-medium text-[#5B3E29] shadow-sm ring-1 ring-inset ring-[#E6D7C3] transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
+              disabled={isSubmitting.value}
             >
               Cancel
             </button>
             <button
-              type="button"
-              onClick$={handleSave}
-              class="inline-flex items-center rounded-md bg-[#D98E73] px-6 py-2 text-white shadow-sm hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73]"
+              type="submit"
+              class={`rounded-md ${
+                formSuccess.value ? "bg-green-600" : "bg-[#D98E73]"
+              } px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors ${
+                formSuccess.value ? "hover:bg-green-700" : "hover:bg-[#C27B62]"
+              } focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2`}
+              disabled={isSubmitting.value}
             >
-              <Check class="mr-2 h-4 w-4" /> Save Changes
+              {form.submitting ? (
+                "Saving..."
+              ) : form.response.status === "success" ? (
+                <>
+                  <Check class="mr-1 inline-block h-4 w-4" />
+                  Saved!
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </div>
-        </div>
+          {form.response.message && (
+            <div
+              class={`mt-4 rounded-md p-3 ${
+                form.response.status === "success"
+                  ? "bg-green-50 text-green-800"
+                  : "bg-red-50 text-red-800"
+              }`}
+            >
+              {form.response.message}
+            </div>
+          )}
+        </Form>
       </div>
     );
   },
 );
-
 interface TabsSectionProps {
   profile: UserProfileType;
   upcomingEvents: DetailedEventType[];
