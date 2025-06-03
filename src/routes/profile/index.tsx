@@ -140,14 +140,7 @@ export default component$(() => {
       profileStore.username = user.Description ?? "user"; // Fallback using Description if no Username
       profileStore.bio = user.Description ?? ""; // Using Description for Bio
       // Backend seems to use 'Intrests' (typo?) - handle potential string or array format
-      profileStore.skills =
-        typeof user.Intrests === "string"
-          ? user.Intrests.split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : Array.isArray(user.Intrests)
-            ? user.Intrests
-            : [];
+      profileStore.skills = Array.isArray(user.Intrests) ? user.Intrests : [];
       profileStore.avatar = user.Image ?? "";
     }
   });

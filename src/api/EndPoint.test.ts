@@ -107,7 +107,7 @@ test("add valid event from user", async () => {
   const userData = {
     ID: user?.ID as number,
     Name: user?.Name as string,
-    Intrests: user?.Intrests as string,
+    Intrests: user?.Intrests as string[],
     Description: user?.Description as string,
     Image: user?.ImageURL as string,
   };
