@@ -42,7 +42,7 @@ export default component$(() => {
         tags: ["Quiet", "WiFi", "Coffee"],
         creator: place.Users?.Username,
         rating: place.Places?.Rating || 4.8,
-        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
+        coords: place.Places?.Coordinates || ([0, 0] as [number, number]),
       };
     }) || [];
 

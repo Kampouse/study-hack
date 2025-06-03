@@ -777,12 +777,12 @@ export const CreatePlace = async (params: {
     image?: string;
     description: string;
     tags?: string[];
-    placeId: number;
-    rating: number;
-    wifiSpeed?: number;
-    lat: number;
-    lng: number;
-    hasQuietEnvironment?: boolean;
+    rating: string;
+    wifispeed?: number;
+    hasquietenvironment?: boolean;
+    price?: string;
+    coordinates?: [number, number];
+    category?: string;
   };
   client?: ClientType | null;
 }) => {
@@ -797,21 +797,20 @@ export const CreatePlace = async (params: {
   try {
     const result = await Client.insert(Places)
       .values({
+        UserID: params.userID,
         Name: params.placeData.name,
         Address: params.placeData.address,
-        ImageURL: params.placeData.image,
-        Lat: params.placeData.lat,
-        Lng: params.placeData.lng,
+        ImageURL: params.placeData.image || "",
         Description: params.placeData.description,
-        Tags: params.placeData.tags,
-        Rating: params.placeData.rating,
-        UserID: params.userID,
-        WifiSpeed: params.placeData.wifiSpeed,
-        HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,
+        Tags: params.placeData.tags || [],
+        Rating: parseFloat(params.placeData.rating),
+        WifiSpeed: params.placeData.wifispeed || 0,
+        HasQuietEnvironment: params.placeData.hasquietenvironment ? 1 : 0,
+        Coordinates: params.placeData.coordinates || [0, 0],
+        IsPublic: 1,
       })
       .returning()
       .execute();
-
     return {
       data: result[0],
       success: true,
@@ -859,11 +858,13 @@ export const UpdatePlace = async (params: {
         ImageURL: params.placeData.image,
         Description: params.placeData.description,
         Tags: params.placeData.tags,
-        Lat: params.placeData.lat,
-        Lng: params.placeData.lng,
         Rating: params.placeData.rating,
         WifiSpeed: params.placeData.wifiSpeed,
         HasQuietEnvironment: params.placeData.hasQuietEnvironment ? 1 : 0,
+        Coordinates:
+          params.placeData.lat && params.placeData.lng
+            ? [params.placeData.lat, params.placeData.lng]
+            : undefined,
       })
       .where(eq(Places.PlaceID, params.placeId))
       .returning()

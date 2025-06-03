@@ -55,8 +55,11 @@ export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
   image: "",
   tags: [],
   rating: "3",
-  wifiSpeed: 0,
-  hasQuietEnvironment: false,
+  wifispeed: 0,
+  hasquietenvironment: false,
+  price: "",
+  coordinates: [0, 0],
+  category: "",
 }));
 
 type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never;
@@ -104,10 +107,7 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
     userID: user.ID,
     placeData: {
       ...values,
-      rating: parseInt(values.rating),
-      placeId: 0,
-      lat: data[0].lat,
-      lng: data[0].lng,
+      coordinates: [data[0].lat, data[0].lng],
     },
   });
   if (result.success) {
@@ -394,11 +394,11 @@ export default component$(() => {
                     )}
                   </Field>
 
-                  <Field name="wifiSpeed" type="number">
+                  <Field name="wifispeed" type="number">
                     {(field, props) => (
                       <div>
                         <label
-                          for="wifiSpeed"
+                          for="wifispeed"
                           class="mb-2 block text-sm font-medium text-[#5B3E29]"
                         >
                           Wi-Fi Speed (Mbps)
@@ -422,7 +422,7 @@ export default component$(() => {
                   </Field>
                 </div>
 
-                <Field name="hasQuietEnvironment" type="boolean">
+                <Field name="hasquietenvironment" type="boolean">
                   {(field, props) => (
                     <div class="rounded-lg bg-[#F8EDE3]/50 p-4">
                       <div class="flex items-center space-x-3">
@@ -431,7 +431,7 @@ export default component$(() => {
                         </div>
                         <div class="flex-grow">
                           <label
-                            for="hasQuietEnvironment"
+                            for="hasquietenvironment"
                             class="text-sm font-medium text-[#5B3E29]"
                           >
                             Quiet Environment
@@ -444,7 +444,7 @@ export default component$(() => {
                           {...props}
                           type="checkbox"
                           class="h-5 w-5 rounded border-[#E6D7C3] text-[#D98E73] focus:ring-[#D98E73]"
-                          checked={field.value}
+                          checked={!!field.value}
                         />
                       </div>
                     </div>

@@ -29,6 +29,13 @@
       "when": 1733794448914,
       "tag": "0003_absurd_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1748983194761,
+      "tag": "0004_secret_hitman",
+      "breakpoints": true
     }
   ]
 }

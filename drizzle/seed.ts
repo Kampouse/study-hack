@@ -7,11 +7,10 @@ import {
 } from "../src/api/Query";
 import { Places } from "./schema";
 
-import type { CreateEventForm } from "~/api/Forms";
+import type { CreateEventForm, PlaceForm } from "~/api/Forms";
 
 import { faker } from "@faker-js/faker";
 import { Events, Requests, Users } from "./schema";
-import { createEventForm } from "~/api/Forms";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import assert from "assert";
 type SelectedEvent = typeof Events.$inferSelect;
@@ -88,7 +87,6 @@ export const InjecatbleSeedScript = async (
   };
 
   const createRandomEvent = () => {
-    createEventForm;
     type RandomEvent = CreateEventForm;
 
     const randomEvent: RandomEvent = {
@@ -164,19 +162,22 @@ export const InjecatbleSeedScript = async (
 
   type ApplyUsers = Awaited<ReturnType<typeof applyUsers>>;
 
-  const createRandomPlaces = () => {
-    const randomPlace = {
+  const createRandomPlaces = (): PlaceForm => {
+    const randomPlace: PlaceForm = {
       name: faker.company.name(),
       address: faker.location.streetAddress(),
       image: faker.image.url(),
-      lat: faker.address.latitude(),
-      lng: faker.address.longitude(),
       description: faker.lorem.paragraph(),
-      placeId: faker.number.int({ min: 1, max: 100 }),
       tags: Array.from({ length: 3 }, () => faker.word.noun()),
-      rating: faker.number.float({ min: 1, max: 5 }),
-      wifiSpeed: faker.number.float({ min: 1, max: 100 }),
-      hasQuietEnvironment: faker.datatype.boolean(),
+      rating: faker.number.float({ min: 1, max: 5 }).toString(),
+      wifispeed: faker.number.float({ min: 1, max: 100 }),
+      hasquietenvironment: faker.datatype.boolean(),
+      price: ["$", "$$", "$$$"][Math.floor(Math.random() * 3)],
+      coordinates: [
+        faker.number.float({ min: 45.4, max: 45.7 }),
+        faker.number.float({ min: -73.9, max: -73.4 }),
+      ],
+      category: ["Workspace", "Café", "Library"][Math.floor(Math.random() * 3)],
     };
     return randomPlace;
   };
@@ -198,7 +199,7 @@ export const InjecatbleSeedScript = async (
           await CreatePlace({
             event: undefined,
             userID: user.UserID,
-            placeData: { ...place },
+            placeData: place,
             client: db,
           });
         }

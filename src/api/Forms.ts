@@ -26,8 +26,11 @@ export const placeSchema = v.object({
   description: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
   tags: v.optional(v.array(v.string())),
   rating: v.string(),
-  wifiSpeed: v.optional(v.number()),
-  hasQuietEnvironment: v.optional(v.boolean()),
+  wifispeed: v.optional(v.number()),
+  hasquietenvironment: v.optional(v.boolean()),
+  price: v.optional(v.string()),
+  coordinates: v.optional(v.tuple([v.number(), v.number()])),
+  category: v.optional(v.string()),
 });
 
 export type PlaceForm = v.InferOutput<typeof placeSchema>;

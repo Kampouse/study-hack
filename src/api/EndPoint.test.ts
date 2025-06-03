@@ -356,14 +356,17 @@ test("Create a valid place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     image: faker.image.url(),
-    placeId: faker.number.int({ min: 1, max: 100 }),
     description: faker.lorem.paragraph(),
     tags: [faker.word.sample(), faker.word.sample()],
-    lat: faker.address.latitude(),
-    lng: faker.address.longitude(),
-    rating: faker.number.int({ min: 1, max: 5 }),
-    wifiSpeed: faker.number.int({ min: 1, max: 100 }),
-    hasQuietEnvironment: faker.datatype.boolean(),
+    coordinates: [
+      faker.number.float({ min: -90, max: 90 }),
+      faker.number.float({ min: -180, max: 180 }),
+    ] as [number, number],
+    rating: faker.number.int({ min: 1, max: 5 }).toString(),
+    wifispeed: faker.number.int({ min: 1, max: 100 }),
+    hasquietenvironment: faker.datatype.boolean(),
+    price: "$".repeat(faker.number.int({ min: 1, max: 3 })),
+    category: faker.word.sample(),
   };
 
   const result = await CreatePlace({
@@ -390,10 +393,11 @@ test("Query a specific place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
-    placeId: faker.number.int({ min: 1, max: 100 }),
-    lat: faker.address.latitude(),
-    lng: faker.address.longitude(),
-    rating: faker.number.int({ min: 1, max: 5 }),
+    rating: faker.number.int({ min: 1, max: 5 }).toString(),
+    coordinates: [
+      faker.number.float({ min: -90, max: 90 }),
+      faker.number.float({ min: -180, max: 180 }),
+    ] as [number, number],
   };
 
   const createdPlace = await CreatePlace({
@@ -443,10 +447,11 @@ test("Update a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
-    lat: faker.address.latitude(),
-    lng: faker.address.longitude(),
-    placeId: faker.number.int({ min: 1, max: 100 }),
-    rating: faker.number.int({ min: 1, max: 5 }),
+    rating: faker.number.int({ min: 1, max: 5 }).toString(),
+    coordinates: [
+      faker.number.float({ min: -90, max: 90 }),
+      faker.number.float({ min: -180, max: 180 }),
+    ] as [number, number],
   };
 
   const createdPlace = await CreatePlace({
@@ -490,10 +495,11 @@ test("Delete a place", async () => {
     name: faker.company.name(),
     address: faker.location.streetAddress(),
     description: faker.lorem.paragraph(),
-    lat: faker.location.latitude(),
-    lng: faker.location.longitude(),
-    placeId: faker.number.int({ min: 1, max: 100 }),
-    rating: faker.number.int({ min: 1, max: 5 }),
+    rating: faker.number.int({ min: 1, max: 5 }).toString(),
+    coordinates: [
+      faker.number.float({ min: -90, max: 90 }),
+      faker.number.float({ min: -180, max: 180 }),
+    ] as [number, number],
   };
 
   const createdPlace = await CreatePlace({

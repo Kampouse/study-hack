@@ -46,36 +46,39 @@ export default component$(() => {
   const combinedMapData = useSignal<unknown>();
   // --- Data Transformation (Remains the same) ---
   const placesDataForMap =
-    places.value.data?.map((place) => ({
-      id: place.Places?.PlaceID,
-      name: place.Places?.Name,
-      image: (place.Places?.ImageURL as string) || "/placeholder.svg",
-      badge: "Place",
-      location: place.Places?.Address,
-      description: place.Places?.Description,
-      tags: ["Quiet", "WiFi", "Coffee"], // Example tags, ideally fetch from DB
-      creator: place.Users?.Username, // Placeholder
-      rating: 4.8, // Placeholder, fetch actual rating if available
-      coords: [place.Places?.Lat, place.Places?.Lng] as [number, number],
-    })) || [];
+    places.value.data?.map((place) => {
+      const coordinates = place.Places?.Coordinates || [0, 0];
+      return {
+        id: place.Places?.PlaceID,
+        name: place.Places?.Name,
+        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
+        badge: "Place",
+        location: place.Places?.Address,
+        description: place.Places?.Description,
+        tags: place.Places?.Tags || ["Quiet", "WiFi", "Coffee"],
+        creator: place.Users?.Username, // Placeholder
+        rating: place.Places?.Rating || 4.8,
+        coords: coordinates as [number, number],
+      };
+    }) || [];
 
   // Add events to the map data as well
   const eventsDataForMap =
-    events.value.data?.map((event) => ({
-      id: event.eventID,
-      name: event.name,
-      image: event.image || "/placeholder.svg",
-      badge: "Event",
-      location: event.place?.Places?.Name || "Location TBD",
-      description: event.description,
-      tags: ["Study", "Meetup"],
-      creator: event.creator || "Anonymous",
-      rating: 4.7, // Placeholder for events
-      coords: [
-        event.place?.Places?.Lat ?? 0,
-        event.place?.Places?.Lng ?? 0,
-      ] as [number, number],
-    })) || [];
+    events.value.data?.map((event) => {
+      const coordinates = event.place?.Places?.Coordinates || [0, 0];
+      return {
+        id: event.eventID,
+        name: event.name,
+        image: event.image || "/placeholder.svg",
+        badge: "Event",
+        location: event.place?.Places?.Name || "Location TBD",
+        description: event.description,
+        tags: ["Study", "Meetup"],
+        creator: event.creator || "Anonymous",
+        rating: 4.7, // Placeholder for events
+        coords: coordinates as [number, number],
+      };
+    }) || [];
   combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
 
   const eventsDataForCards =
@@ -95,6 +98,7 @@ export default component$(() => {
 
   const placesApiDataForCards =
     places.value.data?.map((place) => {
+      const coordinates = place.Places?.Coordinates || [0, 0];
       return {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
@@ -102,10 +106,10 @@ export default component$(() => {
         badge: "Popular", // Or derive dynamically
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: ["Quiet", "WiFi", "Coffee"], // Fetch real tags if available
+        tags: place.Places?.Tags || ["Quiet", "WiFi", "Coffee"],
         creator: place.Users?.Username, // Placeholder
-        rating: 4.8, // Fetch real rating if available
-        coords: [place.Places?.Lat, place.Places?.Lng] as [number, number], // Keep coords if needed by card, though maybe not displayed
+        rating: place.Places?.Rating || 4.8,
+        coords: coordinates as [number, number],
       };
     }) || [];
   return (
