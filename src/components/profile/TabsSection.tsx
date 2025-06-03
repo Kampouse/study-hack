@@ -4,7 +4,9 @@ import { useForm, formAction$, valiForm$ } from "@modular-forms/qwik";
 import type { Signal } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
+import type { JSONObject } from "@builder.io/qwik-city";
 import { userSchema, type UpdateUserForm } from "~/api/Forms";
+import { updateProfileForm } from "~/api/Forms";
 import type { UserProfileType } from "~/routes/profile/types";
 import {
   CalendarIcon as Calendar,
@@ -27,33 +29,23 @@ type ProfileSchemaType = v.InferInput<typeof userSchema>;
 type ActiveRequestType = any; // Temporary type definition
 
 // Function to update profile form (to be implemented)
-const updateProfileForm = async (formData: any) => {
-  // Mock implementation
-  return {
-    success: true,
-    data: formData,
-  };
-};
-
 // Define form action for profile updates
 export const useUpdateProfileAction = formAction$<UpdateUserForm>(
-  async (values) => {
+  async (values, event) => {
     try {
       // Convert values to the format expected by the backend
-      console.log("Profile updated:", values);
       const formData = {
         Name: values.Name,
         Description: values.Description,
         ImageURL: values.ImageURL || undefined,
-        Intrests: values.Intrests || [],
+        Intrests: values.Intrests,
       };
 
       // Log the formatted data being sent to the backend
 
-      const result = await updateProfileForm(formData);
+      const result = await updateProfileForm(formData as JSONObject, event);
 
       if (!result.success) {
-        console.error("Profile update failed:", "Unknown error");
         return {
           status: "error" as const,
           message: "Failed to update profile",
@@ -65,7 +57,6 @@ export const useUpdateProfileAction = formAction$<UpdateUserForm>(
         message: "Profile updated successfully",
       };
     } catch (error) {
-      console.error("Error updating profile:", error);
       return {
         status: "error" as const,
         message: "An unexpected error occurred",
@@ -266,11 +257,16 @@ const ProfileEdit = component$<ProfileEditProps>(
       }
     });
 
-    const removeSkill = $((skill: string) => {
+    const removeSkill = $((skill: string, field: any) => {
       editableProfile.skills = editableProfile.skills.filter(
         (s) => s !== skill,
       );
+      // Update the form field value to reflect the changes
+      field.value = editableProfile.skills;
       // Clear skill validation error when removing skills
+      if (validationErrors["Intrests"]) {
+        delete validationErrors["Intrests"];
+      }
     });
 
     return (
@@ -347,7 +343,6 @@ const ProfileEdit = component$<ProfileEditProps>(
                     id="username"
                     type="text"
                     value={profileData.username}
-                    disabled
                     class="w-full rounded-md border border-[#E6D7C3] bg-gray-50 px-4 py-2 text-gray-500 shadow-sm"
                   />
                 </div>
@@ -392,7 +387,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                       <span class="text-sm text-[#8B5A2B]">{skill}</span>
                       <button
                         type="button"
-                        onClick$={() => removeSkill(skill)}
+                        onClick$={() => removeSkill(skill, field)}
                         class="ml-1 rounded-full p-0.5 text-[#8B5A2B] opacity-70 transition-opacity hover:opacity-100"
                       >
                         <X class="h-3 w-3" />
@@ -412,7 +407,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Networking";
                             addSkill(field);
                           } else {
-                            removeSkill("Networking");
+                            removeSkill("Networking", field);
                           }
                         }}
                         checked={editableProfile.skills.includes("Networking")}
@@ -429,7 +424,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Web Development";
                             addSkill(field);
                           } else {
-                            removeSkill("Web Development");
+                            removeSkill("Web Development", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -448,7 +443,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Marketing";
                             addSkill(field);
                           } else {
-                            removeSkill("Marketing");
+                            removeSkill("Marketing", field);
                           }
                         }}
                         checked={editableProfile.skills.includes("Marketing")}
@@ -465,7 +460,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Startups";
                             addSkill(field);
                           } else {
-                            removeSkill("Startups");
+                            removeSkill("Startups", field);
                           }
                         }}
                         checked={editableProfile.skills.includes("Startups")}
@@ -482,7 +477,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Graphic Design";
                             addSkill(field);
                           } else {
-                            removeSkill("Graphic Design");
+                            removeSkill("Graphic Design", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -501,7 +496,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Business Strategy";
                             addSkill(field);
                           } else {
-                            removeSkill("Business Strategy");
+                            removeSkill("Business Strategy", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -520,7 +515,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Remote Work";
                             addSkill(field);
                           } else {
-                            removeSkill("Remote Work");
+                            removeSkill("Remote Work", field);
                           }
                         }}
                         checked={editableProfile.skills.includes("Remote Work")}
@@ -537,7 +532,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Productivity";
                             addSkill(field);
                           } else {
-                            removeSkill("Productivity");
+                            removeSkill("Productivity", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -556,7 +551,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Project Management";
                             addSkill(field);
                           } else {
-                            removeSkill("Project Management");
+                            removeSkill("Project Management", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -575,7 +570,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Digital Nomad";
                             addSkill(field);
                           } else {
-                            removeSkill("Digital Nomad");
+                            removeSkill("Digital Nomad", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -594,7 +589,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "Content Creation";
                             addSkill(field);
                           } else {
-                            removeSkill("Content Creation");
+                            removeSkill("Content Creation", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(
@@ -613,7 +608,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                             newSkill.value = "UI/UX Design";
                             addSkill(field);
                           } else {
-                            removeSkill("UI/UX Design");
+                            removeSkill("UI/UX Design", field);
                           }
                         }}
                         checked={editableProfile.skills.includes(

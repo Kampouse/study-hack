@@ -16,7 +16,11 @@ export const Users = sqliteTable(
     ImageURL: text("ImageURL"),
     Description: text("Description"),
     IsAdmin: integer("IsAdmin").default(0).notNull(),
-    Intrestets: text("Intrestets").default("[]").notNull(),
+    Intrestets: text("Intrestets", { mode: "json" })
+      .$type<string[]>()
+      .default([])
+      .notNull(),
+
     CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => {

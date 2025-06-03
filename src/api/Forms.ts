@@ -51,10 +51,6 @@ export const userSchema = v.object({
 export type UpdateUserForm = v.InferOutput<typeof userSchema>;
 
 export const updateProfileForm = async (data: JSONObject, event: Requested) => {
-  const intrests = Object.keys(data).filter(
-    (key) => key !== "Name" && key !== "Description" && key !== "ImageURL",
-  );
-  data.Intrests = [...intrests];
   //console.log(data);
   const validated = v.safeParse(userSchema, data);
   if (!validated.success) {

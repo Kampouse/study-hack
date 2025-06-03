@@ -142,13 +142,14 @@ export const UpdateUser = async (params: {
 }) => {
   const Client = await drizzler(params.event);
   if (Client === null) return;
-  console.log(params.session.Name, params.session.Description);
   const data = serverSession(params.event);
+  console.log("User intrests:", params.session.Intrests);
   if (data !== null) {
     await Client.update(Users)
       .set({
         Name: params.session.Name,
         Description: params.session.Description,
+        Intrestets: params.session.Intrests,
       })
       .where(eq(Users.Email, data.user.email))
       .execute();
