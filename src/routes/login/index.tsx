@@ -58,7 +58,10 @@ export default component$(() => {
           <div class="mt-8 space-y-4">
             <button
               onClick$={() => {
-                signin.submit({ providerId: "github" });
+                signin.submit({
+                  providerId: "github",
+                  redirectTo: "/auth/signedin",
+                });
               }}
               class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#2D333B] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(45,51,59,0.4)]"
             >
