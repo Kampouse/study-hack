@@ -272,14 +272,52 @@ const ProfileEdit = component$<ProfileEditProps>(
 
     return (
       <div class="rounded-lg bg-white p-8 shadow-sm">
-        <h2 class="mb-6 text-2xl font-bold text-[#5B3E29]">Edit Profile</h2>
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-[#5B3E29]">Edit Profile</h2>
+          <div class="flex space-x-3">
+            <button
+              type="button"
+              onClick$={() => {
+                isEditing.value = false;
+              }}
+              class="rounded-md bg-white px-4 py-2 text-sm font-medium text-[#5B3E29] shadow-sm ring-1 ring-inset ring-[#E6D7C3] transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
+              disabled={isSubmitting.value}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form="profile-edit-form"
+              class={`rounded-md ${
+                formSuccess.value ? "bg-green-600" : "bg-[#D98E73]"
+              } px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors ${
+                formSuccess.value ? "hover:bg-green-700" : "hover:bg-[#C27B62]"
+              } focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2`}
+              disabled={isSubmitting.value}
+            >
+              {form.submitting ? (
+                "Saving..."
+              ) : form.response.status === "success" ? (
+                <>
+                  <Check class="mr-1 inline-block h-4 w-4" />
+                  Saved!
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </button>
+          </div>
+        </div>
         <Form
+          id="profile-edit-form"
           onSubmit$={() => {
             if (form.submitted && !form.invalid) {
               isEditing.value = false;
+              if (form.response.status === "success") {
+                console.log("Profile updated successfully");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
             }
-
-            // Handle form submission logic here
           }}
           class="flex flex-col space-y-6"
         >
