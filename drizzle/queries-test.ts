@@ -53,6 +53,7 @@ const main = async () => {
     userData: {
       ID: data?.ID ?? 0,
       Name: data?.Name ?? "",
+      Username: data?.Username ?? "",
       Intrests: ["hi", "bye"],
       Description: data?.Description ?? "",
       Image: data?.ImageURL ?? "",

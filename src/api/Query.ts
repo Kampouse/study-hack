@@ -148,6 +148,7 @@ export const UpdateUser = async (params: {
     await Client.update(Users)
       .set({
         Name: params.session.Name,
+        Username: params.session.Username,
         Description: params.session.Description,
         Intrestets: params.session.Intrests,
       })
@@ -202,6 +203,8 @@ export const GetUser = async (params: {
       const userData = await Client.select({
         ID: Users.UserID,
         Name: Users.Name,
+        Username: Users.Username,
+
         Description: Users.Description,
         Image: Users.ImageURL,
         Intrests: Users.Intrestets,
@@ -222,6 +225,7 @@ export const GetUser = async (params: {
       const userData = await Client.select({
         ID: Users.UserID,
         Name: Users.Name,
+        Username: Users.Username,
         Description: Users.Description,
         Image: Users.ImageURL,
         Intrests: Users.Intrestets,

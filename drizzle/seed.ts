@@ -115,6 +115,7 @@ export const InjecatbleSeedScript = async (
     userData: {
       ID: number;
       Name: string;
+      Username: string;
       Intrests: string[];
       Description: string;
       Image: string;
@@ -235,6 +236,7 @@ export const InjecatbleSeedScript = async (
         await insertManyEvents(eventWithPlace, {
           ID: users[i].UserID,
           Name: users[i].Name,
+          Username: users[i].Username,
           Intrests: ["hi", "bye"],
           Description: users[i].Description as string,
           Image: users[i].ImageURL as string,

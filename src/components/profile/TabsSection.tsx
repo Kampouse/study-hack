@@ -37,11 +37,11 @@ export const useUpdateProfileAction = formAction$<UpdateUserForm>(
       const formData = {
         Name: values.Name,
         Description: values.Description,
+        Username: values.Username,
         ImageURL: values.ImageURL || undefined,
         Intrests: values.Intrests,
       };
-
-      // Log the formatted data being sent to the backend
+      console.log("hi", formData);
 
       const result = await updateProfileForm(formData as JSONObject, event);
 
@@ -216,6 +216,7 @@ const ProfileEdit = component$<ProfileEditProps>(
       loader: {
         value: {
           Name: editableProfile.name,
+          Username: editableProfile.username,
           Description: editableProfile.bio,
           ImageURL: editableProfile.avatar,
           Intrests: editableProfile.skills,
@@ -331,22 +332,30 @@ const ProfileEdit = component$<ProfileEditProps>(
                 )}
               </Field>
 
-              <div>
-                <label
-                  class="mb-2 block font-medium text-[#5B3E29]"
-                  for="username"
-                >
-                  Username
-                </label>
-                <div class="flex items-center">
-                  <input
-                    id="username"
-                    type="text"
-                    value={profileData.username}
-                    class="w-full rounded-md border border-[#E6D7C3] bg-gray-50 px-4 py-2 text-gray-500 shadow-sm"
-                  />
-                </div>
-              </div>
+              <Field name="Username">
+                {(field, props) => (
+                  <div>
+                    <label
+                      class="mb-2 block font-medium text-[#5B3E29]"
+                      for="Username"
+                    >
+                      Username
+                    </label>
+                    <input
+                      {...props}
+                      id="Username"
+                      type="text"
+                      value={field.value}
+                      class={`w-full rounded-md border ${
+                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
+                    />
+                    {field.error && (
+                      <p class="mt-1 text-sm text-red-500">{field.error}</p>
+                    )}
+                  </div>
+                )}
+              </Field>
             </div>
           </div>
 

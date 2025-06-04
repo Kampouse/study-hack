@@ -47,6 +47,7 @@ export type CreateEventForm = v.InferOutput<typeof eventSchema>;
 
 export const userSchema = v.object({
   Name: v.pipe(v.string(), v.minLength(3), v.maxLength(100)),
+  Username: v.pipe(v.string(), v.minLength(3), v.maxLength(30)),
   Description: v.pipe(v.string(), v.minLength(3), v.maxLength(75)),
   ImageURL: v.optional(v.pipe(v.string(), v.url())),
   Intrests: v.array(v.pipe(v.string(), v.minLength(2), v.maxLength(20))),
@@ -54,7 +55,7 @@ export const userSchema = v.object({
 export type UpdateUserForm = v.InferOutput<typeof userSchema>;
 
 export const updateProfileForm = async (data: JSONObject, event: Requested) => {
-  //console.log(data);
+  console.log("hi", data);
   const validated = v.safeParse(userSchema, data);
   if (!validated.success) {
     console.log(validated.issues);

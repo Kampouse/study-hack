@@ -136,8 +136,7 @@ export default component$(() => {
     if (user) {
       profileStore.name = user.Name;
       // Assuming Username might exist, otherwise fallback to something else or leave blank
-      // profileStore.username = user.Username ?? user.Name?.toLowerCase().replace(/\s+/g, '') ?? "";
-      profileStore.username = user.Description ?? "user"; // Fallback using Description if no Username
+      profileStore.username = user.Username; // Fallback using Description if no Username
       profileStore.bio = user.Description ?? ""; // Using Description for Bio
       // Backend seems to use 'Intrests' (typo?) - handle potential string or array format
       profileStore.skills = Array.isArray(user.Intrests) ? user.Intrests : [];
