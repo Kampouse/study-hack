@@ -30,6 +30,24 @@ export default component$(() => {
   const sidebarOpen = useSignal(false);
   const selectedAmenities = useSignal<string[]>([]);
 
+  const tags = [
+    "Coffee",
+    "Quiet",
+    "WiFi",
+    "Outdoor Seating",
+    "Group Friendly",
+    "Power Outlets",
+    "Affordable",
+    "Spacious",
+    "Good Lighting",
+    "Meeting Rooms",
+    "Social",
+    "Networking",
+    "Focus Friendly",
+    "Collaborative",
+    "Long Hours",
+    "Private Booths",
+  ];
   const placesDataForCards =
     places.value.data?.map((place) => {
       return {
@@ -39,7 +57,7 @@ export default component$(() => {
         badge: "New",
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: ["Quiet", "WiFi", "Coffee"],
+        tags: place.Places?.Tags,
         creator: place.Users?.Username,
         rating: place.Places?.Rating || 4.8,
         coords: place.Places?.Coordinates || ([0, 0] as [number, number]),
@@ -62,7 +80,9 @@ export default component$(() => {
 
     const matchesAmenities =
       selectedAmenities.value.length === 0 ||
-      selectedAmenities.value.every((amenity) => place.tags.includes(amenity));
+      selectedAmenities.value.every(
+        (amenity) => place.tags?.includes(amenity) ?? false,
+      );
 
     return matchesSearch && matchesCategory && matchesAmenities;
   });
@@ -166,21 +186,41 @@ export default component$(() => {
                 <h3 class="mb-3 text-sm font-medium uppercase tracking-wider text-[#8B5A2B]">
                   Amenities
                 </h3>
-                <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-                  {["Quiet", "WiFi", "Coffee", "Study-Friendly", "Outlets"].map(
-                    (amenity) => (
+                <div class="scrollbar-thin scrollbar-track-[#F8EDE3] scrollbar-thumb-[#D98E73] max-h-56 overflow-y-auto pr-2">
+                  <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                    {tags.map((amenity) => (
                       <button
                         key={amenity}
                         onClick$={() => toggleAmenity(amenity)}
-                        class={`w-full rounded-full px-3 py-2 text-center text-sm transition-all sm:w-auto sm:px-4 ${
+                        class={`mb-2 w-full rounded-full px-3 py-1.5 text-center text-sm transition-all sm:mb-2 sm:mr-2 sm:w-auto sm:px-3 ${
                           selectedAmenities.value.includes(amenity)
                             ? "bg-[#D98E73] text-white"
                             : "bg-[#F8EDE3] text-[#5B3E29] hover:bg-[#E6D7C3]"
                         }`}
+                        title={amenity}
                       >
-                        {amenity}
+                        <span class="block truncate">{amenity}</span>
                       </button>
-                    ),
+                    ))}
+                  </div>
+                  {selectedAmenities.value.length > 0 && (
+                    <div class="mt-2 flex flex-wrap gap-1">
+                      <span class="text-xs text-[#8B5A2B]">Selected:</span>
+                      {selectedAmenities.value.map((selected) => (
+                        <span
+                          key={selected}
+                          class="inline-flex items-center rounded-full bg-[#D98E73] px-2 py-0.5 text-xs text-white"
+                        >
+                          {selected}
+                          <button
+                            onClick$={() => toggleAmenity(selected)}
+                            class="ml-1 rounded-full hover:bg-[#C27B62]"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

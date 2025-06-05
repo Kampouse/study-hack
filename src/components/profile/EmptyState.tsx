@@ -1,7 +1,13 @@
 import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 // Import specific icons you might need
-import { CalendarIcon, MapPinIcon, UsersIcon, PackageIcon, BellIcon } from "lucide-qwik";
+import {
+  CalendarIcon,
+  MapPinIcon,
+  UsersIcon,
+  PackageIcon,
+  BellIcon,
+} from "lucide-qwik";
 
 // Define possible contexts for the empty state, using icon names for clarity
 type EmptyStateContext =
@@ -34,11 +40,11 @@ const getIconForContext = (context: EmptyStateContext): any => {
     case "PackageIcon": // Represents a generic or default state
     default:
       // Fallback for safety, though type checking should prevent invalid values
-      if (context !== "PackageIcon") {
-        console.warn(
-          `Unexpected EmptyStateContext value: ${context}. Defaulting to PackageIcon.`,
-        );
-      }
+
+      console.warn(
+        `Unexpected EmptyStateContext value: ${context}. Defaulting to PackageIcon.`,
+      );
+
       return PackageIcon;
   }
 };
@@ -70,7 +76,7 @@ const getIconForContext = (context: EmptyStateContext): any => {
  *   title="No Saved Places"
  *   message="You haven't saved any places yet."
  * />
- * 
+ *
  * // For requests
  * <EmptyState
  *   context="BellIcon"

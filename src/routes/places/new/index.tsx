@@ -111,6 +111,7 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
     },
   });
   if (result.success) {
+    console.log("Place created successfully");
     return {
       status: "success",
       data: result,
@@ -127,6 +128,24 @@ export default component$(() => {
   const places = useSignal<
     Array<{ address: string; lat: number; lng: number }>
   >([]);
+  const suggestedTags = useSignal([
+    "Coffee",
+    "Quiet",
+    "WiFi",
+    "Outdoor Seating",
+    "Group Friendly",
+    "Power Outlets",
+    "Affordable",
+    "Spacious",
+    "Good Lighting",
+    "Meeting Rooms",
+    "Social",
+    "Networking",
+    "Focus Friendly",
+    "Collaborative",
+    "Long Hours",
+    "Private Booths",
+  ]);
 
   const nav = useNavigate();
   const [FormPlace, { Form, Field }] = useForm<PlaceForm, Data>({
@@ -157,7 +176,7 @@ export default component$(() => {
               <Form
                 class="space-y-6"
                 onSubmit$={() => {
-                  if (FormPlace.submitted) {
+                  if (FormPlace.submitted && !FormPlace.invalid) {
                     nav("/places");
                   }
                 }}
@@ -320,38 +339,90 @@ export default component$(() => {
                 </Field>
 
                 <Field name="tags" type="string[]">
-                  {(field, props) => (
+                  {(field) => (
                     <div>
                       <label
                         for="tags"
                         class="mb-2 block text-sm font-medium text-[#5B3E29]"
                       >
-                        Tags (comma-separated)
+                        Tags
                       </label>
-                      <input
-                        {...props}
-                        type="text"
-                        class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                          field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                        }`}
-                        value={field.value?.join(", ")}
-                        placeholder="e.g. Coffee, Quiet, WiFi, Outdoor Seating"
-                      />
-                      <div class="mt-2 flex flex-wrap gap-2">
-                        <span class="rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
-                          Coffee
-                        </span>
-                        <span class="rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
-                          Quiet
-                        </span>
-                        <span class="rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
-                          WiFi
-                        </span>
-                        <span class="rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]">
-                          + Add more
-                        </span>
+
+                      <p class="mb-2 text-xs text-[#6D5D4E]">
+                        Select tags that best describe this place:
+                      </p>
+
+                      <div class="flex flex-wrap gap-2">
+                        {suggestedTags.value.map((tag) => (
+                          <div key={tag} class="flex items-center">
+                            <label
+                              class={`flex cursor-pointer items-center rounded-full px-3 py-1 text-sm transition-colors ${
+                                field.value?.includes(tag)
+                                  ? "bg-[#F8D7BD] text-[#8B5A2B]"
+                                  : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#F8EDE3]/80"
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                class="sr-only"
+                                checked={field.value?.includes(tag)}
+                                onChange$={() => {
+                                  if (field.value?.includes(tag)) {
+                                    // Remove tag if already selected
+                                    field.value = field.value.filter(
+                                      (t) => t !== tag,
+                                    );
+                                  } else {
+                                    // Add tag if not selected
+                                    field.value = [...(field.value || []), tag];
+                                  }
+                                }}
+                              />
+                              {tag}
+                              {field.value?.includes(tag) && (
+                                <span class="ml-1 font-bold">✓</span>
+                              )}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+
+                      {field.error && (
+                        <div class="mt-1 text-sm text-red-400">
+                          {field.error}
+                        </div>
+                      )}
+
+                      <div class="mt-3">
+                        <p class="text-sm text-[#5B3E29]">Selected tags:</p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                          {field.value?.length ? (
+                            field.value.map((tag, index) => (
+                              <div
+                                key={index}
+                                class="flex items-center rounded-full bg-[#F8D7BD] px-3 py-1 text-sm text-[#8B5A2B]"
+                              >
+                                <span>{tag}</span>
+                                <button
+                                  type="button"
+                                  onClick$={() => {
+                                    const newTags = field.value?.filter(
+                                      (_, i) => i !== index,
+                                    );
+                                    field.value = newTags;
+                                  }}
+                                  class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#D98E73]/20 text-[#8B5A2B] hover:bg-[#D98E73]/50"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))
+                          ) : (
+                            <p class="text-xs italic text-[#6D5D4E]">
+                              No tags selected
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}

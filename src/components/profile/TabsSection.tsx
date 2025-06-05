@@ -907,7 +907,7 @@ export const TabsSection = component$<TabsSectionProps>(
                 context="UsersIcon" // Use context instead of icon (UserPlus mapped to UsersIcon context)
                 title="No Hosted Events Yet"
                 message="Ready to gather some folks? Host your first event and bring people together."
-                actionButton={{ label: "Host an Event", href: "/create-event" }}
+                actionButton={{ label: "Host an Event", href: "/new" }}
               />
             ))}
 

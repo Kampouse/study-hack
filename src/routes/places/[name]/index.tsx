@@ -273,7 +273,7 @@ export default component$(() => {
                         ))}
                       </div>
                       <span class="text-xs font-medium sm:text-sm">
-                        {place.value.data?.Rating?.toFixed(1) || "0.0"} (127
+                        {place.value.data?.Rating.toFixed(1) || "0.0"} (127
                         reviews)
                       </span>
                     </div>
@@ -340,8 +340,27 @@ export default component$(() => {
                     Quick Info
                   </h3>
                   <div class="flex items-center gap-2">
-                    <div class="h-2.5 w-2.5 rounded-full bg-green-500" />
-                    <span class="text-sm font-medium text-green-700">Open</span>
+                    {place.value.data?.HasQuietEnvironment ? (
+                      <>
+                        <div class="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
+                        <span class="text-sm font-medium text-green-700">
+                          Quiet Space Available
+                        </span>
+                        <span class="ml-1 rounded-md bg-green-100 px-1.5 py-0.5 text-xs text-green-800">
+                          Recommended for studying
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div class="h-2.5 w-2.5 rounded-full bg-red-500" />
+                        <span class="text-sm font-medium text-red-700">
+                          Busy Environment
+                        </span>
+                        <span class="ml-1 rounded-md bg-red-100 px-1.5 py-0.5 text-xs text-red-800">
+                          May be noisy
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
 

@@ -47,7 +47,7 @@ export const getEvents = async ({
             return `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`;
           })(),
           starttime: item.starttime.slice(0, 5), // Only take HH:MM
-          host: item.userID == user?.ID,
+          host: item.userID == user.ID,
         };
       }),
     };

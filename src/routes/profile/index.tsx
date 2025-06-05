@@ -238,7 +238,7 @@ export default component$(() => {
       username: profileStore.username || "...",
       bio: profileStore.bio || "No bio yet.",
       avatar: profileStore.avatar || undefined,
-      skills: profileStore.skills || [],
+      skills: profileStore.skills,
       joinedDate: (() => {
         // Assuming JoinedDate exists on userData - Cast if necessary
         const joinedDateStr = (data.value.userData as any)?.JoinedDate;
