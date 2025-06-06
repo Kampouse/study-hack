@@ -7,7 +7,6 @@ import { useNavigate, server$ } from "@builder.io/qwik-city";
 import { GetUser, UpdatePlace } from "~/api/Query";
 import { getPlace } from "~/api/EndPoint";
 import type { Maybe } from "@modular-forms/qwik";
-import * as v from "valibot";
 import {
   MapPinIcon as MapPin,
   StarIcon as Star,
