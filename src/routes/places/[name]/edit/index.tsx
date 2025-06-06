@@ -13,37 +13,16 @@ import {
   WifiIcon as Wifi,
 } from "lucide-qwik";
 
+// Simplified GeoResponse type
 type GeoResponse = {
   results: Array<{
-    address_components: Array<{
-      long_name: string;
-      short_name: string;
-      types: string[];
-    }>;
     formatted_address: string;
     geometry: {
       location: {
         lat: number;
         lng: number;
       };
-      location_type: string;
-      viewport: {
-        northeast: {
-          lat: number;
-          lng: number;
-        };
-        southwest: {
-          lat: number;
-          lng: number;
-        };
-      };
     };
-    place_id: string;
-    plus_code?: {
-      compound_code: string;
-      global_code: string;
-    };
-    types: string[];
   }>;
   status: string;
 };
@@ -53,7 +32,6 @@ export const usePlaceLoader = routeLoader$(async (requestEvent) => {
   const user = await GetUser({ event: requestEvent });
 
   if (!user) {
-    // Redirect if not logged in
     throw requestEvent.redirect(302, "/login");
   }
 
@@ -66,6 +44,7 @@ export const usePlaceLoader = routeLoader$(async (requestEvent) => {
     throw requestEvent.redirect(302, "/places/");
   }
 
+  // Convert place data to form structure
   return {
     name: place.data.Name || "",
     address: place.data.Address || "",
@@ -97,138 +76,77 @@ export const usePlaceLoader = routeLoader$(async (requestEvent) => {
 const FindLocation = server$(async function (address: string) {
   const session = this.sharedMap.get("session");
   const GEO = this.env.get("GOOGLE_GEO");
+
   if (!session) {
-    return {
-      status: "error",
-      message: "No session found",
-    };
+    return { status: "error", message: "No session found" };
   }
-  const data = await fetch(
+
+  const response = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`,
   );
-  const output = (await data.json()) as GeoResponse;
-  return output.results.map((el) => {
-    return {
-      address: el.formatted_address,
-      lat: el.geometry.location.lat,
-      lng: el.geometry.location.lng,
-    };
-  });
+  const data = (await response.json()) as GeoResponse;
+
+  return data.results.map((result) => ({
+    address: result.formatted_address,
+    lat: result.geometry.location.lat,
+    lng: result.geometry.location.lng,
+  }));
 });
 
 const useUpdatePlaceAction = formAction$<PlaceForm, any>(
   async (values, event) => {
-    console.log("Update place action triggered", {
-      values,
-      params: event.params,
-    });
     const user = await GetUser({ event });
     const placeId = event.params.name;
 
     if (!user) {
-      console.error("Authentication error: User not found");
-      return {
-        status: "error",
-        message: "User not found",
-      };
+      return { status: "error", message: "User not found" };
     }
 
     // Fetch place to verify ownership
-    const place = await getPlace({
-      event,
-      placeName: placeId,
-    });
-
-    console.log("Place data retrieved:", place);
+    const place = await getPlace({ event, placeName: placeId });
 
     if (!place.data) {
-      console.error("Place not found for ID:", placeId);
-      return {
-        status: "error",
-        message: "Place not found",
-      };
+      return { status: "error", message: "Place not found" };
     }
 
     // Check authorization
     if (place.data.UserID !== user.ID) {
-      console.error("Authorization failure: User ID mismatch", {
-        placeUserId: place.data.UserID,
-        currentUserId: user.ID,
-      });
-      return {
-        status: "error",
-        message: "Not authorized to edit this place",
-      };
+      return { status: "error", message: "Not authorized to edit this place" };
     }
 
-    // Extract existing coordinates or initialize to [0, 0]
-    let output = [0, 0] as [number, number];
-    if (place.data.Coordinates && Array.isArray(place.data.Coordinates)) {
-      output = place.data.Coordinates as [number, number];
-    }
+    // Handle coordinates
 
-    if (values.address && values.address !== place.data.Address) {
-      console.log("Address changed, fetching new coordinates");
-      // Address changed, get new coordinates
-      const data = await FindLocation(values.address);
-      console.log("Geocoding results:", data);
-      if (Array.isArray(data) && data.length > 0) {
-        output = [data[0].lat, data[0].lng];
-      } else {
-        console.warn(
-          "Failed to get coordinates for new address:",
-          values.address,
-        );
-      }
-    }
+    // Build place data object with only defined values
+    const placeData = {
+      name: values.name,
+      address: values.address,
+      image: values.image,
+      description: values.description,
+      tags: values.tags,
+      rating: values.rating ? parseInt(values.rating) : undefined,
+      wifiSpeed: values.wifispeed,
+      hasQuietEnvironment:
+        values.hasquietenvironment ??
+        (values.tags ? values.tags.includes("Quiet") : undefined),
+    };
 
-    // Only include fields that are provided in the form submission
-    const placeData: Record<string, any> = {};
-
-    if (values.name !== undefined) placeData.name = values.name;
-    if (values.address !== undefined) placeData.address = values.address;
-    if (values.image !== undefined) placeData.image = values.image;
-    if (values.description !== undefined)
-      placeData.description = values.description;
-    if (values.tags !== undefined) placeData.tags = values.tags;
-    if (values.rating !== undefined)
-      placeData.rating = parseInt(values.rating) || place.data.Rating;
-    if (values.wifispeed !== undefined) placeData.wifiSpeed = values.wifispeed;
-    if (values.hasquietenvironment !== undefined) {
-      placeData.hasQuietEnvironment = values.hasquietenvironment;
-    } else if (values.tags !== undefined) {
-      // Check if "Quiet" is in the tags array
-      placeData.hasQuietEnvironment = values.tags.includes("Quiet");
-    }
-    // Always include coordinates if address was updated
-    if (values.address !== undefined) {
-      placeData.lat = output[0];
-      placeData.lng = output[1];
-    }
-
-    console.log("Updating place with data:", placeData);
-
+    // Add coordinates if address was updated
+    // Update the place
     const result = await UpdatePlace({
       event,
       placeId: place.data.PlaceID,
       placeData,
     });
 
-    console.log("Update place result:", result);
-
     if (result.success) {
-      if (result.data && typeof result.data.Name === "string") {
-        console.log("Redirecting to updated place page:", result.data.Name);
+      // Redirect to the place page or places list
+      if (result.data?.Name) {
         throw event.redirect(302, `/places/${result.data.Name}`);
       } else {
-        console.warn(
-          "Place name missing in result, redirecting to places list",
-        );
         throw event.redirect(302, "/places");
       }
     }
 
-    console.error("Place update failed:", result.message);
     return {
       status: "error",
       message: result.message || "Failed to update place",
@@ -267,7 +185,20 @@ export default component$(() => {
     action: useUpdatePlaceAction(),
   });
 
-  // Store the place name for navigation
+  // Common input field styles
+  const getInputClass = (hasError: boolean) => `
+    block w-full rounded-md border bg-white px-3 py-2 text-sm
+    text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F]
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      hasError
+        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
+        : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+    }
+  `;
+
+  const renderFieldError = (error: string | undefined) =>
+    error && <div class="mt-1 text-sm text-red-400">{error}</div>;
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -284,12 +215,7 @@ export default component$(() => {
             </p>
 
             <div class="overflow-hidden rounded-xl border-none bg-white p-6 shadow-md md:p-8">
-              <Form
-                class="space-y-6"
-                onSubmit$={() => {
-                  console.log("Form submitted");
-                }}
-              >
+              <Form class="space-y-6">
                 <Field name="name" type="string">
                   {(field, props) => (
                     <div>
@@ -302,19 +228,11 @@ export default component$(() => {
                       <input
                         {...props}
                         type="text"
-                        class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                          field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                        }`}
+                        class={getInputClass(!!field.error)}
                         value={field.value}
                         placeholder="e.g. Cozy Corner Cafe"
                       />
-                      {field.error && (
-                        <div class="mt-1 text-sm text-red-400">
-                          {field.error}
-                        </div>
-                      )}
+                      {renderFieldError(field.error)}
                     </div>
                   )}
                 </Field>
@@ -335,11 +253,7 @@ export default component$(() => {
                           <input
                             {...props}
                             type="text"
-                            class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                              field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                            }`}
+                            class={`${getInputClass(!!field.error)} pl-10`}
                             value={field.value}
                             placeholder="Enter location address"
                           />
@@ -354,19 +268,15 @@ export default component$(() => {
                               places.value = output;
                             }
                           }}
-                          class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                          class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white hover:bg-[#C27B62] focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2"
                         >
                           Find
                         </button>
                       </div>
-                      {field.error && (
-                        <div class="mt-1 text-sm text-red-400">
-                          {field.error}
-                        </div>
-                      )}
+                      {renderFieldError(field.error)}
 
                       {places.value.length > 0 && (
-                        <div class="mt-4 space-y-2">
+                        <div class="mt-4">
                           <div class="max-h-48 overflow-y-auto rounded-md border border-[#E6D7C3] bg-[#F8EDE3]/30 p-3">
                             <div class="space-y-2">
                               {places.value.map((address, i) => (
@@ -376,7 +286,7 @@ export default component$(() => {
                                   onClick$={() => {
                                     field.value = address.address;
                                   }}
-                                  class="w-full rounded-md border border-[#E6D7C3] bg-white p-2 text-left text-sm text-[#6D5D4E] shadow-sm transition-colors duration-150 hover:bg-[#FFF1E6] hover:shadow-md focus:border-[#D98E73] focus:bg-[#FFF1E6] active:bg-[#F8D7BD]/30"
+                                  class="w-full rounded-md border border-[#E6D7C3] bg-white p-2 text-left text-sm text-[#6D5D4E] shadow-sm hover:bg-[#FFF1E6] hover:shadow-md"
                                 >
                                   {address.address}
                                 </button>
@@ -401,19 +311,11 @@ export default component$(() => {
                       <input
                         {...props}
                         type="text"
-                        class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                          field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                        }`}
+                        class={getInputClass(!!field.error)}
                         value={field.value}
                         placeholder="Enter URL for place image"
                       />
-                      {field.error && (
-                        <div class="mt-1 text-sm text-red-400">
-                          {field.error}
-                        </div>
-                      )}
+                      {renderFieldError(field.error)}
                     </div>
                   )}
                 </Field>
@@ -429,20 +331,12 @@ export default component$(() => {
                       </label>
                       <textarea
                         {...props}
-                        class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                          field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                        }`}
+                        class={getInputClass(!!field.error)}
                         rows={3}
                         value={field.value}
                         placeholder="Describe what makes this place special for studying or relaxing"
                       ></textarea>
-                      {field.error && (
-                        <div class="mt-1 text-sm text-red-400">
-                          {field.error}
-                        </div>
-                      )}
+                      {renderFieldError(field.error)}
                     </div>
                   )}
                 </Field>
@@ -450,13 +344,9 @@ export default component$(() => {
                 <Field name="tags" type="string[]">
                   {(field) => (
                     <div>
-                      <label
-                        for="tags"
-                        class="mb-2 block text-sm font-medium text-[#5B3E29]"
-                      >
+                      <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
                         Tags
                       </label>
-
                       <p class="mb-2 text-xs text-[#6D5D4E]">
                         Select tags that best describe this place:
                       </p>
@@ -477,12 +367,10 @@ export default component$(() => {
                                 checked={field.value?.includes(tag)}
                                 onChange$={() => {
                                   if (field.value?.includes(tag)) {
-                                    // Remove tag if already selected
                                     field.value = field.value.filter(
                                       (t) => t !== tag,
                                     );
                                   } else {
-                                    // Add tag if not selected
                                     field.value = [...(field.value || []), tag];
                                   }
                                 }}
@@ -495,12 +383,7 @@ export default component$(() => {
                           </div>
                         ))}
                       </div>
-
-                      {field.error && (
-                        <div class="mt-1 text-sm text-red-400">
-                          {field.error}
-                        </div>
-                      )}
+                      {renderFieldError(field.error)}
 
                       <div class="mt-3">
                         <p class="text-sm text-[#5B3E29]">Selected tags:</p>
@@ -515,10 +398,9 @@ export default component$(() => {
                                 <button
                                   type="button"
                                   onClick$={() => {
-                                    const newTags = field.value?.filter(
+                                    field.value = field.value?.filter(
                                       (_, i) => i !== index,
                                     );
-                                    field.value = newTags;
                                   }}
                                   class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#D98E73]/20 text-[#8B5A2B] hover:bg-[#D98E73]/50"
                                 >
@@ -551,11 +433,7 @@ export default component$(() => {
                           <Star class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#D98E73]" />
                           <select
                             {...props}
-                            class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                              field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                            }`}
+                            class={`${getInputClass(!!field.error)} pl-10`}
                             value={field.value?.toString()}
                           >
                             <option value="1">1 Star</option>
@@ -565,11 +443,7 @@ export default component$(() => {
                             <option value="5">5 Stars</option>
                           </select>
                         </div>
-                        {field.error && (
-                          <div class="mt-1 text-sm text-red-400">
-                            {field.error}
-                          </div>
-                        )}
+                        {renderFieldError(field.error)}
                       </div>
                     )}
                   </Field>
@@ -588,30 +462,28 @@ export default component$(() => {
                           <input
                             {...props}
                             type="number"
-                            class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                              field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
-                            }`}
+                            class={`${getInputClass(!!field.error)} pl-10`}
                             value={field.value?.toString()}
                             placeholder="e.g. 50"
                           />
                         </div>
+                        {renderFieldError(field.error)}
                       </div>
                     )}
                   </Field>
                 </div>
+
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
                     onClick$={() => nav("/places/" + placeName.value)}
-                    class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
+                    class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] hover:bg-[#FFF1E6] sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:flex-grow"
+                    class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white hover:bg-[#C27B62] sm:flex-grow"
                   >
                     Update Place
                   </button>
