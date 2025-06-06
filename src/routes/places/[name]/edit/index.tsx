@@ -64,7 +64,7 @@ export const usePlaceLoader = routeLoader$(async (requestEvent) => {
   });
 
   if (!place.data) {
-    throw requestEvent.redirect(302, "/places");
+    throw requestEvent.redirect(302, "/places/");
   }
 
   return {
@@ -182,10 +182,12 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
     });
 
     if (result.success) {
-      return {
-        status: "success",
-        message: "Place updated successfully",
-      };
+      if (result.data && typeof result.data.Name === "string") {
+        throw event.redirect(302, `/places/${result.data.Name}`);
+      } else {
+        // Fallback to general places page if name is missing
+        throw event.redirect(302, "/places");
+      }
     }
 
     return {
@@ -220,7 +222,7 @@ export default component$(() => {
   ]);
 
   const nav = useNavigate();
-  const [FormPlace, { Form, Field }] = useForm<PlaceForm, any>({
+  const [, { Form, Field }] = useForm<PlaceForm, any>({
     loader: usePlaceLoader(),
     action: useUpdatePlaceAction(),
     validate: valiForm$(placeSchema),
@@ -245,9 +247,6 @@ export default component$(() => {
                 class="space-y-6"
                 onSubmit$={() => {
                   console.log("Form submitted");
-                  if (FormPlace.submitted && !FormPlace.invalid) {
-                    nav("/places/" + FormPlace.internal.fields.name?.value);
-                  }
                 }}
               >
                 <Field name="name" type="string">
@@ -594,7 +593,7 @@ export default component$(() => {
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
-                    onClick$={() => nav("/hi")}
+                    onClick$={() => nav("/places/" + name)}
                     class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
                   >
                     Cancel

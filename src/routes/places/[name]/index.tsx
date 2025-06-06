@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { GetUser } from "~/api/Query";
 import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { getPlace, getPlaces } from "~/api/EndPoint";
 import type { DocumentHead } from "@builder.io/qwik-city";
@@ -192,13 +193,14 @@ export const useloadPlace = routeLoader$(async (context) => {
   const isId = !isNaN(id);
 
   // Query getPlace with id when output is a number, otherwise use placeName
+  const user = await GetUser({ event: context });
   const data = await getPlace({
     event: context,
     placeName: isId ? undefined : output,
     id: isId ? id : undefined,
   });
 
-  return { ...data };
+  return { ...data, user: user };
 });
 
 export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
@@ -206,6 +208,7 @@ export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
     event: context,
     placeName: context.params.name,
   });
+
   //  const currentId = currentPlace.data?.PlaceID || 0;
   const places = await getPlaces(context, {
     limit: 3,
@@ -310,9 +313,34 @@ export default component$(() => {
           <div class="rounded-xl border-[#E6D7C3]/40 bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6">
             {/* Description Section with improved spacing */}
             <div class="mb-6">
-              <h3 class="mb-3 text-lg font-semibold text-[#5B3E29] md:text-xl">
-                About this place
-              </h3>
+              <div class="flex items-center justify-between">
+                <h3 class="mb-3 text-lg font-semibold text-[#5B3E29] md:text-xl">
+                  About this place
+                </h3>
+                {place.value.data?.UserID === place.value.user?.ID && (
+                  <Link
+                    href={`/places/${place.value.data?.Name}/edit`}
+                    class="flex items-center gap-1.5 rounded-lg bg-[#F8D7BD] px-3 py-1.5 text-sm font-medium text-[#8B5A2B] transition-colors hover:bg-[#D98E73] hover:text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="h-4 w-4"
+                    >
+                      <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                      <path d="m15 5 4 4" />
+                    </svg>
+                    Edit Place
+                  </Link>
+                )}
+              </div>
               <p class="leading-relaxed text-[#6D5D4E]/80 md:text-base">
                 {place.value.data?.Description}
               </p>
@@ -384,7 +412,7 @@ export default component$(() => {
                         ))}
                       </div>
                       <span class="font-medium text-[#5B3E29]">
-                        {place.value.data?.Rating?.toFixed(1) || "0.0"}
+                        {place.value.data?.Rating.toFixed(1) || "0.0"}
                       </span>
                     </div>
                   </div>
