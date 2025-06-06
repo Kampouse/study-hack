@@ -620,7 +620,7 @@ export default component$(() => {
                         </div>
                         <input
                           {...props}
-                          value={0}
+                          value={field.value ? "on" : "off"}
                           type="checkbox"
                           class="h-5 w-5 rounded border-[#E6D7C3] text-[#D98E73] focus:ring-[#D98E73]"
                           checked={!!field.value}
