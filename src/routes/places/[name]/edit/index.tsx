@@ -7,6 +7,7 @@ import { useNavigate, server$ } from "@builder.io/qwik-city";
 import { GetUser, UpdatePlace } from "~/api/Query";
 import { getPlace } from "~/api/EndPoint";
 import type { Maybe } from "@modular-forms/qwik";
+import * as v from "valibot";
 import {
   MapPinIcon as MapPin,
   StarIcon as Star,
@@ -48,6 +49,51 @@ type GeoResponse = {
   }>;
   status: string;
 };
+
+// Create an optional version of placeSchema for updates
+const updatePlaceSchema = v.object({
+  name: v.optional(
+    v.pipe(
+      v.string("Name must be a text value"),
+      v.minLength(5, "Name must be at least 5 characters long"),
+      v.maxLength(100, "Name cannot exceed 100 characters"),
+    ),
+  ),
+  address: v.optional(
+    v.pipe(
+      v.string("Address must be a text value"),
+      v.minLength(1, "Address is required"),
+      v.maxLength(200, "Address cannot exceed 200 characters"),
+    ),
+  ),
+  image: v.optional(
+    v.pipe(
+      v.string("Image URL must be a text value"),
+      v.url("Please enter a valid URL for the image"),
+    ),
+  ),
+  description: v.optional(
+    v.pipe(
+      v.string("Description must be a text value"),
+      v.minLength(10, "Description must be at least 10 characters long"),
+      v.maxLength(500, "Description cannot exceed 500 characters"),
+    ),
+  ),
+  tags: v.optional(v.array(v.string("Tag must be a text value"))),
+  rating: v.optional(v.string("Rating must be a text value")),
+  wifispeed: v.optional(v.number("WiFi speed must be a number")),
+  hasquietenvironment: v.optional(
+    v.boolean("Quiet environment value must be true or false"),
+  ),
+  price: v.optional(v.string("Price must be a text value")),
+  coordinates: v.optional(
+    v.tuple([
+      v.number("Latitude must be a number"),
+      v.number("Longitude must be a number"),
+    ]),
+  ),
+  category: v.optional(v.string("Category must be a text value")),
+});
 
 export const usePlaceLoader = routeLoader$(async (requestEvent) => {
   const placeId = requestEvent.params.name;
@@ -119,10 +165,15 @@ const FindLocation = server$(async function (address: string) {
 
 const useUpdatePlaceAction = formAction$<PlaceForm, any>(
   async (values, event) => {
+    console.log("Update place action triggered", {
+      values,
+      params: event.params,
+    });
     const user = await GetUser({ event });
     const placeId = event.params.name;
 
     if (!user) {
+      console.error("Authentication error: User not found");
       return {
         status: "error",
         message: "User not found",
@@ -135,7 +186,10 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
       placeName: placeId,
     });
 
+    console.log("Place data retrieved:", place);
+
     if (!place.data) {
+      console.error("Place not found for ID:", placeId);
       return {
         status: "error",
         message: "Place not found",
@@ -144,6 +198,10 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
 
     // Check authorization
     if (place.data.UserID !== user.ID) {
+      console.error("Authorization failure: User ID mismatch", {
+        placeUserId: place.data.UserID,
+        currentUserId: user.ID,
+      });
       return {
         status: "error",
         message: "Not authorized to edit this place",
@@ -156,40 +214,65 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
       output = place.data.Coordinates as [number, number];
     }
 
-    if (values.address !== place.data.Address) {
+    if (values.address && values.address !== place.data.Address) {
+      console.log("Address changed, fetching new coordinates");
       // Address changed, get new coordinates
       const data = await FindLocation(values.address);
+      console.log("Geocoding results:", data);
       if (Array.isArray(data) && data.length > 0) {
         output = [data[0].lat, data[0].lng];
+      } else {
+        console.warn(
+          "Failed to get coordinates for new address:",
+          values.address,
+        );
       }
     }
+
+    // Only include fields that are provided in the form submission
+    const placeData: Record<string, any> = {};
+
+    if (values.name !== undefined) placeData.name = values.name;
+    if (values.address !== undefined) placeData.address = values.address;
+    if (values.image !== undefined) placeData.image = values.image;
+    if (values.description !== undefined)
+      placeData.description = values.description;
+    if (values.tags !== undefined) placeData.tags = values.tags;
+    if (values.rating !== undefined)
+      placeData.rating = parseInt(values.rating) || place.data.Rating;
+    if (values.wifispeed !== undefined) placeData.wifiSpeed = values.wifispeed;
+    if (values.hasquietenvironment !== undefined)
+      placeData.hasQuietEnvironment = values.hasquietenvironment;
+
+    // Always include coordinates if address was updated
+    if (values.address !== undefined) {
+      placeData.lat = output[0];
+      placeData.lng = output[1];
+    }
+
+    console.log("Updating place with data:", placeData);
 
     const result = await UpdatePlace({
       event,
       placeId: place.data.PlaceID,
-      placeData: {
-        name: values.name,
-        address: values.address,
-        image: values.image,
-        description: values.description,
-        tags: values.tags,
-        rating: parseInt(values.rating) || place.data.Rating,
-        wifiSpeed: values.wifispeed,
-        hasQuietEnvironment: values.hasquietenvironment,
-        lat: output[0],
-        lng: output[1],
-      },
+      placeData,
     });
+
+    console.log("Update place result:", result);
 
     if (result.success) {
       if (result.data && typeof result.data.Name === "string") {
+        console.log("Redirecting to updated place page:", result.data.Name);
         throw event.redirect(302, `/places/${result.data.Name}`);
       } else {
-        // Fallback to general places page if name is missing
+        console.warn(
+          "Place name missing in result, redirecting to places list",
+        );
         throw event.redirect(302, "/places");
       }
     }
 
+    console.error("Place update failed:", result.message);
     return {
       status: "error",
       message: result.message || "Failed to update place",
@@ -202,6 +285,7 @@ export default component$(() => {
   const places = useSignal<
     Array<{ address: string; lat: number; lng: number }>
   >([]);
+  const placeName = useSignal("");
   const suggestedTags = useSignal([
     "Coffee",
     "Quiet",
@@ -225,8 +309,10 @@ export default component$(() => {
   const [, { Form, Field }] = useForm<PlaceForm, any>({
     loader: usePlaceLoader(),
     action: useUpdatePlaceAction(),
-    validate: valiForm$(placeSchema),
+    validate: valiForm$(updatePlaceSchema),
   });
+
+  // Store the place name for navigation
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -593,7 +679,7 @@ export default component$(() => {
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
-                    onClick$={() => nav("/places/" + name)}
+                    onClick$={() => nav("/places/" + placeName.value)}
                     class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
                   >
                     Cancel
