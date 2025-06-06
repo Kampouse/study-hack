@@ -11,7 +11,6 @@ import {
   MapPinIcon as MapPin,
   StarIcon as Star,
   WifiIcon as Wifi,
-  VolumeXIcon as VolumeX,
 } from "lucide-qwik";
 
 type GeoResponse = {
@@ -195,9 +194,12 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
     if (values.rating !== undefined)
       placeData.rating = parseInt(values.rating) || place.data.Rating;
     if (values.wifispeed !== undefined) placeData.wifiSpeed = values.wifispeed;
-    if (values.hasquietenvironment !== undefined)
+    if (values.hasquietenvironment !== undefined) {
       placeData.hasQuietEnvironment = values.hasquietenvironment;
-
+    } else if (values.tags !== undefined) {
+      // Check if "Quiet" is in the tags array
+      placeData.hasQuietEnvironment = values.tags.includes("Quiet");
+    }
     // Always include coordinates if address was updated
     if (values.address !== undefined) {
       placeData.lat = output[0];
@@ -599,37 +601,6 @@ export default component$(() => {
                     )}
                   </Field>
                 </div>
-
-                <Field name="hasquietenvironment" type="boolean">
-                  {(field, props) => (
-                    <div class="rounded-lg bg-[#F8EDE3]/50 p-4">
-                      <div class="flex items-center space-x-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#F8D7BD]">
-                          <VolumeX class="h-5 w-5 text-[#8B5A2B]" />
-                        </div>
-                        <div class="flex-grow">
-                          <label
-                            for="hasquietenvironment"
-                            class="text-sm font-medium text-[#5B3E29]"
-                          >
-                            Quiet Environment
-                          </label>
-                          <p class="text-xs text-[#6D5D4E]">
-                            Is this place suitable for focused work?
-                          </p>
-                        </div>
-                        <input
-                          {...props}
-                          value={field.value ? "on" : "off"}
-                          type="checkbox"
-                          class="h-5 w-5 rounded border-[#E6D7C3] text-[#D98E73] focus:ring-[#D98E73]"
-                          checked={!!field.value}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </Field>
-
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
