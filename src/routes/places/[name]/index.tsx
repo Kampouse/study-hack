@@ -345,18 +345,14 @@ export default component$(() => {
                 {place.value.data?.Description}
               </p>
               <div class="mt-4 flex flex-wrap gap-2">
-                <span class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm">
-                  High-speed WiFi
-                </span>
-                <span class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm">
-                  Meeting rooms
-                </span>
-                <span class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm">
-                  Coffee station
-                </span>
-                <span class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm">
-                  Quiet environment
-                </span>
+                {place.value.data?.Tags?.map((tag) => (
+                  <span
+                    key={tag}
+                    class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
             <div class="border-t border-[#E6D7C3]/50 pt-6">

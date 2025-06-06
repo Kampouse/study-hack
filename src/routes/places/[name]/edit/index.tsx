@@ -1,7 +1,7 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
-import type { PlaceForm } from "~/api/Forms";
 import { placeSchema } from "~/api/Forms";
+import type { PlaceForm } from "~/api/Forms";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { useNavigate, server$ } from "@builder.io/qwik-city";
 import { GetUser, UpdatePlace } from "~/api/Query";
@@ -49,51 +49,6 @@ type GeoResponse = {
   }>;
   status: string;
 };
-
-// Create an optional version of placeSchema for updates
-const updatePlaceSchema = v.object({
-  name: v.optional(
-    v.pipe(
-      v.string("Name must be a text value"),
-      v.minLength(5, "Name must be at least 5 characters long"),
-      v.maxLength(100, "Name cannot exceed 100 characters"),
-    ),
-  ),
-  address: v.optional(
-    v.pipe(
-      v.string("Address must be a text value"),
-      v.minLength(1, "Address is required"),
-      v.maxLength(200, "Address cannot exceed 200 characters"),
-    ),
-  ),
-  image: v.optional(
-    v.pipe(
-      v.string("Image URL must be a text value"),
-      v.url("Please enter a valid URL for the image"),
-    ),
-  ),
-  description: v.optional(
-    v.pipe(
-      v.string("Description must be a text value"),
-      v.minLength(10, "Description must be at least 10 characters long"),
-      v.maxLength(500, "Description cannot exceed 500 characters"),
-    ),
-  ),
-  tags: v.optional(v.array(v.string("Tag must be a text value"))),
-  rating: v.optional(v.string("Rating must be a text value")),
-  wifispeed: v.optional(v.number("WiFi speed must be a number")),
-  hasquietenvironment: v.optional(
-    v.boolean("Quiet environment value must be true or false"),
-  ),
-  price: v.optional(v.string("Price must be a text value")),
-  coordinates: v.optional(
-    v.tuple([
-      v.number("Latitude must be a number"),
-      v.number("Longitude must be a number"),
-    ]),
-  ),
-  category: v.optional(v.string("Category must be a text value")),
-});
 
 export const usePlaceLoader = routeLoader$(async (requestEvent) => {
   const placeId = requestEvent.params.name;
@@ -309,7 +264,6 @@ export default component$(() => {
   const [, { Form, Field }] = useForm<PlaceForm, any>({
     loader: usePlaceLoader(),
     action: useUpdatePlaceAction(),
-    validate: valiForm$(updatePlaceSchema),
   });
 
   // Store the place name for navigation
@@ -667,6 +621,7 @@ export default component$(() => {
                         </div>
                         <input
                           {...props}
+                          value={0}
                           type="checkbox"
                           class="h-5 w-5 rounded border-[#E6D7C3] text-[#D98E73] focus:ring-[#D98E73]"
                           checked={!!field.value}
