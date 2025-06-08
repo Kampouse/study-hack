@@ -1,4 +1,5 @@
 import { component$, useSignal } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
 import {} from "@modular-forms/qwik";
@@ -69,7 +70,7 @@ export const useloadPlaces = routeLoader$(async (req) => {
   const basePlace = places.data?.find(
     (el) => el.Places?.PlaceID === parseInt(urlData),
   );
-  return { places: places, basePlace: basePlace };
+  return { places: places, basePlace: basePlace, url: urlData };
 });
 
 export default component$(() => {
@@ -81,7 +82,9 @@ export default component$(() => {
   const data = useloadPlaces();
   const { places, basePlace } = data.value;
   const previewImage = useSignal<string | null>(
-    data.value.places.data?.[0]?.Places?.ImageURL || null,
+    data.value.url !== "0"
+      ? data.value.basePlace?.Places?.ImageURL || null
+      : data.value.places.data?.[0]?.Places?.ImageURL || null,
   );
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -192,9 +195,37 @@ export default component$(() => {
                   {previewImage.value && (
                     <div class="mt-3 overflow-hidden rounded-lg border border-[#E6D7C3]">
                       <div class="flex items-center justify-between bg-[#F8EDE3] px-3 py-2">
-                        <p class="text-xs font-medium text-[#8B5A2B]">
-                          Location Preview
-                        </p>
+                        <Link
+                          href={`/places/${
+                            places.data?.find(
+                              (place) =>
+                                place.Places?.ImageURL === previewImage.value,
+                            )?.Places?.Name
+                          }`}
+                          class="group flex items-center gap-1 rounded-md bg-[#F8D7BD] px-2 py-1 text-xs font-medium text-[#8B5A2B] transition-all hover:bg-[#D98E73] hover:text-white"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-3 w-3 transition-transform group-hover:rotate-45"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                          Explore this location
+                        </Link>
                         <span class="text-xs text-[#8B5A2B]">
                           {places.data?.find(
                             (place) =>
