@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
 import {} from "@modular-forms/qwik";
@@ -80,6 +80,8 @@ export default component$(() => {
   });
   const data = useloadPlaces();
   const { places, basePlace } = data.value;
+  const previewImage = useSignal<string | null>(null);
+
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <section class="relative bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] pt-8">
@@ -153,6 +155,15 @@ export default component$(() => {
                       field.error ? "border-red-500" : "border-[#E6D7C3]"
                     }`}
                     value={field.value}
+                    onChange$={(event) => {
+                      if (!event.target) return;
+                      const target = event.target as HTMLSelectElement;
+                      const selectedPlace = places.data?.find(
+                        (place) => place.Places?.Name === target.value,
+                      );
+                      previewImage.value =
+                        selectedPlace?.Places?.ImageURL || null;
+                    }}
                   >
                     {basePlace && (
                       <option
@@ -175,6 +186,32 @@ export default component$(() => {
                   {field.error && (
                     <div class="text-xs text-red-500">{field.error}</div>
                   )}
+
+                  {/* Location preview image */}
+                  {previewImage.value && (
+                    <div class="mt-3 overflow-hidden rounded-lg border border-[#E6D7C3]">
+                      <p class="bg-[#F8EDE3] px-3 py-1 text-xs font-medium text-[#8B5A2B]">
+                        Location Preview
+                      </p>
+                      <img
+                        src={previewImage.value}
+                        alt="Location preview"
+                        height="200"
+                        width="200"
+                        class="h-40 w-full object-cover"
+                        onError$={(_, el) => {
+                          el.style.display = "none";
+                          el.parentElement?.classList.add("p-3");
+                          el.parentElement?.appendChild(
+                            Object.assign(document.createElement("p"), {
+                              class: "text-sm text-[#8B5A2B]",
+                              textContent: "No preview image available",
+                            }),
+                          );
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </Field>
@@ -185,15 +222,46 @@ export default component$(() => {
                   <label class="text-sm font-medium text-[#5B3E29]">
                     Cover Image URL (Optional)
                   </label>
-                  <input
-                    {...props}
-                    class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                      field.error ? "border-red-500" : "border-[#E6D7C3]"
-                    }`}
-                    type="text"
-                    placeholder="Paste an image URL here"
-                    value={field.value}
-                  />
+                  <div class="space-y-2">
+                    <input
+                      {...props}
+                      class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
+                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      }`}
+                      type="text"
+                      placeholder="Paste an image URL here"
+                      value={field.value}
+                    />
+                    {field.error && (
+                      <div class="text-xs text-red-500">{field.error}</div>
+                    )}
+                  </div>
+                  {field.value && (
+                    <div class="mt-2 overflow-hidden rounded-lg border border-[#E6D7C3]">
+                      <p class="bg-[#F8EDE3] px-3 py-1 text-xs font-medium text-[#8B5A2B]">
+                        Event Cover Preview
+                      </p>
+                      <img
+                        src={field.value}
+                        alt="Image preview"
+                        height="200"
+                        width="200"
+                        class="h-40 w-full object-cover"
+                        onError$={(_, el) => {
+                          el.style.display = "none";
+                          el.parentElement?.classList.add("p-3");
+                          el.parentElement?.appendChild(
+                            Object.assign(document.createElement("p"), {
+                              class: "text-sm text-red-500",
+                              width: "400",
+                              height: "200",
+                              textContent: "Failed to load image preview",
+                            }),
+                          );
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </Field>

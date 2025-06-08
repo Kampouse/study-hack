@@ -16,12 +16,12 @@ I want to make it easier to find a place to study and cowork with others.!
 
 ### Name
 
-is a combination of "Just" and "chat" and "R&D" is "Research & Development".
+is a combination of "Just" and "chat" and "R&D" is "Reach & Discover".
 
 ### Tech Stack mind
 
 - Built with `Qwik` `drizzle` `qwik-ui` `modular-form-qwik`
-- Deployed on `Vercel`
+- Deployed on `Railway & Docker`
 
 ## Local Development
 
@@ -30,51 +30,60 @@ To run the project locally:
 1. Create a `.env` file with the following variables:
 
 ```
-AUTH_SECRET=""
-GITHUB_ID=""
-GITHUB_SECRET=""
-GOOGLE_GEO=""
+# Authentication
+AUTH_SECRET="your-auth-secret-here"
+GITHUB_ID="your-github-oauth-app-id"
+GITHUB_SECRET="your-github-oauth-app-secret"
+
+# Google API
+GOOGLE_GEO="your-google-geocoding-api-key"
+
+# Database (local development)
+DATABASE_URL="file:local.db"
+
+# For local testing with Turso
+TURSO_DATABASE_URL="libsql://your-database-url"
+TURSO_AUTH_TOKEN="your-turso-auth-token"
 ```
 
-2.  Run the development server: \
-    using the local database
+2.  Run the development server with local database:
 
 ```
-pnpm run dev
+bun run dev
 ```
 
-3.  Run with live data
+3.  Initialize the database (runs automatically with dev):
 
 ```
-pnpm run dev
+bun run dev:db
+bun drizzle/seed.ts
 ```
 
 ## Deployment
 
 To deploy to production:
 
-1. Set the following environment variables:
+1. Set the following environment variables in your Vercel project:
 
 ```
-PRIVATE_TURSO_DATABASE_URL=""
-PRIVATE_TURSO_AUTH_TOKEN=""
+AUTH_SECRET="your-auth-secret-here"
+GITHUB_ID="your-github-oauth-app-id"
+GITHUB_SECRET="your-github-oauth-app-secret"
+GOOGLE_GEO="your-google-geocoding-api-key"
+PRIVATE_TURSO_DATABASE_URL="libsql://your-production-database-url"
+PRIVATE_TURSO_AUTH_TOKEN="your-production-turso-auth-token"
 ```
 
 2. Build the project:
 
 ```
-pnpm run build
-# npx vercel current deployement strategy
+bun run build
+will type check  and build the app
 ```
 
 Note: The current deployment strategy utilizes the Vercel adapter.
 
-## Express Server
-
-This app has a minimal [Express server](https://expressjs.com/) implementation. After running a full build, you can preview the build using the command:
-
-```
-npm run serve
+node server/entry.express
 ```
 
 Then visit [http://localhost:8080/](http://localhost:8080/)
