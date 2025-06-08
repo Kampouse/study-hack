@@ -80,8 +80,9 @@ export default component$(() => {
   });
   const data = useloadPlaces();
   const { places, basePlace } = data.value;
-  const previewImage = useSignal<string | null>(null);
-
+  const previewImage = useSignal<string | null>(
+    data.value.places.data?.[0]?.Places?.ImageURL || null,
+  );
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <section class="relative bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] pt-8">
@@ -190,26 +191,59 @@ export default component$(() => {
                   {/* Location preview image */}
                   {previewImage.value && (
                     <div class="mt-3 overflow-hidden rounded-lg border border-[#E6D7C3]">
-                      <p class="bg-[#F8EDE3] px-3 py-1 text-xs font-medium text-[#8B5A2B]">
-                        Location Preview
-                      </p>
+                      <div class="flex items-center justify-between bg-[#F8EDE3] px-3 py-2">
+                        <p class="text-xs font-medium text-[#8B5A2B]">
+                          Location Preview
+                        </p>
+                        <span class="text-xs text-[#8B5A2B]">
+                          {places.data?.find(
+                            (place) =>
+                              place.Places?.ImageURL === previewImage.value,
+                          )?.Places?.Address || ""}
+                        </span>
+                      </div>
                       <img
                         src={previewImage.value}
                         alt="Location preview"
                         height="200"
                         width="200"
-                        class="h-40 w-full object-cover"
+                        class="h-60 w-full object-cover"
                         onError$={(_, el) => {
                           el.style.display = "none";
-                          el.parentElement?.classList.add("p-3");
-                          el.parentElement?.appendChild(
-                            Object.assign(document.createElement("p"), {
-                              class: "text-sm text-[#8B5A2B]",
-                              textContent: "No preview image available",
-                            }),
-                          );
+                          el.src = "/src/assets/just-rnd.png";
                         }}
                       />
+                      <div class="bg-white/80 p-3">
+                        <div class="flex flex-wrap gap-2">
+                          {places.data
+                            ?.find(
+                              (place) =>
+                                place.Places?.ImageURL === previewImage.value,
+                            )
+                            ?.Places?.Tags?.map((tag, i) => (
+                              <span
+                                key={i}
+                                class="rounded-full bg-[#F8D7BD] px-2 py-1 text-xs text-[#8B5A2B]"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                        </div>
+                        <p class="mt-2 text-sm text-[#5B3E29]">
+                          {places.data
+                            ?.find(
+                              (place) =>
+                                place.Places?.ImageURL === previewImage.value,
+                            )
+                            ?.Places?.Description?.substring(0, 100)}
+                          {(places.data?.find(
+                            (place) =>
+                              place.Places?.ImageURL === previewImage.value,
+                          )?.Places?.Description?.length || 0) > 100
+                            ? "..."
+                            : ""}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -246,18 +280,10 @@ export default component$(() => {
                         alt="Image preview"
                         height="200"
                         width="200"
-                        class="h-40 w-full object-cover"
+                        class="h-60 w-full object-cover"
                         onError$={(_, el) => {
                           el.style.display = "none";
-                          el.parentElement?.classList.add("p-3");
-                          el.parentElement?.appendChild(
-                            Object.assign(document.createElement("p"), {
-                              class: "text-sm text-red-500",
-                              width: "400",
-                              height: "200",
-                              textContent: "Failed to load image preview",
-                            }),
-                          );
+                          el.src = "/src/assets/just-rnd.png";
                         }}
                       />
                     </div>
