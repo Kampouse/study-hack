@@ -39,6 +39,11 @@ export type UserProfileType = {
   bio: string;
   avatar?: string;
   skills: string[]; // Derived/mapped from backend 'Intrests'
+  stats: {
+    placeCreated: number;
+    eventCreated: number;
+    eventAttended: number;
+  };
   joinedDate: string; // Formatted date string
 };
 

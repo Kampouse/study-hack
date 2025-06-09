@@ -125,8 +125,12 @@ export default component$(() => {
     bio: "",
     skills: [] as string[],
     avatar: "", // To potentially handle avatar updates
+    stats: {
+      placeCreated: 0,
+      eventCreated: 0,
+      eventAttended: 0,
+    },
   });
-
   // --- Effects ---
   // Task to initialize the profile edit store when userData is available
   useTask$(({ track }) => {
@@ -141,6 +145,15 @@ export default component$(() => {
       // Backend seems to use 'Intrests' (typo?) - handle potential string or array format
       profileStore.skills = Array.isArray(user.Intrests) ? user.Intrests : [];
       profileStore.avatar = user.Image ?? "";
+      // Handle the stats object mapping correctly
+      // Check if userStats exists before accessing its properties
+
+      // Map from API response to expected profileStore structure
+      profileStore.stats = {
+        placeCreated: data.value.userStats.data?.placesCreated || 0,
+        eventCreated: data.value.userStats.data?.eventsCreated || 0,
+        eventAttended: data.value.userStats.data?.eventsAttended || 0,
+      };
     }
   });
 
@@ -223,9 +236,22 @@ export default component$(() => {
 
   // Saved places from the routeLoader
   const savedPlaces = useComputed$(() => {
-    return [];
+    // Access userPlaces from the data value if available
+    // Map from backend format to PlaceType expected by components
+    return (data.value.userPlaces.data || []).map((place) => ({
+      id: place.PlaceID,
+      placeId: place.PlaceID,
+      name: place.Name,
+      location: place.Address,
+      description: place.Description,
+      image: place.ImageURL || undefined,
+      tags: place.Tags || [],
+      rating: typeof place.Rating === "number" ? place.Rating : 0,
+      coordinates: place.Coordinates,
+      visitCount: 0, // Default if not provided
+      category: place.Category || "",
+    }));
   });
-
   // Liked places - similar structure to saved places but different source
   const likedPlaces = useComputed$(() => {
     // In a real implementation, this would pull from the API
@@ -239,6 +265,7 @@ export default component$(() => {
       bio: profileStore.bio || "No bio yet.",
       avatar: profileStore.avatar || undefined,
       skills: profileStore.skills,
+      stats: profileStore.stats,
       joinedDate: (() => {
         // Assuming JoinedDate exists on userData - Cast if necessary
         const joinedDateStr = (data.value.userData as any)?.JoinedDate;
