@@ -1,16 +1,6 @@
 import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import {
-  eq,
-  and,
-  ne,
-  or,
-  not,
-  exists,
-  gte,
-  sql,
-  notInArray,
-} from "drizzle-orm";
+import { eq, and, ne, or, not, exists, sql, notInArray } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
