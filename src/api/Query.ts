@@ -506,7 +506,6 @@ export const QueryEvents = async (params: {
               ),
           ),
         ),
-        ne(Events.UserID, params.options.byUser as number),
         gte(Events.Date, new Date().toISOString()),
       ),
     )
