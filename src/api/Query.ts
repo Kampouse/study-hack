@@ -506,7 +506,6 @@ export const QueryEvents = async (params: {
               ),
           ),
         ),
-        gte(Events.Date, new Date().toISOString()),
       ),
     )
     .limit(params.options.limit ?? 3)
