@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-
+import { Link } from "@builder.io/qwik-city";
 export const CommunitySection = component$(() => {
   return (
     <section class="mt-8 bg-[#F8EDE3] py-12">
@@ -27,18 +27,14 @@ export const CommunitySection = component$(() => {
                 feedback.
               </p>
               <div class="flex flex-wrap gap-4">
-                <button
+                <Link
                   type="button"
-                  class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  Suggest a Feature
-                </button>
-                <button
-                  type="button"
+                  href="https://justrnd.featurebase.app/"
+                  target="_blank"
                   class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
                   Share Feedback
-                </button>
+                </Link>
               </div>
             </div>
           </div>

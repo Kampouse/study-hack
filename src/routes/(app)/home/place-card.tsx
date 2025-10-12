@@ -2,7 +2,6 @@ import { component$ } from "@builder.io/qwik";
 import {
   MapPinIcon as MapPin,
   UsersIcon as Users,
-  HeartIcon as Heart,
   StarIcon as Star,
 } from "lucide-qwik";
 import { Link } from "@builder.io/qwik-city";
@@ -38,12 +37,6 @@ export const PlaceCard = component$(
           <div class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-[#D98E73]">
             {props.place.badge}
           </div>
-          <button
-            type="button"
-            class="absolute right-3 top-3 flex h-10 items-center justify-center rounded-full bg-black/20 px-4 py-2 text-white ring-offset-background transition-colors hover:bg-white/90 hover:text-[#D98E73] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-          >
-            <Heart class="h-5 w-5" />
-          </button>
         </div>
         <div class="bg-white p-5">
           <div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">

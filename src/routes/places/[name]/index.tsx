@@ -281,6 +281,15 @@ export default component$(() => {
                       </span>
                     </div>
                   </div>
+                  {/* Like button in hero section */}
+                  <button
+                    type="button"
+                    onClick$={() => console.log("Liked place!")}
+                    class="group flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-[#D98E73] hover:shadow-lg"
+                    aria-label="Like this place"
+                  >
+                    <HeartIcon class="h-6 w-6 text-[#D98E73] transition-all group-hover:text-white" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -317,29 +326,31 @@ export default component$(() => {
                 <h3 class="mb-3 text-lg font-semibold text-[#5B3E29] md:text-xl">
                   About this place
                 </h3>
-                {place.value.data?.UserID === place.value.user?.ID && (
-                  <Link
-                    href={`/places/${place.value.data?.Name}/edit`}
-                    class="flex items-center gap-1.5 rounded-lg bg-[#F8D7BD] px-3 py-1.5 text-sm font-medium text-[#8B5A2B] transition-colors hover:bg-[#D98E73] hover:text-white"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="h-4 w-4"
+                <div class="flex gap-2">
+                  {place.value.data?.UserID === place.value.user?.ID && (
+                    <Link
+                      href={`/places/${place.value.data?.Name}/edit`}
+                      class="flex items-center gap-1.5 rounded-lg bg-[#F8D7BD] px-3 py-1.5 text-sm font-medium text-[#8B5A2B] transition-colors hover:bg-[#D98E73] hover:text-white"
                     >
-                      <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                      <path d="m15 5 4 4" />
-                    </svg>
-                    Edit Place
-                  </Link>
-                )}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-4 w-4"
+                      >
+                        <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                        <path d="m15 5 4 4" />
+                      </svg>
+                      Edit Place
+                    </Link>
+                  )}
+                </div>
               </div>
               <p class="leading-relaxed text-[#6D5D4E]/80 md:text-base">
                 {place.value.data?.Description}
@@ -446,6 +457,15 @@ export default component$(() => {
                       <MapPinIcon class="h-4 w-4" />
                       Directions
                     </a>
+                    {/* Like button next to Directions */}
+                    <button
+                      type="button"
+                      onClick$={() => console.log("Bookmarked place!")}
+                      class="flex items-center justify-center gap-1.5 rounded-lg border border-[#D98E73] bg-white px-4 py-2 text-sm font-medium text-[#D98E73] transition-colors hover:bg-[#FFF1E6]"
+                    >
+                      <HeartIcon class="h-4 w-4" />
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>
