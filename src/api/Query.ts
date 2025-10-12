@@ -1,16 +1,6 @@
 import { Users, Events, Requests, Places } from "../../drizzle/schema";
 import type { Session } from "./drizzled";
-import {
-  eq,
-  and,
-  ne,
-  or,
-  not,
-  exists,
-  gte,
-  sql,
-  notInArray,
-} from "drizzle-orm";
+import { eq, and, ne, or, not, exists, sql, notInArray } from "drizzle-orm";
 import type { Requested } from "./drizzled";
 import { drizzler } from "./drizzled";
 import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
@@ -80,7 +70,58 @@ export const QueryPlaces = async (params: {
     };
   }
 };
+export const QueryUserPlaces = async (params: {
+  event: Requested | undefined;
+  user: GetUserReturnType;
+  client?: ClientType | null;
+  params?: { limit?: number; offset?: number };
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+      data: null,
+    };
+  }
+  if (!params.user) {
+    return {
+      success: false,
+      message: "User not found",
+      data: null,
+    };
+  }
 
+  try {
+    const places = await Client.select()
+      .from(Places)
+      .where(eq(Places.UserID, params.user.ID))
+      .limit(params.params?.limit ?? 100)
+      .offset(params.params?.offset ?? 0)
+      .execute();
+
+    if (places.length === 0) {
+      return {
+        success: false,
+        message: "No places found for this user",
+        data: [],
+      };
+    }
+
+    return {
+      success: true,
+      message: "Places retrieved successfully",
+      data: places,
+    };
+  } catch (error) {
+    console.error("Error retrieving user places:", error);
+    return {
+      success: false,
+      message: "Error retrieving user places",
+      data: null,
+    };
+  }
+};
 export const CreateUser = async (params: {
   event: Requested | undefined;
   session: Session;
@@ -244,6 +285,70 @@ export const GetUser = async (params: {
   return null;
 };
 
+export const QueryUserStats = async (params: {
+  event: Requested | undefined;
+  user: GetUserReturnType;
+  client?: ClientType | null;
+}) => {
+  const Client = params.client ?? (await drizzler(params.event as Requested));
+  if (Client === null) {
+    return {
+      success: false,
+      message: "Client not found",
+      data: null,
+    };
+  }
+
+  try {
+    if (!params.user) {
+      return {
+        success: false,
+        message: "User not found",
+        data: null,
+      };
+    }
+    // Count events created by the user
+    // Execute all database queries concurrently using Promise.all
+    const [eventsCreated, placesCreated, eventsAttended] = await Promise.all([
+      Client.select({ count: sql`count(*)` })
+        .from(Events)
+        .where(eq(Events.UserID, params.user.ID))
+        .execute(),
+
+      Client.select({ count: sql`count(*)` })
+        .from(Places)
+        .where(eq(Places.UserID, params.user.ID))
+        .execute(),
+
+      Client.select({ count: sql`count(*)` })
+        .from(Requests)
+        .where(
+          and(
+            eq(Requests.UserID, params.user.ID),
+            eq(Requests.Status, "confirmed"),
+          ),
+        )
+        .execute(),
+    ]);
+
+    return {
+      success: true,
+      message: "User stats retrieved successfully",
+      data: {
+        eventsCreated: Number(eventsCreated[0]?.count || 0),
+        placesCreated: Number(placesCreated[0]?.count || 0),
+        eventsAttended: Number(eventsAttended[0]?.count || 0),
+      },
+    };
+  } catch (error) {
+    console.error("Error retrieving user stats:", error);
+    return {
+      success: false,
+      message: "Error retrieving user stats",
+      data: null,
+    };
+  }
+};
 export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>;
 export const CreateEvent = async (params: {
   event: Requested | undefined;
@@ -391,8 +496,6 @@ export const QueryEvents = async (params: {
               ),
           ),
         ),
-        ne(Events.UserID, params.options.byUser as number),
-        gte(Events.Date, new Date().toISOString()),
       ),
     )
     .limit(params.options.limit ?? 3)

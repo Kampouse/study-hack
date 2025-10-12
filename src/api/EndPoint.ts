@@ -2,13 +2,15 @@ import { QueryPlace } from "./Query";
 import {
   type QueryEventOptions,
   QueryEvents,
+  QueryUserPlaces,
   QueryEvent,
   QueryConfirmedUsers,
+  QueryUserStats,
   QueryAllReferenceEvents,
   QueryPlaces,
   GetUser,
 } from "~/api/Query";
-
+import type { GetUserReturnType } from "./Query";
 import type { Requested } from "~/api/drizzled";
 
 export const getEvents = async ({
@@ -143,6 +145,46 @@ export const getPlaces = async (
     return { success: false, data: null, error: "Failed to get places" };
   }
 };
+export const getUserStats = async (
+  event: Requested,
+  user: GetUserReturnType,
+) => {
+  try {
+    const data = await QueryUserStats({
+      event: event as Requested,
+      user: user,
+    });
+    if (!data.success || !data.data) {
+      return { success: false, data: null, error: "Failed to get user stats" };
+    }
+    return { success: true, data: data.data };
+  } catch (e) {
+    console.log(e);
+    return { success: false, data: null, error: "Failed to get user stats" };
+  }
+};
+
+export const getUserPlaces = async (
+  event: Requested,
+  user: GetUserReturnType,
+  params?: { limit?: number; offset?: number },
+) => {
+  try {
+    const data = await QueryUserPlaces({
+      event: event as Requested,
+      user: user,
+      params: params,
+    });
+    if (!data.success || !data.data) {
+      return { success: false, data: null, error: "Failed to get user places" };
+    }
+    return { success: true, data: data.data };
+  } catch (e) {
+    console.log(e);
+    return { success: false, data: null, error: "Failed to get user places" };
+  }
+};
+
 export const getConfirmedUsers = async (event: Requested, eventId: number) => {
   try {
     const data = await QueryConfirmedUsers({

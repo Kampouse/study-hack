@@ -2,6 +2,7 @@ import { component$, useSignal, $, useStore } from "@builder.io/qwik";
 import type * as v from "valibot";
 import { useForm, formAction$, valiForm$ } from "@modular-forms/qwik";
 import type { Signal } from "@builder.io/qwik";
+import { PlaceCard } from "~/routes/(app)/home/place-card";
 import { useLocation } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import type { JSONObject } from "@builder.io/qwik-city";
@@ -19,10 +20,10 @@ import {
   CameraIcon as Camera,
   CheckIcon as Check,
   XIcon as X,
+  CompassIcon as Compass,
 } from "lucide-qwik";
 import type { DetailedEventType, PlaceType } from "~/routes/profile/types";
 import { EventCard } from "./EventCard";
-import { PlaceCard } from "./PlaceCard";
 import { EmptyState } from "./EmptyState";
 
 type ProfileSchemaType = v.InferInput<typeof userSchema>;
@@ -123,7 +124,7 @@ const ProfileView = component$<ProfileViewProps>(
             <div class="my-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
               <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
                 <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
-                  {}
+                  {profileData.stats.eventAttended || 0}
                 </span>
                 <span class="text-xs text-[#6D5D4E] sm:text-sm">
                   Events Attended
@@ -131,7 +132,7 @@ const ProfileView = component$<ProfileViewProps>(
               </div>
               <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
                 <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
-                  {}
+                  {profileData.stats.eventCreated || 0}
                 </span>
                 <span class="text-xs text-[#6D5D4E] sm:text-sm">
                   Events Hosted
@@ -139,7 +140,7 @@ const ProfileView = component$<ProfileViewProps>(
               </div>
               <div class="rounded-lg bg-[#FFF8F0] p-3 text-center shadow-sm transition-all hover:shadow-md">
                 <span class="block text-xl font-bold text-[#D98E73] sm:text-2xl">
-                  {}
+                  {profileData.stats.placeCreated || 0}
                 </span>
                 <span class="text-xs text-[#6D5D4E] sm:text-sm">
                   Places Found
@@ -204,6 +205,7 @@ const ProfileEdit = component$<ProfileEditProps>(
       avatar: profileData.avatar,
       skills: profileData.skills,
       joinedDate: profileData.joinedDate,
+      stats: profileData.stats,
     });
 
     // Form state tracking
@@ -758,6 +760,7 @@ export const TabsSection = component$<TabsSectionProps>(
     hostedEvents,
     pastEvents,
     likedPlaces,
+    savedPlaces,
     requests = [],
   }) => {
     const loc = useLocation();
@@ -765,6 +768,8 @@ export const TabsSection = component$<TabsSectionProps>(
     const tab = loc.url.searchParams.get("tab") ?? "upcoming";
     const activeTab = useSignal(tab);
     const isEditing = useSignal(false);
+
+    // Add resource to fetch user places
 
     // Self-contained functions for profile editing
     // Ensure icons match IconComponent type
@@ -793,17 +798,22 @@ export const TabsSection = component$<TabsSectionProps>(
         count: hostedEvents.length,
       },
       {
-        id: "requests",
-        label: "Requests",
-        icon: Bell,
-        count: requests.length,
+        id: "myplaces",
+        label: "My Places",
+        icon: Compass,
+        count: savedPlaces.length,
       },
-
       {
         id: "liked",
         label: "Liked Places",
         icon: Bookmark,
         count: likedPlaces.length,
+      },
+      {
+        id: "requests",
+        label: "Requests",
+        icon: Bell,
+        count: requests.length,
       },
       {
         id: "past",
@@ -885,9 +895,13 @@ export const TabsSection = component$<TabsSectionProps>(
               </div>
             ) : (
               <EmptyState
-                context="CalendarIcon" // Use conte
+                context="CalendarIcon"
                 title="No Upcoming Events"
                 message="You haven't joined or been invited to any events yet. Explore events to join!"
+                actionButton={{
+                  href: "/events",
+                  label: "Explore Events",
+                }}
               />
             ))}
 
@@ -911,6 +925,80 @@ export const TabsSection = component$<TabsSectionProps>(
               />
             ))}
 
+          {activeTab.value === "myplaces" && (
+            <div>
+              {savedPlaces.length > 0 ? (
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {savedPlaces.map((place) => (
+                    <PlaceCard
+                      key={place.placeId ?? place.id}
+                      place={{
+                        id: place.placeId ?? place.id,
+                        name: place.name,
+                        image: place.image ?? "",
+                        badge: "",
+                        location: place.location,
+                        description: place.description,
+                        tags: place.tags,
+                        creator: profile.name,
+                        rating:
+                          typeof place.rating === "number" ? place.rating : 0,
+                      }}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState
+                  context="MapPinIcon"
+                  title="No Places Added Yet"
+                  message="You haven't added any places to the community. Share your favorite study spots!"
+                  actionButton={{ label: "Add a Place", href: "/places/new" }}
+                />
+              )}
+            </div>
+          )}
+
+          {activeTab.value === "liked" &&
+            (likedPlaces.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {likedPlaces.map((place) => (
+                  <PlaceCard
+                    key={place.placeId ?? place.id}
+                    place={{
+                      id: place.placeId ?? place.id,
+                      name: place.name,
+                      image: place.image ?? "",
+                      badge: "",
+                      location: place.location,
+                      description: place.description,
+                      tags: place.tags || [],
+                      creator: profile.name,
+                      rating:
+                        typeof place.rating === "number" ? place.rating : 0,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                context="MapPinIcon"
+                title="No Liked Places"
+                message="You haven't liked any places yet. Browse places and click the heart icon to add them here."
+                actionButton={{ label: "Discover Places", href: "/places" }}
+              />
+            ))}
+
+          {activeTab.value === "requests" &&
+            (requests.length > 0 ? (
+              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+            ) : (
+              <EmptyState
+                context="BellIcon" // Use Bell icon context for requests
+                title="No Pending Requests"
+                message="You don't have any pending requests at the moment."
+              />
+            ))}
+
           {activeTab.value === "past" &&
             (pastEvents.length > 0 ? (
               <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -924,32 +1012,6 @@ export const TabsSection = component$<TabsSectionProps>(
                 title="No Past Events"
                 message="You haven't attended any events yet. Join some events to build your history!"
                 actionButton={{ label: "Find Events", href: "/events" }}
-              />
-            ))}
-          {activeTab.value === "requests" &&
-            (requests.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
-            ) : (
-              <EmptyState
-                context="BellIcon" // Use Bell icon context for requests
-                title="No Pending Requests"
-                message="You don't have any pending requests at the moment."
-              />
-            ))}
-
-          {activeTab.value === "liked" &&
-            (likedPlaces.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {likedPlaces.map((place) => (
-                  <PlaceCard key={place.placeId ?? place.id} place={place} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                context="MapPinIcon"
-                title="No Liked Places"
-                message="You haven't liked any places yet. Browse places and click the heart icon to add them here."
-                actionButton={{ label: "Discover Places", href: "/places" }}
               />
             ))}
         </div>
