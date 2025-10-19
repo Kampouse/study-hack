@@ -971,7 +971,7 @@ export const TabsSection = component$<TabsSectionProps>(
                       badge: "",
                       location: place.location,
                       description: place.description,
-                      tags: place.tags || [],
+                      tags: place.tags,
                       creator: profile.name,
                       rating:
                         typeof place.rating === "number" ? place.rating : 0,

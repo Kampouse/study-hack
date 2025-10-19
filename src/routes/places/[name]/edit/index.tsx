@@ -51,7 +51,7 @@ export const usePlaceLoader = routeLoader$(async (requestEvent) => {
     description: place.data.Description || "",
     image: place.data.ImageURL || "",
     tags: place.data.Tags || [],
-    rating: place.data.Rating?.toString() || "3",
+    rating: place.data.Rating.toString() || "3",
     wifispeed: place.data.WifiSpeed || 0,
     hasquietenvironment: place.data.HasQuietEnvironment || false,
     price: place.data.Price || "",

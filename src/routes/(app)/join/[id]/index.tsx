@@ -44,7 +44,7 @@ export const action = formAction$<JoinRequest, Res>(
   async (data, event) => {
     const stuff = await joinRequest(data, event);
 
-    if (stuff && stuff.success && stuff.data != null) {
+    if (stuff.success && stuff.data != null) {
       event.redirect(302, `/join/${stuff.data.EventID}/success`);
       return {
         data: stuff,
@@ -76,7 +76,7 @@ export default component$(() => {
       <div class="container mx-auto max-w-4xl px-4">
         <div class="overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-md">
           <div class="p-8">
-            {formResponse.response?.message &&
+            {formResponse.response.message &&
               (formResponse.response.data as any)?.success === false && (
                 <ErrorAlert
                   message={formResponse.response.message}

@@ -829,7 +829,7 @@ export const createJoinRequest = async (params: {
       .where(eq(Events.EventID, params.requestData.eventId))
       .execute();
 
-    if (!event || event.length === 0) {
+    if (event.length === 0) {
       return {
         data: null,
         success: false,
@@ -872,7 +872,7 @@ export const createJoinRequest = async (params: {
       )
       .execute();
 
-    if (existingRequest && existingRequest.length > 0) {
+    if (existingRequest.length > 0) {
       return {
         data: null,
         success: false,

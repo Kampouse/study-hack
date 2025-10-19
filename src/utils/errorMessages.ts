@@ -116,7 +116,7 @@ export function getContextualError(
     },
   };
 
-  const baseMessage = contextMap[resourceType]?.[operation] || ErrorMessages.UNKNOWN_ERROR;
+  const baseMessage = contextMap[resourceType][operation] || ErrorMessages.UNKNOWN_ERROR;
 
   // If there's additional error info, you can append or replace
   if (error) {

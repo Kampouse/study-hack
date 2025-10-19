@@ -103,7 +103,7 @@ export default component$(() => {
 
       <div class="container mx-auto max-w-4xl px-4 pb-16">
         <div class="rounded-2xl bg-white p-8 shadow-md">
-          {formResponse.response?.message &&
+          {formResponse.response.message &&
             (formResponse.response.data as any)?.success === false && (
               <ErrorAlert
                 message={formResponse.response.message}
@@ -274,11 +274,11 @@ export default component$(() => {
                               (place) =>
                                 place.Places?.ImageURL === previewImage.value,
                             )
-                            ?.Places?.Description?.substring(0, 100)}
+                            ?.Places?.Description.substring(0, 100)}
                           {(places.data?.find(
                             (place) =>
                               place.Places?.ImageURL === previewImage.value,
-                          )?.Places?.Description?.length || 0) > 100
+                          )?.Places?.Description.length || 0) > 100
                             ? "..."
                             : ""}
                         </p>

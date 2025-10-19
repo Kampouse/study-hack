@@ -12,6 +12,7 @@ import { ErrorMessages } from "~/utils/errorMessages";
 export const eventSchema = v.object({
   Name: v.pipe(
     v.string("Name must be a text value"),
+    v.trim(),
     v.minLength(3, "Name must be at least 3 characters long"),
     v.maxLength(50, "Name cannot exceed 50 characters"),
   ),
@@ -58,6 +59,7 @@ export const eventSchema = v.object({
 export const placeSchema = v.object({
   name: v.pipe(
     v.string("Name must be a text value"),
+    v.trim(),
     v.minLength(5, "Name must be at least 5 characters long"),
     v.maxLength(100, "Name cannot exceed 100 characters"),
   ),
@@ -128,11 +130,13 @@ export type CreateEventForm = v.InferOutput<typeof eventSchema>;
 export const userSchema = v.object({
   Name: v.pipe(
     v.string("Name must be a text value"),
+    v.trim(),
     v.minLength(3, "Name must be at least 3 characters long"),
     v.maxLength(100, "Name cannot exceed 100 characters"),
   ),
   Username: v.pipe(
     v.string("Username must be a text value"),
+    v.trim(),
     v.minLength(3, "Username must be at least 3 characters long"),
     v.maxLength(30, "Username cannot exceed 30 characters"),
   ),
@@ -163,7 +167,7 @@ export const updateProfileForm = async (data: JSONObject, event: Requested) => {
     const firstIssue = validated.issues[0];
     return {
       success: false,
-      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      error: firstIssue.message || ErrorMessages.VALIDATION_FAILED,
       validationErrors: validated.issues,
     };
   }
@@ -180,7 +184,7 @@ export const joinRequest = async (data: JSONObject, event: Requested) => {
     return {
       success: false,
       data: null,
-      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      error: firstIssue.message || ErrorMessages.VALIDATION_FAILED,
       validationErrors: validated.issues,
       status: 400,
     };
@@ -218,7 +222,7 @@ export const createEventForm = async (data: JSONObject, event: Requested) => {
     return {
       success: false,
       data: null,
-      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      error: firstIssue.message || ErrorMessages.VALIDATION_FAILED,
       validationErrors: validated.issues,
       status: 400,
     };
