@@ -1,10 +1,5 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import * as Schema from "~/../drizzle/schema";
-import Database from "better-sqlite3";
-import { InjecatbleSeedScript } from "../../drizzle/seed";
-
-import { expect, test, beforeAll } from "vitest";
+import { expect, test } from "vitest";
+import { testDb } from "../../tests/setup";
 import {
   CreateEvent,
   CreateUser,
@@ -20,36 +15,6 @@ import {
 } from "./Query";
 
 import { faker } from "@faker-js/faker";
-const sqlite = new Database(":memory:");
-const db = drizzle(sqlite, {
-  schema: Schema,
-});
-
-//await runMigration(db);
-
-beforeAll(async () => {
-  //const db = await runMigration().catch(console.error);
-  // console.log("db", db);
-
-  migrate(db, { migrationsFolder: "./drizzle/drizzle/migrations" });
-
-  await InjecatbleSeedScript(db as any);
-});
-
-test("validate data", async () => {
-  // Run migration first
-
-  // Test if seed script was executed successfully
-  // You might want to check for specific data or table contents here
-  // For example:
-  try {
-    const users = await db.select().from(Schema.Users);
-    expect(users).toBeDefined();
-    expect(users.length).toBeGreaterThan(0);
-  } catch (error) {
-    console.error(error);
-  }
-});
 test("Create a valid user", async () => {
   const result = await CreateUser({
     event: undefined,
@@ -61,22 +26,51 @@ test("Create a valid user", async () => {
         image: "somthing",
       },
     },
-    client: db as any,
+    client: testDb as any,
   });
   expect(result).toBeDefined();
 });
 
 test("Get user from email", async () => {
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
+  // Then get the user
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
   expect(user).toBeDefined();
   expect(user?.Email).toBe("jpmartel98@gmail.com");
 });
 
 test("add valid event from user", async () => {
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
   const event = {
     Name: faker.lorem.words(3),
     Description: faker.lorem.paragraph(),
@@ -93,7 +87,7 @@ test("add valid event from user", async () => {
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   type userData = {
@@ -117,7 +111,7 @@ test("add valid event from user", async () => {
     event: undefined,
     session: event,
     userData: userData,
-    Client: db as any,
+    Client: testDb as any,
   });
   expect(output).toBeDefined();
   if (output) {
@@ -137,12 +131,12 @@ test("Create a join request", async () => {
         image: "requester_image.jpg",
       },
     },
-    client: db as any,
+    client: testDb as any,
   });
   const queriedUser = await GetUserFromEmail({
     event: undefined,
     email: "requester@example.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(queriedUser).toBeDefined();
@@ -167,7 +161,7 @@ test("Create a join request", async () => {
     event: undefined,
     session: event,
     userData: queriedUser as any,
-    Client: db as any,
+    Client: testDb as any,
   });
 
   expect(createdEvent).toBeDefined();
@@ -183,7 +177,7 @@ test("Create a join request", async () => {
       experience: faker.lorem.paragraph(),
       why: faker.lorem.paragraph(),
     },
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(joinRequest).toBeDefined();
@@ -197,7 +191,7 @@ test("Create a join request", async () => {
     event: undefined,
     requestId: joinRequest.data?.RequestID as number,
     newStatus: "confirmed",
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(updatedRequest).toBeDefined();
@@ -216,7 +210,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
         image: "user1_image.jpg",
       },
     },
-    client: db as any,
+    client: testDb as any,
   });
 
   await CreateUser({
@@ -229,20 +223,20 @@ test("QueryAllReferenceEvents - validity of data", async () => {
         image: "user2_image.jpg",
       },
     },
-    client: db as any,
+    client: testDb as any,
   });
 
   // Get users from email
   const user1 = await GetUserFromEmail({
     event: undefined,
     email: "user1@example.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   const user2 = await GetUserFromEmail({
     event: undefined,
     email: "user2@example.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(user1).toBeDefined();
@@ -275,14 +269,14 @@ test("QueryAllReferenceEvents - validity of data", async () => {
     event: undefined,
     session: event1,
     userData: user1 as any,
-    Client: db as any,
+    Client: testDb as any,
   });
 
   const createdEvent2 = await CreateEvent({
     event: undefined,
     session: event2,
     userData: user2 as any,
-    Client: db as any,
+    Client: testDb as any,
   });
 
   expect(createdEvent1).toBeDefined();
@@ -300,7 +294,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
       experience: "Test experience 1",
       why: "Test reason 1",
     },
-    client: db as any,
+    client: testDb as any,
   });
 
   const joinRequest2 = await createJoinRequest({
@@ -312,7 +306,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
       experience: "Test experience 2",
       why: "Test reason 2",
     },
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(joinRequest1).toBeDefined();
@@ -325,7 +319,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
     event: undefined as any,
     UserID: user1?.ID as number,
     options: {
-      client: db as any,
+      client: testDb as any,
     },
   });
 
@@ -338,7 +332,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
     event: undefined as any,
     UserID: user2?.ID as number,
     options: {
-      client: db as any,
+      client: testDb as any,
     },
   });
 
@@ -347,10 +341,24 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2);
 });
 test("Create a valid place", async () => {
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   const placeData = {
@@ -374,7 +382,7 @@ test("Create a valid place", async () => {
     event: undefined,
     userID: user?.ID as number,
     placeData,
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(result).toBeDefined();
@@ -383,11 +391,24 @@ test("Create a valid place", async () => {
 });
 
 test("Query a specific place", async () => {
-  // First create a place
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   const placeData = {
@@ -405,7 +426,7 @@ test("Query a specific place", async () => {
     event: undefined,
     userID: user?.ID as number,
     placeData,
-    client: db as any,
+    client: testDb as any,
   });
   expect(createdPlace).toBeDefined();
   if (!createdPlace.data) {
@@ -415,7 +436,7 @@ test("Query a specific place", async () => {
   const result = await QueryPlace({
     event: undefined,
     placeId: createdPlace.data.PlaceID,
-    client: db as any,
+    client: testDb as any,
   });
   if (!result.success || !result.data) {
     throw new Error("Failed to query place");
@@ -427,21 +448,76 @@ test("Query a specific place", async () => {
 });
 
 test("Query all places", async () => {
+  // First create a user and a place so we have data to query
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "jpmartel98@gmail.com",
+    client: testDb as any,
+  });
+
+  // Create a place
+  await CreatePlace({
+    event: undefined,
+    userID: user?.ID as number,
+    placeData: {
+      name: faker.company.name(),
+      address: faker.location.streetAddress(),
+      description: faker.lorem.paragraph(),
+      rating: faker.number.int({ min: 1, max: 5 }).toString(),
+      coordinates: [
+        faker.number.float({ min: -90, max: 90 }),
+        faker.number.float({ min: -180, max: 180 }),
+      ] as [number, number],
+    },
+    client: testDb as any,
+  });
+
   const result = await QueryPlaces({
     event: undefined,
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(result).toBeDefined();
   expect(result.success).toBe(true);
+  expect(result.data).toBeDefined();
+  expect(Array.isArray(result.data)).toBe(true);
+  if (result.data) {
+    expect(result.data.length).toBeGreaterThan(0);
+  }
 });
 
 test("Update a place", async () => {
-  // First create a place
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   const placeData = {
@@ -459,7 +535,7 @@ test("Update a place", async () => {
     event: undefined,
     userID: user?.ID as number,
     placeData,
-    client: db as any,
+    client: testDb as any,
   });
 
   const updateData = {
@@ -474,7 +550,7 @@ test("Update a place", async () => {
     event: undefined,
     placeId: createdPlace.data.PlaceID,
     placeData: updateData,
-    client: db as any,
+    client: testDb as any,
   });
   if (!result.success || !result.data) {
     throw new Error("Failed to update place");
@@ -485,11 +561,24 @@ test("Update a place", async () => {
 });
 
 test("Delete a place", async () => {
-  // First create a place
+  // First create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
+      },
+    },
+    client: testDb as any,
+  });
+
   const user = await GetUserFromEmail({
     event: undefined,
     email: "jpmartel98@gmail.com",
-    client: db as any,
+    client: testDb as any,
   });
 
   const placeData = {
@@ -507,7 +596,7 @@ test("Delete a place", async () => {
     event: undefined,
     userID: user?.ID as number,
     placeData,
-    client: db as any,
+    client: testDb as any,
   });
   if (!createdPlace.data) {
     throw new Error("Failed to create place");
@@ -516,7 +605,7 @@ test("Delete a place", async () => {
   const result = await DeletePlace({
     event: undefined,
     placeId: createdPlace.data.PlaceID,
-    client: db as any,
+    client: testDb as any,
   });
 
   expect(result).toBeDefined();
