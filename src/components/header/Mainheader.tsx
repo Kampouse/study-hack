@@ -52,7 +52,7 @@ export default component$(() => {
                 href="/new"
                 class="rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:hidden"
               >
-                Start New Session
+                Start Session
               </Link>
             )}
             {session.value.user && location.url.pathname !== "/home" && (
@@ -74,7 +74,7 @@ export default component$(() => {
                     href="/new"
                     class="hidden rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg md:block"
                   >
-                    Start New Session
+                    Start Session
                   </Link>
                 ) : (
                   <Link

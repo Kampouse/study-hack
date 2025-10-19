@@ -449,7 +449,14 @@ export const QueryEvent = async (params: {
     const loc = await Client.select()
       .from(Places)
       .where(eq(Places.PlaceID, event[0].LocationID as number));
-    return { user: user[0], event: event[0], location: loc[0] };
+
+    // Use place image if event doesn't have one
+    const eventWithImage = {
+      ...event[0],
+      image: event[0].image || loc[0]?.ImageURL || "",
+    };
+
+    return { user: user[0], event: eventWithImage, location: loc[0] };
   }
 };
 //query events that are not created by the user and not registered by the user
@@ -527,14 +534,18 @@ export const QueryEvents = async (params: {
   const places = await QueryPlaces({ event: params.event, client: Client });
   const resultEvents = await Promise.all(result);
   if (places.success && places.data) {
-    return output?.map((event) => ({
-      ...event,
-      attendees: resultEvents.find((e) => e.eventID === event.eventID)
-        ?.confirmedCount,
-      place: places.data.find(
+    return output?.map((event) => {
+      const eventPlace = places.data.find(
         (place) => place.Places?.PlaceID === event.placeId,
-      ),
-    }));
+      );
+      return {
+        ...event,
+        image: event.image || eventPlace?.Places?.ImageURL || "",
+        attendees: resultEvents.find((e) => e.eventID === event.eventID)
+          ?.confirmedCount,
+        place: eventPlace,
+      };
+    });
   }
 
   return null;
@@ -608,6 +619,10 @@ export const QueryAllReferenceEvents = async (params: {
   mergedEvents.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
+
+  // Fetch all places to use for image fallback
+  const places = await QueryPlaces({ event: params.event, client: Client });
+
   const processedEvents = await Promise.all(
     mergedEvents.map(async (event) => {
       const date = new Date(event.date);
@@ -635,7 +650,20 @@ export const QueryAllReferenceEvents = async (params: {
           ),
         )
         .groupBy(Requests.EventID);
-      return { ...event, attendees: res.length, requests: res };
+
+      // Use place image if event doesn't have one
+      const eventPlace =
+        places.success && places.data
+          ? places.data.find((place) => place.Places?.PlaceID === event.placeId)
+          : null;
+      const finalImage = event.image || eventPlace?.Places?.ImageURL || "";
+
+      return {
+        ...event,
+        image: finalImage,
+        attendees: res.length,
+        requests: res,
+      };
     }),
   );
 

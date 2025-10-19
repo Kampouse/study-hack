@@ -25,7 +25,7 @@ export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
     Description: "",
     Location: place?.Places?.Name || "",
     PlaceId: parseInt(urlData) || 0,
-    ImageURL: place?.Places?.ImageURL || "",
+    ImageURL: "",
     Date: new Date().toISOString().split("T")[0],
     StartTime: "",
     EndTime: "",
@@ -275,48 +275,6 @@ export default component$(() => {
                             : ""}
                         </p>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Field>
-
-            <Field name="ImageURL">
-              {(field, props) => (
-                <div class="space-y-2">
-                  <label class="text-sm font-medium text-[#5B3E29]">
-                    Cover Image URL (Optional)
-                  </label>
-                  <div class="space-y-2">
-                    <input
-                      {...props}
-                      class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                        field.error ? "border-red-500" : "border-[#E6D7C3]"
-                      }`}
-                      type="text"
-                      placeholder="Paste an image URL here"
-                      value={field.value}
-                    />
-                    {field.error && (
-                      <div class="text-xs text-red-500">{field.error}</div>
-                    )}
-                  </div>
-                  {field.value && (
-                    <div class="mt-2 overflow-hidden rounded-lg border border-[#E6D7C3]">
-                      <p class="bg-[#F8EDE3] px-3 py-1 text-xs font-medium text-[#8B5A2B]">
-                        Event Cover Preview
-                      </p>
-                      <img
-                        src={field.value}
-                        alt="Image preview"
-                        height="200"
-                        width="200"
-                        class="h-60 w-full object-cover"
-                        onError$={(_, el) => {
-                          el.style.display = "none";
-                          el.src = "/src/assets/just-rnd.png";
-                        }}
-                      />
                     </div>
                   )}
                 </div>

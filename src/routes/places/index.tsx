@@ -54,7 +54,7 @@ export default component$(() => {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
         image: place.Places?.ImageURL as string,
-        badge: "New",
+        badge: "",
         location: place.Places?.Address,
         description: place.Places?.Description,
         tags: place.Places?.Tags,
@@ -75,7 +75,6 @@ export default component$(() => {
 
     const matchesCategory =
       filterCategory.value === "all" ||
-      (filterCategory.value === "new" && place.badge === "New") ||
       (filterCategory.value === "popular" && place.badge === "Popular");
 
     const matchesAmenities =
@@ -176,7 +175,6 @@ export default component$(() => {
                   bind:value={filterCategory}
                 >
                   <option value="all">All Places</option>
-                  <option value="new">Newest First</option>
                   <option value="popular">Most Popular</option>
                   <option value="rating">Highest Rated</option>
                 </select>
@@ -279,14 +277,14 @@ export default component$(() => {
               </h3>
               <p class="mt-2 text-[#6D5D4E]">
                 Try adjusting your search terms or filters, or be the first to
-                share a new place!
+                share a place!
               </p>
               <div class="mt-6">
                 <Link
                   href="/places/new"
                   class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
-                  Share a New Place
+                  Share a Place
                 </Link>
               </div>
             </div>

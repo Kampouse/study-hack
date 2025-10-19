@@ -163,9 +163,6 @@ export default component$(() => {
               <h1 class="text-3xl font-bold text-[#5B3E29]">
                 Share Your Cozy Spot
               </h1>
-              <span class="ml-2 inline-flex items-center justify-center rounded-full bg-[#F8D7BD] px-2.5 py-0.5 text-xs font-medium text-[#8B5A2B]">
-                New
-              </span>
             </div>
             <p class="mb-8 text-[#6D5D4E]">
               Help your fellow community members discover hidden gems for

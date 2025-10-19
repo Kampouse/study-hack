@@ -50,9 +50,8 @@ export const CreateEventCTA = component$(() => {
               <p class="mb-8 max-w-xl text-lg text-[#6D5D4E] lg:text-xl">
                 {" "}
                 {/* Larger text */}
-                Create a cozy gathering at your favorite spot or discover new
-                ones. Invite friends or meet new people—it's all about
-                connection.
+                Create a cozy gathering at your favorite spot or discover ones.
+                Invite friends or meet people—it's all about connection.
               </p>
               <div class="flex flex-wrap justify-center gap-4 md:justify-start">
                 <Link
