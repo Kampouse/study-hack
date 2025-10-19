@@ -12,6 +12,7 @@ import {
 } from "~/api/Query";
 import type { GetUserReturnType } from "./Query";
 import type { Requested } from "~/api/drizzled";
+import { ErrorMessages, getContextualError } from "~/utils/errorMessages";
 
 export const getEvents = async ({
   event,
@@ -23,7 +24,11 @@ export const getEvents = async ({
   try {
     const user = await GetUser({ event });
     if (user === null) {
-      return { success: false, data: null, error: "Failed to get events" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.USER_NOT_AUTHENTICATED,
+      };
     }
 
     const data = await QueryEvents({
@@ -31,7 +36,11 @@ export const getEvents = async ({
       options: { ...options, byUser: user.ID },
     });
     if (data === null) {
-      return { success: false, data: null, error: "Failed to get events" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.EVENT_LOAD_FAILED,
+      };
     }
     return {
       success: true,
@@ -54,8 +63,12 @@ export const getEvents = async ({
       }),
     };
   } catch (e) {
-    console.log(e);
-    return { success: false, data: null, error: "Failed to get events" };
+    console.error("Error fetching events:", e);
+    return {
+      success: false,
+      data: null,
+      error: getContextualError("fetch", "event", e),
+    };
   }
 };
 
@@ -65,9 +78,8 @@ export const getEvent = async (event: Requested, id: string) => {
 
     return { success: true, data: data };
   } catch (e) {
-    console.log(e);
-
-    return { success: false, data: null, error: "Failed to get event" };
+    console.error("Error fetching event:", e);
+    return { success: false, data: null, error: ErrorMessages.EVENT_NOT_FOUND };
   }
 };
 
@@ -114,12 +126,20 @@ export const getPlace = async ({
       name: placeName,
     });
     if (!data.success || !data.data) {
-      return { success: false, data: null, error: "Failed to get place" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.PLACE_NOT_FOUND,
+      };
     }
     return { success: true, data: data.data };
   } catch (e) {
-    console.log(e);
-    return { success: false, data: null, error: "Failed to get place" };
+    console.error("Error fetching place:", e);
+    return {
+      success: false,
+      data: null,
+      error: getContextualError("fetch", "place", e),
+    };
   }
 };
 
@@ -137,12 +157,20 @@ export const getPlaces = async (
       },
     });
     if (!data.success || !data.data) {
-      return { success: false, data: null, error: "Failed to get places" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.PLACE_LOAD_FAILED,
+      };
     }
     return { success: true, data: data.data };
   } catch (e) {
-    console.log(e);
-    return { success: false, data: null, error: "Failed to get places" };
+    console.error("Error fetching places:", e);
+    return {
+      success: false,
+      data: null,
+      error: getContextualError("fetch", "place", e),
+    };
   }
 };
 export const getUserStats = async (
@@ -155,12 +183,20 @@ export const getUserStats = async (
       user: user,
     });
     if (!data.success || !data.data) {
-      return { success: false, data: null, error: "Failed to get user stats" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.USER_STATS_FAILED,
+      };
     }
     return { success: true, data: data.data };
   } catch (e) {
-    console.log(e);
-    return { success: false, data: null, error: "Failed to get user stats" };
+    console.error("Error fetching user stats:", e);
+    return {
+      success: false,
+      data: null,
+      error: ErrorMessages.USER_STATS_FAILED,
+    };
   }
 };
 
@@ -176,12 +212,20 @@ export const getUserPlaces = async (
       params: params,
     });
     if (!data.success || !data.data) {
-      return { success: false, data: null, error: "Failed to get user places" };
+      return {
+        success: false,
+        data: null,
+        error: ErrorMessages.USER_PLACES_FAILED,
+      };
     }
     return { success: true, data: data.data };
   } catch (e) {
-    console.log(e);
-    return { success: false, data: null, error: "Failed to get user places" };
+    console.error("Error fetching user places:", e);
+    return {
+      success: false,
+      data: null,
+      error: ErrorMessages.USER_PLACES_FAILED,
+    };
   }
 };
 
@@ -195,16 +239,16 @@ export const getConfirmedUsers = async (event: Requested, eventId: number) => {
       return {
         success: false,
         data: null,
-        error: "Failed to get confirmed user",
+        error: ErrorMessages.CONFIRMED_USERS_FAILED,
       };
     }
     return { success: true, data: data.data };
   } catch (e) {
-    console.log(e);
+    console.error("Error fetching confirmed users:", e);
     return {
       success: false,
       data: null,
-      error: "Failed to get confirmed user",
+      error: ErrorMessages.CONFIRMED_USERS_FAILED,
     };
   }
 };

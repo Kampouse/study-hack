@@ -11,6 +11,7 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 
 import type * as v from "valibot";
 import { GetUser, QueryPlaces } from "~/api/Query";
+import { ErrorAlert } from "~/components/ui/ErrorAlert";
 
 type Event = v.InferInput<typeof eventSchema>;
 export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
@@ -53,13 +54,13 @@ const action = formAction$<Event, Data>(async (data, event) => {
     return {
       data: output,
       success: false,
-      message: "Failed to create event",
+      message: output.error,
     };
   } else {
     return {
       data: output,
       success: false,
-      message: "Unexpected error occurred",
+      message: "We couldn't create your event. Please try again.",
     };
   }
 }, valiForm$(eventSchema));
@@ -74,7 +75,7 @@ export const useloadPlaces = routeLoader$(async (req) => {
 });
 
 export default component$(() => {
-  const [, { Form, Field }] = useForm<Event, Data>({
+  const [formResponse, { Form, Field }] = useForm<Event, Data>({
     loader: useFormLoader(),
     validate: valiForm$(eventSchema),
     action: action(),
@@ -102,6 +103,13 @@ export default component$(() => {
 
       <div class="container mx-auto max-w-4xl px-4 pb-16">
         <div class="rounded-2xl bg-white p-8 shadow-md">
+          {formResponse.response?.message &&
+            (formResponse.response.data as any)?.success === false && (
+              <ErrorAlert
+                message={formResponse.response.message}
+                type="error"
+              />
+            )}
           <Form class="space-y-6">
             <Field name="Name">
               {(field, props) => (

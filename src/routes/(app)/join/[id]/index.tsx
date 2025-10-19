@@ -9,6 +9,7 @@ import { Link } from "@builder.io/qwik-city";
 import type * as v from "valibot";
 import { getEvent } from "~/api/EndPoint";
 import type { JoinEvent } from "~/../drizzle/schema";
+import { ErrorAlert } from "~/components/ui/ErrorAlert";
 type JoinRequest = v.InferInput<typeof joinRequestSchema>;
 export const head = {
   title: "S&H | Join Event",
@@ -52,7 +53,9 @@ export const action = formAction$<JoinRequest, Res>(
     }
     return {
       success: false,
-      message: "Join request failed",
+      message:
+        (stuff as any)?.error ||
+        "We couldn't submit your join request. Please check your answers and try again.",
     };
   },
 
@@ -62,7 +65,7 @@ export const action = formAction$<JoinRequest, Res>(
 export default component$(() => {
   const event = useEventDetails();
   const userid = event.value.data.user?.UserID.toString();
-  const [, { Form, Field }] = useForm<JoinRequest, Res>({
+  const [formResponse, { Form, Field }] = useForm<JoinRequest, Res>({
     validate: valiForm$(joinRequestSchema),
     loader: useFormLoader(),
     action: action(),
@@ -73,6 +76,13 @@ export default component$(() => {
       <div class="container mx-auto max-w-4xl px-4">
         <div class="overflow-hidden rounded-xl border border-[#E6D7C3] bg-white shadow-md">
           <div class="p-8">
+            {formResponse.response?.message &&
+              (formResponse.response.data as any)?.success === false && (
+                <ErrorAlert
+                  message={formResponse.response.message}
+                  type="error"
+                />
+              )}
             <div class="flex items-start justify-between">
               <h1 class="text-3xl font-bold text-[#5B3E29]">
                 {event.value.data.event?.name || "Event Name"}

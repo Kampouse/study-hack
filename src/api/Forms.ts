@@ -7,6 +7,7 @@ import {
 import type { Requested } from "~/api/drizzled";
 import type { JSONObject } from "@builder.io/qwik-city";
 import * as v from "valibot";
+import { ErrorMessages, formatError } from "~/utils/errorMessages";
 
 export const eventSchema = v.object({
   Name: v.pipe(
@@ -95,9 +96,30 @@ export const placeSchema = v.object({
 export type PlaceForm = v.InferOutput<typeof placeSchema>;
 
 export const joinRequestSchema = v.object({
-  ExperienceLevel: v.pipe(v.string(), v.minLength(3), v.maxLength(20)),
-  Background: v.pipe(v.string(), v.minLength(10), v.maxLength(500)),
-  WhyJoin: v.pipe(v.string(), v.minLength(8), v.maxLength(500)),
+  ExperienceLevel: v.pipe(
+    v.string("Please select your experience level"),
+    v.minLength(3, "Please select your experience level"),
+    v.maxLength(20, "Experience level selection is invalid"),
+  ),
+  Background: v.pipe(
+    v.string("Please tell us about your background"),
+    v.minLength(
+      10,
+      "Please provide at least 10 characters about your background",
+    ),
+    v.maxLength(
+      500,
+      "Background description is too long (maximum 500 characters)",
+    ),
+  ),
+  WhyJoin: v.pipe(
+    v.string("Please tell us why you want to join this event"),
+    v.minLength(
+      8,
+      "Please provide at least 8 characters about why you want to join",
+    ),
+    v.maxLength(500, "Your response is too long (maximum 500 characters)"),
+  ),
 });
 
 export type JoinRequestForm = v.InferOutput<typeof joinRequestSchema>;
@@ -136,17 +158,16 @@ export const userSchema = v.object({
 export type UpdateUserForm = v.InferOutput<typeof userSchema>;
 
 export const updateProfileForm = async (data: JSONObject, event: Requested) => {
-  console.log("hi", data);
   const validated = v.safeParse(userSchema, data);
   if (!validated.success) {
-    console.log(validated.issues);
+    const firstIssue = validated.issues[0];
     return {
       success: false,
-      error: "Invalid data",
+      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      validationErrors: validated.issues,
     };
   }
   const output = await UpdateUser({ event: event, session: validated.output });
-  console.log(output);
   return {
     success: true,
     data: output,
@@ -154,55 +175,55 @@ export const updateProfileForm = async (data: JSONObject, event: Requested) => {
 };
 export const joinRequest = async (data: JSONObject, event: Requested) => {
   const validated = v.safeParse(joinRequestSchema, data);
-  if (validated.success) {
-    const user = await GetUser({ event: event });
-    if (user) {
-      const content = await createJoinRequest({
-        event: event,
-        requestData: {
-          ...validated.output,
-          background: validated.output.Background,
-          why: validated.output.WhyJoin,
-          experience: validated.output.ExperienceLevel,
-          userId: user.ID,
-          eventId: parseInt(event.params.id),
-        },
-      });
-      return content;
-    }
-
+  if (!validated.success) {
+    const firstIssue = validated.issues[0];
     return {
       success: false,
       data: null,
-      error: "Invalid data",
+      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      validationErrors: validated.issues,
       status: 400,
     };
   }
+
+  const user = await GetUser({ event: event });
+  if (!user) {
+    return {
+      success: false,
+      data: null,
+      error: ErrorMessages.USER_NOT_AUTHENTICATED,
+      status: 401,
+    };
+  }
+
+  const content = await createJoinRequest({
+    event: event,
+    requestData: {
+      ...validated.output,
+      background: validated.output.Background,
+      why: validated.output.WhyJoin,
+      experience: validated.output.ExperienceLevel,
+      userId: user.ID,
+      eventId: parseInt(event.params.id),
+    },
+  });
+  return content;
 };
 
 export const createEventForm = async (data: JSONObject, event: Requested) => {
-  /*
-  const mockEventForm = {
-    Name: "Test Event",
-    Description: "Test Description",
-    Location: "Test Location",
-    Coordinates: [0, 0],
-    StartTime: "12:00",
-    EndTime: "14:00",
-    Tags: ["JavaScript", "React", "Node.js"],
-  };
-  */
   const validated = v.safeParse(eventSchema, data);
 
   if (!validated.success) {
+    const firstIssue = validated.issues[0];
     return {
       success: false,
       data: null,
-      error: "Invalid data",
+      error: firstIssue?.message || ErrorMessages.VALIDATION_FAILED,
+      validationErrors: validated.issues,
       status: 400,
     };
   }
-  console.log(validated.output);
+
   const output = await CreateEvent({
     event: event,
     session: validated.output,
@@ -213,7 +234,7 @@ export const createEventForm = async (data: JSONObject, event: Requested) => {
     return {
       success: false,
       data: null,
-      error: "Failed to create event",
+      error: ErrorMessages.EVENT_CREATE_FAILED,
     };
   }
   return {
