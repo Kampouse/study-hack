@@ -7,7 +7,7 @@ import {
 import type { Requested } from "~/api/drizzled";
 import type { JSONObject } from "@builder.io/qwik-city";
 import * as v from "valibot";
-import { ErrorMessages, formatError } from "~/utils/errorMessages";
+import { ErrorMessages } from "~/utils/errorMessages";
 
 export const eventSchema = v.object({
   Name: v.pipe(
