@@ -823,6 +823,64 @@ export const createJoinRequest = async (params: {
     };
 
   try {
+    // Validation 1: Check if event exists
+    const event = await Client.select()
+      .from(Events)
+      .where(eq(Events.EventID, params.requestData.eventId))
+      .execute();
+
+    if (!event || event.length === 0) {
+      return {
+        data: null,
+        success: false,
+        message: "Event not found",
+      };
+    }
+
+    // Validation 2: Check if user is the event owner
+    if (event[0].UserID === params.requestData.userId) {
+      return {
+        data: null,
+        success: false,
+        message: "Cannot join your own event",
+      };
+    }
+
+    // Validation 3: Check if event is in the past
+    const eventDateStr = event[0].Date; // Format: "YYYY-MM-DD"
+    const eventTimeStr = event[0].StartTime; // Format: "HH:MM" or "HH:MM:SS"
+    const eventDateTime = new Date(eventDateStr + "T" + eventTimeStr);
+    const now = new Date();
+
+    // Only check if the date is valid and in the past
+    if (!isNaN(eventDateTime.getTime()) && eventDateTime < now) {
+      return {
+        data: null,
+        success: false,
+        message: "Cannot join past events",
+      };
+    }
+
+    // Validation 4: Check for existing request
+    const existingRequest = await Client.select()
+      .from(Requests)
+      .where(
+        and(
+          eq(Requests.EventID, params.requestData.eventId),
+          eq(Requests.UserID, params.requestData.userId),
+        ),
+      )
+      .execute();
+
+    if (existingRequest && existingRequest.length > 0) {
+      return {
+        data: null,
+        success: false,
+        message: "Request already exists for this event",
+      };
+    }
+
+    // All validations passed, create the request
     return {
       data: (
         await Client.insert(Requests)

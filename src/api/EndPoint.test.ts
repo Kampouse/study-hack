@@ -120,7 +120,26 @@ test("add valid event from user", async () => {
 });
 
 test("Create a join request", async () => {
-  // First, create a user
+  // Create event owner
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "EventOwner",
+      user: {
+        name: "EventOwner",
+        email: "owner@example.com",
+        image: "owner_image.jpg",
+      },
+    },
+    client: testDb as any,
+  });
+  const eventOwner = await GetUserFromEmail({
+    event: undefined,
+    email: "owner@example.com",
+    client: testDb as any,
+  });
+
+  // Create requester (different user)
   await CreateUser({
     event: undefined,
     session: {
@@ -142,7 +161,7 @@ test("Create a join request", async () => {
   expect(queriedUser).toBeDefined();
   expect(queriedUser?.Email).toBe("requester@example.com");
 
-  // Now, create an event
+  // Event owner creates an event
   const event = {
     Name: faker.lorem.words(3),
     Description: faker.lorem.paragraph(),
@@ -160,14 +179,14 @@ test("Create a join request", async () => {
   const createdEvent = await CreateEvent({
     event: undefined,
     session: event,
-    userData: queriedUser as any,
+    userData: eventOwner as any,
     Client: testDb as any,
   });
 
   expect(createdEvent).toBeDefined();
   expect(createdEvent?.[0]).toHaveProperty("EventID");
 
-  // Now, create a join request
+  // Requester (different user) creates a join request
   const joinRequest = await createJoinRequest({
     event: undefined,
     requestData: {
@@ -181,6 +200,9 @@ test("Create a join request", async () => {
   });
 
   expect(joinRequest).toBeDefined();
+  if (!joinRequest.success) {
+    console.log("Join request failed:", joinRequest.message);
+  }
   expect(joinRequest.success).toBe(true);
   expect(joinRequest.data).toHaveProperty("RequestID");
   expect(joinRequest.data?.EventID).toBe(createdEvent?.[0].EventID);
@@ -242,11 +264,15 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   expect(user1).toBeDefined();
   expect(user2).toBeDefined();
 
-  // Create events
+  // Create events (set date to tomorrow to ensure they're in the future)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const futureDate = tomorrow.toISOString().split("T")[0];
+
   const event1 = {
     Name: "Test Event 1",
     Description: "This is test event 1",
-    Date: new Date().toISOString().split("T")[0],
+    Date: futureDate,
     StartTime: "10:00:00",
     EndTime: "12:00:00",
     Location: "Test Location 1",
@@ -257,7 +283,7 @@ test("QueryAllReferenceEvents - validity of data", async () => {
   const event2 = {
     Name: "Test Event 2",
     Description: "This is test event 2",
-    Date: new Date().toISOString().split("T")[0],
+    Date: futureDate,
     StartTime: "14:00:00",
     EndTime: "16:00:00",
     Location: "Test Location 2",
