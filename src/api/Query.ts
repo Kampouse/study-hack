@@ -491,6 +491,7 @@ export const QueryEvents = async (params: {
     .leftJoin(Users, eq(Users.UserID, Events.UserID))
     .where(
       and(
+        ne(Events.UserID, params.options.byUser as number),
         not(
           exists(
             Client.select()
