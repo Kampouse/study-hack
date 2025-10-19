@@ -53,20 +53,33 @@ export const Sessions = sqliteTable(
   },
 );
 
-export const Requests = sqliteTable("Requests", {
-  RequestID: integer("RequestID").primaryKey({ autoIncrement: true }).notNull(),
-  EventID: integer("EventID")
-    .notNull()
-    .references(() => Events.EventID),
-  UserID: integer("UserID")
-    .notNull()
-    .references(() => Users.UserID),
-  Status: text("Status").default("pending").notNull(),
-  Background: text("Background"),
-  Experience: text("Experience"),
-  WhyJoin: text("WhyJoin"),
-  CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
-});
+export const Requests = sqliteTable(
+  "Requests",
+  {
+    RequestID: integer("RequestID")
+      .primaryKey({ autoIncrement: true })
+      .notNull(),
+    EventID: integer("EventID")
+      .notNull()
+      .references(() => Events.EventID),
+    UserID: integer("UserID")
+      .notNull()
+      .references(() => Users.UserID),
+    Status: text("Status").default("pending").notNull(),
+    Background: text("Background"),
+    Experience: text("Experience"),
+    WhyJoin: text("WhyJoin"),
+    CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
+  },
+  (table) => {
+    return {
+      EventID_UserID_unique: uniqueIndex("Requests_EventID_UserID_unique").on(
+        table.EventID,
+        table.UserID,
+      ),
+    };
+  },
+);
 
 export const Events = sqliteTable("Events", {
   EventID: integer("EventID").primaryKey({ autoIncrement: true }),
