@@ -742,8 +742,6 @@ export const QueryActiveEvent = async (params: {
     .where(
       and(
         eq(Requests.Status, "confirmed"),
-        // comment this for testing
-        ne(Requests.UserID, params.user.ID),
         or(
           eq(Requests.UserID, params.user.ID),
           eq(Events.UserID, params.user.ID),
