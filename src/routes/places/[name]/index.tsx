@@ -204,9 +204,10 @@ export const useloadPlace = routeLoader$(async (context) => {
 });
 
 export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
+  const output = decodeURIComponent(context.params.name);
   const currentPlace = await getPlace({
     event: context,
-    placeName: context.params.name,
+    placeName: output,
   });
 
   //  const currentId = currentPlace.data?.PlaceID || 0;
