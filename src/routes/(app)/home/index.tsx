@@ -1,117 +1,117 @@
-import { component$, useSignal } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { MapPinIcon as MapPin } from "lucide-qwik"; // Keep MapPin for the modal button
+import { component$, useSignal } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import { MapPinIcon as MapPin } from 'lucide-qwik' // Keep MapPin for the modal button
 
-import { MapWrapper as Leaflet } from "@/components/leaflet-map";
-import { getEvents } from "~/api/EndPoint";
-import { QueryPlaces } from "~/api/Query";
-import { drizzler } from "~/api/drizzled";
+import { MapWrapper as Leaflet } from '@/components/leaflet-map'
+import { getEvents } from '~/api/EndPoint'
+import { QueryPlaces } from '~/api/Query'
+import { drizzler } from '~/api/drizzled'
 
+import { CommunitySection } from './community-section'
 // Import components from the same directory
-import { HeroSection } from "./hero-section";
-import { CommunitySection } from "./community-section";
-import { TabsSection } from "./tabs-section";
-export type Events = Awaited<ReturnType<typeof useEvents>>;
+import { HeroSection } from './hero-section'
+import { TabsSection } from './tabs-section'
+export type Events = Awaited<ReturnType<typeof useEvents>>
 
 export const head = {
-  title: " S&H | Home",
-};
+  title: ' S&H | Home',
+}
 
-export const useEvents = routeLoader$(async (event) => {
+export const useEvents = routeLoader$(async event => {
   const data = await getEvents({
     event: event,
     options: {
       limit: 1000, // Consider pagination or smaller limits for performance
     },
-  });
-  return data;
-});
+  })
+  return data
+})
 
-export const usePlaces = routeLoader$(async (event) => {
-  const client = await drizzler(event);
+export const usePlaces = routeLoader$(async event => {
+  const client = await drizzler(event)
   const data = await QueryPlaces({
     event: event,
     client: client,
     params: {
       limit: 75, // Consider pagination
     },
-  });
-  return { data: data.data, success: data.success };
-});
+  })
+  return { data: data.data, success: data.success }
+})
 
 export default component$(() => {
-  const events = useEvents();
-  const places = usePlaces();
-  const showMap = useSignal(false);
-  const combinedMapData = useSignal<unknown>();
+  const events = useEvents()
+  const places = usePlaces()
+  const showMap = useSignal(false)
+  const combinedMapData = useSignal<unknown>()
   // --- Data Transformation (Remains the same) ---
   const placesDataForMap =
-    places.value.data?.map((place) => {
-      const coordinates = place.Places?.Coordinates || [0, 0];
+    places.value.data?.map(place => {
+      const coordinates = place.Places?.Coordinates || [0, 0]
       return {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
-        image: (place.Places?.ImageURL as string) || "/placeholder.svg",
-        badge: "Place",
+        image: (place.Places?.ImageURL as string) || '/placeholder.svg',
+        badge: 'Place',
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: place.Places?.Tags || ["Quiet", "WiFi", "Coffee"],
+        tags: place.Places?.Tags || ['Quiet', 'WiFi', 'Coffee'],
         creator: place.Users?.Username, // Placeholder
         rating: place.Places?.Rating || 4.8,
         coords: coordinates as [number, number],
-      };
-    }) || [];
+      }
+    }) || []
 
   // Add events to the map data as well
   const eventsDataForMap =
-    events.value.data?.map((event) => {
-      const coordinates = event.place?.Places?.Coordinates || [0, 0];
+    events.value.data?.map(event => {
+      const coordinates = event.place?.Places?.Coordinates || [0, 0]
       return {
         id: event.eventID,
         name: event.name,
-        image: event.image || "/placeholder.svg",
-        badge: "Event",
-        location: event.place?.Places?.Name || "Location TBD",
+        image: event.image || '/placeholder.svg',
+        badge: 'Event',
+        location: event.place?.Places?.Name || 'Location TBD',
         description: event.description,
-        tags: ["Study", "Meetup"],
-        creator: event.creator || "Anonymous",
+        tags: ['Study', 'Meetup'],
+        creator: event.creator || 'Anonymous',
         rating: 4.7, // Placeholder for events
         coords: coordinates as [number, number],
-      };
-    }) || [];
-  combinedMapData.value = [...placesDataForMap, ...eventsDataForMap];
+      }
+    }) || []
+  combinedMapData.value = [...placesDataForMap, ...eventsDataForMap]
 
   const eventsDataForCards =
-    events.value.data?.map((event) => ({
+    events.value.data?.map(event => ({
       id: event.eventID,
       title: event.name,
-      image: event.image || "/placeholder.svg",
-      badge: "Event", // Or derive from event type/tags
-      type: "Study Group", // Or derive from event type
-      date: event.date.split(" ")[0],
-      time: event.starttime.split(":")[0] + ":" + event.starttime.split(":")[1],
-      location: event.location || "Location TBD",
-      creator: event.creator || "Anonymous",
+      image: event.image || '/placeholder.svg',
+      badge: 'Event', // Or derive from event type/tags
+      type: 'Study Group', // Or derive from event type
+      date: event.date.split(' ')[0],
+      time: event.starttime.split(':')[0] + ':' + event.starttime.split(':')[1],
+      location: event.location || 'Location TBD',
+      creator: event.creator || 'Anonymous',
       attendees: event.attendees ?? 8, // Fetch real attendee count if available
       spotsLeft: 5, // Fetch real spots left if available
-    })) || [];
+    })) || []
 
   const placesApiDataForCards =
-    places.value.data?.map((place) => {
-      const coordinates = place.Places?.Coordinates || [0, 0];
+    places.value.data?.map(place => {
+      const coordinates = place.Places?.Coordinates || [0, 0]
       return {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
         image: place.Places?.ImageURL as string,
-        badge: "Popular", // Or derive dynamically
+        badge: 'Popular', // Or derive dynamically
         location: place.Places?.Address,
         description: place.Places?.Description,
-        tags: place.Places?.Tags || ["Quiet", "WiFi", "Coffee"],
+        tags: place.Places?.Tags || ['Quiet', 'WiFi', 'Coffee'],
         creator: place.Users?.Username, // Placeholder
         rating: place.Places?.Rating || 4.8,
         coords: coordinates as [number, number],
-      };
-    }) || [];
+      }
+    }) || []
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <HeroSection />
@@ -174,5 +174,5 @@ export default component$(() => {
         View Map
       </button>
     </div>
-  );
-});
+  )
+})

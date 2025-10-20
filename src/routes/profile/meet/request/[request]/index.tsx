@@ -1,78 +1,78 @@
-import { component$ } from "@builder.io/qwik";
-import { useLocation } from "@builder.io/qwik-city";
-import { useForm, formAction$, type InitialValues } from "@modular-forms/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { useQueries } from "~/routes/profile/layout";
-import { valiForm$ } from "@modular-forms/qwik";
-import * as v from "valibot";
-import { updateRequestStatus } from "~/api/Query";
-import { UserIcon as User, CalendarIcon as Calendar } from "lucide-qwik";
+import { component$ } from '@builder.io/qwik'
+import { useLocation } from '@builder.io/qwik-city'
+import { Link } from '@builder.io/qwik-city'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import { type InitialValues, formAction$, useForm } from '@modular-forms/qwik'
+import { valiForm$ } from '@modular-forms/qwik'
+import { CalendarIcon as Calendar, UserIcon as User } from 'lucide-qwik'
+import * as v from 'valibot'
+import { updateRequestStatus } from '~/api/Query'
+import { useQueries } from '~/routes/profile/layout'
 
 enum status {
-  confirmed = "confirmed",
-  denied = "denied",
-  pending = "pending",
+  confirmed = 'confirmed',
+  denied = 'denied',
+  pending = 'pending',
 }
 const RequestSchema = v.object({
   status: v.enum(status),
-});
-type Request = v.InferInput<typeof RequestSchema>;
+})
+type Request = v.InferInput<typeof RequestSchema>
 export const useRequestLoader = routeLoader$<
   v.InferInput<typeof RequestSchema>
 >(() => ({
   status: status.confirmed,
-}));
+}))
 
 export const useFormAccepted = routeLoader$<InitialValues<Request>>(() => {
   return {
     status: status.confirmed,
-  };
-});
+  }
+})
 
 export const useFormDenied = routeLoader$<InitialValues<Request>>(() => {
   return {
     status: status.denied,
-  };
-});
+  }
+})
 
 export const useFormAction = formAction$<Request>((values, req) => {
   // Perform actions with form values
 
   updateRequestStatus({
     event: req,
-    requestId: parseInt(req.params.request),
-    newStatus: values.status as "confirmed" | "denied",
-  });
+    requestId: Number.parseInt(req.params.request),
+    newStatus: values.status as 'confirmed' | 'denied',
+  })
 
   // Return success or error message
-  req.redirect(302, "/profile");
+  req.redirect(302, '/profile')
   return {
-    status: "success",
-    message: "Form submitted successfully",
-  };
-}, valiForm$(RequestSchema));
+    status: 'success',
+    message: 'Form submitted successfully',
+  }
+}, valiForm$(RequestSchema))
 
 export default component$(() => {
-  const location = useLocation();
+  const location = useLocation()
   //#TODO fix this
-  const data = useQueries();
+  const data = useQueries()
   const display = data.value.activeRequest?.find(
-    (el) => el.requestId === parseInt(location.params.request),
-  );
+    el => el.requestId === Number.parseInt(location.params.request)
+  )
 
-  const action = useFormAction();
+  const action = useFormAction()
   const [, { Form: ConfirmedForm, Field }] = useForm<Request>({
     loader: useFormAccepted(),
     action: action,
     validate: valiForm$(RequestSchema),
-  });
+  })
 
   const [, { Form: DeniedForm, Field: Fielded }] = useForm<Request>({
     loader: useFormDenied(),
     action: action,
     validate: valiForm$(RequestSchema),
-  });
+  })
 
   return (
     <div class="mt-14 min-h-screen bg-[#FFF8F0] py-8">
@@ -80,7 +80,7 @@ export default component$(() => {
         <div class="mx-auto max-w-2xl overflow-hidden rounded-xl border-none bg-white shadow-md transition-shadow hover:shadow-lg">
           <div class="relative">
             <img
-              src={display?.image || "https://via.placeholder.com/300"}
+              src={display?.image || 'https://via.placeholder.com/300'}
               alt="Profile image"
               height={300}
               width={600}
@@ -160,5 +160,5 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

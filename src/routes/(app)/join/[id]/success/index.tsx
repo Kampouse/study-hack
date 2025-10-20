@@ -1,27 +1,27 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$, Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link, routeLoader$ } from '@builder.io/qwik-city'
 
 import {
-  CheckCircleIcon,
   CalendarIcon,
+  CheckCircleIcon,
   MapPinIcon,
   UsersIcon,
-} from "lucide-qwik";
+} from 'lucide-qwik'
 
 export const useEventDetails = routeLoader$(async () => {
   // Fetch event details based on params.eventId
   // This is a placeholder, replace with actual API call
   return {
-    name: "Web Development Enthusiasts Meetup",
-    date: "2023-07-15",
-    time: "2:00 PM",
-    location: "TechHub Coworking Space, 123 Main St, Techville",
+    name: 'Web Development Enthusiasts Meetup',
+    date: '2023-07-15',
+    time: '2:00 PM',
+    location: 'TechHub Coworking Space, 123 Main St, Techville',
     attendees: 8,
-  };
-});
+  }
+})
 
 export default component$(() => {
-  const event = useEventDetails();
+  const event = useEventDetails()
 
   return (
     <div class="min-h-screen bg-[#FFF8F0] py-12">
@@ -74,7 +74,7 @@ export default component$(() => {
                   <p class="text-sm text-[#8B5A2B]">Attendees</p>
                   <div class="flex items-center gap-2">
                     <div class="flex -space-x-2">
-                      {[1, 2, 3].map((i) => (
+                      {[1, 2, 3].map(i => (
                         <div
                           key={i}
                           class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#F8D7BD] text-xs font-medium text-[#8B5A2B]"
@@ -110,5 +110,5 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

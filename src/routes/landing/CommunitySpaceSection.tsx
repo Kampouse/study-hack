@@ -1,8 +1,8 @@
-import type { Space } from "./types";
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import type { Space } from './types'
 interface CommunitySpacesSectionProps {
-  spaces: Space[];
+  spaces: Space[]
 }
 
 export const CommunitySpacesSection = component$<CommunitySpacesSectionProps>(
@@ -39,7 +39,7 @@ export const CommunitySpacesSection = component$<CommunitySpacesSectionProps>(
             </Link>
           </div>
           <div class="grid gap-8 md:grid-cols-3">
-            {spaces.map((space) => (
+            {spaces.map(space => (
               <div
                 key={space.id}
                 class="group transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
@@ -103,6 +103,6 @@ export const CommunitySpacesSection = component$<CommunitySpacesSectionProps>(
           </div>
         </div>
       </section>
-    );
-  },
-);
+    )
+  }
+)

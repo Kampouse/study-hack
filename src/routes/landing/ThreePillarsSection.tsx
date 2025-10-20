@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
 export const ThreePillarsSection = component$(() => {
   return (
     <section class="bg-[hsl(33,56%,93%)] py-24">
@@ -84,5 +84,5 @@ export const ThreePillarsSection = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

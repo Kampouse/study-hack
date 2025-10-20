@@ -1,30 +1,30 @@
-import { component$, $ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { $, component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 
 type EventCardProps = {
-  eventId: number;
+  eventId: number
   data?: {
-    name: string;
-    description: string;
-    tags: string[];
-    starttime: string;
-    endttime?: string;
-    image: string | null;
-  };
-};
-export const EventCard = component$<EventCardProps>((props) => {
+    name: string
+    description: string
+    tags: string[]
+    starttime: string
+    endttime?: string
+    image: string | null
+  }
+}
+export const EventCard = component$<EventCardProps>(props => {
   const defaultUserCard = {
-    name: "Kampouse",
-    description: "studying for cs-231",
-    starttime: "1pm",
-    tags: ["python", "javascript", "study"],
+    name: 'Kampouse',
+    description: 'studying for cs-231',
+    starttime: '1pm',
+    tags: ['python', 'javascript', 'study'],
     eventId: 1,
     image:
-      "https://images.unsplash.com/photo-1629910190000-4b3b3b3b3b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMjIwNzV8MHwxfGFsbHwxf",
-  };
+      'https://images.unsplash.com/photo-1629910190000-4b3b3b3b3b3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMjIwNzV8MHwxfGFsbHwxf',
+  }
 
-  const user = props.data || defaultUserCard;
-  const onFocused = $(() => {});
+  const user = props.data || defaultUserCard
+  const onFocused = $(() => {})
   return (
     <div
       id={user.name}
@@ -55,7 +55,7 @@ export const EventCard = component$<EventCardProps>((props) => {
               Join event
             </Link>
 
-            {user.tags.map((tag) => {
+            {user.tags.map(tag => {
               return (
                 <h1
                   key={tag}
@@ -63,7 +63,7 @@ export const EventCard = component$<EventCardProps>((props) => {
                 >
                   {tag}
                 </h1>
-              );
+              )
             })}
           </div>
 
@@ -71,5 +71,5 @@ export const EventCard = component$<EventCardProps>((props) => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

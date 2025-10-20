@@ -1,18 +1,18 @@
-import { component$ } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
-import { Dropdown } from "@qwik-ui/headless";
-import { Link } from "@builder.io/qwik-city";
-import { useSession, useSignOut } from "~/routes/plugin@auth";
+import { component$ } from '@builder.io/qwik'
+import { Form } from '@builder.io/qwik-city'
+import { Link } from '@builder.io/qwik-city'
+import { Dropdown } from '@qwik-ui/headless'
+import { useSession, useSignOut } from '~/routes/plugin@auth'
 export default component$(() => {
-  type Session = ReturnType<typeof useSession>;
-  const session = useSession() as Session;
-  const signout = useSignOut();
-  const img = session.value?.user?.image || "https://s6.imgcdn.dev/LyfCg.jpg";
+  type Session = ReturnType<typeof useSession>
+  const session = useSession() as Session
+  const signout = useSignOut()
+  const img = session.value?.user?.image || 'https://s6.imgcdn.dev/LyfCg.jpg'
   const actions = [
-    { label: "Profile", disabled: false, path: "/profile" },
-    { label: "Setting", disabled: false, path: "/setting" },
-    { label: "Home Page", disabled: false, path: "/landing" },
-  ];
+    { label: 'Profile', disabled: false, path: '/profile' },
+    { label: 'Setting', disabled: false, path: '/setting' },
+    { label: 'Home Page', disabled: false, path: '/landing' },
+  ]
   return (
     <Dropdown.Root>
       <Dropdown.Trigger class="">
@@ -24,7 +24,7 @@ export default component$(() => {
         {/*<Dropdown.Arrow class="" />*/}
         <Dropdown.Content class="">
           <Dropdown.Group class="">
-            {actions.map((action) => (
+            {actions.map(action => (
               <Dropdown.Item
                 class="rounded-md hover:bg-gray-100"
                 key={action.label}
@@ -55,5 +55,5 @@ export default component$(() => {
         </Dropdown.Content>
       </Dropdown.Popover>
     </Dropdown.Root>
-  );
-});
+  )
+})

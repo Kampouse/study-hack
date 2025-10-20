@@ -1,19 +1,19 @@
-import { component$ } from "@builder.io/qwik";
-import { Tag } from "./Tag";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { Tag } from './Tag'
 export type LocationCardProps = {
-  name: string;
-  description: string;
-  address: string;
-  tags: string[];
-  rating: number;
-  image: string;
-  id: number;
-  link: string;
-};
+  name: string
+  description: string
+  address: string
+  tags: string[]
+  rating: number
+  image: string
+  id: number
+  link: string
+}
 
 export const ShareLocationCard = component$(() => {
-  const suggestedTags = ["Wi-Fi", "Open Late"];
+  const suggestedTags = ['Wi-Fi', 'Open Late']
 
   return (
     <div class="from-warm-50 hover:from-warm-100/30 flex h-full max-h-[26em] flex-col overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-gradient-to-br to-gray-50/50 p-4 shadow-lg transition-all duration-300 hover:border-green-200 hover:to-gray-50/70 hover:shadow-xl md:block">
@@ -66,8 +66,8 @@ export const ShareLocationCard = component$(() => {
         </div>
       </article>
     </div>
-  );
-});
+  )
+})
 
 export const LocationCard = component$((props: LocationCardProps) => {
   return (
@@ -116,7 +116,7 @@ from-white/80 p-4 shadow-sm transition-all duration-300 hover:border-green-100 h
         </div>
         <div class="mt-auto pt-4">
           <Link
-            href={"/places/" + props.id}
+            href={'/places/' + props.id}
             class="flex items-center justify-center gap-0.5 overflow-hidden rounded-xl bg-black px-3 py-1.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Learn more
@@ -124,5 +124,5 @@ from-white/80 p-4 shadow-sm transition-all duration-300 hover:border-green-100 h
         </div>
       </article>
     </div>
-  );
-});
+  )
+})

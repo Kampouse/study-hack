@@ -1,33 +1,33 @@
-import { component$, useSignal, $, useStore } from "@builder.io/qwik";
-import type * as v from "valibot";
-import { useForm, formAction$, valiForm$ } from "@modular-forms/qwik";
-import type { Signal } from "@builder.io/qwik";
-import { PlaceCard } from "~/routes/(app)/home/place-card";
-import { useLocation } from "@builder.io/qwik-city";
-import { Link } from "@builder.io/qwik-city";
-import type { JSONObject } from "@builder.io/qwik-city";
-import { userSchema, type UpdateUserForm } from "~/api/Forms";
-import { updateProfileForm } from "~/api/Forms";
-import type { UserProfileType } from "~/routes/profile/types";
+import { $, component$, useSignal, useStore } from '@builder.io/qwik'
+import type { Signal } from '@builder.io/qwik'
+import { useLocation } from '@builder.io/qwik-city'
+import { Link } from '@builder.io/qwik-city'
+import type { JSONObject } from '@builder.io/qwik-city'
+import { formAction$, useForm, valiForm$ } from '@modular-forms/qwik'
 import {
-  CalendarIcon as Calendar,
-  UserPlusIcon as UserPlus,
   BellIcon as Bell,
-  ClockIcon as Clock,
   BookmarkIcon as Bookmark,
-  UserIcon as User,
-  PencilIcon as Pencil,
+  CalendarIcon as Calendar,
   CameraIcon as Camera,
   CheckIcon as Check,
-  XIcon as X,
+  ClockIcon as Clock,
   CompassIcon as Compass,
-} from "lucide-qwik";
-import type { DetailedEventType, PlaceType } from "~/routes/profile/types";
-import { EventCard } from "./EventCard";
-import { EmptyState } from "./EmptyState";
+  PencilIcon as Pencil,
+  UserIcon as User,
+  UserPlusIcon as UserPlus,
+  XIcon as X,
+} from 'lucide-qwik'
+import type * as v from 'valibot'
+import { type UpdateUserForm, userSchema } from '~/api/Forms'
+import { updateProfileForm } from '~/api/Forms'
+import { PlaceCard } from '~/routes/(app)/home/place-card'
+import type { UserProfileType } from '~/routes/profile/types'
+import type { DetailedEventType, PlaceType } from '~/routes/profile/types'
+import { EmptyState } from './EmptyState'
+import { EventCard } from './EventCard'
 
-type ProfileSchemaType = v.InferInput<typeof userSchema>;
-type ActiveRequestType = any; // Temporary type definition
+type ProfileSchemaType = v.InferInput<typeof userSchema>
+type ActiveRequestType = any // Temporary type definition
 
 // Function to update profile form (to be implemented)
 // Define form action for profile updates
@@ -41,34 +41,34 @@ export const useUpdateProfileAction = formAction$<UpdateUserForm>(
         Username: values.Username,
         ImageURL: values.ImageURL || undefined,
         Intrests: values.Intrests,
-      };
+      }
 
-      const result = await updateProfileForm(formData as JSONObject, event);
+      const result = await updateProfileForm(formData as JSONObject, event)
 
       if (!result.success) {
         return {
-          status: "error" as const,
-          message: "Failed to update profile",
-        };
+          status: 'error' as const,
+          message: 'Failed to update profile',
+        }
       }
 
       return {
-        status: "success" as const,
-        message: "Profile updated successfully",
-      };
+        status: 'success' as const,
+        message: 'Profile updated successfully',
+      }
     } catch (error) {
       return {
-        status: "error" as const,
-        message: "An unexpected error occurred",
-      };
+        status: 'error' as const,
+        message: 'An unexpected error occurred',
+      }
     }
   },
-  valiForm$(userSchema),
-);
+  valiForm$(userSchema)
+)
 // Define props interface for ProfileView component
 interface ProfileViewProps {
-  profileData: UserProfileType;
-  isEditing: Signal<boolean>;
+  profileData: UserProfileType
+  isEditing: Signal<boolean>
 }
 
 // Profile View component
@@ -87,9 +87,9 @@ const ProfileView = component$<ProfileViewProps>(
                 class="h-full w-full object-cover"
                 width={128}
                 height={128}
-                onError$={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "/placeholder-avatar.svg";
+                onError$={e => {
+                  ;(e.target as HTMLImageElement).src =
+                    '/placeholder-avatar.svg'
                 }}
               />
             </div>
@@ -112,7 +112,7 @@ const ProfileView = component$<ProfileViewProps>(
               <button
                 type="button"
                 onClick$={() => {
-                  isEditing.value = !isEditing.value;
+                  isEditing.value = !isEditing.value
                 }}
                 class="mx-auto mt-4 inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 md:mx-0 md:mt-0"
               >
@@ -154,7 +154,7 @@ const ProfileView = component$<ProfileViewProps>(
         <div class="mt-6 border-t border-[#F8EDE3] pt-6">
           <h3 class="mb-2 text-lg font-semibold text-[#5B3E29]">About Me</h3>
           <p class="whitespace-pre-line text-[#6D5D4E]">
-            {profileData.bio || "No bio added yet."}
+            {profileData.bio || 'No bio added yet.'}
           </p>
         </div>
 
@@ -165,7 +165,7 @@ const ProfileView = component$<ProfileViewProps>(
           </h3>
           <div class="flex flex-wrap gap-2">
             {profileData.skills.length > 0 ? (
-              profileData.skills.map((skill) => (
+              profileData.skills.map(skill => (
                 <span
                   key={skill}
                   class="rounded-full bg-[#F8D7BD] px-3 py-1 text-sm text-[#8B5A2B] shadow-sm"
@@ -181,21 +181,21 @@ const ProfileView = component$<ProfileViewProps>(
           </div>
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)
 
 // Define props interface for ProfileEdit component
 interface ProfileEditProps {
-  profileData: UserProfileType;
-  isEditing: Signal<boolean>;
+  profileData: UserProfileType
+  isEditing: Signal<boolean>
 }
 
 // Profile Edit component
 const ProfileEdit = component$<ProfileEditProps>(
   ({ profileData, isEditing }) => {
     // Get the form action
-    const updateProfileAction = useUpdateProfileAction();
+    const updateProfileAction = useUpdateProfileAction()
 
     // Local state management within the component
     const editableProfile = useStore<UserProfileType>({
@@ -206,11 +206,11 @@ const ProfileEdit = component$<ProfileEditProps>(
       skills: profileData.skills,
       joinedDate: profileData.joinedDate,
       stats: profileData.stats,
-    });
+    })
 
     // Form state tracking
-    const isSubmitting = useSignal(false);
-    const formSuccess = useSignal(false);
+    const isSubmitting = useSignal(false)
+    const formSuccess = useSignal(false)
 
     // Create the form with initial values from profileData
     const [form, { Form, Field }] = useForm<UpdateUserForm>({
@@ -225,12 +225,12 @@ const ProfileEdit = component$<ProfileEditProps>(
       },
       action: updateProfileAction,
       validate: valiForm$(userSchema),
-    });
+    })
 
-    const newSkill = useSignal("");
+    const newSkill = useSignal('')
     const validationErrors = useStore<
       Partial<Record<keyof ProfileSchemaType, string>>
-    >({});
+    >({})
 
     // Self-contained functions
     const addSkill = $((arr: any) => {
@@ -240,36 +240,33 @@ const ProfileEdit = component$<ProfileEditProps>(
       ) {
         // Check max skills validation
         if (editableProfile.skills.length >= 20) {
-          validationErrors["Intrests"] = "Maximum 20 skills allowed";
-          return;
+          validationErrors.Intrests = 'Maximum 20 skills allowed'
+          return
         }
 
         // Validate skill length
         if (newSkill.value.trim().length > 20) {
-          validationErrors["Intrests"] =
-            "Skill must be less than 20 characters";
-          return;
+          validationErrors.Intrests = 'Skill must be less than 20 characters'
+          return
         }
 
         editableProfile.skills = [
           ...editableProfile.skills,
           newSkill.value.trim(),
-        ];
-        arr.value = editableProfile.skills;
+        ]
+        arr.value = editableProfile.skills
       }
-    });
+    })
 
     const removeSkill = $((skill: string, field: any) => {
-      editableProfile.skills = editableProfile.skills.filter(
-        (s) => s !== skill,
-      );
+      editableProfile.skills = editableProfile.skills.filter(s => s !== skill)
       // Update the form field value to reflect the changes
-      field.value = editableProfile.skills;
+      field.value = editableProfile.skills
       // Clear skill validation error when removing skills
-      if (validationErrors["Intrests"]) {
-        delete validationErrors["Intrests"];
+      if (validationErrors.Intrests) {
+        validationErrors.Intrests = undefined
       }
-    });
+    })
 
     return (
       <div class="rounded-lg bg-white p-8 shadow-sm">
@@ -279,7 +276,7 @@ const ProfileEdit = component$<ProfileEditProps>(
             <button
               type="button"
               onClick$={() => {
-                isEditing.value = false;
+                isEditing.value = false
               }}
               class="rounded-md bg-white px-4 py-2 text-sm font-medium text-[#5B3E29] shadow-sm ring-1 ring-inset ring-[#E6D7C3] transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
               disabled={isSubmitting.value}
@@ -290,21 +287,21 @@ const ProfileEdit = component$<ProfileEditProps>(
               type="submit"
               form="profile-edit-form"
               class={`rounded-md ${
-                formSuccess.value ? "bg-green-600" : "bg-[#D98E73]"
+                formSuccess.value ? 'bg-green-600' : 'bg-[#D98E73]'
               } px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors ${
-                formSuccess.value ? "hover:bg-green-700" : "hover:bg-[#C27B62]"
+                formSuccess.value ? 'hover:bg-green-700' : 'hover:bg-[#C27B62]'
               } focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2`}
               disabled={isSubmitting.value}
             >
               {form.submitting ? (
-                "Saving..."
-              ) : form.response.status === "success" ? (
+                'Saving...'
+              ) : form.response.status === 'success' ? (
                 <>
                   <Check class="mr-1 inline-block h-4 w-4" />
                   Saved!
                 </>
               ) : (
-                "Save Changes"
+                'Save Changes'
               )}
             </button>
           </div>
@@ -313,9 +310,9 @@ const ProfileEdit = component$<ProfileEditProps>(
           id="profile-edit-form"
           onSubmit$={() => {
             if (form.submitted && !form.invalid) {
-              isEditing.value = false;
-              if (form.response.status === "success") {
-                console.log("Profile updated successfully");
+              isEditing.value = false
+              if (form.response.status === 'success') {
+                console.log('Profile updated successfully')
               }
             }
           }}
@@ -334,9 +331,9 @@ const ProfileEdit = component$<ProfileEditProps>(
                       class="h-full w-full object-cover"
                       width={128}
                       height={128}
-                      onError$={(e) => {
-                        (e.target as HTMLInputElement).src =
-                          "/placeholder-avatar.svg";
+                      onError$={e => {
+                        ;(e.target as HTMLInputElement).src =
+                          '/placeholder-avatar.svg'
                       }}
                     />
                   </div>
@@ -363,7 +360,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                         type="text"
                         value={field.value}
                         class={`w-full rounded-md border ${
-                          field.error ? "border-red-500" : "border-[#E6D7C3]"
+                          field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                         } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
                       />
                       {field.error && (
@@ -388,7 +385,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                         type="text"
                         value={field.value}
                         class={`w-full rounded-md border ${
-                          field.error ? "border-red-500" : "border-[#E6D7C3]"
+                          field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                         } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
                       />
                       {field.error && (
@@ -414,7 +411,7 @@ const ProfileEdit = component$<ProfileEditProps>(
                       value={field.value}
                       rows={4}
                       class={`w-full rounded-md border ${
-                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                        field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                       } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
                     />
                     {field.error && (
@@ -428,7 +425,7 @@ const ProfileEdit = component$<ProfileEditProps>(
             {/* Right column - Skills & Interests */}
             <div>
               <Field type="string[]" name="Intrests">
-                {(field) => (
+                {field => (
                   <div>
                     <label class="mb-2 block font-medium text-[#5B3E29]">
                       Skills & Interests
@@ -440,16 +437,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Networking"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Networking";
-                              addSkill(field);
+                              newSkill.value = 'Networking'
+                              addSkill(field)
                             } else {
-                              removeSkill("Networking", field);
+                              removeSkill('Networking', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Networking",
+                            'Networking'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -459,16 +456,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Web Development"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Web Development";
-                              addSkill(field);
+                              newSkill.value = 'Web Development'
+                              addSkill(field)
                             } else {
-                              removeSkill("Web Development", field);
+                              removeSkill('Web Development', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Web Development",
+                            'Web Development'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -478,15 +475,15 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Marketing"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Marketing";
-                              addSkill(field);
+                              newSkill.value = 'Marketing'
+                              addSkill(field)
                             } else {
-                              removeSkill("Marketing", field);
+                              removeSkill('Marketing', field)
                             }
                           }}
-                          checked={editableProfile.skills.includes("Marketing")}
+                          checked={editableProfile.skills.includes('Marketing')}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
                         <span class="text-sm">Marketing</span>
@@ -495,15 +492,15 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Startups"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Startups";
-                              addSkill(field);
+                              newSkill.value = 'Startups'
+                              addSkill(field)
                             } else {
-                              removeSkill("Startups", field);
+                              removeSkill('Startups', field)
                             }
                           }}
-                          checked={editableProfile.skills.includes("Startups")}
+                          checked={editableProfile.skills.includes('Startups')}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
                         <span class="text-sm">Startups</span>
@@ -512,16 +509,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Graphic Design"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Graphic Design";
-                              addSkill(field);
+                              newSkill.value = 'Graphic Design'
+                              addSkill(field)
                             } else {
-                              removeSkill("Graphic Design", field);
+                              removeSkill('Graphic Design', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Graphic Design",
+                            'Graphic Design'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -531,16 +528,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Business Strategy"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Business Strategy";
-                              addSkill(field);
+                              newSkill.value = 'Business Strategy'
+                              addSkill(field)
                             } else {
-                              removeSkill("Business Strategy", field);
+                              removeSkill('Business Strategy', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Business Strategy",
+                            'Business Strategy'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -550,16 +547,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Remote Work"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Remote Work";
-                              addSkill(field);
+                              newSkill.value = 'Remote Work'
+                              addSkill(field)
                             } else {
-                              removeSkill("Remote Work", field);
+                              removeSkill('Remote Work', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Remote Work",
+                            'Remote Work'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -569,16 +566,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Productivity"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Productivity";
-                              addSkill(field);
+                              newSkill.value = 'Productivity'
+                              addSkill(field)
                             } else {
-                              removeSkill("Productivity", field);
+                              removeSkill('Productivity', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Productivity",
+                            'Productivity'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -588,16 +585,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Project Management"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Project Management";
-                              addSkill(field);
+                              newSkill.value = 'Project Management'
+                              addSkill(field)
                             } else {
-                              removeSkill("Project Management", field);
+                              removeSkill('Project Management', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Project Management",
+                            'Project Management'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -607,16 +604,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Digital Nomad"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Digital Nomad";
-                              addSkill(field);
+                              newSkill.value = 'Digital Nomad'
+                              addSkill(field)
                             } else {
-                              removeSkill("Digital Nomad", field);
+                              removeSkill('Digital Nomad', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Digital Nomad",
+                            'Digital Nomad'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -626,16 +623,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="Content Creation"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "Content Creation";
-                              addSkill(field);
+                              newSkill.value = 'Content Creation'
+                              addSkill(field)
                             } else {
-                              removeSkill("Content Creation", field);
+                              removeSkill('Content Creation', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "Content Creation",
+                            'Content Creation'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -645,16 +642,16 @@ const ProfileEdit = component$<ProfileEditProps>(
                         <input
                           type="checkbox"
                           value="UI/UX Design"
-                          onChange$={(e) => {
+                          onChange$={e => {
                             if ((e.target as HTMLInputElement).checked) {
-                              newSkill.value = "UI/UX Design";
-                              addSkill(field);
+                              newSkill.value = 'UI/UX Design'
+                              addSkill(field)
                             } else {
-                              removeSkill("UI/UX Design", field);
+                              removeSkill('UI/UX Design', field)
                             }
                           }}
                           checked={editableProfile.skills.includes(
-                            "UI/UX Design",
+                            'UI/UX Design'
                           )}
                           class="mr-2 h-4 w-4 text-[#D98E73] focus:ring-[#D98E73]"
                         />
@@ -664,7 +661,7 @@ const ProfileEdit = component$<ProfileEditProps>(
 
                     {/* Selected skills display */}
                     <div class="mb-4 flex flex-wrap gap-2">
-                      {editableProfile.skills.map((skill) => (
+                      {editableProfile.skills.map(skill => (
                         <div
                           key={skill}
                           class="group flex items-center rounded-full bg-[#F8D7BD] px-3 py-1"
@@ -684,9 +681,9 @@ const ProfileEdit = component$<ProfileEditProps>(
                     {field.error && (
                       <p class="mt-1 text-sm text-red-500">{field.error}</p>
                     )}
-                    {validationErrors["Intrests"] && !field.error && (
+                    {validationErrors.Intrests && !field.error && (
                       <p class="mt-1 text-sm text-red-500">
-                        {validationErrors["Intrests"]}
+                        {validationErrors.Intrests}
                       </p>
                     )}
                   </div>
@@ -699,7 +696,7 @@ const ProfileEdit = component$<ProfileEditProps>(
             <button
               type="button"
               onClick$={() => {
-                isEditing.value = false;
+                isEditing.value = false
               }}
               class="rounded-md bg-white px-4 py-2 text-sm font-medium text-[#5B3E29] shadow-sm ring-1 ring-inset ring-[#E6D7C3] transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
               disabled={isSubmitting.value}
@@ -709,30 +706,30 @@ const ProfileEdit = component$<ProfileEditProps>(
             <button
               type="submit"
               class={`rounded-md ${
-                formSuccess.value ? "bg-green-600" : "bg-[#D98E73]"
+                formSuccess.value ? 'bg-green-600' : 'bg-[#D98E73]'
               } px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors ${
-                formSuccess.value ? "hover:bg-green-700" : "hover:bg-[#C27B62]"
+                formSuccess.value ? 'hover:bg-green-700' : 'hover:bg-[#C27B62]'
               } focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2`}
               disabled={isSubmitting.value}
             >
               {form.submitting ? (
-                "Saving..."
-              ) : form.response.status === "success" ? (
+                'Saving...'
+              ) : form.response.status === 'success' ? (
                 <>
                   <Check class="mr-1 inline-block h-4 w-4" />
                   Saved!
                 </>
               ) : (
-                "Save Changes"
+                'Save Changes'
               )}
             </button>
           </div>
           {form.response.message && (
             <div
               class={`mt-4 rounded-md p-3 ${
-                form.response.status === "success"
-                  ? "bg-green-50 text-green-800"
-                  : "bg-red-50 text-red-800"
+                form.response.status === 'success'
+                  ? 'bg-green-50 text-green-800'
+                  : 'bg-red-50 text-red-800'
               }`}
             >
               {form.response.message}
@@ -740,18 +737,18 @@ const ProfileEdit = component$<ProfileEditProps>(
           )}
         </Form>
       </div>
-    );
-  },
-);
+    )
+  }
+)
 
 interface TabsSectionProps {
-  profile: UserProfileType;
-  upcomingEvents: DetailedEventType[];
-  hostedEvents: DetailedEventType[];
-  pastEvents: DetailedEventType[];
-  savedPlaces: PlaceType[];
-  likedPlaces: PlaceType[];
-  requests?: ActiveRequestType[];
+  profile: UserProfileType
+  upcomingEvents: DetailedEventType[]
+  hostedEvents: DetailedEventType[]
+  pastEvents: DetailedEventType[]
+  savedPlaces: PlaceType[]
+  likedPlaces: PlaceType[]
+  requests?: ActiveRequestType[]
 }
 
 export const TabsSection = component$<TabsSectionProps>(
@@ -764,233 +761,223 @@ export const TabsSection = component$<TabsSectionProps>(
     savedPlaces,
     requests = [],
   }) => {
-    const loc = useLocation();
+    const loc = useLocation()
 
-    const tab = loc.url.searchParams.get("tab") ?? "upcoming";
-    const activeTab = useSignal(tab);
-    const isEditing = useSignal(false);
+    const tab = loc.url.searchParams.get('tab') ?? 'upcoming'
+    const activeTab = useSignal(tab)
+    const isEditing = useSignal(false)
 
     // Filter state variables
-    const searchTerm = useSignal<string>("");
-    const placeCategory = useSignal<string>("all");
-    const eventDateRange = useSignal<string>("all");
-    const pastEventDateRange = useSignal<string>("all");
-    const eventSort = useSignal<string>("date-asc");
-    const placeSort = useSignal<string>("recommended");
+    const searchTerm = useSignal<string>('')
+    const placeCategory = useSignal<string>('all')
+    const eventDateRange = useSignal<string>('all')
+    const pastEventDateRange = useSignal<string>('all')
+    const eventSort = useSignal<string>('date-asc')
+    const placeSort = useSignal<string>('recommended')
 
     // Quick filter states
-    const activeQuickFilters = useSignal<string[]>([]);
+    const activeQuickFilters = useSignal<string[]>([])
 
     // Filter functions
     const filterPlaces = (places: PlaceType[]) => {
-      return places.filter((place) => {
+      return places.filter(place => {
         const matchesSearch =
-          searchTerm.value === "" ||
+          searchTerm.value === '' ||
           place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
           place.description
             ?.toLowerCase()
             .includes(searchTerm.value.toLowerCase()) ||
-          place.location
-            ?.toLowerCase()
-            .includes(searchTerm.value.toLowerCase());
+          place.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
         const matchesCategory =
-          placeCategory.value === "all" ||
-          (placeCategory.value === "popular" && place.badge === "Popular") ||
-          (placeCategory.value === "coffee" &&
-            place.tags?.includes("Coffee")) ||
-          (placeCategory.value === "quiet" && place.tags?.includes("Quiet")) ||
-          (placeCategory.value === "wifi" && place.tags?.includes("WiFi")) ||
-          (placeCategory.value === "power" && place.tags?.includes("Power"));
+          placeCategory.value === 'all' ||
+          (placeCategory.value === 'popular' && place.tags?.includes('Popular')) ||
+          (placeCategory.value === 'coffee' &&
+            place.tags?.includes('Coffee')) ||
+          (placeCategory.value === 'quiet' && place.tags?.includes('Quiet')) ||
+          (placeCategory.value === 'wifi' && place.tags?.includes('WiFi')) ||
+          (placeCategory.value === 'power' && place.tags?.includes('Power'))
 
         const matchesQuickFilters =
           activeQuickFilters.value.length === 0 ||
-          activeQuickFilters.value.every((filter) =>
-            place.tags?.includes(filter),
-          );
+          activeQuickFilters.value.every(filter => place.tags?.includes(filter))
 
-        return matchesSearch && matchesCategory && matchesQuickFilters;
-      });
-    };
+        return matchesSearch && matchesCategory && matchesQuickFilters
+      })
+    }
 
     const filterPastEvents = (events: DetailedEventType[]) => {
-      return events.filter((event) => {
+      return events.filter(event => {
         const matchesSearch =
-          searchTerm.value === "" ||
+          searchTerm.value === '' ||
           event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
           event.description
             ?.toLowerCase()
             .includes(searchTerm.value.toLowerCase()) ||
-          event.location
-            ?.toLowerCase()
-            .includes(searchTerm.value.toLowerCase());
+          event.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
-        const now = new Date();
-        const eventDate = new Date(event.date);
-        let matchesDateRange = true;
+        const now = new Date()
+        const eventDate = new Date(event.date)
+        let matchesDateRange = true
 
-        if (pastEventDateRange.value === "last_week") {
+        if (pastEventDateRange.value === 'last_week') {
           const lastWeekStart = new Date(
-            now.getTime() - 7 * 24 * 60 * 60 * 1000,
-          );
-          const lastWeekEnd = new Date(now);
+            now.getTime() - 7 * 24 * 60 * 60 * 1000
+          )
+          const lastWeekEnd = new Date(now)
           matchesDateRange =
-            eventDate >= lastWeekStart && eventDate < lastWeekEnd;
-        } else if (pastEventDateRange.value === "last_month") {
+            eventDate >= lastWeekStart && eventDate < lastWeekEnd
+        } else if (pastEventDateRange.value === 'last_month') {
           const lastMonthStart = new Date(
-            now.getTime() - 30 * 24 * 60 * 60 * 1000,
-          );
-          const lastMonthEnd = new Date(now);
+            now.getTime() - 30 * 24 * 60 * 60 * 1000
+          )
+          const lastMonthEnd = new Date(now)
           matchesDateRange =
-            eventDate >= lastMonthStart && eventDate < lastMonthEnd;
+            eventDate >= lastMonthStart && eventDate < lastMonthEnd
         }
 
-        return matchesSearch && matchesDateRange;
-      });
-    };
+        return matchesSearch && matchesDateRange
+      })
+    }
 
     const filterEvents = (events: DetailedEventType[]) => {
-      return events.filter((event) => {
+      return events.filter(event => {
         const matchesSearch =
-          searchTerm.value === "" ||
+          searchTerm.value === '' ||
           event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
           event.description
             ?.toLowerCase()
             .includes(searchTerm.value.toLowerCase()) ||
-          event.location
-            ?.toLowerCase()
-            .includes(searchTerm.value.toLowerCase());
+          event.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
-        const now = new Date();
-        const eventDate = new Date(event.date);
-        let matchesDateRange = true;
+        const now = new Date()
+        const eventDate = new Date(event.date)
+        let matchesDateRange = true
 
-        if (eventDateRange.value === "today") {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const tomorrow = new Date(today);
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          matchesDateRange = eventDate >= today && eventDate < tomorrow;
-        } else if (eventDateRange.value === "this_week") {
-          const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-          matchesDateRange = eventDate >= now && eventDate <= weekFromNow;
-        } else if (eventDateRange.value === "next_week") {
+        if (eventDateRange.value === 'today') {
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          const tomorrow = new Date(today)
+          tomorrow.setDate(tomorrow.getDate() + 1)
+          matchesDateRange = eventDate >= today && eventDate < tomorrow
+        } else if (eventDateRange.value === 'this_week') {
+          const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+          matchesDateRange = eventDate >= now && eventDate <= weekFromNow
+        } else if (eventDateRange.value === 'next_week') {
           const nextWeekStart = new Date(
-            now.getTime() + 7 * 24 * 60 * 60 * 1000,
-          );
-          const nextWeekEnd = new Date(
-            now.getTime() + 14 * 24 * 60 * 60 * 1000,
-          );
+            now.getTime() + 7 * 24 * 60 * 60 * 1000
+          )
+          const nextWeekEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
           matchesDateRange =
-            eventDate >= nextWeekStart && eventDate <= nextWeekEnd;
+            eventDate >= nextWeekStart && eventDate <= nextWeekEnd
         }
 
-        return matchesSearch && matchesDateRange;
-      });
-    };
+        return matchesSearch && matchesDateRange
+      })
+    }
 
     const sortPlaces = (places: PlaceType[]) => {
-      const sorted = [...places];
-      if (placeSort.value === "rating") {
-        sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      } else if (placeSort.value === "newest") {
+      const sorted = [...places]
+      if (placeSort.value === 'rating') {
+        sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      } else if (placeSort.value === 'newest') {
         // Sort by visitCount as a proxy for popularity/recency
         // Higher visit count suggests more recently visited or popular places
-        sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0));
+        sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0))
       }
-      return sorted;
-    };
+      return sorted
+    }
 
     const sortEvents = (events: DetailedEventType[]) => {
-      const sorted = [...events];
-      if (eventSort.value === "date-asc") {
+      const sorted = [...events]
+      if (eventSort.value === 'date-asc') {
         sorted.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-        );
-      } else if (eventSort.value === "date-desc") {
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+      } else if (eventSort.value === 'date-desc') {
         sorted.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        );
-      } else if (eventSort.value === "popular") {
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+      } else if (eventSort.value === 'popular') {
         sorted.sort(
-          (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0),
-        );
+          (a, b) => (b.attendees || 0) - (a.attendees || 0)
+        )
       }
-      return sorted;
-    };
+      return sorted
+    }
 
     const clearAllFilters = $(() => {
-      searchTerm.value = "";
-      placeCategory.value = "all";
-      eventDateRange.value = "all";
-      pastEventDateRange.value = "all";
-      eventSort.value = "date-asc";
-      placeSort.value = "recommended";
-      activeQuickFilters.value = [];
-    });
+      searchTerm.value = ''
+      placeCategory.value = 'all'
+      eventDateRange.value = 'all'
+      pastEventDateRange.value = 'all'
+      eventSort.value = 'date-asc'
+      placeSort.value = 'recommended'
+      activeQuickFilters.value = []
+    })
 
     const toggleQuickFilter = $((filter: string) => {
-      const current = activeQuickFilters.value;
+      const current = activeQuickFilters.value
       if (current.includes(filter)) {
-        activeQuickFilters.value = current.filter((f) => f !== filter);
+        activeQuickFilters.value = current.filter(f => f !== filter)
       } else {
-        activeQuickFilters.value = [...current, filter];
+        activeQuickFilters.value = [...current, filter]
       }
-    });
+    })
 
     // Add resource to fetch user places
 
     // Self-contained functions for profile editing
     // Ensure icons match IconComponent type
     const tabs: {
-      id: string;
-      label: string;
-      icon: any;
-      count: number;
+      id: string
+      label: string
+      icon: any
+      count: number
     }[] = [
       {
-        id: "profile",
-        label: "Profile",
+        id: 'profile',
+        label: 'Profile',
         icon: User,
         count: 0,
       },
       {
-        id: "upcoming",
-        label: "Upcoming",
+        id: 'upcoming',
+        label: 'Upcoming',
         icon: Calendar,
         count: upcomingEvents.length,
       },
       {
-        id: "hosted",
-        label: "Hosted",
+        id: 'hosted',
+        label: 'Hosted',
         icon: UserPlus,
         count: hostedEvents.length,
       },
       {
-        id: "myplaces",
-        label: "My Places",
+        id: 'myplaces',
+        label: 'My Places',
         icon: Compass,
         count: savedPlaces.length,
       },
       {
-        id: "liked",
-        label: "Liked Places",
+        id: 'liked',
+        label: 'Liked Places',
         icon: Bookmark,
         count: likedPlaces.length,
       },
       {
-        id: "requests",
-        label: "Requests",
+        id: 'requests',
+        label: 'Requests',
         icon: Bell,
         count: requests.length,
       },
       {
-        id: "past",
-        label: "Past Events",
+        id: 'past',
+        label: 'Past Events',
         icon: Clock,
         count: pastEvents.length,
       },
-    ];
+    ]
 
     return (
       <div class="w-full">
@@ -999,32 +986,32 @@ export const TabsSection = component$<TabsSectionProps>(
             class="justify-left -mb-px flex space-x-8 overflow-x-auto px-4 pb-1"
             aria-label="Tabs"
           >
-            {tabs.map((tab) => {
+            {tabs.map(tab => {
               // Capture serializable values and component reference outside the JSX scope
               // to avoid potential serialization issues with the entire 'tab' object in onClick$.
-              const tabId = tab.id;
-              const TabIcon = tab.icon;
-              const tabLabel = tab.label;
-              const tabCount = tab.count;
+              const tabId = tab.id
+              const TabIcon = tab.icon
+              const tabLabel = tab.label
+              const tabCount = tab.count
 
               return (
                 <Link
                   scroll={false}
-                  href={"/profile?tab=" + tabId}
+                  href={'/profile?tab=' + tabId}
                   key={tabId}
                   onClick$={() => (activeTab.value = tabId)} // Use captured primitive value
                   class={`group inline-flex shrink-0 items-center whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium transition-colors duration-150 ease-in-out focus:outline-none ${
                     activeTab.value === tabId // Use captured primitive value
-                      ? "border-[#D98E73] text-[#C27B62]"
-                      : "border-transparent text-[#6D5D4E] hover:border-gray-300 hover:text-[#5B3E29]"
+                      ? 'border-[#D98E73] text-[#C27B62]'
+                      : 'border-transparent text-[#6D5D4E] hover:border-gray-300 hover:text-[#5B3E29]'
                   }`}
-                  aria-current={activeTab.value === tabId ? "page" : undefined} // Use captured primitive value
+                  aria-current={activeTab.value === tabId ? 'page' : undefined} // Use captured primitive value
                 >
                   <TabIcon // Render the component directly
                     class={`mr-2 h-5 w-5 ${
                       activeTab.value === tabId // Use captured primitive value
-                        ? "text-[#D98E73]"
-                        : "text-gray-400 group-hover:text-gray-500"
+                        ? 'text-[#D98E73]'
+                        : 'text-gray-400 group-hover:text-gray-500'
                     }`}
                     aria-hidden="true"
                   />
@@ -1033,29 +1020,29 @@ export const TabsSection = component$<TabsSectionProps>(
                     <span
                       class={`ml-2.5 hidden rounded-full px-2.5 py-1 text-xs font-semibold md:inline-block ${
                         activeTab.value === tabId // Use captured primitive value
-                          ? "bg-[#FFF1E6] text-[#C27B62]"
-                          : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                          ? 'bg-[#FFF1E6] text-[#C27B62]'
+                          : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'
                       }`}
                     >
                       {tabCount}
                     </span>
                   )}
                 </Link>
-              );
+              )
             })}
           </nav>
         </div>
 
         <div class=" px-4">
-          {activeTab.value === "profile" && !isEditing.value && (
+          {activeTab.value === 'profile' && !isEditing.value && (
             <ProfileView isEditing={isEditing} profileData={profile} />
           )}
 
-          {activeTab.value === "profile" && isEditing.value && (
+          {activeTab.value === 'profile' && isEditing.value && (
             <ProfileEdit profileData={profile} isEditing={isEditing} />
           )}
 
-          {activeTab.value === "upcoming" && (
+          {activeTab.value === 'upcoming' && (
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
@@ -1089,58 +1076,58 @@ export const TabsSection = component$<TabsSectionProps>(
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        All Upcoming ({upcomingEvents.length})
+                        {'All Upcoming (' + upcomingEvents.length + ')'}
                       </option>
                       {(() => {
-                        const todayCount = upcomingEvents.filter((e) => {
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const tomorrow = new Date(today);
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          const eventDate = new Date(e.date);
-                          return eventDate >= today && eventDate < tomorrow;
-                        }).length;
+                        const todayCount = upcomingEvents.filter(e => {
+                          const today = new Date()
+                          today.setHours(0, 0, 0, 0)
+                          const tomorrow = new Date(today)
+                          tomorrow.setDate(tomorrow.getDate() + 1)
+                          const eventDate = new Date(e.date)
+                          return eventDate >= today && eventDate < tomorrow
+                        }).length
                         return (
                           <option value="today">
-                            {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                            {`Today${todayCount > 0 ? ` (${todayCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const thisWeekCount = upcomingEvents.filter((e) => {
-                          const now = new Date();
+                        const thisWeekCount = upcomingEvents.filter(e => {
+                          const now = new Date()
                           const weekFromNow = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                          );
-                          const eventDate = new Date(e.date);
-                          return eventDate >= now && eventDate <= weekFromNow;
-                        }).length;
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000
+                          )
+                          const eventDate = new Date(e.date)
+                          return eventDate >= now && eventDate <= weekFromNow
+                        }).length
                         return (
                           <option value="this_week">
-                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const nextWeekCount = upcomingEvents.filter((e) => {
-                          const now = new Date();
+                        const nextWeekCount = upcomingEvents.filter(e => {
+                          const now = new Date()
                           const nextWeekStart = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                          );
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000
+                          )
                           const nextWeekEnd = new Date(
-                            now.getTime() + 14 * 24 * 60 * 60 * 1000,
-                          );
-                          const eventDate = new Date(e.date);
+                            now.getTime() + 14 * 24 * 60 * 60 * 1000
+                          )
+                          const eventDate = new Date(e.date)
                           return (
                             eventDate >= nextWeekStart &&
                             eventDate <= nextWeekEnd
-                          );
-                        }).length;
+                          )
+                        }).length
                         return (
                           <option value="next_week">
-                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                     </select>
                     <select
@@ -1151,9 +1138,9 @@ export const TabsSection = component$<TabsSectionProps>(
                       <option value="date-desc">Date: Latest</option>
                       <option value="popular">Most Popular</option>
                     </select>
-                    {(searchTerm.value !== "" ||
-                      eventDateRange.value !== "all" ||
-                      eventSort.value !== "date-asc") && (
+                    {(searchTerm.value !== '' ||
+                      eventDateRange.value !== 'all' ||
+                      eventSort.value !== 'date-asc') && (
                       <button
                         onClick$={clearAllFilters}
                         class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
@@ -1167,10 +1154,10 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Events Grid */}
               {(() => {
-                const filteredEvents = sortEvents(filterEvents(upcomingEvents));
+                const filteredEvents = sortEvents(filterEvents(upcomingEvents))
                 return filteredEvents.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredEvents.map((event) => (
+                    {filteredEvents.map(event => (
                       <EventCard
                         key={event.eventID ?? event.id}
                         event={event}
@@ -1182,22 +1169,22 @@ export const TabsSection = component$<TabsSectionProps>(
                     <EmptyState
                       context="CalendarIcon"
                       title={
-                        searchTerm.value || eventDateRange.value !== "all"
-                          ? "No Upcoming Events Found"
-                          : "No Upcoming Events"
+                        searchTerm.value || eventDateRange.value !== 'all'
+                          ? 'No Upcoming Events Found'
+                          : 'No Upcoming Events'
                       }
                       message={
-                        searchTerm.value || eventDateRange.value !== "all"
-                          ? "Try adjusting your filters or search terms."
+                        searchTerm.value || eventDateRange.value !== 'all'
+                          ? 'Try adjusting your filters or search terms.'
                           : "You haven't joined or been invited to any events yet. Explore events to join!"
                       }
                       actionButton={
-                        searchTerm.value || eventDateRange.value !== "all"
+                        searchTerm.value || eventDateRange.value !== 'all'
                           ? undefined
-                          : { href: "/events", label: "Explore Events" }
+                          : { href: '/events', label: 'Explore Events' }
                       }
                     />
-                    {(searchTerm.value || eventDateRange.value !== "all") && (
+                    {(searchTerm.value || eventDateRange.value !== 'all') && (
                       <div class="mt-4 text-center">
                         <button
                           type="button"
@@ -1209,12 +1196,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
 
-          {activeTab.value === "hosted" && (
+          {activeTab.value === 'hosted' && (
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
@@ -1248,58 +1235,58 @@ export const TabsSection = component$<TabsSectionProps>(
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        All Upcoming ({hostedEvents.length})
+                        {'All Upcoming (' + hostedEvents.length + ')'}
                       </option>
                       {(() => {
-                        const todayCount = hostedEvents.filter((e) => {
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const tomorrow = new Date(today);
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          const eventDate = new Date(e.date);
-                          return eventDate >= today && eventDate < tomorrow;
-                        }).length;
+                        const todayCount = hostedEvents.filter(e => {
+                          const today = new Date()
+                          today.setHours(0, 0, 0, 0)
+                          const tomorrow = new Date(today)
+                          tomorrow.setDate(tomorrow.getDate() + 1)
+                          const eventDate = new Date(e.date)
+                          return eventDate >= today && eventDate < tomorrow
+                        }).length
                         return (
                           <option value="today">
-                            {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                            {`Today${todayCount > 0 ? ` (${todayCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const thisWeekCount = hostedEvents.filter((e) => {
-                          const now = new Date();
+                        const thisWeekCount = hostedEvents.filter(e => {
+                          const now = new Date()
                           const weekFromNow = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                          );
-                          const eventDate = new Date(e.date);
-                          return eventDate >= now && eventDate <= weekFromNow;
-                        }).length;
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000
+                          )
+                          const eventDate = new Date(e.date)
+                          return eventDate >= now && eventDate <= weekFromNow
+                        }).length
                         return (
                           <option value="this_week">
-                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const nextWeekCount = hostedEvents.filter((e) => {
-                          const now = new Date();
+                        const nextWeekCount = hostedEvents.filter(e => {
+                          const now = new Date()
                           const nextWeekStart = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                          );
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000
+                          )
                           const nextWeekEnd = new Date(
-                            now.getTime() + 14 * 24 * 60 * 60 * 1000,
-                          );
-                          const eventDate = new Date(e.date);
+                            now.getTime() + 14 * 24 * 60 * 60 * 1000
+                          )
+                          const eventDate = new Date(e.date)
                           return (
                             eventDate >= nextWeekStart &&
                             eventDate <= nextWeekEnd
-                          );
-                        }).length;
+                          )
+                        }).length
                         return (
                           <option value="next_week">
-                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                     </select>
                     <select
@@ -1310,9 +1297,9 @@ export const TabsSection = component$<TabsSectionProps>(
                       <option value="date-desc">Date: Latest</option>
                       <option value="popular">Most Popular</option>
                     </select>
-                    {(searchTerm.value !== "" ||
-                      eventDateRange.value !== "all" ||
-                      eventSort.value !== "date-asc") && (
+                    {(searchTerm.value !== '' ||
+                      eventDateRange.value !== 'all' ||
+                      eventSort.value !== 'date-asc') && (
                       <button
                         onClick$={clearAllFilters}
                         class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
@@ -1326,10 +1313,10 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Events Grid */}
               {(() => {
-                const filteredEvents = sortEvents(filterEvents(hostedEvents));
+                const filteredEvents = sortEvents(filterEvents(hostedEvents))
                 return filteredEvents.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredEvents.map((event) => (
+                    {filteredEvents.map(event => (
                       <EventCard
                         key={event.eventID ?? event.id}
                         event={event}
@@ -1342,22 +1329,22 @@ export const TabsSection = component$<TabsSectionProps>(
                     <EmptyState
                       context="UsersIcon"
                       title={
-                        searchTerm.value || eventDateRange.value !== "all"
-                          ? "No Hosted Events Found"
-                          : "No Hosted Events Yet"
+                        searchTerm.value || eventDateRange.value !== 'all'
+                          ? 'No Hosted Events Found'
+                          : 'No Hosted Events Yet'
                       }
                       message={
-                        searchTerm.value || eventDateRange.value !== "all"
-                          ? "Try adjusting your filters or search terms."
-                          : "Ready to gather some folks? Host your first event and bring people together."
+                        searchTerm.value || eventDateRange.value !== 'all'
+                          ? 'Try adjusting your filters or search terms.'
+                          : 'Ready to gather some folks? Host your first event and bring people together.'
                       }
                       actionButton={
-                        searchTerm.value || eventDateRange.value !== "all"
+                        searchTerm.value || eventDateRange.value !== 'all'
                           ? undefined
-                          : { label: "Host an Event", href: "/new" }
+                          : { label: 'Host an Event', href: '/new' }
                       }
                     />
-                    {(searchTerm.value || eventDateRange.value !== "all") && (
+                    {(searchTerm.value || eventDateRange.value !== 'all') && (
                       <div class="mt-4 text-center">
                         <button
                           type="button"
@@ -1369,12 +1356,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
 
-          {activeTab.value === "myplaces" && (
+          {activeTab.value === 'myplaces' && (
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
@@ -1408,57 +1395,57 @@ export const TabsSection = component$<TabsSectionProps>(
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        All Categories ({savedPlaces.length})
+                        {'All Categories (' + savedPlaces.length + ')'}
                       </option>
                       {(() => {
                         const popularCount = savedPlaces.filter(
-                          (p) => p.badge === "Popular",
-                        ).length;
+                          p => p.tags?.includes('Popular')
+                        ).length
                         return (
                           <option value="popular">
-                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const coffeeCount = savedPlaces.filter((p) =>
-                          p.tags?.includes("Coffee"),
-                        ).length;
+                        const coffeeCount = savedPlaces.filter(p =>
+                          p.tags?.includes('Coffee')
+                        ).length
                         return (
                           <option value="coffee">
-                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const quietCount = savedPlaces.filter((p) =>
-                          p.tags?.includes("Quiet"),
-                        ).length;
+                        const quietCount = savedPlaces.filter(p =>
+                          p.tags?.includes('Quiet')
+                        ).length
                         return (
                           <option value="quiet">
-                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const wifiCount = savedPlaces.filter((p) =>
-                          p.tags?.includes("WiFi"),
-                        ).length;
+                        const wifiCount = savedPlaces.filter(p =>
+                          p.tags?.includes('WiFi')
+                        ).length
                         return (
                           <option value="wifi">
-                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const powerCount = savedPlaces.filter((p) =>
-                          p.tags?.includes("Power"),
-                        ).length;
+                        const powerCount = savedPlaces.filter(p =>
+                          p.tags?.includes('Power')
+                        ).length
                         return (
                           <option value="power">
-                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                     </select>
                     <select
@@ -1469,9 +1456,9 @@ export const TabsSection = component$<TabsSectionProps>(
                       <option value="rating">Highest Rated</option>
                       <option value="newest">Most Visited</option>
                     </select>
-                    {(searchTerm.value !== "" ||
-                      placeCategory.value !== "all" ||
-                      placeSort.value !== "recommended" ||
+                    {(searchTerm.value !== '' ||
+                      placeCategory.value !== 'all' ||
+                      placeSort.value !== 'recommended' ||
                       activeQuickFilters.value.length > 0) && (
                       <button
                         onClick$={clearAllFilters}
@@ -1485,43 +1472,43 @@ export const TabsSection = component$<TabsSectionProps>(
 
                 {/* Quick Filter Chips */}
                 <div class="flex flex-wrap gap-2">
-                  {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
-                    (tag) => (
+                  {['Coffee', 'WiFi', 'Quiet', 'Power', 'Music', 'Study'].map(
+                    tag => (
                       <button
                         key={tag}
                         onClick$={() => toggleQuickFilter(tag)}
                         class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                           activeQuickFilters.value.includes(tag)
-                            ? "bg-[#D98E73] text-white"
-                            : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                            ? 'bg-[#D98E73] text-white'
+                            : 'bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]'
                         }`}
                       >
                         {tag}
                       </button>
-                    ),
+                    )
                   )}
                 </div>
               </div>
 
               {/* Places Grid */}
               {(() => {
-                const filteredPlaces = sortPlaces(filterPlaces(savedPlaces));
+                const filteredPlaces = sortPlaces(filterPlaces(savedPlaces))
                 return filteredPlaces.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredPlaces.map((place) => (
+                    {filteredPlaces.map(place => (
                       <PlaceCard
                         key={place.placeId ?? place.id}
                         place={{
                           id: place.placeId ?? place.id,
                           name: place.name,
-                          image: place.image ?? "",
-                          badge: "",
+                          image: place.image ?? '',
+                          badge: '',
                           location: place.location,
                           description: place.description,
                           tags: place.tags,
                           creator: profile.name,
                           rating:
-                            typeof place.rating === "number" ? place.rating : 0,
+                            typeof place.rating === 'number' ? place.rating : 0,
                         }}
                       />
                     ))}
@@ -1532,28 +1519,28 @@ export const TabsSection = component$<TabsSectionProps>(
                       context="MapPinIcon"
                       title={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
-                          ? "No Saved Places Found"
-                          : "No Places Added Yet"
+                          ? 'No Saved Places Found'
+                          : 'No Places Added Yet'
                       }
                       message={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
-                          ? "Try adjusting your filters or search terms."
+                          ? 'Try adjusting your filters or search terms.'
                           : "You haven't added any places to the community. Share your favorite study spots!"
                       }
                       actionButton={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
                           ? undefined
-                          : { label: "Add a Place", href: "/places/new" }
+                          : { label: 'Add a Place', href: '/places/new' }
                       }
                     />
                     {(searchTerm.value ||
-                      placeCategory.value !== "all" ||
+                      placeCategory.value !== 'all' ||
                       activeQuickFilters.value.length > 0) && (
                       <div class="mt-4 text-center">
                         <button
@@ -1566,12 +1553,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
 
-          {activeTab.value === "liked" && (
+          {activeTab.value === 'liked' && (
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
@@ -1605,57 +1592,57 @@ export const TabsSection = component$<TabsSectionProps>(
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        All Categories ({likedPlaces.length})
+                        {'All Categories (' + likedPlaces.length + ')'}
                       </option>
                       {(() => {
                         const popularCount = likedPlaces.filter(
-                          (p) => p.badge === "Popular",
-                        ).length;
+                          p => p.tags?.includes('Popular')
+                        ).length
                         return (
                           <option value="popular">
-                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const coffeeCount = likedPlaces.filter((p) =>
-                          p.tags?.includes("Coffee"),
-                        ).length;
+                        const coffeeCount = likedPlaces.filter(p =>
+                          p.tags?.includes('Coffee')
+                        ).length
                         return (
                           <option value="coffee">
-                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const quietCount = likedPlaces.filter((p) =>
-                          p.tags?.includes("Quiet"),
-                        ).length;
+                        const quietCount = likedPlaces.filter(p =>
+                          p.tags?.includes('Quiet')
+                        ).length
                         return (
                           <option value="quiet">
-                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const wifiCount = likedPlaces.filter((p) =>
-                          p.tags?.includes("WiFi"),
-                        ).length;
+                        const wifiCount = likedPlaces.filter(p =>
+                          p.tags?.includes('WiFi')
+                        ).length
                         return (
                           <option value="wifi">
-                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const powerCount = likedPlaces.filter((p) =>
-                          p.tags?.includes("Power"),
-                        ).length;
+                        const powerCount = likedPlaces.filter(p =>
+                          p.tags?.includes('Power')
+                        ).length
                         return (
                           <option value="power">
-                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                     </select>
                     <select
@@ -1666,9 +1653,9 @@ export const TabsSection = component$<TabsSectionProps>(
                       <option value="rating">Highest Rated</option>
                       <option value="newest">Most Visited</option>
                     </select>
-                    {(searchTerm.value !== "" ||
-                      placeCategory.value !== "all" ||
-                      placeSort.value !== "recommended" ||
+                    {(searchTerm.value !== '' ||
+                      placeCategory.value !== 'all' ||
+                      placeSort.value !== 'recommended' ||
                       activeQuickFilters.value.length > 0) && (
                       <button
                         onClick$={clearAllFilters}
@@ -1682,43 +1669,43 @@ export const TabsSection = component$<TabsSectionProps>(
 
                 {/* Quick Filter Chips */}
                 <div class="flex flex-wrap gap-2">
-                  {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
-                    (tag) => (
+                  {['Coffee', 'WiFi', 'Quiet', 'Power', 'Music', 'Study'].map(
+                    tag => (
                       <button
                         key={tag}
                         onClick$={() => toggleQuickFilter(tag)}
                         class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                           activeQuickFilters.value.includes(tag)
-                            ? "bg-[#D98E73] text-white"
-                            : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                            ? 'bg-[#D98E73] text-white'
+                            : 'bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]'
                         }`}
                       >
                         {tag}
                       </button>
-                    ),
+                    )
                   )}
                 </div>
               </div>
 
               {/* Places Grid */}
               {(() => {
-                const filteredPlaces = sortPlaces(filterPlaces(likedPlaces));
+                const filteredPlaces = sortPlaces(filterPlaces(likedPlaces))
                 return filteredPlaces.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredPlaces.map((place) => (
+                    {filteredPlaces.map(place => (
                       <PlaceCard
                         key={place.placeId ?? place.id}
                         place={{
                           id: place.placeId ?? place.id,
                           name: place.name,
-                          image: place.image ?? "",
-                          badge: "",
+                          image: place.image ?? '',
+                          badge: '',
                           location: place.location,
                           description: place.description,
                           tags: place.tags,
                           creator: profile.name,
                           rating:
-                            typeof place.rating === "number" ? place.rating : 0,
+                            typeof place.rating === 'number' ? place.rating : 0,
                         }}
                       />
                     ))}
@@ -1729,28 +1716,28 @@ export const TabsSection = component$<TabsSectionProps>(
                       context="MapPinIcon"
                       title={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
-                          ? "No Liked Places Found"
-                          : "No Liked Places"
+                          ? 'No Liked Places Found'
+                          : 'No Liked Places'
                       }
                       message={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
-                          ? "Try adjusting your filters or search terms."
+                          ? 'Try adjusting your filters or search terms.'
                           : "You haven't liked any places yet. Browse places and click the heart icon to add them here."
                       }
                       actionButton={
                         searchTerm.value ||
-                        placeCategory.value !== "all" ||
+                        placeCategory.value !== 'all' ||
                         activeQuickFilters.value.length > 0
                           ? undefined
-                          : { label: "Discover Places", href: "/places" }
+                          : { label: 'Discover Places', href: '/places' }
                       }
                     />
                     {(searchTerm.value ||
-                      placeCategory.value !== "all" ||
+                      placeCategory.value !== 'all' ||
                       activeQuickFilters.value.length > 0) && (
                       <div class="mt-4 text-center">
                         <button
@@ -1763,12 +1750,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
 
-          {activeTab.value === "requests" && (
+          {activeTab.value === 'requests' && (
             <div>
               {/* Search Bar */}
               <div class="mb-6">
@@ -1799,18 +1786,18 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Requests Grid */}
               {(() => {
-                const filteredRequests = requests.filter((request) => {
-                  if (searchTerm.value === "") return true;
-                  const searchLower = searchTerm.value.toLowerCase();
+                const filteredRequests = requests.filter(request => {
+                  if (searchTerm.value === '') return true
+                  const searchLower = searchTerm.value.toLowerCase()
                   return (
                     request.type?.toLowerCase().includes(searchLower) ||
                     request.status?.toLowerCase().includes(searchLower)
-                  );
-                });
+                  )
+                })
 
                 return filteredRequests.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredRequests.map((request) => (
+                    {filteredRequests.map(request => (
                       <div
                         key={request.id}
                         class="rounded-lg border border-[#E6D7C3] bg-white p-4"
@@ -1833,12 +1820,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       context="BellIcon"
                       title={
                         searchTerm.value
-                          ? "No Requests Found"
-                          : "No Pending Requests"
+                          ? 'No Requests Found'
+                          : 'No Pending Requests'
                       }
                       message={
                         searchTerm.value
-                          ? "Try adjusting your search terms."
+                          ? 'Try adjusting your search terms.'
                           : "You don't have any pending requests at the moment."
                       }
                       actionButton={undefined}
@@ -1848,7 +1835,7 @@ export const TabsSection = component$<TabsSectionProps>(
                         <button
                           type="button"
                           onClick$={$(() => {
-                            searchTerm.value = "";
+                            searchTerm.value = ''
                           })}
                           class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                         >
@@ -1857,12 +1844,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
 
-          {activeTab.value === "past" && (
+          {activeTab.value === 'past' && (
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
@@ -1896,45 +1883,45 @@ export const TabsSection = component$<TabsSectionProps>(
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        All Past Events ({pastEvents.length})
+                        {'All Past Events (' + pastEvents.length + ')'}
                       </option>
                       {(() => {
-                        const lastWeekCount = pastEvents.filter((e) => {
-                          const now = new Date();
+                        const lastWeekCount = pastEvents.filter(e => {
+                          const now = new Date()
                           const lastWeekStart = new Date(
-                            now.getTime() - 7 * 24 * 60 * 60 * 1000,
-                          );
-                          const lastWeekEnd = new Date(now);
-                          const eventDate = new Date(e.date);
+                            now.getTime() - 7 * 24 * 60 * 60 * 1000
+                          )
+                          const lastWeekEnd = new Date(now)
+                          const eventDate = new Date(e.date)
                           return (
                             eventDate >= lastWeekStart &&
                             eventDate < lastWeekEnd
-                          );
-                        }).length;
+                          )
+                        }).length
                         return (
                           <option value="last_week">
-                            {`Last Week${lastWeekCount > 0 ? ` (${lastWeekCount})` : ""}`}
+                            {`Last Week${lastWeekCount > 0 ? ` (${lastWeekCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                       {(() => {
-                        const lastMonthCount = pastEvents.filter((e) => {
-                          const now = new Date();
+                        const lastMonthCount = pastEvents.filter(e => {
+                          const now = new Date()
                           const lastMonthStart = new Date(
-                            now.getTime() - 30 * 24 * 60 * 60 * 1000,
-                          );
-                          const lastMonthEnd = new Date(now);
-                          const eventDate = new Date(e.date);
+                            now.getTime() - 30 * 24 * 60 * 60 * 1000
+                          )
+                          const lastMonthEnd = new Date(now)
+                          const eventDate = new Date(e.date)
                           return (
                             eventDate >= lastMonthStart &&
                             eventDate < lastMonthEnd
-                          );
-                        }).length;
+                          )
+                        }).length
                         return (
                           <option value="last_month">
-                            {`Last Month${lastMonthCount > 0 ? ` (${lastMonthCount})` : ""}`}
+                            {`Last Month${lastMonthCount > 0 ? ` (${lastMonthCount})` : ''}`}
                           </option>
-                        );
+                        )
                       })()}
                     </select>
                     <select
@@ -1945,9 +1932,9 @@ export const TabsSection = component$<TabsSectionProps>(
                       <option value="date-asc">Oldest First</option>
                       <option value="popular">Most Popular</option>
                     </select>
-                    {(searchTerm.value !== "" ||
-                      pastEventDateRange.value !== "all" ||
-                      eventSort.value !== "date-desc") && (
+                    {(searchTerm.value !== '' ||
+                      pastEventDateRange.value !== 'all' ||
+                      eventSort.value !== 'date-desc') && (
                       <button
                         onClick$={clearAllFilters}
                         class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
@@ -1961,10 +1948,10 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Events Grid */}
               {(() => {
-                const filteredEvents = sortEvents(filterPastEvents(pastEvents));
+                const filteredEvents = sortEvents(filterPastEvents(pastEvents))
                 return filteredEvents.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredEvents.map((event) => (
+                    {filteredEvents.map(event => (
                       <EventCard
                         key={event.eventID ?? event.id}
                         event={event}
@@ -1976,23 +1963,23 @@ export const TabsSection = component$<TabsSectionProps>(
                     <EmptyState
                       context="CalendarIcon"
                       title={
-                        searchTerm.value || pastEventDateRange.value !== "all"
-                          ? "No Past Events Found"
-                          : "No Past Events"
+                        searchTerm.value || pastEventDateRange.value !== 'all'
+                          ? 'No Past Events Found'
+                          : 'No Past Events'
                       }
                       message={
-                        searchTerm.value || pastEventDateRange.value !== "all"
-                          ? "Try adjusting your filters or search terms."
+                        searchTerm.value || pastEventDateRange.value !== 'all'
+                          ? 'Try adjusting your filters or search terms.'
                           : "You haven't attended any events yet. Join some events to build your history!"
                       }
                       actionButton={
-                        searchTerm.value || pastEventDateRange.value !== "all"
+                        searchTerm.value || pastEventDateRange.value !== 'all'
                           ? undefined
-                          : { label: "Find Events", href: "/events" }
+                          : { label: 'Find Events', href: '/events' }
                       }
                     />
                     {(searchTerm.value ||
-                      pastEventDateRange.value !== "all") && (
+                      pastEventDateRange.value !== 'all') && (
                       <div class="mt-4 text-center">
                         <button
                           type="button"
@@ -2004,12 +1991,12 @@ export const TabsSection = component$<TabsSectionProps>(
                       </div>
                     )}
                   </>
-                );
+                )
               })()}
             </div>
           )}
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)

@@ -21,7 +21,7 @@
       "~/*": ["./src/*"]
     }
   },
-  "files": ["./.eslintrc.cjs"],
+
   "include": ["drizzle", "src", "tests", "./*.d.ts", "./*.config.ts"],
   "exclude": [
     "node_modules",

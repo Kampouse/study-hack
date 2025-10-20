@@ -1,19 +1,19 @@
-import { component$ } from "@builder.io/qwik";
-import type { Event } from "./types";
+import { component$ } from '@builder.io/qwik'
+import type { Event } from './types'
 
 interface CommunityEventsSectionProps {
-  events: Event[];
+  events: Event[]
 }
 
 // Color variables
 const colors = {
-  background: "#FFF1E6",
-  primary: "#D98E73",
+  background: '#FFF1E6',
+  primary: '#D98E73',
   text: {
-    heading: "#5B3E29",
-    body: "#6D5D4E",
+    heading: '#5B3E29',
+    body: '#6D5D4E',
   },
-};
+}
 
 export const CommunityEventsSection = component$<CommunityEventsSectionProps>(
   ({ events }) => {
@@ -28,7 +28,7 @@ export const CommunityEventsSection = component$<CommunityEventsSectionProps>(
             </span>
           </h2>
           <div class="grid gap-8 md:grid-cols-2">
-            {events.map((event) => (
+            {events.map(event => (
               <div
                 key={event.id}
                 class="group flex transform overflow-hidden rounded-2xl bg-white shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -100,6 +100,6 @@ export const CommunityEventsSection = component$<CommunityEventsSectionProps>(
           </div>
         </div>
       </section>
-    );
-  },
-);
+    )
+  }
+)

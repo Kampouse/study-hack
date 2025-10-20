@@ -1,14 +1,14 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
 // Removed Form import from qwik-city as action/onSubmitCompleted$ is removed
-import { Slot, type Signal } from "@builder.io/qwik";
+import { type Signal, Slot } from '@builder.io/qwik'
 
 // Removed unused onSave and onChange props
 type FormProps = {
-  data: { name: string; about: string; interests: string[] };
-  active: Signal<boolean>;
-};
+  data: { name: string; about: string; interests: string[] }
+  active: Signal<boolean>
+}
 
-import { Modal } from "@qwik-ui/headless";
+import { Modal } from '@qwik-ui/headless'
 
 export default component$<FormProps>(({ data, active }) => {
   return (
@@ -23,7 +23,7 @@ export default component$<FormProps>(({ data, active }) => {
           onSubmit$={() => {
             // Optionally, add simple behavior like closing the modal here if needed
             // active.value = false;
-            console.log("Form submitted (no action)");
+            console.log('Form submitted (no action)')
           }}
         >
           <div class="flex flex-col gap-2">
@@ -99,5 +99,5 @@ export default component$<FormProps>(({ data, active }) => {
         </form>
       </Modal.Panel>
     </Modal.Root>
-  );
-});
+  )
+})

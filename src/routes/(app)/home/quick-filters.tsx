@@ -1,12 +1,12 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
 import {
-  CoffeeIcon as Coffee,
-  WifiIcon as Wifi,
   BookOpenIcon as BookOpen,
-  VolumeXIcon as VolumeX,
-  ZapIcon as Zap,
+  CoffeeIcon as Coffee,
   MusicIcon as Music,
-} from "lucide-qwik";
+  VolumeXIcon as VolumeX,
+  WifiIcon as Wifi,
+  ZapIcon as Zap,
+} from 'lucide-qwik'
 
 export const QuickFilters = component$(() => {
   return (
@@ -50,5 +50,5 @@ export const QuickFilters = component$(() => {
         </button>
       </div>
     </div>
-  );
-});
+  )
+})

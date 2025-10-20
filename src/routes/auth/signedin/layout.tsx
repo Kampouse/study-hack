@@ -1,14 +1,14 @@
-import type { RequestHandler } from "@builder.io/qwik-city";
-import { CreateUser } from "~/api/Query";
-import type { Session } from "~/api/drizzled";
-export const onRequest: RequestHandler = async (event) => {
-  const session: Session | null = event.sharedMap.get("session");
+import type { RequestHandler } from '@builder.io/qwik-city'
+import { CreateUser } from '~/api/Query'
+import type { Session } from '~/api/drizzled'
+export const onRequest: RequestHandler = async event => {
+  const session: Session | null = event.sharedMap.get('session')
   if (session) {
-    const worked = await CreateUser({ event: event, session: session });
-    console.log("worked->>>>>>>>>", worked);
-    throw event.redirect(302, "/");
+    const worked = await CreateUser({ event: event, session: session })
+    console.log('worked->>>>>>>>>', worked)
+    throw event.redirect(302, '/')
   }
-};
+}
 
 //if there is no platform session, we need to create one
 //we can create a new session with the user data

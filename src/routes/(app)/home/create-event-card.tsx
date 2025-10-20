@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { CalendarIcon as Calendar } from "lucide-qwik";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { CalendarIcon as Calendar } from 'lucide-qwik'
 
 export const CreateEventCard = component$(() => {
   return (
@@ -24,5 +24,5 @@ export const CreateEventCard = component$(() => {
         </Link>
       </div>
     </div>
-  );
-});
+  )
+})

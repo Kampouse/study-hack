@@ -1,4 +1,4 @@
-import ProfileCard from "./ProfileCard";
-import ProfileForm from "./ProfileForm";
+import ProfileCard from './ProfileCard'
+import ProfileForm from './ProfileForm'
 
-export { ProfileCard, ProfileForm };
+export { ProfileCard, ProfileForm }

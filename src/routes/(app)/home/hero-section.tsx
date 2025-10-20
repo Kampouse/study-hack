@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
 export const HeroSection = component$(() => {
   return (
     <section class="relative bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] pt-8">
@@ -35,5 +35,5 @@ export const HeroSection = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

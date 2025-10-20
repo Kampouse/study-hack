@@ -1,15 +1,15 @@
-import { component$, Slot, useSignal } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
-import { Modal } from "@qwik-ui/headless";
+import { Slot, component$, useSignal } from '@builder.io/qwik'
+import { Form } from '@builder.io/qwik-city'
+import { Modal } from '@qwik-ui/headless'
 interface EventProps {
-  eventLocation: string;
-  eventDate: string;
-  eventTime: string;
-  eventId: number;
+  eventLocation: string
+  eventDate: string
+  eventTime: string
+  eventId: number
 }
 
-export default component$<EventProps>((props) => {
-  const status = useSignal(false);
+export default component$<EventProps>(props => {
+  const status = useSignal(false)
   return (
     <Modal.Root bind:show={status} class="">
       <Modal.Trigger>
@@ -17,7 +17,7 @@ export default component$<EventProps>((props) => {
       </Modal.Trigger>
       <Modal.Panel class="rounded-xl border p-12 py-8 shadow-md">
         <Modal.Title>
-          Join me at {props.eventLocation} on {props.eventDate} at{" "}
+          Join me at {props.eventLocation} on {props.eventDate} at{' '}
           {props.eventTime}
         </Modal.Title>
         <Modal.Description>Optional Description</Modal.Description>
@@ -67,5 +67,5 @@ export default component$<EventProps>((props) => {
         </Form>
       </Modal.Panel>
     </Modal.Root>
-  );
-});
+  )
+})

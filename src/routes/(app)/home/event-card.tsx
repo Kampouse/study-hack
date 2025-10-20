@@ -1,10 +1,10 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 import {
   CalendarIcon as Calendar,
   MapPinIcon as MapPin,
   UsersIcon as Users,
-} from "lucide-qwik";
+} from 'lucide-qwik'
 
 /**
  * Displays a card for an event, showing image, title, type, date, time,
@@ -22,18 +22,18 @@ import {
 export const EventCard = component$(
   (props: {
     event: {
-      id: number;
-      title: string;
-      image: string;
-      badge: string;
-      type: string;
-      date: string;
-      time: string;
-      location: string;
-      creator: string;
-      attendees: number;
-      spotsLeft: number;
-    };
+      id: number
+      title: string
+      image: string
+      badge: string
+      type: string
+      date: string
+      time: string
+      location: string
+      creator: string
+      attendees: number
+      spotsLeft: number
+    }
   }) => {
     return (
       <div
@@ -43,13 +43,13 @@ export const EventCard = component$(
         <Link href={`/details/${props.event.id}`}>
           <div class="relative aspect-[16/10] overflow-hidden">
             <img
-              src={props.event.image || "/placeholder.svg"}
+              src={props.event.image || '/placeholder.svg'}
               width={400}
               height={250}
               alt={props.event.title}
               class="h-full w-full object-cover transition-transform duration-500"
-              onError$={(e) => {
-                (e.target as HTMLImageElement).src = "/placeholder.svg";
+              onError$={e => {
+                ;(e.target as HTMLImageElement).src = '/placeholder.svg'
               }}
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -94,6 +94,6 @@ export const EventCard = component$(
           </div>
         </Link>
       </div>
-    );
-  },
-);
+    )
+  }
+)

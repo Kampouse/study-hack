@@ -1,14 +1,14 @@
-import { component$, $ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { $, component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 import {
   HeartIcon as Heart,
   MapPinIcon as MapPin,
   StarIcon as Star,
-} from "lucide-qwik";
-import type { PlaceType } from "~/routes/profile/types";
+} from 'lucide-qwik'
+import type { PlaceType } from '~/routes/profile/types'
 
 interface PlaceCardProps {
-  place: PlaceType;
+  place: PlaceType
 }
 
 /**
@@ -28,19 +28,19 @@ interface PlaceCardProps {
 export const PlaceCard = component$<PlaceCardProps>(({ place }) => {
   const handleLikeClick = $(() => {
     // Implement like/unlike logic here
-  });
+  })
 
   return (
     <div class="group flex flex-col overflow-hidden rounded-2xl border border-[#F0E6DA] bg-white  transition-all duration-300 ease-in-out hover:shadow-xl">
       <div class="relative aspect-[16/10] overflow-hidden">
         <img
-          src={place.image || "/placeholder-place.svg"}
+          src={place.image || '/placeholder-place.svg'}
           width={400}
           height={250}
           alt={`Image for ${place.name}`}
           class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError$={(e) => {
-            (e.target as HTMLImageElement).src = "/placeholder-place.svg";
+          onError$={e => {
+            ;(e.target as HTMLImageElement).src = '/placeholder-place.svg'
           }}
         />
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -54,13 +54,13 @@ export const PlaceCard = component$<PlaceCardProps>(({ place }) => {
         </button>
         <div class="absolute bottom-4 left-4 z-10 flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs font-medium text-[#5B3E29] shadow-sm backdrop-blur-sm">
           <MapPin class="mr-1.5 h-4 w-4 text-[#D98E73]" />
-          {place.visitCount} {place.visitCount === 1 ? "visit" : "visits"}
+          {place.visitCount} {place.visitCount === 1 ? 'visit' : 'visits'}
         </div>
         <div class="absolute bottom-4 right-4 z-10 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#5B3E29] shadow-sm backdrop-blur-sm">
           <Star class="h-4 w-4 fill-[#D98E73] text-[#D98E73]" />
           {/* Ensure rating is a number before calling toFixed */}
           <span>
-            {typeof place.rating === "number" ? place.rating.toFixed(1) : "N/A"}
+            {typeof place.rating === 'number' ? place.rating.toFixed(1) : 'N/A'}
           </span>
         </div>
       </div>
@@ -97,5 +97,5 @@ export const PlaceCard = component$<PlaceCardProps>(({ place }) => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

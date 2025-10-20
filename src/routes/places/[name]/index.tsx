@@ -1,63 +1,63 @@
-import { component$ } from "@builder.io/qwik";
-import { GetUser } from "~/api/Query";
-import { Link, routeLoader$ } from "@builder.io/qwik-city";
-import { getPlace, getPlaces } from "~/api/EndPoint";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link, routeLoader$ } from '@builder.io/qwik-city'
+import type { DocumentHead } from '@builder.io/qwik-city'
 import {
-  StarIcon,
+  HeartIcon,
   MapPinIcon,
   MessageSquareIcon,
-  HeartIcon,
+  StarIcon,
   UsersIcon,
-} from "lucide-qwik";
+} from 'lucide-qwik'
+import { getPlace, getPlaces } from '~/api/EndPoint'
+import { GetUser } from '~/api/Query'
 
 const reviewsData = [
   {
-    initials: "SJ",
-    name: "Sarah Johnson",
-    timeAgo: "2 days ago",
+    initials: 'SJ',
+    name: 'Sarah Johnson',
+    timeAgo: '2 days ago',
     rating: 5,
-    comment: "Great atmosphere and friendly staff! The coffee here is amazing.",
+    comment: 'Great atmosphere and friendly staff! The coffee here is amazing.',
     helpful: 12,
   },
   {
-    initials: "MC",
-    name: "Michael Chen",
-    timeAgo: "1 week ago",
+    initials: 'MC',
+    name: 'Michael Chen',
+    timeAgo: '1 week ago',
     rating: 4,
     comment:
-      "Perfect spot for working remotely. The WiFi is reliable and there are plenty of power outlets.",
+      'Perfect spot for working remotely. The WiFi is reliable and there are plenty of power outlets.',
     helpful: 8,
   },
   {
-    initials: "ED",
-    name: "Emma Davis",
-    timeAgo: "2 weeks ago",
+    initials: 'ED',
+    name: 'Emma Davis',
+    timeAgo: '2 weeks ago',
     rating: 5,
     comment:
       "Love the ambiance here! It's become my go-to place for meeting friends.",
     helpful: 15,
   },
-];
+]
 
 const SuggestedPlaceCard = component$(
   (props: {
-    id: number;
-    name: string;
-    image: string;
-    rating: number;
-    description: string;
-    category?: string;
-    distance?: string;
-    isOpen?: boolean;
-    price?: string;
-    tags?: string[];
+    id: number
+    name: string
+    image: string
+    rating: number
+    description: string
+    category?: string
+    distance?: string
+    isOpen?: boolean
+    price?: string
+    tags?: string[]
   }) => {
-    const category = props.category || "Workspace";
-    const distance = props.distance || "0.5 km away";
-    const isOpen = props.isOpen !== undefined ? props.isOpen : true;
-    const price = props.price || "$$";
-    const tags = props.tags || ["WiFi", "Coffee", "Quiet"];
+    const category = props.category || 'Workspace'
+    const distance = props.distance || '0.5 km away'
+    const isOpen = props.isOpen !== undefined ? props.isOpen : true
+    const price = props.price || '$$'
+    const tags = props.tags || ['WiFi', 'Coffee', 'Quiet']
 
     return (
       <Link
@@ -115,7 +115,7 @@ const SuggestedPlaceCard = component$(
               <div class="flex items-center gap-2">
                 <span class="font-medium text-[#5B3E29]">{price}</span>
                 <div
-                  class={`h-2 w-2 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`}
+                  class={`h-2 w-2 rounded-full ${isOpen ? 'bg-green-500' : 'bg-red-500'}`}
                 />
               </div>
             </div>
@@ -133,18 +133,18 @@ const SuggestedPlaceCard = component$(
           </div>
         </div>
       </Link>
-    );
-  },
-);
+    )
+  }
+)
 
 const ReviewCard = component$(
   (props: {
-    initials: string;
-    name: string;
-    timeAgo: string;
-    rating: number;
-    comment: string;
-    helpful?: number;
+    initials: string
+    name: string
+    timeAgo: string
+    rating: number
+    comment: string
+    helpful?: number
   }) => {
     return (
       <div class="flex flex-col gap-4 rounded-xl border border-[#E6D7C3]/50 bg-[#F8EDE3]/30 p-4 sm:flex-row">
@@ -160,10 +160,10 @@ const ReviewCard = component$(
           </div>
           <div class="mb-3 flex items-center gap-2">
             <div class="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
+              {[1, 2, 3, 4, 5].map(star => (
                 <StarIcon
                   key={star}
-                  class={`h-4 w-4 ${star <= props.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                  class={`h-4 w-4 ${star <= props.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
                 />
               ))}
             </div>
@@ -182,60 +182,60 @@ const ReviewCard = component$(
           </div>
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)
 
-export const useloadPlace = routeLoader$(async (context) => {
-  const output = decodeURIComponent(context.params.name);
+export const useloadPlace = routeLoader$(async context => {
+  const output = decodeURIComponent(context.params.name)
   // Check if the output is a valid number
-  const id = parseInt(output, 10);
-  const isId = !isNaN(id);
+  const id = Number.parseInt(output, 10)
+  const isId = !isNaN(id)
 
   // Query getPlace with id when output is a number, otherwise use placeName
-  const user = await GetUser({ event: context });
+  const user = await GetUser({ event: context })
   const data = await getPlace({
     event: context,
     placeName: isId ? undefined : output,
     id: isId ? id : undefined,
-  });
+  })
 
-  return { ...data, user: user };
-});
+  return { ...data, user: user }
+})
 
-export const useLoadSuggestedPlaces = routeLoader$(async (context) => {
-  const output = decodeURIComponent(context.params.name);
+export const useLoadSuggestedPlaces = routeLoader$(async context => {
+  const output = decodeURIComponent(context.params.name)
   const currentPlace = await getPlace({
     event: context,
     placeName: output,
-  });
+  })
 
   //  const currentId = currentPlace.data?.PlaceID || 0;
   const places = await getPlaces(context, {
     limit: 3,
     exclude: [currentPlace.data?.PlaceID || 0],
-  });
-  return places.data?.slice(0, 3).map((place) => ({
+  })
+  return places.data?.slice(0, 3).map(place => ({
     id: place.Places?.PlaceID || 0,
-    name: place.Places?.Name || "",
-    image: place.Places?.ImageURL || "https://via.placeholder.com/300x200",
+    name: place.Places?.Name || '',
+    image: place.Places?.ImageURL || 'https://via.placeholder.com/300x200',
     rating: place.Places?.Rating || 0,
-    description: place.Places?.Description || "",
-    category: ["Workspace", "Café", "Studio"][Math.floor(Math.random() * 3)],
+    description: place.Places?.Description || '',
+    category: ['Workspace', 'Café', 'Studio'][Math.floor(Math.random() * 3)],
     distance: `${(Math.random() * 2 + 0.1).toFixed(1)} km away`,
     isOpen: Math.random() > 0.2,
-    price: ["$", "$$", "$$$"][Math.floor(Math.random() * 3)],
+    price: ['$', '$$', '$$$'][Math.floor(Math.random() * 3)],
     tags: [
-      ["WiFi", "Coffee", "Quiet"],
-      ["Outdoor", "Peaceful", "Books"],
-      ["Art", "Events", "Community"],
+      ['WiFi', 'Coffee', 'Quiet'],
+      ['Outdoor', 'Peaceful', 'Books'],
+      ['Art', 'Events', 'Community'],
     ][Math.floor(Math.random() * 3)],
-  }));
-});
+  }))
+})
 
 export default component$(() => {
-  const place = useloadPlace();
-  const suggestedPlaces = useLoadSuggestedPlaces();
+  const place = useloadPlace()
+  const suggestedPlaces = useLoadSuggestedPlaces()
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-[#F8EDE3] to-[#FFF8F0] md:pt-20">
@@ -248,7 +248,7 @@ export default component$(() => {
           <div class="overflow-hidden rounded-xl border-[#E6D7C3]/40 bg-white/90 shadow-xl backdrop-blur-sm">
             <div class="relative">
               <img
-                src={(place.value.data?.ImageURL as string) || ""}
+                src={(place.value.data?.ImageURL as string) || ''}
                 alt={place.value.data?.Name}
                 class="h-[250px] w-full object-cover sm:h-[350px] md:h-[450px]"
                 width={824}
@@ -265,19 +265,19 @@ export default component$(() => {
                     </h2>
                     <div class="flex items-center gap-2">
                       <div class="flex items-center gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
+                        {[1, 2, 3, 4, 5].map(star => (
                           <StarIcon
                             key={star}
                             class={`h-4 w-4 sm:h-5 sm:w-5 ${
                               star <= (place.value.data?.Rating || 0)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-400"
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-gray-400'
                             }`}
                           />
                         ))}
                       </div>
                       <span class="text-xs font-medium sm:text-sm">
-                        {place.value.data?.Rating.toFixed(1) || "0.0"} (127
+                        {place.value.data?.Rating.toFixed(1) || '0.0'} (127
                         reviews)
                       </span>
                     </div>
@@ -285,7 +285,7 @@ export default component$(() => {
                   {/* Like button in hero section */}
                   <button
                     type="button"
-                    onClick$={() => console.log("Liked place!")}
+                    onClick$={() => console.log('Liked place!')}
                     class="group flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-md transition-all hover:bg-[#D98E73] hover:shadow-lg"
                     aria-label="Like this place"
                   >
@@ -357,7 +357,7 @@ export default component$(() => {
                 {place.value.data?.Description}
               </p>
               <div class="mt-4 flex flex-wrap gap-2">
-                {place.value.data?.Tags?.map((tag) => (
+                {place.value.data?.Tags?.map(tag => (
                   <span
                     key={tag}
                     class="inline-block rounded-full border border-[#E6D7C3] px-3 py-1 text-xs font-medium text-[#8B5A2B] transition-colors hover:bg-[#F8D7BD]/20 sm:text-sm"
@@ -408,19 +408,19 @@ export default component$(() => {
                     </span>
                     <div class="flex items-center gap-1.5">
                       <div class="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
+                        {[1, 2, 3, 4, 5].map(star => (
                           <StarIcon
                             key={star}
                             class={`h-4 w-4 ${
                               star <= (place.value.data?.Rating || 0)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-gray-300'
                             }`}
                           />
                         ))}
                       </div>
                       <span class="font-medium text-[#5B3E29]">
-                        {place.value.data?.Rating.toFixed(1) || "0.0"}
+                        {place.value.data?.Rating.toFixed(1) || '0.0'}
                       </span>
                     </div>
                   </div>
@@ -450,7 +450,7 @@ export default component$(() => {
                   {/* Action buttons */}
                   <div class="mt-2 flex justify-between gap-3">
                     <a
-                      href={`https://maps.google.com/?q=${encodeURIComponent(place.value.data?.Address || "")}`}
+                      href={`https://maps.google.com/?q=${encodeURIComponent(place.value.data?.Address || '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#D98E73] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#C27B62]"
@@ -461,7 +461,7 @@ export default component$(() => {
                     {/* Like button next to Directions */}
                     <button
                       type="button"
-                      onClick$={() => console.log("Bookmarked place!")}
+                      onClick$={() => console.log('Bookmarked place!')}
                       class="flex items-center justify-center gap-1.5 rounded-lg border border-[#D98E73] bg-white px-4 py-2 text-sm font-medium text-[#D98E73] transition-colors hover:bg-[#FFF1E6]"
                     >
                       <HeartIcon class="h-4 w-4" />
@@ -487,7 +487,7 @@ export default component$(() => {
               </div>
             </div>
             <div class="space-y-6">
-              {reviewsData.map((review) => (
+              {reviewsData.map(review => (
                 <ReviewCard key={review.initials} {...review} />
               ))}
             </div>
@@ -504,7 +504,7 @@ export default component$(() => {
               </p>
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
-              {suggestedPlaces.value?.map((place) => (
+              {suggestedPlaces.value?.map(place => (
                 <SuggestedPlaceCard key={place.id} {...place} />
               )) || []}
             </div>
@@ -531,7 +531,7 @@ export default component$(() => {
               </p>
             </div>
             <div class="space-y-4">
-              {suggestedPlaces.value?.map((place) => (
+              {suggestedPlaces.value?.map(place => (
                 <SuggestedPlaceCard key={place.id} {...place} />
               )) || []}
             </div>
@@ -548,50 +548,50 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
 export const head: DocumentHead = ({ resolveValue }) => {
-  const place = resolveValue(useloadPlace);
+  const place = resolveValue(useloadPlace)
   return {
-    title: `Study & Hack | ${place.data?.Name || "Place Details"}`,
+    title: `Study & Hack | ${place.data?.Name || 'Place Details'}`,
     meta: [
       {
-        name: "description",
-        content: place.data?.Description || "",
+        name: 'description',
+        content: place.data?.Description || '',
       },
       {
-        name: "id",
-        content: place.data?.PlaceID.toString() || "",
+        name: 'id',
+        content: place.data?.PlaceID.toString() || '',
       },
       {
-        property: "og:title",
-        content: `Study & Hack | ${place.data?.Name || "Place Details"}`,
+        property: 'og:title',
+        content: `Study & Hack | ${place.data?.Name || 'Place Details'}`,
       },
       {
-        property: "og:description",
-        content: place.data?.Description || "",
+        property: 'og:description',
+        content: place.data?.Description || '',
       },
       {
-        property: "og:image",
-        content: place.data?.ImageURL || "",
+        property: 'og:image',
+        content: place.data?.ImageURL || '',
       },
       {
-        property: "twitter:card",
-        content: "summary_large_image",
+        property: 'twitter:card',
+        content: 'summary_large_image',
       },
       {
-        property: "twitter:title",
-        content: `Study & Hack | ${place.data?.Name || "Place Details"}`,
+        property: 'twitter:title',
+        content: `Study & Hack | ${place.data?.Name || 'Place Details'}`,
       },
       {
-        property: "twitter:description",
-        content: place.data?.Description || "",
+        property: 'twitter:description',
+        content: place.data?.Description || '',
       },
       {
-        property: "twitter:image",
-        content: place.data?.ImageURL || "",
+        property: 'twitter:image',
+        content: place.data?.ImageURL || '',
       },
     ],
-  };
-};
+  }
+}

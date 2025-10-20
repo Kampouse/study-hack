@@ -1,18 +1,18 @@
-import { component$, Slot } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { Slot, component$ } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
 
-import type { RequestEventLoader } from "@builder.io/qwik-city";
+import type { RequestEventLoader } from '@builder.io/qwik-city'
 import {
   GetUser,
-  QueryActiveRequest,
   QueryActiveEvent,
-  QueryUserPlaces,
+  QueryActiveRequest,
   QueryMyCompletedRequests,
+  QueryUserPlaces,
   QueryUserStats,
-} from "~/api/Query";
+} from '~/api/Query'
 export const useQueries = routeLoader$(
   async (event: RequestEventLoader<QwikCityPlatform>) => {
-    const user = await GetUser({ event: event });
+    const user = await GetUser({ event: event })
     const [
       activeRequest,
       activeEvent,
@@ -25,7 +25,7 @@ export const useQueries = routeLoader$(
       QueryUserPlaces({ event: event, user: user }),
       QueryMyCompletedRequests({ event: event, user: user }),
       QueryUserStats({ event: event, user: user }),
-    ]);
+    ])
     return {
       userData: user,
       activeRequest: activeRequest,
@@ -33,13 +33,13 @@ export const useQueries = routeLoader$(
       completedRequest: completedRequest,
       userStats: userStats,
       userPlaces: userPlaces,
-    };
-  },
-);
+    }
+  }
+)
 export default component$(() => {
   return (
     <div class="">
       <Slot />
     </div>
-  );
-});
+  )
+})

@@ -1,134 +1,134 @@
+import { sql } from 'drizzle-orm'
 import {
-  sqliteTable,
-  uniqueIndex,
   integer,
+  sqliteTable,
   text,
-} from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
+  uniqueIndex,
+} from 'drizzle-orm/sqlite-core'
 
 export const Users = sqliteTable(
-  "Users",
+  'Users',
   {
-    UserID: integer("UserID").primaryKey({ autoIncrement: true }).notNull(),
-    Username: text("Username").notNull(),
-    Name: text("Name").default("").notNull(),
-    Email: text("Email").notNull(),
-    ImageURL: text("ImageURL"),
-    Description: text("Description"),
-    IsAdmin: integer("IsAdmin").default(0).notNull(),
-    Intrestets: text("Intrestets", { mode: "json" })
+    UserID: integer('UserID').primaryKey({ autoIncrement: true }).notNull(),
+    Username: text('Username').notNull(),
+    Name: text('Name').default('').notNull(),
+    Email: text('Email').notNull(),
+    ImageURL: text('ImageURL'),
+    Description: text('Description'),
+    IsAdmin: integer('IsAdmin').default(0).notNull(),
+    Intrestets: text('Intrestets', { mode: 'json' })
       .$type<string[]>()
       .default([])
       .notNull(),
 
-    CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
+    CreatedAt: text('CreatedAt').default(sql`CURRENT_TIMESTAMP`),
   },
-  (table) => {
+  table => {
     return {
-      Email_unique: uniqueIndex("Users_Email_unique").on(table.Email),
-      Username_unique: uniqueIndex("Users_Username_unique").on(table.Username),
-    };
-  },
-);
+      Email_unique: uniqueIndex('Users_Email_unique').on(table.Email),
+      Username_unique: uniqueIndex('Users_Username_unique').on(table.Username),
+    }
+  }
+)
 
 export const Sessions = sqliteTable(
-  "Sessions",
+  'Sessions',
   {
-    SessionID: integer("SessionID")
+    SessionID: integer('SessionID')
       .primaryKey({ autoIncrement: true })
       .notNull(),
-    UserID: integer("UserID")
+    UserID: integer('UserID')
       .notNull()
       .references(() => Users.UserID),
-    SessionToken: text("SessionToken").notNull(),
-    CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-    ExpiresAt: text("ExpiresAt"),
+    SessionToken: text('SessionToken').notNull(),
+    CreatedAt: text('CreatedAt').default(sql`CURRENT_TIMESTAMP`),
+    ExpiresAt: text('ExpiresAt'),
   },
-  (table) => {
+  table => {
     return {
-      SessionToken_unique: uniqueIndex("Sessions_SessionToken_unique").on(
-        table.SessionToken,
+      SessionToken_unique: uniqueIndex('Sessions_SessionToken_unique').on(
+        table.SessionToken
       ),
-    };
-  },
-);
+    }
+  }
+)
 
 export const Requests = sqliteTable(
-  "Requests",
+  'Requests',
   {
-    RequestID: integer("RequestID")
+    RequestID: integer('RequestID')
       .primaryKey({ autoIncrement: true })
       .notNull(),
-    EventID: integer("EventID")
+    EventID: integer('EventID')
       .notNull()
       .references(() => Events.EventID),
-    UserID: integer("UserID")
+    UserID: integer('UserID')
       .notNull()
       .references(() => Users.UserID),
-    Status: text("Status").default("pending").notNull(),
-    Background: text("Background"),
-    Experience: text("Experience"),
-    WhyJoin: text("WhyJoin"),
-    CreatedAt: text("CreatedAt").default("sql`(CURRENT_TIMESTAMP)`"),
+    Status: text('Status').default('pending').notNull(),
+    Background: text('Background'),
+    Experience: text('Experience'),
+    WhyJoin: text('WhyJoin'),
+    CreatedAt: text('CreatedAt').default('sql`(CURRENT_TIMESTAMP)`'),
   },
-  (table) => {
+  table => {
     return {
-      EventID_UserID_unique: uniqueIndex("Requests_EventID_UserID_unique").on(
+      EventID_UserID_unique: uniqueIndex('Requests_EventID_UserID_unique').on(
         table.EventID,
-        table.UserID,
+        table.UserID
       ),
-    };
-  },
-);
+    }
+  }
+)
 
-export const Events = sqliteTable("Events", {
-  EventID: integer("EventID").primaryKey({ autoIncrement: true }),
-  Name: text("Name").notNull(),
-  Description: text("Description").notNull(),
-  Location: text("Location").notNull(),
-  ImageURL: text("ImageUrl"),
-  Coordinates: text("Coordinates", { mode: "json" })
+export const Events = sqliteTable('Events', {
+  EventID: integer('EventID').primaryKey({ autoIncrement: true }),
+  Name: text('Name').notNull(),
+  Description: text('Description').notNull(),
+  Location: text('Location').notNull(),
+  ImageURL: text('ImageUrl'),
+  Coordinates: text('Coordinates', { mode: 'json' })
     .$type<[number, number]>()
     .notNull(),
-  Date: text("Date").notNull(),
-  StartTime: text("StartTime").notNull(),
-  PlaceId: integer("PlaceId"),
-  EndTime: text("EndTime").notNull(),
-  Tags: text("Tags", { mode: "json" }).$type<string[]>().notNull(),
-  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-  UserID: integer("UserID")
+  Date: text('Date').notNull(),
+  StartTime: text('StartTime').notNull(),
+  PlaceId: integer('PlaceId'),
+  EndTime: text('EndTime').notNull(),
+  Tags: text('Tags', { mode: 'json' }).$type<string[]>().notNull(),
+  CreatedAt: text('CreatedAt').default(sql`CURRENT_TIMESTAMP`),
+  UserID: integer('UserID')
     .notNull()
     .references(() => Users.UserID),
-});
+})
 
-export const Places = sqliteTable("Places", {
-  PlaceID: integer("PlaceID").primaryKey({ autoIncrement: true }),
-  Name: text("Name").notNull(),
-  Address: text("Address").notNull(),
-  ImageURL: text("ImageUrl"),
-  Description: text("Description").notNull(),
-  Tags: text("Tags", { mode: "json" }).$type<string[]>(),
-  Rating: integer("Rating").default(0).notNull(),
+export const Places = sqliteTable('Places', {
+  PlaceID: integer('PlaceID').primaryKey({ autoIncrement: true }),
+  Name: text('Name').notNull(),
+  Address: text('Address').notNull(),
+  ImageURL: text('ImageUrl'),
+  Description: text('Description').notNull(),
+  Tags: text('Tags', { mode: 'json' }).$type<string[]>(),
+  Rating: integer('Rating').default(0).notNull(),
 
-  WifiSpeed: integer("WifiSpeed"),
-  HasQuietEnvironment: integer("HasQuietEnvironment"),
-  Price: text("Price"),
-  Coordinates: text("Coordinates", { mode: "json" }).$type<[number, number]>(),
-  Category: text("Category"),
-  IsPublic: integer("IsPublic").default(1).notNull(),
-  CreatedAt: text("CreatedAt").default(sql`CURRENT_TIMESTAMP`),
-  UserID: integer("UserID")
+  WifiSpeed: integer('WifiSpeed'),
+  HasQuietEnvironment: integer('HasQuietEnvironment'),
+  Price: text('Price'),
+  Coordinates: text('Coordinates', { mode: 'json' }).$type<[number, number]>(),
+  Category: text('Category'),
+  IsPublic: integer('IsPublic').default(1).notNull(),
+  CreatedAt: text('CreatedAt').default(sql`CURRENT_TIMESTAMP`),
+  UserID: integer('UserID')
     .notNull()
     .references(() => Users.UserID),
-});
+})
 
-export type Place = typeof Places.$inferSelect;
-export type User = typeof Users.$inferSelect;
-export type NewUser = typeof Users.$inferInsert;
+export type Place = typeof Places.$inferSelect
+export type User = typeof Users.$inferSelect
+export type NewUser = typeof Users.$inferInsert
 
-export type Session = typeof Sessions.$inferSelect;
-export type NewSession = typeof Sessions.$inferInsert;
+export type Session = typeof Sessions.$inferSelect
+export type NewSession = typeof Sessions.$inferInsert
 
-export type Event = typeof Events.$inferSelect;
-export type NewEvent = typeof Events.$inferInsert;
-export type JoinEvent = typeof Requests.$inferInsert;
+export type Event = typeof Events.$inferSelect
+export type NewEvent = typeof Events.$inferInsert
+export type JoinEvent = typeof Requests.$inferInsert

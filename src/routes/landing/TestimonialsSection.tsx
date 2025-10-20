@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
 
 export const TestimonialsSection = component$(() => {
   return (
@@ -73,5 +73,5 @@ export const TestimonialsSection = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

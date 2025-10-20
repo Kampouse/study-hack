@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 
 export const HeroSection = component$(() => {
   return (
@@ -70,6 +70,6 @@ export const HeroSection = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})
 // tailwind.config.js

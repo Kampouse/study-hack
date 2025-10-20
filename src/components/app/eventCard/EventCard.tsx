@@ -1,24 +1,24 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 
 export type EventCardProps = {
-  title: string;
-  description: string;
-  time: string;
-  tags: string[];
-  placeID: number;
-  placeName: string;
-  image: string;
-  attendees: number;
-  link: string;
-  status?: string;
-  host?: boolean;
-};
+  title: string
+  description: string
+  time: string
+  tags: string[]
+  placeID: number
+  placeName: string
+  image: string
+  attendees: number
+  link: string
+  status?: string
+  host?: boolean
+}
 
 const StatusBadge = component$((props: { status: string }) => {
   return (
     <div class="h-full">
-      {props.status === "host" ? (
+      {props.status === 'host' ? (
         <span class="whitespace-nowrap rounded-full bg-blue-200 px-3 py-1 text-xs font-semibold text-blue-800 shadow-sm">
           Host
         </span>
@@ -27,19 +27,19 @@ const StatusBadge = component$((props: { status: string }) => {
           {props.status && (
             <span
               class={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold shadow-sm ${
-                props.status === "pending"
-                  ? "bg-yellow-200 text-yellow-800"
-                  : "bg-green-200 text-green-800"
+                props.status === 'pending'
+                  ? 'bg-yellow-200 text-yellow-800'
+                  : 'bg-green-200 text-green-800'
               }`}
             >
-              {props.status === "pending" ? "Pending" : "Confirmed"}
+              {props.status === 'pending' ? 'Pending' : 'Confirmed'}
             </span>
           )}
         </div>
       )}
     </div>
-  );
-});
+  )
+})
 
 export const EmptyEventCard = component$(() => {
   return (
@@ -57,48 +57,48 @@ export const EmptyEventCard = component$(() => {
         <div class="h-6 w-16 animate-pulse rounded-full bg-gray-200"></div>
       </div>
     </article>
-  );
-});
+  )
+})
 export const EventCard = component$((props: EventCardProps) => {
   const getRelativeTime = (timeStr: string) => {
-    const timeParts = timeStr.split(" at ");
-    const datePart = timeParts[0];
-    const timePart = timeParts[1];
+    const timeParts = timeStr.split(' at ')
+    const datePart = timeParts[0]
+    const timePart = timeParts[1]
 
-    const [month, day, year] = datePart.split("/");
-    const [time, meridiem] = timePart.split(" ");
-    const [hours, minutes] = time.split(":");
+    const [month, day, year] = datePart.split('/')
+    const [time, meridiem] = timePart.split(' ')
+    const [hours, minutes] = time.split(':')
 
-    let hour = parseInt(hours);
-    if (meridiem === "PM" && hour !== 12) {
-      hour += 12;
-    } else if (meridiem === "AM" && hour === 12) {
-      hour = 0;
+    let hour = Number.parseInt(hours)
+    if (meridiem === 'PM' && hour !== 12) {
+      hour += 12
+    } else if (meridiem === 'AM' && hour === 12) {
+      hour = 0
     }
 
     const date = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
+      Number.parseInt(year),
+      Number.parseInt(month) - 1,
+      Number.parseInt(day),
       hour,
-      parseInt(minutes),
-    );
+      Number.parseInt(minutes)
+    )
     const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
       hour12: true,
-      timeZone: "UTC",
-    };
+      timeZone: 'UTC',
+    }
 
-    return date.toLocaleDateString("en-US", options);
-  };
+    return date.toLocaleDateString('en-US', options)
+  }
 
   return (
     <div class="flex h-full max-h-[26em] flex-col overflow-hidden rounded-2xl border border-gray-300 bg-gradient-to-br from-white/80 to-gray-100/50 p-4 shadow-sm transition-all duration-300 hover:border-green-100 hover:bg-gradient-to-br hover:from-white/90 hover:to-gray-50/70 hover:shadow-md md:block">
       <article
-        id={"#" + props.title}
+        id={'#' + props.title}
         class="flex flex-1 flex-col overflow-hidden rounded-2xl md:block"
       >
         <header class="relative flex w-full flex-col items-center justify-center overflow-hidden rounded-xl">
@@ -108,12 +108,12 @@ export const EventCard = component$((props: EventCardProps) => {
               src={
                 props.image
                   ? props.image
-                  : "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg"
+                  : 'https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg'
               }
-              onError$={(event) => {
-                const target = event.target as HTMLImageElement;
+              onError$={event => {
+                const target = event.target as HTMLImageElement
                 target.src =
-                  "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
+                  'https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg'
               }}
               class="size-full absolute inset-0 object-cover"
               alt=""
@@ -143,7 +143,7 @@ export const EventCard = component$((props: EventCardProps) => {
             </div>
           </div>
           <div class="absolute bottom-2 right-2">
-            <StatusBadge status={props.status || ""} />
+            <StatusBadge status={props.status || ''} />
           </div>
         </header>
         <div class="flex flex-1 flex-col justify-between">
@@ -188,5 +188,5 @@ export const EventCard = component$((props: EventCardProps) => {
       </article>
       <div class="absolute bottom-1 mt-auto pt-2"></div>
     </div>
-  );
-});
+  )
+})

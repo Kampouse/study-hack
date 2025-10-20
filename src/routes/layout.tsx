@@ -1,8 +1,8 @@
-import { component$, Slot } from "@builder.io/qwik";
-import type { RequestHandler } from "@builder.io/qwik-city";
-import MainHeader from "../components/header/Mainheader";
-import { GetUser } from "~/api/Query";
-export const onGet: RequestHandler = async (ctx) => {
+import { Slot, component$ } from '@builder.io/qwik'
+import type { RequestHandler } from '@builder.io/qwik-city'
+import { GetUser } from '~/api/Query'
+import MainHeader from '../components/header/Mainheader'
+export const onGet: RequestHandler = async ctx => {
   //if there is no platform session, we need to create one
   //we can create a new session with the user data
   //detect if the user is new or not and create the platform
@@ -17,15 +17,15 @@ export const onGet: RequestHandler = async (ctx) => {
   //});
   //if (url.pathname == "/" && session) throw redirect (302, "/app");
 
-  const session = ctx.sharedMap.get("session");
-  if (session && ctx.pathname == "/") {
-    const user = await GetUser({ event: ctx });
+  const session = ctx.sharedMap.get('session')
+  if (session && ctx.pathname == '/') {
+    const user = await GetUser({ event: ctx })
     if (user) {
-      throw ctx.redirect(302, "/home");
+      throw ctx.redirect(302, '/home')
     }
-    throw ctx.redirect(302, "/auth/signedin");
+    throw ctx.redirect(302, '/auth/signedin')
   }
-};
+}
 
 export default component$(() => {
   return (
@@ -35,5 +35,5 @@ export default component$(() => {
       </div>
       <Slot />
     </div>
-  );
-});
+  )
+})

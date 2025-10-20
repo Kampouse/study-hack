@@ -1,10 +1,10 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { EventCard } from "@/components/app/eventCard/EventCard";
-import { QueryEvents } from "~/api/Query";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { EventCard } from '@/components/app/eventCard/EventCard'
+import { component$ } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import type { DocumentHead } from '@builder.io/qwik-city'
+import { QueryEvents } from '~/api/Query'
 
-export const useEvents = routeLoader$(async (event) => {
+export const useEvents = routeLoader$(async event => {
   // This is a placeholder. Replace with actual API call to fetch events
   try {
     const data = await QueryEvents({
@@ -12,29 +12,29 @@ export const useEvents = routeLoader$(async (event) => {
       options: {
         limit: 10,
       },
-    });
+    })
     if (data) {
-      return data;
+      return data
     }
   } catch (error) {
-    console.error(error);
-    return [];
+    console.error(error)
+    return []
   }
-});
+})
 export const head: DocumentHead = {
-  title: "Events",
-};
+  title: 'Events',
+}
 
 export default component$(() => {
-  const events = useEvents();
+  const events = useEvents()
 
   return (
     <div>
       <div class=" flex items-center justify-between">
         <h1 class="py-4 text-3xl font-bold text-gray-800">Upcoming Events</h1>
-      </div>{" "}
+      </div>{' '}
       <div class="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {events.value?.map((event) => (
+        {events.value?.map(event => (
           <EventCard
             key={event.eventID}
             title={event.name}
@@ -45,10 +45,10 @@ export default component$(() => {
             tags={event.tags}
             placeID={event.placeId as number}
             attendees={0}
-            link={"/join/" + event.eventID}
+            link={'/join/' + event.eventID}
           />
         ))}
       </div>
     </div>
-  );
-});
+  )
+})

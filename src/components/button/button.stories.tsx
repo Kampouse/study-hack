@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from "storybook-framework-qwik";
-import { Button, type ButtonProps } from "./button";
+import type { Meta, StoryObj } from 'storybook-framework-qwik'
+import { Button, type ButtonProps } from './button'
 
 const meta: Meta<ButtonProps> = {
   component: Button,
-};
+}
 
-type Story = StoryObj<ButtonProps>;
+type Story = StoryObj<ButtonProps>
 
-export default meta;
+export default meta
 
 export const Primary: Story = {
   args: {
-    size: "medium",
+    size: 'medium',
   },
   render: (props: ButtonProps) => <Button {...props}> what up </Button>,
-};
+}

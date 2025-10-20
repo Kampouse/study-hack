@@ -1,37 +1,37 @@
-import { component$, useStyles$, useSignal, useTask$ } from "@builder.io/qwik";
-import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
-import type { LocationsProps } from "~/models/location";
-import { LeafletMap } from "./index";
+import { component$, useSignal, useStyles$, useTask$ } from '@builder.io/qwik'
+import type { LocationsProps } from '~/models/location'
+import leafletStyles from '../../../node_modules/leaflet/dist/leaflet.css?inline'
+import { LeafletMap } from './index'
 
-import type { MapProps } from "~/models/map";
-import { useLocation } from "@builder.io/qwik-city";
+import { useLocation } from '@builder.io/qwik-city'
+import type { MapProps } from '~/models/map'
 
-export default component$<MapProps>((props) => {
-  useStyles$(leafletStyles);
+export default component$<MapProps>(props => {
+  useStyles$(leafletStyles)
   // todo make this dynamic
   const mapData = {
-    name: "Montreal",
+    name: 'Montreal',
     point: [45.5017, -73.5673],
-    boundaryBox: "45.4092,-73.9786,45.7065,-73.4747", // Example bounding box for Montreal
+    boundaryBox: '45.4092,-73.9786,45.7065,-73.4747', // Example bounding box for Montreal
     zoom: 12,
     marker: true,
-  } satisfies LocationsProps;
+  } satisfies LocationsProps
   if (props.location) {
-    Object.assign(mapData, props.location);
+    Object.assign(mapData, props.location)
   }
 
   const currentLocation = useSignal<LocationsProps>({
     ...mapData,
-  });
-  const styled = useSignal<string>("my-app");
-  const location = useLocation();
+  })
+  const styled = useSignal<string>('my-app')
+  const location = useLocation()
   useTask$(() => {
-    if (location.url.pathname.includes("profile")) {
-      styled.value = "my-profile";
+    if (location.url.pathname.includes('profile')) {
+      styled.value = 'my-profile'
     } else {
-      styled.value = "my-app";
+      styled.value = 'my-app'
     }
-  });
+  })
   return (
     <div class={styled}>
       <LeafletMap
@@ -40,5 +40,5 @@ export default component$<MapProps>((props) => {
         location={currentLocation}
       />
     </div>
-  );
-});
+  )
+})

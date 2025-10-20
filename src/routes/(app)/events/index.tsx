@@ -1,83 +1,83 @@
-import { component$, useSignal } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { component$, useSignal } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
 
-import { getEvents } from "~/api/EndPoint";
-import { DetailedEventCard } from "../home/detailed-event-card";
+import { getEvents } from '~/api/EndPoint'
+import { DetailedEventCard } from '../home/detailed-event-card'
 
-export type Events = Awaited<ReturnType<typeof useEvents>>;
+export type Events = Awaited<ReturnType<typeof useEvents>>
 
 export const head = {
-  title: "S&H | Events",
-};
+  title: 'S&H | Events',
+}
 
-export const useEvents = routeLoader$(async (event) => {
+export const useEvents = routeLoader$(async event => {
   const data = await getEvents({
     event: event,
     options: {
       limit: 1000, // Consider pagination or smaller limits for performance
     },
-  });
-  return data;
-});
+  })
+  return data
+})
 
 // Define how many items to show initially and how many to load more
-const INITIAL_EVENTS_COUNT = 5;
-const EVENTS_INCREMENT = 5;
+const INITIAL_EVENTS_COUNT = 5
+const EVENTS_INCREMENT = 5
 
 export default component$(() => {
-  const events = useEvents();
-  const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT);
-  const searchTermSignal = useSignal(""); // Default search is empty
-  const dateRangeSignal = useSignal("all"); // Default to show all dates
-  const sortOption = useSignal("date-asc"); // Default sort by date
+  const events = useEvents()
+  const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT)
+  const searchTermSignal = useSignal('') // Default search is empty
+  const dateRangeSignal = useSignal('all') // Default to show all dates
+  const sortOption = useSignal('date-asc') // Default sort by date
 
   // Transform the API data for our event cards
   const eventsDataForCards =
-    events.value.data?.map((event) => ({
+    events.value.data?.map(event => ({
       id: event.eventID,
       title: event.name,
-      image: event.image || "/placeholder.svg",
-      badge: "Event", // Or derive from event type/tags
-      type: "Study Group", // Or derive from event type
-      date: event.date.split(" ")[0],
-      time: event.starttime.split(":")[0] + ":" + event.starttime.split(":")[1],
-      location: event.location || "Location TBD",
-      creator: event.creator || "Anonymous",
+      image: event.image || '/placeholder.svg',
+      badge: 'Event', // Or derive from event type/tags
+      type: 'Study Group', // Or derive from event type
+      date: event.date.split(' ')[0],
+      time: event.starttime.split(':')[0] + ':' + event.starttime.split(':')[1],
+      location: event.location || 'Location TBD',
+      creator: event.creator || 'Anonymous',
       attendees: event.attendees ?? 8, // Fetch real attendee count if available
       spotsLeft: 5, // Fetch real spots left if available
-    })) || [];
+    })) || []
 
   // Filter events based on search term and date range
-  const filteredEvents = eventsDataForCards.filter((event) => {
+  const filteredEvents = eventsDataForCards.filter(event => {
     // Simple case-insensitive search
     const searchMatch =
-      searchTermSignal.value === "" ||
+      searchTermSignal.value === '' ||
       event.title
         .toLowerCase()
         .includes(searchTermSignal.value.toLowerCase()) ||
       event.location
         .toLowerCase()
-        .includes(searchTermSignal.value.toLowerCase());
+        .includes(searchTermSignal.value.toLowerCase())
 
     // Date filtering would go here
     // For now we're just passing everything through
 
-    return searchMatch;
-  });
+    return searchMatch
+  })
 
   // Sort events based on selected option
   const sortedEvents = [...filteredEvents].sort((a, b) => {
-    if (sortOption.value === "date-asc") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    } else if (sortOption.value === "date-desc") {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    } else if (sortOption.value === "popular") {
-      return b.attendees - a.attendees;
+    if (sortOption.value === 'date-asc') {
+      return new Date(a.date).getTime() - new Date(b.date).getTime()
+    } else if (sortOption.value === 'date-desc') {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    } else if (sortOption.value === 'popular') {
+      return b.attendees - a.attendees
     }
-    return 0;
-  });
+    return 0
+  })
 
-  const allEventsLoaded = visibleEventsCount.value >= sortedEvents.length;
+  const allEventsLoaded = visibleEventsCount.value >= sortedEvents.length
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -144,11 +144,9 @@ export default component$(() => {
           <div class="space-y-6">
             {sortedEvents.length > 0 ? (
               <>
-                {sortedEvents
-                  .slice(0, visibleEventsCount.value)
-                  .map((event) => (
-                    <DetailedEventCard key={event.id} event={event} />
-                  ))}
+                {sortedEvents.slice(0, visibleEventsCount.value).map(event => (
+                  <DetailedEventCard key={event.id} event={event} />
+                ))}
 
                 {/* Load more button */}
                 {!allEventsLoaded && (
@@ -156,7 +154,7 @@ export default component$(() => {
                     <button
                       type="button"
                       onClick$={() => {
-                        visibleEventsCount.value += EVENTS_INCREMENT;
+                        visibleEventsCount.value += EVENTS_INCREMENT
                       }}
                       class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                     >
@@ -235,5 +233,5 @@ export default component$(() => {
         </div>
       </section>
     </div>
-  );
-});
+  )
+})

@@ -1,10 +1,10 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { UsersIcon as Users, ChevronRightIcon } from "lucide-qwik";
-import type { ActiveRequestType } from "~/routes/profile/types";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { ChevronRightIcon, UsersIcon as Users } from 'lucide-qwik'
+import type { ActiveRequestType } from '~/routes/profile/types'
 
 interface ActiveRequestsSidebarProps {
-  requests: ActiveRequestType[] | null | undefined; // Allow null/undefined
+  requests: ActiveRequestType[] | null | undefined // Allow null/undefined
 }
 
 /**
@@ -25,7 +25,7 @@ export const ActiveRequestsSidebar = component$<ActiveRequestsSidebarProps>(
   ({ requests }) => {
     // Use a more specific type for requests
     if (!requests || requests.length === 0) {
-      return null; // Don't render if no active requests
+      return null // Don't render if no active requests
     }
 
     return (
@@ -39,7 +39,7 @@ export const ActiveRequestsSidebar = component$<ActiveRequestsSidebarProps>(
           </div>
         </div>
         <div class="-mx-3 divide-y divide-[#F8EDE3]">
-          {requests.map((req) => (
+          {requests.map(req => (
             <div class="py-3 first:pt-0 last:pb-0" key={req.requestId}>
               <Link
                 href={`/profile/meet/request/${req.requestId}`}
@@ -51,20 +51,20 @@ export const ActiveRequestsSidebar = component$<ActiveRequestsSidebarProps>(
                       class="h-full w-full object-cover"
                       src={
                         req.image ||
-                        `https://ui-avatars.com/api/?name=${encodeURIComponent(req.username || "User")}&background=F8D7BD&color=5B3E29`
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(req.username || 'User')}&background=F8D7BD&color=5B3E29`
                       }
                       width={48}
                       height={48}
                       alt={
                         req.username
                           ? `${req.username}'s avatar`
-                          : "User avatar"
+                          : 'User avatar'
                       }
                     />
                   </div>
                   <div class="flex-1 overflow-hidden">
                     <h3 class="truncate font-medium text-[#5B3E29] transition-colors group-hover:text-[#D98E73]">
-                      {req.eventName || "Event Request"}
+                      {req.eventName || 'Event Request'}
                     </h3>
                     {req.username && (
                       <span class="mt-1 flex items-center text-sm text-[#6D5D4E] transition-colors group-hover:text-[#C27B62]">
@@ -90,6 +90,6 @@ export const ActiveRequestsSidebar = component$<ActiveRequestsSidebarProps>(
           </Link>
         )}
       </div>
-    );
-  },
-);
+    )
+  }
+)

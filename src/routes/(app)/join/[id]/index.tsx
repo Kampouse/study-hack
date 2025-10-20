@@ -1,75 +1,75 @@
-import * as Icons from "lucide-qwik";
-import type { InitialValues } from "@modular-forms/qwik";
-import { formAction$, useForm } from "@modular-forms/qwik";
-import { valiForm$ } from "@modular-forms/qwik";
-import { joinRequest, joinRequestSchema } from "~/api/Forms";
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { Link } from "@builder.io/qwik-city";
-import type * as v from "valibot";
-import { getEvent } from "~/api/EndPoint";
-import type { JoinEvent } from "~/../drizzle/schema";
-import { ErrorAlert } from "~/components/ui/ErrorAlert";
-type JoinRequest = v.InferInput<typeof joinRequestSchema>;
+import { component$ } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import { Link } from '@builder.io/qwik-city'
+import type { InitialValues } from '@modular-forms/qwik'
+import { formAction$, useForm } from '@modular-forms/qwik'
+import { valiForm$ } from '@modular-forms/qwik'
+import * as Icons from 'lucide-qwik'
+import type * as v from 'valibot'
+import type { JoinEvent } from '~/../drizzle/schema'
+import { getEvent } from '~/api/EndPoint'
+import { joinRequest, joinRequestSchema } from '~/api/Forms'
+import { ErrorAlert } from '~/components/ui/ErrorAlert'
+type JoinRequest = v.InferInput<typeof joinRequestSchema>
 export const head = {
-  title: "S&H | Join Event",
-  description: "Join the Web Development Enthusiasts Meetup",
-};
+  title: 'S&H | Join Event',
+  description: 'Join the Web Development Enthusiasts Meetup',
+}
 
-export const useEventDetails = routeLoader$(async (request) => {
-  const payload = await getEvent(request, request.params.id);
+export const useEventDetails = routeLoader$(async request => {
+  const payload = await getEvent(request, request.params.id)
   if (payload.data == null) {
     //throw request.redirect(302, "/join/");
   }
   return {
     data: { ...payload.data, success: payload.success },
-  };
-});
+  }
+})
 export const useFormLoader = routeLoader$<InitialValues<JoinRequest>>(
   async () => {
     return {
-      Name: "",
-      ExperienceLevel: "",
-      Background: "",
-      WhyJoin: "",
-    };
-  },
-);
+      Name: '',
+      ExperienceLevel: '',
+      Background: '',
+      WhyJoin: '',
+    }
+  }
+)
 export type Res = {
-  success: boolean;
-  data?: JoinEvent;
-  message: string;
-};
+  success: boolean
+  data?: JoinEvent
+  message: string
+}
 export const action = formAction$<JoinRequest, Res>(
   async (data, event) => {
-    const stuff = await joinRequest(data, event);
+    const stuff = await joinRequest(data, event)
 
     if (stuff.success && stuff.data != null) {
-      event.redirect(302, `/join/${stuff.data.EventID}/success`);
+      event.redirect(302, `/join/${stuff.data.EventID}/success`)
       return {
         data: stuff,
-        message: "Join request sent successfully",
-      };
+        message: 'Join request sent successfully',
+      }
     }
     return {
       success: false,
       message:
         (stuff as any)?.error ||
         "We couldn't submit your join request. Please check your answers and try again.",
-    };
+    }
   },
 
-  valiForm$(joinRequestSchema),
-);
+  valiForm$(joinRequestSchema)
+)
 
 export default component$(() => {
-  const event = useEventDetails();
-  const userid = event.value.data.user?.UserID.toString();
+  const event = useEventDetails()
+  const userid = event.value.data.user?.UserID.toString()
   const [formResponse, { Form, Field }] = useForm<JoinRequest, Res>({
     validate: valiForm$(joinRequestSchema),
     loader: useFormLoader(),
     action: action(),
-  });
+  })
 
   return (
     <div class="my-12 min-h-screen bg-white py-8">
@@ -85,7 +85,7 @@ export default component$(() => {
               )}
             <div class="flex items-start justify-between">
               <h1 class="text-3xl font-bold text-[#5B3E29]">
-                {event.value.data.event?.name || "Event Name"}
+                {event.value.data.event?.name || 'Event Name'}
               </h1>
 
               <div class="flex items-center gap-4">
@@ -93,7 +93,7 @@ export default component$(() => {
                   <Icons.UserIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
                   <Link
                     class="text-sm font-medium text-[#D98E73] hover:text-[#C27B62]"
-                    href={"/user/" + userid}
+                    href={'/user/' + userid}
                   >
                     {event.value.data.user?.Name}
                   </Link>
@@ -106,19 +106,19 @@ export default component$(() => {
                 <Icons.CalendarIcon class="mr-2 h-4 w-4 text-[#D98E73]" />
                 <p class="text-sm font-medium text-[#6D5D4E]">
                   {(() => {
-                    const eventDate = event.value.data.event?.date;
-                    if (!eventDate) return "Event Date";
-                    const date = new Date(eventDate);
-                    return date.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                      hour: "numeric",
-                      minute: "2-digit",
+                    const eventDate = event.value.data.event?.date
+                    if (!eventDate) return 'Event Date'
+                    const date = new Date(eventDate)
+                    return date.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit',
                       hour12: true,
-                    });
-                  })() || "Event Date"}{" "}
+                    })
+                  })() || 'Event Date'}{' '}
                 </p>
               </div>
 
@@ -127,10 +127,10 @@ export default component$(() => {
                 <Link
                   class="text-sm font-medium text-[#6D5D4E] hover:text-[#D98E73]"
                   href={
-                    "/places/" + event.value.data.location?.PlaceID.toString()
+                    '/places/' + event.value.data.location?.PlaceID.toString()
                   }
                 >
-                  {event.value.data.event?.location || "Event place"}
+                  {event.value.data.event?.location || 'Event place'}
                 </Link>
               </div>
             </div>
@@ -139,22 +139,22 @@ export default component$(() => {
               <img
                 src={
                   event.value.data.event?.image ||
-                  "https://via.placeholder.com/800"
+                  'https://via.placeholder.com/800'
                 }
-                alt={event.value.data.event?.location || "Event Image"}
+                alt={event.value.data.event?.location || 'Event Image'}
                 height={400}
                 width={800}
                 class="absolute inset-0 h-full w-full object-cover transition-transform duration-300"
-                onError$={(e) => {
-                  const img = e.target as HTMLImageElement;
+                onError$={e => {
+                  const img = e.target as HTMLImageElement
                   img.src =
-                    "https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg";
+                    'https://i.pinimg.com/736x/48/af/17/48af17868bea2ebf4f332e1145d66e16.jpg'
                 }}
               />
             </div>
 
             <p class="mt-8 text-base leading-relaxed text-[#6D5D4E]">
-              {event.value.data.event?.description || "hello"}
+              {event.value.data.event?.description || 'hello'}
             </p>
           </div>
 
@@ -175,8 +175,8 @@ export default component$(() => {
                         {...props}
                         class={`w-full rounded-xl ${
                           field.error
-                            ? "border-2 border-red-600 bg-red-50"
-                            : "border border-[#E6D7C3] bg-white"
+                            ? 'border-2 border-red-600 bg-red-50'
+                            : 'border border-[#E6D7C3] bg-white'
                         } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
                         value={field.value}
                       >
@@ -214,8 +214,8 @@ export default component$(() => {
                         rows={3}
                         class={`w-full rounded-xl ${
                           field.error
-                            ? "border-2 border-red-600 bg-red-50"
-                            : "border border-[#E6D7C3] bg-white"
+                            ? 'border-2 border-red-600 bg-red-50'
+                            : 'border border-[#E6D7C3] bg-white'
                         } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
                         placeholder="Share your background"
                         value={field.value}
@@ -248,8 +248,8 @@ export default component$(() => {
                         rows={3}
                         class={`w-full rounded-xl ${
                           field.error
-                            ? "border-2 border-red-600 bg-red-50"
-                            : "border border-[#E6D7C3] bg-white"
+                            ? 'border-2 border-red-600 bg-red-50'
+                            : 'border border-[#E6D7C3] bg-white'
                         } px-3 py-2 text-sm text-[#5B3E29] shadow-sm transition-colors hover:border-[#D98E73] focus:border-[#D98E73] focus:outline-none focus:ring-0`}
                         placeholder="Tell us why you want to join"
                         value={field.value}
@@ -277,5 +277,5 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

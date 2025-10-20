@@ -1,28 +1,28 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 import {
   CalendarIcon as Calendar,
   ClockIcon as Clock,
+  HeartIcon as Heart,
   MapPinIcon as MapPin,
   UsersIcon as Users,
-  HeartIcon as Heart,
-} from "lucide-qwik";
+} from 'lucide-qwik'
 
 export const DetailedEventCard = component$(
   (props: {
     event: {
-      id: number;
-      title: string;
-      image: string;
-      badge: string;
-      type: string;
-      date: string;
-      time: string;
-      location: string;
-      creator: string;
-      attendees: number;
-      spotsLeft: number;
-    };
+      id: number
+      title: string
+      image: string
+      badge: string
+      type: string
+      date: string
+      time: string
+      location: string
+      creator: string
+      attendees: number
+      spotsLeft: number
+    }
   }) => {
     return (
       <div
@@ -32,7 +32,7 @@ export const DetailedEventCard = component$(
         <div class="flex h-full flex-col md:flex-row">
           <div class="relative md:w-1/3">
             <img
-              src={props.event.image || "/placeholder.svg"}
+              src={props.event.image || '/placeholder.svg'}
               width={400}
               height={300}
               alt={props.event.title}
@@ -90,7 +90,7 @@ export const DetailedEventCard = component$(
                 <div class="flex items-center gap-2">
                   <Users class="h-4 w-4 text-[#D98E73]" />
                   <span class="text-sm text-[#6D5D4E]">
-                    {props.event.attendees} attendees ({props.event.spotsLeft}{" "}
+                    {props.event.attendees} attendees ({props.event.spotsLeft}{' '}
                     spots left)
                   </span>
                 </div>
@@ -98,7 +98,7 @@ export const DetailedEventCard = component$(
             </div>
             <div class="flex items-center justify-between">
               <div class="flex -space-x-2">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3].map(i => (
                   <div
                     key={i}
                     class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#F8D7BD] text-xs font-medium text-[#8B5A2B]"
@@ -121,6 +121,6 @@ export const DetailedEventCard = component$(
           </div>
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)

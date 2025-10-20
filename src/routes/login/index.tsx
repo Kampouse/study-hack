@@ -1,31 +1,31 @@
-import { useSignIn } from "../plugin@auth";
-import { component$ } from "@builder.io/qwik";
-import { GoogleIcon, GithubIcon } from "~/components/icons";
-import { Form } from "@builder.io/qwik-city";
-import JustRnd from "./justrnd.png?jsx";
-import type { RequestHandler } from "@builder.io/qwik-city";
-export const onGet: RequestHandler = async (req) => {
+import { component$ } from '@builder.io/qwik'
+import { Form } from '@builder.io/qwik-city'
+import type { RequestHandler } from '@builder.io/qwik-city'
+import { GithubIcon, GoogleIcon } from '~/components/icons'
+import { useSignIn } from '../plugin@auth'
+import JustRnd from './justrnd.png?jsx'
+export const onGet: RequestHandler = async req => {
   type Session = {
     user: {
-      name: string;
-      email: string;
-      image: string;
-    };
-    expires: string;
-  } | null;
-  const data = req.sharedMap.get("session") as Session;
+      name: string
+      email: string
+      image: string
+    }
+    expires: string
+  } | null
+  const data = req.sharedMap.get('session') as Session
   //get current session time and compare with expires time
   if (data) {
-    const currentTime = new Date().getTime();
-    const sessionDate = new Date(data.expires).getTime();
+    const currentTime = new Date().getTime()
+    const sessionDate = new Date(data.expires).getTime()
     if (currentTime < sessionDate) {
-      throw req.redirect(302, "/home");
+      throw req.redirect(302, '/home')
     }
   }
-};
+}
 
 export default component$(() => {
-  const signin = useSignIn();
+  const signin = useSignIn()
   return (
     <div class="relative min-h-screen bg-gradient-to-b from-[#A67C52] to-[#C49A6C] px-4 py-12 sm:px-6 lg:px-8">
       {/* Background pattern and glow effects */}
@@ -59,9 +59,9 @@ export default component$(() => {
             <button
               onClick$={() => {
                 signin.submit({
-                  providerId: "github",
-                  redirectTo: "/auth/signedin",
-                });
+                  providerId: 'github',
+                  redirectTo: '/auth/signedin',
+                })
               }}
               class="group relative flex w-full transform items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#2D333B] px-6 py-4 text-lg font-medium text-[#FEFAF6] shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(45,51,59,0.4)]"
             >
@@ -91,5 +91,5 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

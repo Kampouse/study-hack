@@ -1,117 +1,117 @@
-import { component$, useSignal } from "@builder.io/qwik";
-import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
-import { placeSchema } from "~/api/Forms";
-import type { PlaceForm } from "~/api/Forms";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { useNavigate, server$ } from "@builder.io/qwik-city";
-import { GetUser, UpdatePlace } from "~/api/Query";
-import { getPlace } from "~/api/EndPoint";
-import type { Maybe } from "@modular-forms/qwik";
+import { component$, useSignal } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import { server$, useNavigate } from '@builder.io/qwik-city'
+import { formAction$, useForm, valiForm$ } from '@modular-forms/qwik'
+import type { Maybe } from '@modular-forms/qwik'
 import {
   MapPinIcon as MapPin,
   StarIcon as Star,
   WifiIcon as Wifi,
-} from "lucide-qwik";
+} from 'lucide-qwik'
+import { getPlace } from '~/api/EndPoint'
+import { placeSchema } from '~/api/Forms'
+import type { PlaceForm } from '~/api/Forms'
+import { GetUser, UpdatePlace } from '~/api/Query'
 
 // Simplified GeoResponse type
 type GeoResponse = {
   results: Array<{
-    formatted_address: string;
+    formatted_address: string
     geometry: {
       location: {
-        lat: number;
-        lng: number;
-      };
-    };
-  }>;
-  status: string;
-};
+        lat: number
+        lng: number
+      }
+    }
+  }>
+  status: string
+}
 
-export const usePlaceLoader = routeLoader$(async (requestEvent) => {
-  const placeId = requestEvent.params.name;
-  const user = await GetUser({ event: requestEvent });
+export const usePlaceLoader = routeLoader$(async requestEvent => {
+  const placeId = requestEvent.params.name
+  const user = await GetUser({ event: requestEvent })
 
   if (!user) {
-    throw requestEvent.redirect(302, "/login");
+    throw requestEvent.redirect(302, '/login')
   }
 
   const place = await getPlace({
     event: requestEvent,
     placeName: placeId,
-  });
+  })
 
   if (!place.data) {
-    throw requestEvent.redirect(302, "/places/");
+    throw requestEvent.redirect(302, '/places/')
   }
 
   // Convert place data to form structure
   return {
-    name: place.data.Name || "",
-    address: place.data.Address || "",
-    description: place.data.Description || "",
-    image: place.data.ImageURL || "",
+    name: place.data.Name || '',
+    address: place.data.Address || '',
+    description: place.data.Description || '',
+    image: place.data.ImageURL || '',
     tags: place.data.Tags || [],
-    rating: place.data.Rating.toString() || "3",
+    rating: place.data.Rating.toString() || '3',
     wifispeed: place.data.WifiSpeed || 0,
     hasquietenvironment: place.data.HasQuietEnvironment || false,
-    price: place.data.Price || "",
+    price: place.data.Price || '',
     coordinates: place.data.Coordinates || [0, 0],
-    category: place.data.Category || "",
+    category: place.data.Category || '',
   } as {
-    name: Maybe<string>;
-    address: Maybe<string>;
-    description: Maybe<string>;
-    image: Maybe<string>;
-    tags: string[] | undefined;
-    rating: Maybe<string>;
-    wifispeed: Maybe<number>;
-    hasquietenvironment: Maybe<boolean>;
-    price: Maybe<string>;
-    coordinates: [number, number] | undefined;
-    category: Maybe<string>;
-  };
-});
+    name: Maybe<string>
+    address: Maybe<string>
+    description: Maybe<string>
+    image: Maybe<string>
+    tags: string[] | undefined
+    rating: Maybe<string>
+    wifispeed: Maybe<number>
+    hasquietenvironment: Maybe<boolean>
+    price: Maybe<string>
+    coordinates: [number, number] | undefined
+    category: Maybe<string>
+  }
+})
 
 // Geocoding server function
 const FindLocation = server$(async function (address: string) {
-  const session = this.sharedMap.get("session");
-  const GEO = this.env.get("GOOGLE_GEO");
+  const session = this.sharedMap.get('session')
+  const GEO = this.env.get('GOOGLE_GEO')
 
   if (!session) {
-    return { status: "error", message: "No session found" };
+    return { status: 'error', message: 'No session found' }
   }
 
   const response = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`,
-  );
-  const data = (await response.json()) as GeoResponse;
+    `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`
+  )
+  const data = (await response.json()) as GeoResponse
 
-  return data.results.map((result) => ({
+  return data.results.map(result => ({
     address: result.formatted_address,
     lat: result.geometry.location.lat,
     lng: result.geometry.location.lng,
-  }));
-});
+  }))
+})
 
 const useUpdatePlaceAction = formAction$<PlaceForm, any>(
   async (values, event) => {
-    const user = await GetUser({ event });
-    const placeId = event.params.name;
+    const user = await GetUser({ event })
+    const placeId = event.params.name
 
     if (!user) {
-      return { status: "error", message: "User not found" };
+      return { status: 'error', message: 'User not found' }
     }
 
     // Fetch place to verify ownership
-    const place = await getPlace({ event, placeName: placeId });
+    const place = await getPlace({ event, placeName: placeId })
 
     if (!place.data) {
-      return { status: "error", message: "Place not found" };
+      return { status: 'error', message: 'Place not found' }
     }
 
     // Check authorization
     if (place.data.UserID !== user.ID) {
-      return { status: "error", message: "Not authorized to edit this place" };
+      return { status: 'error', message: 'Not authorized to edit this place' }
     }
 
     // Handle coordinates
@@ -123,12 +123,12 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
       image: values.image,
       description: values.description,
       tags: values.tags,
-      rating: values.rating ? parseInt(values.rating) : undefined,
+      rating: values.rating ? Number.parseInt(values.rating) : undefined,
       wifiSpeed: values.wifispeed,
       hasQuietEnvironment:
         values.hasquietenvironment ??
-        (values.tags ? values.tags.includes("Quiet") : undefined),
-    };
+        (values.tags ? values.tags.includes('Quiet') : undefined),
+    }
 
     // Add coordinates if address was updated
     // Update the place
@@ -136,54 +136,54 @@ const useUpdatePlaceAction = formAction$<PlaceForm, any>(
       event,
       placeId: place.data.PlaceID,
       placeData,
-    });
+    })
 
     if (result.success) {
       // Redirect to the place page or places list
       if (result.data?.Name) {
-        throw event.redirect(302, `/places/${result.data.Name}`);
+        throw event.redirect(302, `/places/${result.data.Name}`)
       } else {
-        throw event.redirect(302, "/places");
+        throw event.redirect(302, '/places')
       }
     }
 
     return {
-      status: "error",
-      message: result.message || "Failed to update place",
-    };
+      status: 'error',
+      message: result.message || 'Failed to update place',
+    }
   },
-  valiForm$(placeSchema),
-);
+  valiForm$(placeSchema)
+)
 
 export default component$(() => {
   const places = useSignal<
     Array<{ address: string; lat: number; lng: number }>
-  >([]);
-  const placeName = useSignal("");
+  >([])
+  const placeName = useSignal('')
   const suggestedTags = useSignal([
-    "Coffee",
-    "Quiet",
-    "WiFi",
-    "Outdoor Seating",
-    "Group Friendly",
-    "Power Outlets",
-    "Affordable",
-    "Spacious",
-    "Good Lighting",
-    "Meeting Rooms",
-    "Social",
-    "Networking",
-    "Focus Friendly",
-    "Collaborative",
-    "Long Hours",
-    "Private Booths",
-  ]);
+    'Coffee',
+    'Quiet',
+    'WiFi',
+    'Outdoor Seating',
+    'Group Friendly',
+    'Power Outlets',
+    'Affordable',
+    'Spacious',
+    'Good Lighting',
+    'Meeting Rooms',
+    'Social',
+    'Networking',
+    'Focus Friendly',
+    'Collaborative',
+    'Long Hours',
+    'Private Booths',
+  ])
 
-  const nav = useNavigate();
+  const nav = useNavigate()
   const [, { Form, Field }] = useForm<PlaceForm, any>({
     loader: usePlaceLoader(),
     action: useUpdatePlaceAction(),
-  });
+  })
 
   // Common input field styles
   const getInputClass = (hasError: boolean) => `
@@ -192,13 +192,13 @@ export default component$(() => {
     focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       hasError
-        ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-        : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+        ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+        : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
     }
-  `;
+  `
 
   const renderFieldError = (error: string | undefined) =>
-    error && <div class="mt-1 text-sm text-red-400">{error}</div>;
+    error && <div class="mt-1 text-sm text-red-400">{error}</div>
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -262,10 +262,10 @@ export default component$(() => {
                           type="button"
                           onClick$={async () => {
                             const output = await FindLocation(
-                              field.value as string,
-                            );
+                              field.value as string
+                            )
                             if (Array.isArray(output)) {
-                              places.value = output;
+                              places.value = output
                             }
                           }}
                           class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white hover:bg-[#C27B62] focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2"
@@ -284,7 +284,7 @@ export default component$(() => {
                                   key={i}
                                   type="button"
                                   onClick$={() => {
-                                    field.value = address.address;
+                                    field.value = address.address
                                   }}
                                   class="w-full rounded-md border border-[#E6D7C3] bg-white p-2 text-left text-sm text-[#6D5D4E] shadow-sm hover:bg-[#FFF1E6] hover:shadow-md"
                                 >
@@ -342,7 +342,7 @@ export default component$(() => {
                 </Field>
 
                 <Field name="tags" type="string[]">
-                  {(field) => (
+                  {field => (
                     <div>
                       <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
                         Tags
@@ -352,13 +352,13 @@ export default component$(() => {
                       </p>
 
                       <div class="flex flex-wrap gap-2">
-                        {suggestedTags.value.map((tag) => (
+                        {suggestedTags.value.map(tag => (
                           <div key={tag} class="flex items-center">
                             <label
                               class={`flex cursor-pointer items-center rounded-full px-3 py-1 text-sm transition-colors ${
                                 field.value?.includes(tag)
-                                  ? "bg-[#F8D7BD] text-[#8B5A2B]"
-                                  : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#F8EDE3]/80"
+                                  ? 'bg-[#F8D7BD] text-[#8B5A2B]'
+                                  : 'bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#F8EDE3]/80'
                               }`}
                             >
                               <input
@@ -368,10 +368,10 @@ export default component$(() => {
                                 onChange$={() => {
                                   if (field.value?.includes(tag)) {
                                     field.value = field.value.filter(
-                                      (t) => t !== tag,
-                                    );
+                                      t => t !== tag
+                                    )
                                   } else {
-                                    field.value = [...(field.value || []), tag];
+                                    field.value = [...(field.value || []), tag]
                                   }
                                 }}
                               />
@@ -399,8 +399,8 @@ export default component$(() => {
                                   type="button"
                                   onClick$={() => {
                                     field.value = field.value?.filter(
-                                      (_, i) => i !== index,
-                                    );
+                                      (_, i) => i !== index
+                                    )
                                   }}
                                   class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#D98E73]/20 text-[#8B5A2B] hover:bg-[#D98E73]/50"
                                 >
@@ -476,7 +476,7 @@ export default component$(() => {
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
-                    onClick$={() => nav("/places/" + placeName.value)}
+                    onClick$={() => nav('/places/' + placeName.value)}
                     class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] hover:bg-[#FFF1E6] sm:w-auto"
                   >
                     Cancel
@@ -494,5 +494,5 @@ export default component$(() => {
         </div>
       </section>
     </div>
-  );
-});
+  )
+})

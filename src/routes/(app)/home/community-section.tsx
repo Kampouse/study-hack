@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 export const CommunitySection = component$(() => {
   return (
     <section class="mt-8 bg-[#F8EDE3] py-12">
@@ -41,5 +41,5 @@ export const CommunitySection = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

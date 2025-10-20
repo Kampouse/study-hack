@@ -1,103 +1,103 @@
-import { component$, $, useSignal } from "@builder.io/qwik";
-import { routeLoader$, Link } from "@builder.io/qwik-city";
-import { MapPinIcon as MapPin, FilterIcon, XIcon } from "lucide-qwik";
-import { PlaceCard } from "~/routes/(app)/home/place-card";
-import { QueryPlaces } from "~/api/Query";
-import { drizzler } from "~/api/drizzled";
+import { $, component$, useSignal } from '@builder.io/qwik'
+import { Link, routeLoader$ } from '@builder.io/qwik-city'
+import { FilterIcon, MapPinIcon as MapPin, XIcon } from 'lucide-qwik'
+import { QueryPlaces } from '~/api/Query'
+import { drizzler } from '~/api/drizzled'
+import { PlaceCard } from '~/routes/(app)/home/place-card'
 
 export const head = {
-  title: "S&H | Places",
-};
+  title: 'S&H | Places',
+}
 
-export const usePlaces = routeLoader$(async (event) => {
-  const client = await drizzler(event);
+export const usePlaces = routeLoader$(async event => {
+  const client = await drizzler(event)
   const data = await QueryPlaces({
     event: event,
     client: client,
     params: {
       limit: 100,
     },
-  });
-  return { data: data.data, success: data.success };
-});
+  })
+  return { data: data.data, success: data.success }
+})
 
 export default component$(() => {
-  const places = usePlaces();
-  const showMap = useSignal(false);
-  const searchTerm = useSignal("");
-  const filterCategory = useSignal("all");
-  const visiblePlacesCount = useSignal(12);
-  const sidebarOpen = useSignal(false);
-  const selectedAmenities = useSignal<string[]>([]);
+  const places = usePlaces()
+  const showMap = useSignal(false)
+  const searchTerm = useSignal('')
+  const filterCategory = useSignal('all')
+  const visiblePlacesCount = useSignal(12)
+  const sidebarOpen = useSignal(false)
+  const selectedAmenities = useSignal<string[]>([])
 
   const tags = [
-    "Coffee",
-    "Quiet",
-    "WiFi",
-    "Outdoor Seating",
-    "Group Friendly",
-    "Power Outlets",
-    "Affordable",
-    "Spacious",
-    "Good Lighting",
-    "Meeting Rooms",
-    "Social",
-    "Networking",
-    "Focus Friendly",
-    "Collaborative",
-    "Long Hours",
-    "Private Booths",
-  ];
+    'Coffee',
+    'Quiet',
+    'WiFi',
+    'Outdoor Seating',
+    'Group Friendly',
+    'Power Outlets',
+    'Affordable',
+    'Spacious',
+    'Good Lighting',
+    'Meeting Rooms',
+    'Social',
+    'Networking',
+    'Focus Friendly',
+    'Collaborative',
+    'Long Hours',
+    'Private Booths',
+  ]
   const placesDataForCards =
-    places.value.data?.map((place) => {
+    places.value.data?.map(place => {
       return {
         id: place.Places?.PlaceID,
         name: place.Places?.Name,
         image: place.Places?.ImageURL as string,
-        badge: "",
+        badge: '',
         location: place.Places?.Address,
         description: place.Places?.Description,
         tags: place.Places?.Tags,
         creator: place.Users?.Username,
         rating: place.Places?.Rating || 4.8,
         coords: place.Places?.Coordinates || ([0, 0] as [number, number]),
-      };
-    }) || [];
+      }
+    }) || []
 
   // Filter places based on search term and category
-  const filteredPlaces = placesDataForCards.filter((place) => {
+  const filteredPlaces = placesDataForCards.filter(place => {
     const matchesSearch =
       place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       place.description
         ?.toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
-      place.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+      place.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
     const matchesCategory =
-      filterCategory.value === "all" ||
-      (filterCategory.value === "popular" && place.badge === "Popular");
+      filterCategory.value === 'all' ||
+      (filterCategory.value === 'popular' && place.badge === 'Popular')
 
     const matchesAmenities =
       selectedAmenities.value.length === 0 ||
       selectedAmenities.value.every(
-        (amenity) => place.tags?.includes(amenity) ?? false,
-      );
+        amenity => place.tags?.includes(amenity) ?? false
+      )
 
-    return matchesSearch && matchesCategory && matchesAmenities;
-  });
+    return matchesSearch && matchesCategory && matchesAmenities
+  })
 
-  const allPlacesLoaded = visiblePlacesCount.value >= filteredPlaces.length;
+  const allPlacesLoaded = visiblePlacesCount.value >= filteredPlaces.length
 
   const toggleAmenity = $((amenity: string) => {
-    const currentAmenities = [...selectedAmenities.value];
-    const index = currentAmenities.indexOf(amenity);
+    const currentAmenities = [...selectedAmenities.value]
+    const index = currentAmenities.indexOf(amenity)
     if (index === -1) {
-      currentAmenities.push(amenity);
+      currentAmenities.push(amenity)
     } else {
-      currentAmenities.splice(index, 1);
+      currentAmenities.splice(index, 1)
     }
-    selectedAmenities.value = currentAmenities;
-  });
+    selectedAmenities.value = currentAmenities
+  })
 
   return (
     <div class="flex min-h-screen flex-col bg-[#FFF8F0] md:flex-row">
@@ -120,12 +120,12 @@ export default component$(() => {
 
       <div
         class={`fixed inset-y-0 left-0 top-20 z-50 h-[calc(100vh-80px)] w-full transform overflow-y-auto border-r border-[#E6D7C3] bg-white shadow-lg transition-transform duration-300 ease-in-out md:sticky md:h-[calc(100vh-80px)] md:w-80 ${
-          sidebarOpen.value ? "translate-x-0" : "-translate-x-full"
+          sidebarOpen.value ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >
         <div class="   flex  h-full flex-col p-6 md:mt-0">
           <div class="flex items-center justify-between">
-            {" "}
+            {' '}
             <h2 class="text-xl font-semibold text-[#5B3E29]">Filters</h2>
             <button
               onClick$={() => (sidebarOpen.value = false)}
@@ -157,9 +157,9 @@ export default component$(() => {
                 placeholder="Search places..."
                 class="h-12 w-full rounded-lg border-2 border-[#E6D7C3] bg-white py-3 pl-10 pr-4 text-[#5B3E29] placeholder-[#A99D8F] shadow-sm transition-all focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                 bind:value={searchTerm}
-                onKeyDown$={(e) => {
-                  if (e.key === "Enter") {
-                    sidebarOpen.value = false;
+                onKeyDown$={e => {
+                  if (e.key === 'Enter') {
+                    sidebarOpen.value = false
                   }
                 }}
               />
@@ -186,14 +186,14 @@ export default component$(() => {
                 </h3>
                 <div class="scrollbar-thin scrollbar-track-[#F8EDE3] scrollbar-thumb-[#D98E73] max-h-56 overflow-y-auto pr-2">
                   <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-                    {tags.map((amenity) => (
+                    {tags.map(amenity => (
                       <button
                         key={amenity}
                         onClick$={() => toggleAmenity(amenity)}
                         class={`mb-2 w-full rounded-full px-3 py-1.5 text-center text-sm transition-all sm:mb-2 sm:mr-2 sm:w-auto sm:px-3 ${
                           selectedAmenities.value.includes(amenity)
-                            ? "bg-[#D98E73] text-white"
-                            : "bg-[#F8EDE3] text-[#5B3E29] hover:bg-[#E6D7C3]"
+                            ? 'bg-[#D98E73] text-white'
+                            : 'bg-[#F8EDE3] text-[#5B3E29] hover:bg-[#E6D7C3]'
                         }`}
                         title={amenity}
                       >
@@ -204,7 +204,7 @@ export default component$(() => {
                   {selectedAmenities.value.length > 0 && (
                     <div class="mt-2 flex flex-wrap gap-1">
                       <span class="text-xs text-[#8B5A2B]">Selected:</span>
-                      {selectedAmenities.value.map((selected) => (
+                      {selectedAmenities.value.map(selected => (
                         <span
                           key={selected}
                           class="inline-flex items-center rounded-full bg-[#D98E73] px-2 py-0.5 text-xs text-white"
@@ -232,10 +232,10 @@ export default component$(() => {
             <button
               type="button"
               onClick$={() => {
-                searchTerm.value = "";
-                filterCategory.value = "all";
-                selectedAmenities.value = [];
-                sidebarOpen.value = false;
+                searchTerm.value = ''
+                filterCategory.value = 'all'
+                selectedAmenities.value = []
+                sidebarOpen.value = false
               }}
               class="inline-flex h-11 w-full items-center justify-center rounded-md border border-[#D98E73] bg-white px-4 py-2 text-sm font-medium text-[#D98E73] shadow-sm transition-colors hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
             >
@@ -244,8 +244,8 @@ export default component$(() => {
             <button
               type="button"
               onClick$={() => {
-                showMap.value = true;
-                sidebarOpen.value = false;
+                showMap.value = true
+                sidebarOpen.value = false
               }}
               class="inline-flex h-11 w-full items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#C27B62] focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
             >
@@ -260,11 +260,9 @@ export default component$(() => {
         <section class="container px-4 py-8 pt-16 md:px-6 md:pt-24">
           {filteredPlaces.length > 0 ? (
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredPlaces
-                .slice(0, visiblePlacesCount.value)
-                .map((place) => (
-                  <PlaceCard key={place.id} place={place as any} />
-                ))}
+              {filteredPlaces.slice(0, visiblePlacesCount.value).map(place => (
+                <PlaceCard key={place.id} place={place as any} />
+              ))}
 
               {visiblePlacesCount.value < filteredPlaces.length ||
                 filteredPlaces.length === 0 ||
@@ -295,7 +293,7 @@ export default component$(() => {
               <button
                 type="button"
                 onClick$={() => {
-                  visiblePlacesCount.value += 8;
+                  visiblePlacesCount.value += 8
                 }}
                 class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
@@ -343,5 +341,5 @@ export default component$(() => {
         </div>
       )}
     </div>
-  );
-});
+  )
+})

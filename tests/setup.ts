@@ -1,24 +1,24 @@
-import { beforeEach, afterEach } from "vitest";
-import Database from "better-sqlite3";
-import { drizzle, BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import * as schema from "../drizzle/schema";
-import { sql } from "drizzle-orm";
+import Database from 'better-sqlite3'
+import { sql } from 'drizzle-orm'
+import { type BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { afterEach, beforeEach } from 'vitest'
+import * as schema from '../drizzle/schema'
 
 /**
  * Global test database instance
  * Each test gets a fresh in-memory database
  */
-export let testDb: BetterSQLite3Database<typeof schema>;
-export let sqlite: Database.Database;
+export let testDb: BetterSQLite3Database<typeof schema>
+export let sqlite: Database.Database
 
 /**
  * Create a fresh in-memory SQLite database with schema
  */
 export function createTestDatabase() {
   // Create in-memory SQLite database
-  sqlite = new Database(":memory:");
-  testDb = drizzle(sqlite, { schema });
+  sqlite = new Database(':memory:')
+  testDb = drizzle(sqlite, { schema })
 
   // Create all tables from schema
   sqlite.exec(`
@@ -86,9 +86,9 @@ export function createTestDatabase() {
       CreatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
       UserID INTEGER NOT NULL REFERENCES Users(UserID)
     );
-  `);
+  `)
 
-  return testDb;
+  return testDb
 }
 
 /**
@@ -96,7 +96,7 @@ export function createTestDatabase() {
  */
 export function cleanupTestDatabase() {
   if (sqlite) {
-    sqlite.close();
+    sqlite.close()
   }
 }
 
@@ -104,46 +104,46 @@ export function cleanupTestDatabase() {
  * Setup: Create fresh database before each test
  */
 beforeEach(() => {
-  createTestDatabase();
-});
+  createTestDatabase()
+})
 
 /**
  * Teardown: Clean up database after each test
  */
 afterEach(() => {
-  cleanupTestDatabase();
-});
+  cleanupTestDatabase()
+})
 
 /**
  * Helper: Get current timestamp in SQLite format
  */
 export function getCurrentTimestamp(): string {
-  return new Date().toISOString();
+  return new Date().toISOString()
 }
 
 /**
  * Helper: Get future date (for events)
  */
-export function getFutureDate(daysAhead: number = 7): string {
-  const date = new Date();
-  date.setDate(date.getDate() + daysAhead);
-  return date.toISOString().split("T")[0];
+export function getFutureDate(daysAhead = 7): string {
+  const date = new Date()
+  date.setDate(date.getDate() + daysAhead)
+  return date.toISOString().split('T')[0]
 }
 
 /**
  * Helper: Get past date (for testing validation)
  */
-export function getPastDate(daysAgo: number = 7): string {
-  const date = new Date();
-  date.setDate(date.getDate() - daysAgo);
-  return date.toISOString().split("T")[0];
+export function getPastDate(daysAgo = 7): string {
+  const date = new Date()
+  date.setDate(date.getDate() - daysAgo)
+  return date.toISOString().split('T')[0]
 }
 
 /**
  * Helper: Get future time
  */
 export function getFutureTime(): string {
-  return "18:00";
+  return '18:00'
 }
 
 /**
@@ -156,5 +156,5 @@ export function clearAllTables() {
     DELETE FROM Sessions;
     DELETE FROM Places;
     DELETE FROM Users;
-  `);
+  `)
 }

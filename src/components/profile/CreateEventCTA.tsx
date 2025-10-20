@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { CalendarIcon as Calendar, MapPinIcon as MapPin } from "lucide-qwik";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { CalendarIcon as Calendar, MapPinIcon as MapPin } from 'lucide-qwik'
 
 /**
  * Renders a Call to Action (CTA) section encouraging users to create an event
@@ -30,7 +30,7 @@ export const CreateEventCTA = component$(() => {
           ></div>
 
           <div class="relative z-10 flex flex-col items-center gap-10 md:flex-row md:gap-12">
-            {" "}
+            {' '}
             {/* Increased gap */}
             <div class="w-full md:w-1/3 lg:w-1/4">
               <div class="aspect-square overflow-hidden rounded-xl  ">
@@ -43,12 +43,12 @@ export const CreateEventCTA = component$(() => {
             </div>
             <div class="flex-1 text-center md:text-left">
               <h2 class="mb-4 text-3xl font-bold text-[#5B3E29] md:text-4xl">
-                {" "}
+                {' '}
                 {/* Larger title */}
                 Ready to Host Your Next Session?
               </h2>
               <p class="mb-8 max-w-xl text-lg text-[#6D5D4E] lg:text-xl">
-                {" "}
+                {' '}
                 {/* Larger text */}
                 Create a cozy gathering at your favorite spot or discover ones.
                 Invite friends or meet people—it's all about connection.
@@ -73,5 +73,5 @@ export const CreateEventCTA = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

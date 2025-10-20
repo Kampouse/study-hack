@@ -1,60 +1,60 @@
-import { component$ } from "@builder.io/qwik";
-import { Link, routeLoader$ } from "@builder.io/qwik-city";
-import { getEvent, getConfirmedUsers } from "~/api/EndPoint";
+import { component$ } from '@builder.io/qwik'
+import { Link, routeLoader$ } from '@builder.io/qwik-city'
+import type { DocumentHead } from '@builder.io/qwik-city'
 import {
-  StarIcon,
   MapPinIcon,
   MessageSquareIcon,
   Share2Icon,
+  StarIcon,
   UsersIcon,
-} from "lucide-qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+} from 'lucide-qwik'
+import { getConfirmedUsers, getEvent } from '~/api/EndPoint'
 
-export const useEventDetails = routeLoader$(async (event) => {
-  const id = event.params.id;
-  const eventData = await getEvent(event, id);
-  const confirmData = await getConfirmedUsers(event, parseInt(id));
+export const useEventDetails = routeLoader$(async event => {
+  const id = event.params.id
+  const eventData = await getEvent(event, id)
+  const confirmData = await getConfirmedUsers(event, Number.parseInt(id))
   return {
     event: eventData,
     confirmed: confirmData,
-  };
-});
+  }
+})
 
 export default component$(() => {
-  const data = useEventDetails();
+  const data = useEventDetails()
 
   const formatEventDate = (dateString: string, starttime?: string) => {
-    if (!dateString) return "TBD";
+    if (!dateString) return 'TBD'
 
     try {
-      const date = new Date(dateString);
+      const date = new Date(dateString)
 
       // Add time information if starttime is provided
       if (starttime) {
         const [hours, minutes] = starttime
-          .split(":")
-          .map((part) => parseInt(part, 10));
+          .split(':')
+          .map(part => Number.parseInt(part, 10))
         if (!isNaN(hours) && !isNaN(minutes)) {
-          date.setHours(hours, minutes);
+          date.setHours(hours, minutes)
         }
       }
 
       const dateOptions: Intl.DateTimeFormatOptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short",
-      };
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZoneName: 'short',
+      }
 
-      return date.toLocaleDateString("en-US", dateOptions);
+      return date.toLocaleDateString('en-US', dateOptions)
     } catch (error) {
-      console.error("Error formatting date:", error);
-      return dateString; // Return original string if parsing fails
+      console.error('Error formatting date:', error)
+      return dateString // Return original string if parsing fails
     }
-  };
+  }
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-[#F8EDE3] to-[#FFF8F0] md:pt-20">
@@ -67,7 +67,7 @@ export default component$(() => {
               <img
                 src={
                   data.value.event.data?.event.image ||
-                  "https://via.placeholder.com/1200x400"
+                  'https://via.placeholder.com/1200x400'
                 }
                 alt="Event cover"
                 class="h-[250px] w-full object-cover sm:h-[350px] md:h-[450px]"
@@ -91,8 +91,8 @@ export default component$(() => {
                         <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       {formatEventDate(
-                        data.value.event.data?.event.date || "",
-                        data.value.event.data?.event.starttime || "",
+                        data.value.event.data?.event.date || '',
+                        data.value.event.data?.event.starttime || ''
                       )}
                     </div>
                     <h2 class="mb-1 text-xl font-bold sm:mb-2 sm:text-2xl">
@@ -115,7 +115,7 @@ export default component$(() => {
                   {data.value.confirmed.data &&
                   data.value.confirmed.data.length > 0
                     ? `${data.value.confirmed.data.length} lovely people attending`
-                    : "Be the first to join this event!"}
+                    : 'Be the first to join this event!'}
                 </h3>
                 <p class="text-sm text-[#6D5D4E]/70">
                   Connect with like-minded people at this event
@@ -159,8 +159,8 @@ export default component$(() => {
                     </span>
                     <span class="font-medium text-[#5B3E29]">
                       {formatEventDate(
-                        data.value.event.data?.event.date || "",
-                        data.value.event.data?.event.starttime || "",
+                        data.value.event.data?.event.date || '',
+                        data.value.event.data?.event.starttime || ''
                       )}
                     </span>
                   </div>
@@ -173,7 +173,7 @@ export default component$(() => {
                     <span class="font-medium text-[#5B3E29]">
                       {data.value.confirmed.data?.length
                         ? `${data.value.confirmed.data.length} registered`
-                        : "Be the first to join!"}
+                        : 'Be the first to join!'}
                     </span>
                   </div>
 
@@ -238,7 +238,7 @@ export default component$(() => {
               {data.value.confirmed.data &&
               data.value.confirmed.data.length > 0 ? (
                 <div class="grid gap-4 sm:grid-cols-2">
-                  {data.value.confirmed.data.map((attendee) => (
+                  {data.value.confirmed.data.map(attendee => (
                     <div
                       key={attendee.requestId}
                       class="flex items-start gap-4 rounded-xl border border-[#E6D7C3] bg-white p-5 shadow-sm transition-all hover:shadow-md"
@@ -246,9 +246,9 @@ export default component$(() => {
                       <img
                         src={
                           attendee.user?.image ??
-                          "https://via.placeholder.com/40"
+                          'https://via.placeholder.com/40'
                         }
-                        alt={attendee.user?.name ?? "Anonymous"}
+                        alt={attendee.user?.name ?? 'Anonymous'}
                         class="h-16 w-16 rounded-full object-cover shadow-md ring-2 ring-[#F8D7BD]"
                         width={64}
                         height={64}
@@ -318,7 +318,7 @@ export default component$(() => {
                   <img
                     src={
                       data.value.event.data.location.ImageURL ||
-                      "https://via.placeholder.com/400x300"
+                      'https://via.placeholder.com/400x300'
                     }
                     alt={data.value.event.data.location.Name}
                     class="h-full w-full object-cover transition duration-700 hover:scale-105"
@@ -372,7 +372,7 @@ export default component$(() => {
                     <img
                       src={
                         data.value.event.data.location.ImageURL ||
-                        "https://via.placeholder.com/400x300"
+                        'https://via.placeholder.com/400x300'
                       }
                       alt={data.value.event.data.location.Name}
                       class="h-full w-full object-cover transition duration-700 hover:scale-105"
@@ -412,30 +412,30 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
 export const head: DocumentHead = ({ resolveValue }) => {
-  const event = resolveValue(useEventDetails);
+  const event = resolveValue(useEventDetails)
   return {
-    title: `Study & Hack | ${event.event.data?.event.name || "Event Details"}`,
+    title: `Study & Hack | ${event.event.data?.event.name || 'Event Details'}`,
     meta: [
       {
-        name: "description",
-        content: event.event.data?.event.description || "",
+        name: 'description',
+        content: event.event.data?.event.description || '',
       },
       {
-        property: "og:title",
-        content: `Study & Hack | ${event.event.data?.event.name || "Event Details"}`,
+        property: 'og:title',
+        content: `Study & Hack | ${event.event.data?.event.name || 'Event Details'}`,
       },
       {
-        property: "og:description",
-        content: event.event.data?.event.description || "",
+        property: 'og:description',
+        content: event.event.data?.event.description || '',
       },
       {
-        property: "og:image",
-        content: event.event.data?.event.image || "",
+        property: 'og:image',
+        content: event.event.data?.event.image || '',
       },
     ],
-  };
-};
+  }
+}

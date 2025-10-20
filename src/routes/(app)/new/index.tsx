@@ -1,92 +1,93 @@
-import { component$, useSignal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { useForm } from "@modular-forms/qwik";
-import { createEventForm } from "~/api/Forms";
+import { component$, useSignal } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { useForm } from '@modular-forms/qwik'
+import { createEventForm } from '~/api/Forms'
 
-import { routeLoader$ } from "@builder.io/qwik-city";
-import type { InitialValues } from "@modular-forms/qwik";
-import { eventSchema } from "~/api/Forms";
-import { valiForm$, formAction$ } from "@modular-forms/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { routeLoader$ } from '@builder.io/qwik-city'
+import type { DocumentHead } from '@builder.io/qwik-city'
+import type { InitialValues } from '@modular-forms/qwik'
+import { formAction$, valiForm$ } from '@modular-forms/qwik'
+import { eventSchema } from '~/api/Forms'
 
-import type * as v from "valibot";
-import { GetUser, QueryPlaces } from "~/api/Query";
-import { ErrorAlert } from "~/components/ui/ErrorAlert";
+import type * as v from 'valibot'
+import { GetUser, QueryPlaces } from '~/api/Query'
+import { ErrorAlert } from '~/components/ui/ErrorAlert'
 
-type Event = v.InferInput<typeof eventSchema>;
-export const useFormLoader = routeLoader$<InitialValues<Event>>(async (req) => {
-  const user = await GetUser({ event: req });
-  const urlData = req.url.searchParams.get("placeId") ?? "0";
-  const places = await QueryPlaces({ event: req });
+type Event = v.InferInput<typeof eventSchema>
+export const useFormLoader = routeLoader$<InitialValues<Event>>(async req => {
+  const user = await GetUser({ event: req })
+  const urlData = req.url.searchParams.get('placeId') ?? '0'
+  const places = await QueryPlaces({ event: req })
   const place = places.data?.find(
-    (el) => el.Places?.PlaceID === parseInt(urlData),
-  );
+    el => el.Places?.PlaceID === Number.parseInt(urlData)
+  )
   return {
-    Name: "just chilling with  " + user?.Name,
-    Description: "",
-    Location: place?.Places?.Name || "",
-    PlaceId: parseInt(urlData) || 0,
-    ImageURL: "",
-    Date: new Date().toISOString().split("T")[0],
-    StartTime: "",
-    EndTime: "",
+    Name: 'just chilling with  ' + user?.Name,
+    Description: '',
+    Location: place?.Places?.Name || '',
+    PlaceId: Number.parseInt(urlData) || 0,
+    ImageURL: '',
+    Date: new Date().toISOString().split('T')[0],
+    StartTime: '',
+    EndTime: '',
     Coordinates: [0, 0],
     Tags: [],
-  };
-});
+  }
+})
 
-type Data =
-  ReturnType<typeof createEventForm> extends Promise<infer T> ? T : never;
+type Data = ReturnType<typeof createEventForm> extends Promise<infer T>
+  ? T
+  : never
 
 const action = formAction$<Event, Data>(async (data, event) => {
-  const places = await QueryPlaces({ event: event });
+  const places = await QueryPlaces({ event: event })
 
-  const place = places.data?.find((el) => el.Places?.Name === data.Location);
+  const place = places.data?.find(el => el.Places?.Name === data.Location)
 
   const output = await createEventForm(
     { ...data, PlaceId: place?.Places?.PlaceID as number },
-    event,
-  );
+    event
+  )
 
   if (output.success && output.data != null) {
-    throw event.redirect(302, `/new/${output.data[0].EventID}/success`);
+    throw event.redirect(302, `/new/${output.data[0].EventID}/success`)
   } else if (!output.success && output.error) {
     return {
       data: output,
       success: false,
       message: output.error,
-    };
+    }
   } else {
     return {
       data: output,
       success: false,
       message: "We couldn't create your event. Please try again.",
-    };
+    }
   }
-}, valiForm$(eventSchema));
+}, valiForm$(eventSchema))
 
-export const useloadPlaces = routeLoader$(async (req) => {
-  const places = await QueryPlaces({ event: req });
-  const urlData = req.url.searchParams.get("placeId") ?? "0";
+export const useloadPlaces = routeLoader$(async req => {
+  const places = await QueryPlaces({ event: req })
+  const urlData = req.url.searchParams.get('placeId') ?? '0'
   const basePlace = places.data?.find(
-    (el) => el.Places?.PlaceID === parseInt(urlData),
-  );
-  return { places: places, basePlace: basePlace, url: urlData };
-});
+    el => el.Places?.PlaceID === Number.parseInt(urlData)
+  )
+  return { places: places, basePlace: basePlace, url: urlData }
+})
 
 export default component$(() => {
   const [formResponse, { Form, Field }] = useForm<Event, Data>({
     loader: useFormLoader(),
     validate: valiForm$(eventSchema),
     action: action(),
-  });
-  const data = useloadPlaces();
-  const { places, basePlace, url } = data.value;
+  })
+  const data = useloadPlaces()
+  const { places, basePlace, url } = data.value
   const previewImage = useSignal<string | null>(
-    url !== "0"
+    url !== '0'
       ? basePlace?.Places?.ImageURL || null
-      : places.data?.[0]?.Places?.ImageURL || null,
-  );
+      : places.data?.[0]?.Places?.ImageURL || null
+  )
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -121,7 +122,7 @@ export default component$(() => {
                   <input
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                      field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                     }`}
                     type="text"
                     placeholder="e.g. Finals Prep Session"
@@ -143,7 +144,7 @@ export default component$(() => {
                   <textarea
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                      field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                     }`}
                     rows={3}
                     placeholder="What topics are you planning to cover?"
@@ -165,23 +166,23 @@ export default component$(() => {
                   <select
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                      field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                     }`}
                     value={field.value}
-                    onChange$={(event) => {
-                      if (!event.target) return;
-                      const target = event.target as HTMLSelectElement;
+                    onChange$={event => {
+                      if (!event.target) return
+                      const target = event.target as HTMLSelectElement
                       const selectedPlace = places.data?.find(
-                        (place) => place.Places?.Name === target.value,
-                      );
+                        place => place.Places?.Name === target.value
+                      )
                       // Update location preview, handle case where place might not have an image
                       if (selectedPlace?.Places?.ImageURL) {
-                        previewImage.value = selectedPlace.Places.ImageURL;
+                        previewImage.value = selectedPlace.Places.ImageURL
                       } else {
-                        previewImage.value = null;
+                        previewImage.value = null
                       }
                       // Prevent any form re-renders by returning void
-                      return;
+                      return
                     }}
                   >
                     {basePlace && (
@@ -193,7 +194,7 @@ export default component$(() => {
                       </option>
                     )}
 
-                    {places.data?.map((place) => (
+                    {places.data?.map(place => (
                       <option
                         key={place.Places?.PlaceID}
                         value={place.Places?.Name}
@@ -213,8 +214,8 @@ export default component$(() => {
                         <Link
                           href={`/places/${
                             places.data?.find(
-                              (place) =>
-                                place.Places?.ImageURL === previewImage.value,
+                              place =>
+                                place.Places?.ImageURL === previewImage.value
                             )?.Places?.Name
                           }`}
                           class="group flex items-center gap-1 rounded-md bg-[#F8D7BD] px-2 py-1 text-xs font-medium text-[#8B5A2B] transition-all hover:bg-[#D98E73] hover:text-white"
@@ -243,9 +244,9 @@ export default component$(() => {
                         </Link>
                         <span class="text-xs text-[#8B5A2B]">
                           {places.data?.find(
-                            (place) =>
-                              place.Places?.ImageURL === previewImage.value,
-                          )?.Places?.Address || ""}
+                            place =>
+                              place.Places?.ImageURL === previewImage.value
+                          )?.Places?.Address || ''}
                         </span>
                       </div>
                       <img
@@ -255,16 +256,16 @@ export default component$(() => {
                         width="200"
                         class="h-60 w-full object-cover"
                         onError$={(_, el) => {
-                          el.style.display = "none";
-                          el.src = "/src/assets/just-rnd.png";
+                          el.style.display = 'none'
+                          el.src = '/src/assets/just-rnd.png'
                         }}
                       />
                       <div class="bg-white/80 p-3">
                         <div class="flex flex-wrap gap-2">
                           {places.data
                             ?.find(
-                              (place) =>
-                                place.Places?.ImageURL === previewImage.value,
+                              place =>
+                                place.Places?.ImageURL === previewImage.value
                             )
                             ?.Places?.Tags?.map((tag, i) => (
                               <span
@@ -278,16 +279,16 @@ export default component$(() => {
                         <p class="mt-2 text-sm text-[#5B3E29]">
                           {places.data
                             ?.find(
-                              (place) =>
-                                place.Places?.ImageURL === previewImage.value,
+                              place =>
+                                place.Places?.ImageURL === previewImage.value
                             )
                             ?.Places?.Description.substring(0, 100)}
                           {(places.data?.find(
-                            (place) =>
-                              place.Places?.ImageURL === previewImage.value,
+                            place =>
+                              place.Places?.ImageURL === previewImage.value
                           )?.Places?.Description.length || 0) > 100
-                            ? "..."
-                            : ""}
+                            ? '...'
+                            : ''}
                         </p>
                       </div>
                     </div>
@@ -305,11 +306,11 @@ export default component$(() => {
                   <input
                     {...props}
                     class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                      field.error ? "border-red-500" : "border-[#E6D7C3]"
+                      field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                     }`}
                     type="url"
                     placeholder="https://example.com/image.jpg"
-                    value={field.value || ""}
+                    value={field.value || ''}
                   />
                   {field.error && (
                     <div class="text-xs text-red-500">{field.error}</div>
@@ -318,7 +319,7 @@ export default component$(() => {
                     Add a custom image for your event. If not provided, the
                     location image will be used.
                   </p>
-                  {field.value && field.value.trim() !== "" && (
+                  {field.value && field.value.trim() !== '' && (
                     <div class="mt-3 overflow-hidden rounded-lg border border-[#E6D7C3]">
                       <div class="bg-[#F8EDE3] px-3 py-2">
                         <span class="text-xs font-medium text-[#8B5A2B]">
@@ -351,10 +352,10 @@ export default component$(() => {
                     <input
                       {...props}
                       class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                        field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                       }`}
                       type="date"
-                      min={new Date().toISOString().split("T")[0]}
+                      min={new Date().toISOString().split('T')[0]}
                       value={field.value}
                     />
                     {field.error && (
@@ -373,7 +374,7 @@ export default component$(() => {
                     <select
                       {...props}
                       class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                        field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                       }`}
                       value={field.value}
                     >
@@ -381,14 +382,14 @@ export default component$(() => {
                       {Array.from({ length: 24 }, (_, i) => (
                         <option
                           key={i}
-                          value={`${i.toString().padStart(2, "0")}:00`}
+                          value={`${i.toString().padStart(2, '0')}:00`}
                         >
                           {i === 0
-                            ? "12:00 AM"
+                            ? '12:00 AM'
                             : i < 12
                               ? `${i}:00 AM`
                               : i === 12
-                                ? "12:00 PM"
+                                ? '12:00 PM'
                                 : `${i - 12}:00 PM`}
                         </option>
                       ))}
@@ -409,7 +410,7 @@ export default component$(() => {
                     <select
                       {...props}
                       class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
-                        field.error ? "border-red-500" : "border-[#E6D7C3]"
+                        field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                       }`}
                       value={field.value}
                     >
@@ -417,14 +418,14 @@ export default component$(() => {
                       {Array.from({ length: 24 }, (_, i) => (
                         <option
                           key={i}
-                          value={`${i.toString().padStart(2, "0")}:00`}
+                          value={`${i.toString().padStart(2, '0')}:00`}
                         >
                           {i === 0
-                            ? "12:00 AM"
+                            ? '12:00 AM'
                             : i < 12
                               ? `${i}:00 AM`
                               : i === 12
-                                ? "12:00 PM"
+                                ? '12:00 PM'
                                 : `${i - 12}:00 PM`}
                         </option>
                       ))}
@@ -447,20 +448,20 @@ export default component$(() => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})
 
 export const head: DocumentHead = {
-  title: "S&H | New Session",
+  title: 'S&H | New Session',
   meta: [
     {
-      name: "description",
-      content: "Create a new study session and connect with others",
+      name: 'description',
+      content: 'Create a new study session and connect with others',
     },
   ],
   links: [
     {
-      rel: "canonical",
+      rel: 'canonical',
     },
   ],
-};
+}

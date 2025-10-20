@@ -1,5 +1,5 @@
-import { Link } from "@builder.io/qwik-city";
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 export const JoinCommunity = component$(() => {
   return (
     <section class="relative overflow-hidden bg-[#5B3E29] py-16 text-white">
@@ -31,5 +31,5 @@ export const JoinCommunity = component$(() => {
         </div>
       </div>
     </section>
-  );
-});
+  )
+})

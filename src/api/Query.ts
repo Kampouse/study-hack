@@ -1,39 +1,39 @@
-import { Users, Events, Requests, Places } from "../../drizzle/schema";
-import type { Session } from "./drizzled";
-import { eq, and, ne, or, not, exists, sql, notInArray } from "drizzle-orm";
-import type { Requested } from "./drizzled";
-import { drizzler } from "./drizzled";
-import type { UpdateUserForm, CreateEventForm } from "~/api/Forms";
+import { and, eq, exists, ne, not, notInArray, or, sql } from 'drizzle-orm'
+import type { CreateEventForm, UpdateUserForm } from '~/api/Forms'
+import { Events, Places, Requests, Users } from '../../drizzle/schema'
+import type { Session } from './drizzled'
+import type { Requested } from './drizzled'
+import { drizzler } from './drizzled'
 export type User = {
-  Name: string;
-  Email: string;
-  Description: string;
-  Username: string;
-  ImageURL: string;
-  IsAdmin: boolean;
-  Intrests: Array<string>;
-};
+  Name: string
+  Email: string
+  Description: string
+  Username: string
+  ImageURL: string
+  IsAdmin: boolean
+  Intrests: Array<string>
+}
 
-export type ClientType = Awaited<ReturnType<typeof drizzler>>;
+export type ClientType = Awaited<ReturnType<typeof drizzler>>
 
 export const QueryPlaces = async (params: {
-  event: Requested | undefined;
-  client?: ClientType | null;
-  params?: { limit?: number; offset?: number; exclude?: number[] };
+  event: Requested | undefined
+  client?: ClientType | null
+  params?: { limit?: number; offset?: number; exclude?: number[] }
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "places not found",
-    };
+      message: 'places not found',
+    }
   }
 
   try {
-    const lenght = (await Client.select().from(Places)).length;
-    let offset = params.params?.offset ?? 0;
+    const lenght = (await Client.select().from(Places)).length
+    let offset = params.params?.offset ?? 0
 
-    offset = offset == lenght ? 0 : offset;
+    offset = offset == lenght ? 0 : offset
 
     const result = await Client.select()
       .from(Places)
@@ -43,53 +43,53 @@ export const QueryPlaces = async (params: {
           eq(Places.IsPublic, 1),
           params.params?.exclude
             ? notInArray(Places.PlaceID, params.params.exclude)
-            : undefined,
-        ),
+            : undefined
+        )
       )
       .orderBy(sql`RANDOM()`)
       .limit(params.params?.limit ?? 100)
       .offset(offset)
-      .execute();
+      .execute()
 
     if (result.length === 0) {
       return {
         success: false,
-        message: "no places found",
-      };
+        message: 'no places found',
+      }
     }
 
     return {
       success: true,
       data: result,
-    };
+    }
   } catch (error) {
-    console.error("Error getting a place:", error);
+    console.error('Error getting a place:', error)
     return {
       success: false,
-      message: "Error getting a place",
-    };
+      message: 'Error getting a place',
+    }
   }
-};
+}
 export const QueryUserPlaces = async (params: {
-  event: Requested | undefined;
-  user: GetUserReturnType;
-  client?: ClientType | null;
-  params?: { limit?: number; offset?: number };
+  event: Requested | undefined
+  user: GetUserReturnType
+  client?: ClientType | null
+  params?: { limit?: number; offset?: number }
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
+      message: 'Client not found',
       data: null,
-    };
+    }
   }
   if (!params.user) {
     return {
       success: false,
-      message: "User not found",
+      message: 'User not found',
       data: null,
-    };
+    }
   }
 
   try {
@@ -98,93 +98,93 @@ export const QueryUserPlaces = async (params: {
       .where(eq(Places.UserID, params.user.ID))
       .limit(params.params?.limit ?? 100)
       .offset(params.params?.offset ?? 0)
-      .execute();
+      .execute()
 
     if (places.length === 0) {
       return {
         success: false,
-        message: "No places found for this user",
+        message: 'No places found for this user',
         data: [],
-      };
+      }
     }
 
     return {
       success: true,
-      message: "Places retrieved successfully",
+      message: 'Places retrieved successfully',
       data: places,
-    };
+    }
   } catch (error) {
-    console.error("Error retrieving user places:", error);
+    console.error('Error retrieving user places:', error)
     return {
       success: false,
-      message: "Error retrieving user places",
+      message: 'Error retrieving user places',
       data: null,
-    };
+    }
   }
-};
+}
 export const CreateUser = async (params: {
-  event: Requested | undefined;
-  session: Session;
-  client?: ClientType | null;
+  event: Requested | undefined
+  session: Session
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
-    console.log("Client not initialized");
-    return null;
+    console.log('Client not initialized')
+    return null
   }
 
   try {
     const data = await Client.select()
       .from(Users)
       .where(eq(Users.Email, params.session.user.email))
-      .execute();
+      .execute()
     if (data.length == 0) {
       return await Client.insert(Users)
         .values({
           Email: params.session.user.email,
           Name: params.session.user.name,
-          Description: "i am new here",
+          Description: 'i am new here',
           Username: params.session.user.name,
           ImageURL: params.session.user.image,
           IsAdmin: 0,
         })
         .returning()
         .execute()
-        .catch((e) => {
-          console.log("issue", e);
-          return null;
-        });
+        .catch(e => {
+          console.log('issue', e)
+          return null
+        })
     } else {
-      console.log("User already exists", data[0]);
-      return data[0];
+      console.log('User already exists', data[0])
+      return data[0]
     }
   } catch (e) {
-    console.log(e);
+    console.log(e)
 
-    return null;
+    return null
   }
-};
+}
 
 export const serverSession = (event: Requested) => {
   type Session = {
     user: {
-      name: string;
-      email: string;
-      image: string;
-    };
-    expires: string;
-  } | null;
-  return event.sharedMap.get("session") as Session;
-};
+      name: string
+      email: string
+      image: string
+    }
+    expires: string
+  } | null
+  return event.sharedMap.get('session') as Session
+}
 
 export const UpdateUser = async (params: {
-  event: Requested;
-  session: UpdateUserForm;
+  event: Requested
+  session: UpdateUserForm
 }) => {
-  const Client = await drizzler(params.event);
-  if (Client === null) return;
-  const data = serverSession(params.event);
-  console.log("User intrests:", params.session.Intrests);
+  const Client = await drizzler(params.event)
+  if (Client === null) return
+  const data = serverSession(params.event)
+  console.log('User intrests:', params.session.Intrests)
   if (data !== null) {
     await Client.update(Users)
       .set({
@@ -194,18 +194,18 @@ export const UpdateUser = async (params: {
         Intrestets: params.session.Intrests,
       })
       .where(eq(Users.Email, data.user.email))
-      .execute();
-    return params.session;
+      .execute()
+    return params.session
   }
-};
+}
 
 export const GetUserFromEmail = async (params: {
-  event: Requested | undefined;
-  email: string;
-  client?: ClientType;
+  event: Requested | undefined
+  email: string
+  client?: ClientType
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
-  if (Client === null) return null;
+  const Client = params.client ?? (await drizzler(params.event as Requested))
+  if (Client === null) return null
 
   try {
     const userData = await Client.select({
@@ -220,25 +220,25 @@ export const GetUserFromEmail = async (params: {
     })
       .from(Users)
       .where(eq(Users.Email, params.email))
-      .execute();
+      .execute()
 
     if (userData.length > 0) {
-      return userData[0];
+      return userData[0]
     } else {
-      return null;
+      return null
     }
   } catch (e) {
-    console.log("Error fetching user by ID:", e);
-    return null;
+    console.log('Error fetching user by ID:', e)
+    return null
   }
-};
+}
 
 export const GetUser = async (params: {
-  event: Requested;
-  userId?: string | undefined;
+  event: Requested
+  userId?: string | undefined
 }) => {
-  const Client = await drizzler(params.event);
-  const data = serverSession(params.event);
+  const Client = await drizzler(params.event)
+  const data = serverSession(params.event)
   if (data !== null && Client !== null && !params.userId) {
     try {
       const userData = await Client.select({
@@ -252,14 +252,14 @@ export const GetUser = async (params: {
       })
         .from(Users)
         .where(eq(Users.Email, data.user.email))
-        .execute();
+        .execute()
 
       if (userData.length > 0) {
-        return userData[0];
+        return userData[0]
       }
     } catch (e) {
-      console.log(e);
-      return null;
+      console.log(e)
+      return null
     }
   } else if (params.userId && Client != null) {
     try {
@@ -272,40 +272,40 @@ export const GetUser = async (params: {
         Intrests: Users.Intrestets,
       })
         .from(Users)
-        .where(eq(Users.UserID, parseInt(params.userId)))
-        .execute();
+        .where(eq(Users.UserID, Number.parseInt(params.userId)))
+        .execute()
       if (userData.length > 0) {
-        return userData[0];
+        return userData[0]
       }
     } catch (e) {
-      console.log(e);
-      return null;
+      console.log(e)
+      return null
     }
   }
-  return null;
-};
+  return null
+}
 
 export const QueryUserStats = async (params: {
-  event: Requested | undefined;
-  user: GetUserReturnType;
-  client?: ClientType | null;
+  event: Requested | undefined
+  user: GetUserReturnType
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
+      message: 'Client not found',
       data: null,
-    };
+    }
   }
 
   try {
     if (!params.user) {
       return {
         success: false,
-        message: "User not found",
+        message: 'User not found',
         data: null,
-      };
+      }
     }
     // Count events created by the user
     // Execute all database queries concurrently using Promise.all
@@ -325,41 +325,41 @@ export const QueryUserStats = async (params: {
         .where(
           and(
             eq(Requests.UserID, params.user.ID),
-            eq(Requests.Status, "confirmed"),
-          ),
+            eq(Requests.Status, 'confirmed')
+          )
         )
         .execute(),
-    ]);
+    ])
 
     return {
       success: true,
-      message: "User stats retrieved successfully",
+      message: 'User stats retrieved successfully',
       data: {
         eventsCreated: Number(eventsCreated[0]?.count || 0),
         placesCreated: Number(placesCreated[0]?.count || 0),
         eventsAttended: Number(eventsAttended[0]?.count || 0),
       },
-    };
+    }
   } catch (error) {
-    console.error("Error retrieving user stats:", error);
+    console.error('Error retrieving user stats:', error)
     return {
       success: false,
-      message: "Error retrieving user stats",
+      message: 'Error retrieving user stats',
       data: null,
-    };
+    }
   }
-};
-export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>;
+}
+export type GetUserReturnType = Awaited<ReturnType<typeof GetUser>>
 export const CreateEvent = async (params: {
-  event: Requested | undefined;
-  session: CreateEventForm;
-  Client: ClientType | null;
-  userData?: GetUserReturnType | null;
+  event: Requested | undefined
+  session: CreateEventForm
+  Client: ClientType | null
+  userData?: GetUserReturnType | null
 }) => {
   const userData =
-    params.userData ?? (await GetUser({ event: params.event as Requested }));
-  const Client = params.Client ?? (await drizzler(params.event as Requested));
-  if (Client === null || userData === null) return;
+    params.userData ?? (await GetUser({ event: params.event as Requested }))
+  const Client = params.Client ?? (await drizzler(params.event as Requested))
+  if (Client === null || userData === null) return
   return await Client.insert(Events)
     .values({
       Name: params.session.Name,
@@ -372,7 +372,7 @@ export const CreateEvent = async (params: {
       StartTime: params.session.StartTime,
       EndTime: params.session.EndTime,
       Tags: [],
-      ImageURL: params.session.ImageURL ?? "",
+      ImageURL: params.session.ImageURL ?? '',
       UserID: params.userData?.ID ?? userData.ID,
     })
     .returning({
@@ -388,35 +388,35 @@ export const CreateEvent = async (params: {
       EventID: Events.EventID,
     })
     .execute()
-    .catch((e) => {
-      console.log(e);
-      return null;
-    });
-};
+    .catch(e => {
+      console.log(e)
+      return null
+    })
+}
 
 export type QueryEventOptions = {
-  limit?: number;
-  offset?: number;
-  tags?: string[];
-  location?: string;
-  date?: Date | null;
-  orderBy?: "Date" | "Name";
-  client?: ClientType | null;
-  from?: Date;
-  to?: Date;
-  byUser?: number;
-  active?: boolean;
-  fromDateTime?: Date;
-};
+  limit?: number
+  offset?: number
+  tags?: string[]
+  location?: string
+  date?: Date | null
+  orderBy?: 'Date' | 'Name'
+  client?: ClientType | null
+  from?: Date
+  to?: Date
+  byUser?: number
+  active?: boolean
+  fromDateTime?: Date
+}
 
 export const QueryEvent = async (params: {
-  event: Requested;
-  id: number;
-  options: QueryEventOptions | undefined;
+  event: Requested
+  id: number
+  options: QueryEventOptions | undefined
 }) => {
-  const Client = params.options?.client || (await drizzler(params.event));
+  const Client = params.options?.client || (await drizzler(params.event))
 
-  if (Client === null) return;
+  if (Client === null) return
 
   const event = await Client.select({
     name: Events.Name,
@@ -436,40 +436,40 @@ export const QueryEvent = async (params: {
     .where(and(eq(Events.EventID, params.id)))
 
     .execute()
-    .catch((e) => {
-      console.log(e);
-      return null;
-    });
+    .catch(e => {
+      console.log(e)
+      return null
+    })
   if (event && event.length > 0) {
     const user = await Client.select()
       .from(Users)
       .where(eq(Users.UserID, event[0].userID))
-      .execute();
+      .execute()
 
     const loc = await Client.select()
       .from(Places)
-      .where(eq(Places.PlaceID, event[0].LocationID as number));
+      .where(eq(Places.PlaceID, event[0].LocationID as number))
 
     // Use place image if event doesn't have one
     const eventWithImage = {
       ...event[0],
-      image: event[0].image || loc[0]?.ImageURL || "",
-    };
+      image: event[0].image || loc[0]?.ImageURL || '',
+    }
 
-    return { user: user[0], event: eventWithImage, location: loc[0] };
+    return { user: user[0], event: eventWithImage, location: loc[0] }
   }
-};
+}
 //query events that are not created by the user and not registered by the user
 export const QueryEvents = async (params: {
-  event: Requested | undefined;
-  options?: QueryEventOptions;
+  event: Requested | undefined
+  options?: QueryEventOptions
 }) => {
-  params.options = params.options ?? {};
+  params.options = params.options ?? {}
 
   const Client =
-    params.options.client || (await drizzler(params.event as Requested));
+    params.options.client || (await drizzler(params.event as Requested))
 
-  if (Client == null) return null;
+  if (Client == null) return null
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
 
   const output = await Client.select({
@@ -499,69 +499,69 @@ export const QueryEvents = async (params: {
               .where(
                 and(
                   eq(Requests.EventID, Events.EventID),
-                  eq(Requests.UserID, params.options.byUser as number),
-                ),
-              ),
-          ),
-        ),
-      ),
+                  eq(Requests.UserID, params.options.byUser as number)
+                )
+              )
+          )
+        )
+      )
     )
     .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
 
-    .catch((e) => {
-      console.log(e);
-      return null;
-    });
+    .catch(e => {
+      console.log(e)
+      return null
+    })
 
   const result =
-    output?.map(async (event) => {
+    output?.map(async event => {
       const requests = await Client.select()
         .from(Requests)
         .where(
           and(
             eq(Requests.EventID, event.eventID),
-            eq(Requests.Status, "confirmed"),
-          ),
+            eq(Requests.Status, 'confirmed')
+          )
         )
-        .execute();
+        .execute()
 
       return {
         eventID: event.eventID,
         confirmedCount: requests.length,
-      };
-    }) ?? [];
-  const places = await QueryPlaces({ event: params.event, client: Client });
-  const resultEvents = await Promise.all(result);
+      }
+    }) ?? []
+  const places = await QueryPlaces({ event: params.event, client: Client })
+  const resultEvents = await Promise.all(result)
   if (places.success && places.data) {
-    return output?.map((event) => {
+    return output?.map(event => {
       const eventPlace = places.data.find(
-        (place) => place.Places?.PlaceID === event.placeId,
-      );
+        place => place.Places?.PlaceID === event.placeId
+      )
       return {
         ...event,
-        image: event.image || eventPlace?.Places?.ImageURL || "",
-        attendees: resultEvents.find((e) => e.eventID === event.eventID)
+        image: event.image || eventPlace?.Places?.ImageURL || '',
+        attendees: resultEvents.find(e => e.eventID === event.eventID)
           ?.confirmedCount,
         place: eventPlace,
-      };
-    });
+      }
+    })
   }
 
-  return null;
-};
+  return null
+}
 
 export const QueryAllReferenceEvents = async (params: {
-  event: Requested;
-  options?: QueryEventOptions;
-  UserID: number;
+  event: Requested
+  options?: QueryEventOptions
+  UserID: number
 }) => {
-  params.options = params.options ?? {};
+  params.options = params.options ?? {}
   const Client =
-    params.options.client || (await drizzler(params.event as Requested));
+    params.options.client || (await drizzler(params.event as Requested))
 
-  if (Client == null) return null;
+  if (Client == null) return null
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
   const hostedEvents = await Client.select({
     eventID: Events.EventID,
@@ -579,7 +579,7 @@ export const QueryAllReferenceEvents = async (params: {
   })
     .from(Events)
     .where(eq(Events.UserID, params.UserID))
-    .execute();
+    .execute()
 
   const attendingEvents = await Client.select({
     event: {
@@ -607,32 +607,32 @@ export const QueryAllReferenceEvents = async (params: {
   })
     .from(Requests)
     .innerJoin(Events, eq(Events.EventID, Requests.EventID))
-    .where(eq(Requests.UserID, params.UserID));
+    .where(eq(Requests.UserID, params.UserID))
   const mergedEvents = [
-    ...hostedEvents.map((event) => ({ ...event, role: "host" })),
+    ...hostedEvents.map(event => ({ ...event, role: 'host' })),
     ...attendingEvents.map(({ event, request }) => ({
       ...event,
       ...request,
-      role: request.status === "confirmed" ? "confirmed" : "pending",
+      role: request.status === 'confirmed' ? 'confirmed' : 'pending',
     })),
-  ];
+  ]
 
   mergedEvents.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
 
   // Fetch all places to use for image fallback
-  const places = await QueryPlaces({ event: params.event, client: Client });
+  const places = await QueryPlaces({ event: params.event, client: Client })
 
   const processedEvents = await Promise.all(
-    mergedEvents.map(async (event) => {
-      const date = new Date(event.date);
-      const startTime = event.startTime;
-      const hrs = startTime ? startTime.split(":")[0] : "00";
-      const minutes = startTime ? startTime.split(":")[1] : "00";
-      const ampm = parseInt(hrs) >= 12 ? "PM" : "AM";
-      const formattedHours = parseInt(hrs) % 12 || 12;
-      event.date = `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`;
+    mergedEvents.map(async event => {
+      const date = new Date(event.date)
+      const startTime = event.startTime
+      const hrs = startTime ? startTime.split(':')[0] : '00'
+      const minutes = startTime ? startTime.split(':')[1] : '00'
+      const ampm = Number.parseInt(hrs) >= 12 ? 'PM' : 'AM'
+      const formattedHours = Number.parseInt(hrs) % 12 || 12
+      event.date = `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`
 
       const res = await Client.select({
         requestID: Requests.RequestID,
@@ -647,41 +647,41 @@ export const QueryAllReferenceEvents = async (params: {
         .where(
           and(
             eq(Requests.EventID, event.eventID),
-            eq(Requests.Status, "confirmed"),
-          ),
+            eq(Requests.Status, 'confirmed')
+          )
         )
-        .groupBy(Requests.EventID);
+        .groupBy(Requests.EventID)
 
       // Use place image if event doesn't have one
       const eventPlace =
         places.success && places.data
-          ? places.data.find((place) => place.Places?.PlaceID === event.placeId)
-          : null;
-      const finalImage = event.image || eventPlace?.Places?.ImageURL || "";
+          ? places.data.find(place => place.Places?.PlaceID === event.placeId)
+          : null
+      const finalImage = event.image || eventPlace?.Places?.ImageURL || ''
 
       return {
         ...event,
         image: finalImage,
         attendees: res.length,
         requests: res,
-      };
-    }),
-  );
+      }
+    })
+  )
 
-  return processedEvents;
-};
+  return processedEvents
+}
 
 export const QueryMyCompletedRequests = async (params: {
-  event: Requested | undefined;
-  options?: QueryEventOptions;
-  user: GetUserReturnType;
+  event: Requested | undefined
+  options?: QueryEventOptions
+  user: GetUserReturnType
 }) => {
-  params.options = params.options ?? {};
+  params.options = params.options ?? {}
 
   const Client =
-    params.options.client || (await drizzler(params.event as Requested));
+    params.options.client || (await drizzler(params.event as Requested))
 
-  if (Client == null || params.user == null) return null;
+  if (Client == null || params.user == null) return null
 
   try {
     return await Client.select({
@@ -699,30 +699,30 @@ export const QueryMyCompletedRequests = async (params: {
       .where(
         and(
           ne(Requests.UserID, params.user.ID),
-          eq(Events.UserID, params.user.ID),
-        ),
+          eq(Events.UserID, params.user.ID)
+        )
       )
       .orderBy(Requests.CreatedAt)
       .limit(params.options.limit ?? 10)
       .offset(params.options.offset ?? 0)
-      .execute();
+      .execute()
   } catch (e) {
-    console.log(e);
-    return null;
+    console.log(e)
+    return null
   }
-};
+}
 
 export const QueryActiveEvent = async (params: {
-  event: Requested | undefined;
-  options?: QueryEventOptions;
-  user: GetUserReturnType;
+  event: Requested | undefined
+  options?: QueryEventOptions
+  user: GetUserReturnType
 }) => {
-  params.options = params.options ?? {};
+  params.options = params.options ?? {}
 
   const Client =
-    params.options.client || (await drizzler(params.event as Requested));
+    params.options.client || (await drizzler(params.event as Requested))
 
-  if (Client == null || params.user == null) return null;
+  if (Client == null || params.user == null) return null
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
 
   const result = await Client.select({
@@ -742,35 +742,35 @@ export const QueryActiveEvent = async (params: {
     .innerJoin(Requests, eq(Events.EventID, Requests.EventID))
     .where(
       and(
-        eq(Requests.Status, "confirmed"),
+        eq(Requests.Status, 'confirmed'),
         or(
           eq(Requests.UserID, params.user.ID),
-          eq(Events.UserID, params.user.ID),
-        ),
-      ),
+          eq(Events.UserID, params.user.ID)
+        )
+      )
     )
     .groupBy(Events.EventID)
     .limit(params.options.limit ?? 3)
     .offset(params.options.offset ?? 0)
     .execute()
-    .catch((e) => {
-      console.log(e);
-      return null;
-    });
+    .catch(e => {
+      console.log(e)
+      return null
+    })
 
-  return result;
-};
+  return result
+}
 export const QueryActiveRequest = async (params: {
-  event: Requested | undefined;
-  options?: QueryEventOptions;
-  user: GetUserReturnType;
+  event: Requested | undefined
+  options?: QueryEventOptions
+  user: GetUserReturnType
 }) => {
-  params.options = params.options ?? {};
+  params.options = params.options ?? {}
 
   const Client =
-    params.options.client || (await drizzler(params.event as Requested));
+    params.options.client || (await drizzler(params.event as Requested))
 
-  if (Client == null || params.user == null) return null;
+  if (Client == null || params.user == null) return null
   //const builder = params.options.orderBy === "Date" ? Events.Date : Events.Name;
   // to be changed
   try {
@@ -791,50 +791,50 @@ export const QueryActiveRequest = async (params: {
       .where(
         and(
           eq(Events.UserID, params.user.ID),
-          eq(Requests.Status, "pending"),
+          eq(Requests.Status, 'pending'),
           //comment this line for testing
-          ne(Requests.UserID, params.user.ID),
-        ),
+          ne(Requests.UserID, params.user.ID)
+        )
       )
-      .execute();
+      .execute()
   } catch (e) {
-    console.log(e);
-    return null;
+    console.log(e)
+    return null
   }
-};
+}
 
 export const createJoinRequest = async (params: {
-  event: Requested | undefined;
+  event: Requested | undefined
   requestData: {
-    eventId: number;
-    userId: number;
-    background: string;
-    experience: string;
-    why: string;
-  };
-  client?: ClientType | null;
+    eventId: number
+    userId: number
+    background: string
+    experience: string
+    why: string
+  }
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null)
     return {
       data: null,
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
 
   try {
     // Validation 1: Check if event exists
     const event = await Client.select()
       .from(Events)
       .where(eq(Events.EventID, params.requestData.eventId))
-      .execute();
+      .execute()
 
     if (event.length === 0) {
       return {
         data: null,
         success: false,
-        message: "Event not found",
-      };
+        message: 'Event not found',
+      }
     }
 
     // Validation 2: Check if user is the event owner
@@ -842,23 +842,23 @@ export const createJoinRequest = async (params: {
       return {
         data: null,
         success: false,
-        message: "Cannot join your own event",
-      };
+        message: 'Cannot join your own event',
+      }
     }
 
     // Validation 3: Check if event is in the past
-    const eventDateStr = event[0].Date; // Format: "YYYY-MM-DD"
-    const eventTimeStr = event[0].StartTime; // Format: "HH:MM" or "HH:MM:SS"
-    const eventDateTime = new Date(eventDateStr + "T" + eventTimeStr);
-    const now = new Date();
+    const eventDateStr = event[0].Date // Format: "YYYY-MM-DD"
+    const eventTimeStr = event[0].StartTime // Format: "HH:MM" or "HH:MM:SS"
+    const eventDateTime = new Date(eventDateStr + 'T' + eventTimeStr)
+    const now = new Date()
 
     // Only check if the date is valid and in the past
     if (!isNaN(eventDateTime.getTime()) && eventDateTime < now) {
       return {
         data: null,
         success: false,
-        message: "Cannot join past events",
-      };
+        message: 'Cannot join past events',
+      }
     }
 
     // Validation 4: Check for existing request
@@ -867,17 +867,17 @@ export const createJoinRequest = async (params: {
       .where(
         and(
           eq(Requests.EventID, params.requestData.eventId),
-          eq(Requests.UserID, params.requestData.userId),
-        ),
+          eq(Requests.UserID, params.requestData.userId)
+        )
       )
-      .execute();
+      .execute()
 
     if (existingRequest.length > 0) {
       return {
         data: null,
         success: false,
-        message: "Request already exists for this event",
-      };
+        message: 'Request already exists for this event',
+      }
     }
 
     // All validations passed, create the request
@@ -902,29 +902,29 @@ export const createJoinRequest = async (params: {
           .execute()
       )[0],
       success: true,
-      message: "Request created",
-    };
+      message: 'Request created',
+    }
   } catch (error) {
-    console.error("Error creating request:", error);
+    console.error('Error creating request:', error)
     return {
       data: null,
       success: false,
-      message: "Error creating request",
-    };
+      message: 'Error creating request',
+    }
   }
-};
+}
 export const updateRequestStatus = async (params: {
-  event: Requested | undefined;
-  requestId: number;
-  newStatus: "confirmed" | "denied";
-  client?: ClientType | null;
+  event: Requested | undefined
+  requestId: number
+  newStatus: 'confirmed' | 'denied'
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null)
     return {
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
 
   try {
     const result = await Client.update(Requests)
@@ -938,52 +938,52 @@ export const updateRequestStatus = async (params: {
         UserID: Requests.UserID,
         Status: Requests.Status,
       })
-      .execute();
+      .execute()
 
     if (result.length === 0) {
       return {
         success: false,
-        message: "Request not found",
-      };
+        message: 'Request not found',
+      }
     }
 
     return {
       data: result[0],
       success: true,
       message: `Request status updated to ${params.newStatus}`,
-    };
+    }
   } catch (error) {
-    console.error("Error updating request status:", error);
+    console.error('Error updating request status:', error)
     return {
       success: false,
-      message: "Error updating request status",
-    };
+      message: 'Error updating request status',
+    }
   }
-};
+}
 export const CreatePlace = async (params: {
-  event: Requested | undefined;
-  userID: number;
+  event: Requested | undefined
+  userID: number
   placeData: {
-    name: string;
-    address: string;
-    image?: string;
-    description: string;
-    tags?: string[];
-    rating: string;
-    wifispeed?: number;
-    hasquietenvironment?: boolean;
-    price?: string;
-    coordinates?: [number, number];
-    category?: string;
-  };
-  client?: ClientType | null;
+    name: string
+    address: string
+    image?: string
+    description: string
+    tags?: string[]
+    rating: string
+    wifispeed?: number
+    hasquietenvironment?: boolean
+    price?: string
+    coordinates?: [number, number]
+    category?: string
+  }
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
   }
 
   try {
@@ -992,54 +992,54 @@ export const CreatePlace = async (params: {
         UserID: params.userID,
         Name: params.placeData.name,
         Address: params.placeData.address,
-        ImageURL: params.placeData.image || "",
+        ImageURL: params.placeData.image || '',
         Description: params.placeData.description,
         Tags: params.placeData.tags || [],
-        Rating: parseFloat(params.placeData.rating),
+        Rating: Number.parseFloat(params.placeData.rating),
         WifiSpeed: params.placeData.wifispeed || 0,
         HasQuietEnvironment: params.placeData.hasquietenvironment ? 1 : 0,
         Coordinates: params.placeData.coordinates || [0, 0],
         IsPublic: 1,
       })
       .returning()
-      .execute();
+      .execute()
     return {
       data: result[0],
       success: true,
-      message: "Place created successfully",
-    };
+      message: 'Place created successfully',
+    }
   } catch (error) {
-    console.error("Error creating place:", error);
+    console.error('Error creating place:', error)
     return {
       success: false,
-      message: "Error creating place",
-    };
+      message: 'Error creating place',
+    }
   }
-};
+}
 
 export const UpdatePlace = async (params: {
-  event: Requested | undefined;
-  placeId: number;
+  event: Requested | undefined
+  placeId: number
   placeData: Partial<{
-    name: string;
-    address: string;
-    image?: string;
-    description: string;
-    tags?: string[];
-    rating: number;
-    wifiSpeed?: number;
-    lat: number;
-    lng: number;
-    hasQuietEnvironment?: boolean;
-  }>;
-  client?: ClientType | null;
+    name: string
+    address: string
+    image?: string
+    description: string
+    tags?: string[]
+    rating: number
+    wifiSpeed?: number
+    lat: number
+    lng: number
+    hasQuietEnvironment?: boolean
+  }>
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
   }
 
   try {
@@ -1060,142 +1060,142 @@ export const UpdatePlace = async (params: {
       })
       .where(eq(Places.PlaceID, params.placeId))
       .returning()
-      .execute();
+      .execute()
 
     if (result.length === 0) {
       return {
         success: false,
-        message: "Place not found",
-      };
+        message: 'Place not found',
+      }
     }
 
     return {
       data: result[0],
       success: true,
-      message: "Place updated successfully",
-    };
+      message: 'Place updated successfully',
+    }
   } catch (error) {
-    console.error("Error updating place:", error);
+    console.error('Error updating place:', error)
     return {
       success: false,
-      message: "Error updating place",
-    };
+      message: 'Error updating place',
+    }
   }
-};
+}
 export const QueryPlace = async (params: {
-  event: Requested | undefined;
-  name?: string;
-  placeId?: number;
-  client?: ClientType | null;
+  event: Requested | undefined
+  name?: string
+  placeId?: number
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
   }
   try {
-    if (params.name && params.name !== "") {
+    if (params.name && params.name !== '') {
       const result = await Client.select()
         .from(Places)
         .where(eq(Places.Name, params.name))
-        .execute();
+        .execute()
 
       if (result.length === 0) {
         return {
           success: false,
-          message: "Place not found",
-        };
+          message: 'Place not found',
+        }
       }
 
       return {
         success: true,
         data: { ...result[0] },
-      };
+      }
     }
     if (params.placeId) {
-      console.log(params.placeId);
+      console.log(params.placeId)
       const result = await Client.select()
         .from(Places)
         .where(eq(Places.PlaceID, params.placeId))
-        .execute();
+        .execute()
 
       if (result.length === 0) {
         return {
           success: false,
-          message: "Place not found",
-        };
+          message: 'Place not found',
+        }
       }
 
       return {
         success: true,
         data: { ...result[0] },
-      };
+      }
     }
   } catch (error) {
-    console.error("Error getting a place:", error);
+    console.error('Error getting a place:', error)
     return {
       success: false,
-      message: "invalid request",
-    };
+      message: 'invalid request',
+    }
   }
   return {
     success: true,
     data: null,
-    message: "Place retrieved successfully",
-  };
-};
+    message: 'Place retrieved successfully',
+  }
+}
 export const DeletePlace = async (params: {
-  event: Requested | undefined;
-  placeId: number;
-  client?: ClientType | null;
+  event: Requested | undefined
+  placeId: number
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
-    };
+      message: 'Client not found',
+    }
   }
 
   try {
     const result = await Client.delete(Places)
       .where(eq(Places.PlaceID, params.placeId))
       .returning()
-      .execute();
+      .execute()
 
     if (result.length === 0) {
       return {
         success: false,
-        message: "Place not found",
-      };
+        message: 'Place not found',
+      }
     }
 
     return {
       success: true,
-      message: "Place deleted successfully",
-    };
+      message: 'Place deleted successfully',
+    }
   } catch (error) {
-    console.error("Error deleting place:", error);
+    console.error('Error deleting place:', error)
     return {
       success: false,
-      message: "Error deleting place",
-    };
+      message: 'Error deleting place',
+    }
   }
-};
+}
 export const QueryConfirmedUsers = async (params: {
-  event: Requested | undefined;
-  eventId: number;
-  client?: ClientType | null;
+  event: Requested | undefined
+  eventId: number
+  client?: ClientType | null
 }) => {
-  const Client = params.client ?? (await drizzler(params.event as Requested));
+  const Client = params.client ?? (await drizzler(params.event as Requested))
   if (Client === null) {
     return {
       success: false,
-      message: "Client not found",
+      message: 'Client not found',
       data: null,
-    };
+    }
   }
 
   try {
@@ -1219,22 +1219,22 @@ export const QueryConfirmedUsers = async (params: {
       .where(
         and(
           eq(Requests.EventID, params.eventId),
-          eq(Requests.Status, "confirmed"),
-        ),
+          eq(Requests.Status, 'confirmed')
+        )
       )
-      .execute();
+      .execute()
 
     return {
       success: true,
-      message: "Requests found",
+      message: 'Requests found',
       data: requests,
-    };
+    }
   } catch (error) {
-    console.error("Error getting requests:", error);
+    console.error('Error getting requests:', error)
     return {
       success: false,
-      message: "Error getting requests",
+      message: 'Error getting requests',
       data: null,
-    };
+    }
   }
-};
+}

@@ -1,10 +1,10 @@
-import "../src/global.css";
+import '../src/global.css'
 
 export const parameters = {
   a11y: {
     config: {},
     options: {
-      checks: { "color-contrast": { options: { noScroll: true } } },
+      checks: { 'color-contrast': { options: { noScroll: true } } },
       restoreScroll: true,
     },
   },
@@ -12,6 +12,6 @@ export const parameters = {
     showRoots: true,
   },
   docs: {
-    iframeHeight: "200px",
+    iframeHeight: '200px',
   },
-};
+}

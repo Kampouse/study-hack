@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { PlusIcon as Plus } from "lucide-qwik";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { PlusIcon as Plus } from 'lucide-qwik'
 
 export const SharePlaceCard = component$(() => {
   return (
@@ -24,5 +24,5 @@ export const SharePlaceCard = component$(() => {
         </Link>
       </div>
     </div>
-  );
-});
+  )
+})

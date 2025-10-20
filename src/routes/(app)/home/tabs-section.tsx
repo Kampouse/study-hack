@@ -1,168 +1,164 @@
-import { component$, useSignal, useTask$, $ } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
-import { ArrowRightIcon as ArrowRight } from "lucide-qwik";
-import { PlaceCard } from "./place-card";
-import { SharePlaceCard } from "./share-place-card";
-import { EventCard } from "./event-card";
-import { CreateEventCard } from "./create-event-card";
-import { DetailedEventCard } from "./detailed-event-card";
-import { LargeCreateEventCard } from "./large-create-event-card";
+import { $, component$, useSignal, useTask$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
+import { ArrowRightIcon as ArrowRight } from 'lucide-qwik'
+import { CreateEventCard } from './create-event-card'
+import { DetailedEventCard } from './detailed-event-card'
+import { EventCard } from './event-card'
+import { LargeCreateEventCard } from './large-create-event-card'
+import { PlaceCard } from './place-card'
+import { SharePlaceCard } from './share-place-card'
 
-import { useLocation } from "@builder.io/qwik-city";
+import { useLocation } from '@builder.io/qwik-city'
 
 interface TabsSectionProps {
-  placesApiData: any[];
-  eventsData: any[];
+  placesApiData: any[]
+  eventsData: any[]
 }
 
 // Define how many items to show initially and how many to load more
-const INITIAL_PLACES_COUNT = 7; // Show 7 places + 1 share card = 8 items (fits 4-col grid)
-const PLACES_INCREMENT = 8;
-const INITIAL_EVENTS_COUNT = 4; // Show 4 events initially
-const EVENTS_INCREMENT = 4;
+const INITIAL_PLACES_COUNT = 7 // Show 7 places + 1 share card = 8 items (fits 4-col grid)
+const PLACES_INCREMENT = 8
+const INITIAL_EVENTS_COUNT = 4 // Show 4 events initially
+const EVENTS_INCREMENT = 4
 
 export const TabsSection = component$((props: TabsSectionProps) => {
-  const loc = useLocation();
+  const loc = useLocation()
 
   // Get the active tab from URL or default to "all"
-  const activeTab = useSignal(loc.url.searchParams.get("tab") ?? "all");
+  const activeTab = useSignal(loc.url.searchParams.get('tab') ?? 'all')
 
   // Keep tab state in sync with URL parameter
   useTask$(({ track }) => {
-    const tab = track(() => loc.url.searchParams.get("tab"));
-    activeTab.value = tab ?? "all";
-  });
+    const tab = track(() => loc.url.searchParams.get('tab'))
+    activeTab.value = tab ?? 'all'
+  })
 
-  const visiblePlacesCount = useSignal(INITIAL_PLACES_COUNT);
-  const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT);
+  const visiblePlacesCount = useSignal(INITIAL_PLACES_COUNT)
+  const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT)
 
   // Filter state variables with proper TypeScript types
-  const searchTerm = useSignal<string>("");
-  const placeFilterCategory = useSignal<string>("all");
-  const eventFilterDateRange = useSignal<string>("all");
-  const eventSort = useSignal<string>("date-asc");
-  const placeSort = useSignal<string>("recommended");
-  const activeQuickFilters = useSignal<string[]>([]);
+  const searchTerm = useSignal<string>('')
+  const placeFilterCategory = useSignal<string>('all')
+  const eventFilterDateRange = useSignal<string>('all')
+  const eventSort = useSignal<string>('date-asc')
+  const placeSort = useSignal<string>('recommended')
+  const activeQuickFilters = useSignal<string[]>([])
 
   // Filter functions
   const filterPlaces = (places: any[]) => {
-    return places.filter((place) => {
+    return places.filter(place => {
       const matchesSearch =
-        searchTerm.value === "" ||
+        searchTerm.value === '' ||
         place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
         place.description
           ?.toLowerCase()
           .includes(searchTerm.value.toLowerCase()) ||
-        place.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+        place.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
       const matchesCategory =
-        placeFilterCategory.value === "all" ||
-        (placeFilterCategory.value === "popular" &&
-          place.badge === "Popular") ||
-        (placeFilterCategory.value === "coffee" &&
-          place.tags?.includes("Coffee")) ||
-        (placeFilterCategory.value === "quiet" &&
-          place.tags?.includes("Quiet")) ||
-        (placeFilterCategory.value === "wifi" &&
-          place.tags?.includes("WiFi")) ||
-        (placeFilterCategory.value === "power" &&
-          place.tags?.includes("Power"));
+        placeFilterCategory.value === 'all' ||
+        (placeFilterCategory.value === 'popular' &&
+          place.badge === 'Popular') ||
+        (placeFilterCategory.value === 'coffee' &&
+          place.tags?.includes('Coffee')) ||
+        (placeFilterCategory.value === 'quiet' &&
+          place.tags?.includes('Quiet')) ||
+        (placeFilterCategory.value === 'wifi' &&
+          place.tags?.includes('WiFi')) ||
+        (placeFilterCategory.value === 'power' && place.tags?.includes('Power'))
 
       const matchesQuickFilters =
         activeQuickFilters.value.length === 0 ||
-        activeQuickFilters.value.every((filter) =>
-          place.tags?.includes(filter),
-        );
+        activeQuickFilters.value.every(filter => place.tags?.includes(filter))
 
-      return matchesSearch && matchesCategory && matchesQuickFilters;
-    });
-  };
+      return matchesSearch && matchesCategory && matchesQuickFilters
+    })
+  }
 
   const filterEvents = (events: any[]) => {
-    return events.filter((event) => {
+    return events.filter(event => {
       const matchesSearch =
-        searchTerm.value === "" ||
+        searchTerm.value === '' ||
         event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
         event.description
           ?.toLowerCase()
           .includes(searchTerm.value.toLowerCase()) ||
-        event.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+        event.location?.toLowerCase().includes(searchTerm.value.toLowerCase())
 
-      const now = new Date();
-      const eventDate = new Date(event.date);
-      let matchesDateRange = true;
+      const now = new Date()
+      const eventDate = new Date(event.date)
+      let matchesDateRange = true
 
-      if (eventFilterDateRange.value === "today") {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        matchesDateRange = eventDate >= today && eventDate < tomorrow;
-      } else if (eventFilterDateRange.value === "this_week") {
-        const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        matchesDateRange = eventDate >= now && eventDate <= weekFromNow;
-      } else if (eventFilterDateRange.value === "next_week") {
-        const nextWeekStart = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const nextWeekEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+      if (eventFilterDateRange.value === 'today') {
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const tomorrow = new Date(today)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        matchesDateRange = eventDate >= today && eventDate < tomorrow
+      } else if (eventFilterDateRange.value === 'this_week') {
+        const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+        matchesDateRange = eventDate >= now && eventDate <= weekFromNow
+      } else if (eventFilterDateRange.value === 'next_week') {
+        const nextWeekStart = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+        const nextWeekEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
         matchesDateRange =
-          eventDate >= nextWeekStart && eventDate <= nextWeekEnd;
+          eventDate >= nextWeekStart && eventDate <= nextWeekEnd
       }
 
-      return matchesSearch && matchesDateRange;
-    });
-  };
+      return matchesSearch && matchesDateRange
+    })
+  }
 
   const sortPlaces = (places: any[]) => {
-    const sorted = [...places];
-    if (placeSort.value === "rating") {
-      sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (placeSort.value === "newest") {
+    const sorted = [...places]
+    if (placeSort.value === 'rating') {
+      sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    } else if (placeSort.value === 'newest') {
       // Sort by visitCount as a proxy for popularity/recency
       // Higher visit count suggests more recently visited or popular places
-      sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0));
+      sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0))
     }
-    return sorted;
-  };
+    return sorted
+  }
 
   const sortEvents = (events: any[]) => {
-    const sorted = [...events];
-    if (eventSort.value === "date-asc") {
+    const sorted = [...events]
+    if (eventSort.value === 'date-asc') {
       sorted.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-      );
-    } else if (eventSort.value === "date-desc") {
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+    } else if (eventSort.value === 'date-desc') {
       sorted.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
-    } else if (eventSort.value === "popular") {
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      )
+    } else if (eventSort.value === 'popular') {
       sorted.sort(
-        (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0),
-      );
+        (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0)
+      )
     }
-    return sorted;
-  };
+    return sorted
+  }
 
   const clearAllFilters = $(() => {
-    searchTerm.value = "";
-    placeFilterCategory.value = "all";
-    eventFilterDateRange.value = "all";
-    eventSort.value = "date-asc";
-    placeSort.value = "recommended";
-    activeQuickFilters.value = [];
-  });
+    searchTerm.value = ''
+    placeFilterCategory.value = 'all'
+    eventFilterDateRange.value = 'all'
+    eventSort.value = 'date-asc'
+    placeSort.value = 'recommended'
+    activeQuickFilters.value = []
+  })
 
   const toggleQuickFilter = $((filter: string) => {
-    const current = activeQuickFilters.value;
+    const current = activeQuickFilters.value
     if (current.includes(filter)) {
-      activeQuickFilters.value = current.filter((f) => f !== filter);
+      activeQuickFilters.value = current.filter(f => f !== filter)
     } else {
-      activeQuickFilters.value = [...current, filter];
+      activeQuickFilters.value = [...current, filter]
     }
-  });
+  })
 
-  const allPlacesLoaded =
-    visiblePlacesCount.value >= props.placesApiData.length;
-  const allEventsLoaded = visibleEventsCount.value >= props.eventsData.length;
+  const allPlacesLoaded = visiblePlacesCount.value >= props.placesApiData.length
+  const allEventsLoaded = visibleEventsCount.value >= props.eventsData.length
 
   return (
     <section class="px-4 py-8 pt-0 md:px-6">
@@ -173,9 +169,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             href="/home?tab=all"
             scroll={false}
             class={`rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
-              activeTab.value === "all"
-                ? "bg-white text-[#5B3E29] shadow-sm"
-                : "hover:bg-[#F1DFC6]/50"
+              activeTab.value === 'all'
+                ? 'bg-white text-[#5B3E29] shadow-sm'
+                : 'hover:bg-[#F1DFC6]/50'
             }`}
           >
             All
@@ -184,9 +180,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             scroll={false}
             href="/home?tab=events"
             class={`inline-block rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
-              activeTab.value === "events"
-                ? "bg-white text-[#5B3E29] shadow-sm"
-                : "hover:bg-[#F1DFC6]/50"
+              activeTab.value === 'events'
+                ? 'bg-white text-[#5B3E29] shadow-sm'
+                : 'hover:bg-[#F1DFC6]/50'
             }`}
           >
             Events
@@ -195,9 +191,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             scroll={false}
             href="/home?tab=places"
             class={`rounded-lg px-6 py-2 text-center text-[#6D5D4E] transition-all duration-300 ease-in-out ${
-              activeTab.value === "places"
-                ? "bg-white text-[#5B3E29] shadow-sm"
-                : "hover:bg-[#F1DFC6]/50"
+              activeTab.value === 'places'
+                ? 'bg-white text-[#5B3E29] shadow-sm'
+                : 'hover:bg-[#F1DFC6]/50'
             }`}
           >
             Places
@@ -205,7 +201,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         </div>
 
         {/* All Content Tab */}
-        {activeTab.value === "all" && (
+        {activeTab.value === 'all' && (
           <div class="mt-8 space-y-12">
             {/* Featured Places Section */}
             <div>
@@ -220,7 +216,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
               </div>
               <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Show first 3 places + Share Card */}
-                {props.placesApiData.slice(0, 3).map((place) => (
+                {props.placesApiData.slice(0, 3).map(place => (
                   <PlaceCard key={place.id} place={place} />
                 ))}
                 <SharePlaceCard />
@@ -242,7 +238,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
               </div>
               <div class="grid gap-6 md:grid-cols-4">
                 {/* Show first 4 events + Create Card */}
-                {props.eventsData.slice(0, 3).map((event) => (
+                {props.eventsData.slice(0, 3).map(event => (
                   <EventCard key={event.id} event={event} />
                 ))}
                 <CreateEventCard />
@@ -252,7 +248,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         )}
 
         {/* Places Tab */}
-        {activeTab.value === "places" && (
+        {activeTab.value === 'places' && (
           <div class="mt-8">
             {/* Search and Filter Bar */}
             <div class="mb-6 space-y-4">
@@ -286,57 +282,57 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                     class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                   >
                     <option value="all">
-                      All Categories ({props.placesApiData.length})
+                      {'All Categories (' + props.placesApiData.length + ')'}
                     </option>
                     {(() => {
                       const popularCount = props.placesApiData.filter(
-                        (p) => p.badge === "Popular",
-                      ).length;
+                        p => p.tags?.includes('Popular')
+                      ).length
                       return (
                         <option value="popular">
-                          {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                          {`Popular${popularCount > 0 ? ` (${popularCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const coffeeCount = props.placesApiData.filter((p) =>
-                        p.tags?.includes("Coffee"),
-                      ).length;
+                      const coffeeCount = props.placesApiData.filter(p =>
+                        p.tags?.includes('Coffee')
+                      ).length
                       return (
                         <option value="coffee">
-                          {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                          {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const quietCount = props.placesApiData.filter((p) =>
-                        p.tags?.includes("Quiet"),
-                      ).length;
+                      const quietCount = props.placesApiData.filter(p =>
+                        p.tags?.includes('Quiet')
+                      ).length
                       return (
                         <option value="quiet">
-                          {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                          {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const wifiCount = props.placesApiData.filter((p) =>
-                        p.tags?.includes("WiFi"),
-                      ).length;
+                      const wifiCount = props.placesApiData.filter(p =>
+                        p.tags?.includes('WiFi')
+                      ).length
                       return (
                         <option value="wifi">
-                          {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                          {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const powerCount = props.placesApiData.filter((p) =>
-                        p.tags?.includes("Power"),
-                      ).length;
+                      const powerCount = props.placesApiData.filter(p =>
+                        p.tags?.includes('Power')
+                      ).length
                       return (
                         <option value="power">
-                          {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                          {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                   </select>
                   <select
@@ -347,9 +343,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                     <option value="rating">Highest Rated</option>
                     <option value="newest">Most Visited</option>
                   </select>
-                  {(searchTerm.value !== "" ||
-                    placeFilterCategory.value !== "all" ||
-                    placeSort.value !== "recommended" ||
+                  {(searchTerm.value !== '' ||
+                    placeFilterCategory.value !== 'all' ||
+                    placeSort.value !== 'recommended' ||
                     activeQuickFilters.value.length > 0) && (
                     <button
                       type="button"
@@ -364,20 +360,20 @@ export const TabsSection = component$((props: TabsSectionProps) => {
 
               {/* Quick Filter Chips */}
               <div class="flex flex-wrap gap-2">
-                {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
-                  (tag) => (
+                {['Coffee', 'WiFi', 'Quiet', 'Power', 'Music', 'Study'].map(
+                  tag => (
                     <button
                       key={tag}
                       onClick$={() => toggleQuickFilter(tag)}
                       class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                         activeQuickFilters.value.includes(tag)
-                          ? "bg-[#D98E73] text-white"
-                          : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                          ? 'bg-[#D98E73] text-white'
+                          : 'bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]'
                       }`}
                     >
                       {tag}
                     </button>
-                  ),
+                  )
                 )}
               </div>
             </div>
@@ -385,7 +381,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
               {/* Filter and sort places */}
               {sortPlaces(filterPlaces(props.placesApiData))
                 .slice(0, visiblePlacesCount.value)
-                .map((place) => (
+                .map(place => (
                   <PlaceCard key={place.id} place={place} />
                 ))}
               {/* Always show SharePlaceCard if not all places loaded or if it fits */}
@@ -399,7 +395,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                 <button
                   type="button"
                   onClick$={() => {
-                    visiblePlacesCount.value += PLACES_INCREMENT;
+                    visiblePlacesCount.value += PLACES_INCREMENT
                   }}
                   class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
@@ -411,7 +407,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         )}
 
         {/* Events Tab */}
-        {activeTab.value === "events" && (
+        {activeTab.value === 'events' && (
           <div class="mt-8">
             {/* Search and Filter Bar */}
             <div class="mb-6 space-y-4">
@@ -445,57 +441,57 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                     class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                   >
                     <option value="all">
-                      All Upcoming ({props.eventsData.length})
+                      {'All Upcoming (' + props.eventsData.length + ')'}
                     </option>
                     {(() => {
-                      const todayCount = props.eventsData.filter((e) => {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        const tomorrow = new Date(today);
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        const eventDate = new Date(e.date);
-                        return eventDate >= today && eventDate < tomorrow;
-                      }).length;
+                      const todayCount = props.eventsData.filter(e => {
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        const tomorrow = new Date(today)
+                        tomorrow.setDate(tomorrow.getDate() + 1)
+                        const eventDate = new Date(e.date)
+                        return eventDate >= today && eventDate < tomorrow
+                      }).length
                       return (
                         <option value="today">
-                          {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                          {`Today${todayCount > 0 ? ` (${todayCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const thisWeekCount = props.eventsData.filter((e) => {
-                        const now = new Date();
+                      const thisWeekCount = props.eventsData.filter(e => {
+                        const now = new Date()
                         const weekFromNow = new Date(
-                          now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                        );
-                        const eventDate = new Date(e.date);
-                        return eventDate >= now && eventDate <= weekFromNow;
-                      }).length;
+                          now.getTime() + 7 * 24 * 60 * 60 * 1000
+                        )
+                        const eventDate = new Date(e.date)
+                        return eventDate >= now && eventDate <= weekFromNow
+                      }).length
                       return (
                         <option value="this_week">
-                          {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                          {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                     {(() => {
-                      const nextWeekCount = props.eventsData.filter((e) => {
-                        const now = new Date();
+                      const nextWeekCount = props.eventsData.filter(e => {
+                        const now = new Date()
                         const nextWeekStart = new Date(
-                          now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                        );
+                          now.getTime() + 7 * 24 * 60 * 60 * 1000
+                        )
                         const nextWeekEnd = new Date(
-                          now.getTime() + 14 * 24 * 60 * 60 * 1000,
-                        );
-                        const eventDate = new Date(e.date);
+                          now.getTime() + 14 * 24 * 60 * 60 * 1000
+                        )
+                        const eventDate = new Date(e.date)
                         return (
                           eventDate >= nextWeekStart && eventDate <= nextWeekEnd
-                        );
-                      }).length;
+                        )
+                      }).length
                       return (
                         <option value="next_week">
-                          {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                          {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ''}`}
                         </option>
-                      );
+                      )
                     })()}
                   </select>
                   <select
@@ -506,9 +502,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                     <option value="date-desc">Date: Latest</option>
                     <option value="popular">Most Popular</option>
                   </select>
-                  {(searchTerm.value !== "" ||
-                    eventFilterDateRange.value !== "all" ||
-                    eventSort.value !== "date-asc") && (
+                  {(searchTerm.value !== '' ||
+                    eventFilterDateRange.value !== 'all' ||
+                    eventSort.value !== 'date-asc') && (
                     <button
                       type="button"
                       onClick$={clearAllFilters}
@@ -524,7 +520,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
               {/* Filter and sort events */}
               {sortEvents(filterEvents(props.eventsData))
                 .slice(0, visibleEventsCount.value)
-                .map((event) => (
+                .map(event => (
                   <DetailedEventCard key={event.id} event={event} />
                 ))}
               <LargeCreateEventCard />
@@ -534,7 +530,7 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                   <button
                     type="button"
                     onClick$={() => {
-                      visibleEventsCount.value += EVENTS_INCREMENT;
+                      visibleEventsCount.value += EVENTS_INCREMENT
                     }}
                     class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-8 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                   >
@@ -547,5 +543,5 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         )}
       </div>
     </section>
-  );
-});
+  )
+})

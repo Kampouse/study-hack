@@ -1,34 +1,34 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from '@builder.io/qwik'
+import { Link } from '@builder.io/qwik-city'
 import {
   MapPinIcon as MapPin,
-  UsersIcon as Users,
   StarIcon as Star,
-} from "lucide-qwik";
-import { Link } from "@builder.io/qwik-city";
+  UsersIcon as Users,
+} from 'lucide-qwik'
 
 export const PlaceCard = component$(
   (props: {
     place: {
-      id: number;
-      name: string;
-      image: string;
-      badge: string;
-      location: string;
-      description: string;
-      tags: string[];
-      creator: string;
-      rating: number;
-    };
+      id: number
+      name: string
+      image: string
+      badge: string
+      location: string
+      description: string
+      tags: string[]
+      creator: string
+      rating: number
+    }
   }) => {
     return (
       <Link
         key={props.place.id}
-        href={"/places/" + encodeURI(props.place.name)}
+        href={'/places/' + encodeURI(props.place.name)}
         class="group overflow-hidden rounded-xl border-none bg-white shadow-md transition-all duration-300 ease-in-out "
       >
         <div class="relative aspect-[4/3] overflow-hidden">
           <img
-            src={props.place.image || "/placeholder.svg"}
+            src={props.place.image || '/placeholder.svg'}
             width={400}
             height={300}
             alt={props.place.name}
@@ -77,6 +77,6 @@ export const PlaceCard = component$(
           </div>
         </div>
       </Link>
-    );
-  },
-);
+    )
+  }
+)

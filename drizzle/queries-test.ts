@@ -1,94 +1,94 @@
-import { tursoClient as drizzle } from "../src/utils/turso";
 import {
-  CreateUser,
   CreateEvent,
-  updateRequestStatus,
-  createJoinRequest,
+  CreateUser,
   GetUserFromEmail,
-} from "../src/api/Query";
+  createJoinRequest,
+  updateRequestStatus,
+} from '../src/api/Query'
+import { tursoClient as drizzle } from '../src/utils/turso'
 
-import type { Session } from "../src/api/drizzled";
+import type { Session } from '../src/api/drizzled'
 
 const main = async () => {
   const db = drizzle({
-    url: "file:./local.db",
+    url: 'file:./local.db',
     authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
-  });
+  })
 
   const example = {
-    name: "test",
-    user: { email: "test", name: "test", image: "test" },
-  } satisfies Session;
+    name: 'test',
+    user: { email: 'test', name: 'test', image: 'test' },
+  } satisfies Session
   let input = await CreateUser({
     event: undefined,
     session: example,
     client: db,
-  });
+  })
   if (input == null) {
-    return;
+    return
   }
   if (Array.isArray(input)) {
-    input = input[0];
+    input = input[0]
   }
 
   const data = await GetUserFromEmail({
     event: undefined,
     email: input.Email,
     client: db,
-  });
-  console.log("Data:", data);
+  })
+  console.log('Data:', data)
 
   const data2 = await CreateEvent({
     event: undefined,
     session: {
-      Name: "test",
-      Description: "test",
-      Date: "test",
-      StartTime: "test",
-      EndTime: "test",
-      Location: "test",
-      ImageURL: "hello",
+      Name: 'test',
+      Description: 'test',
+      Date: 'test',
+      StartTime: 'test',
+      EndTime: 'test',
+      Location: 'test',
+      ImageURL: 'hello',
       Coordinates: [0, 0],
     },
     userData: {
       ID: data?.ID ?? 0,
-      Name: data?.Name ?? "",
-      Username: data?.Username ?? "",
-      Intrests: ["hi", "bye"],
-      Description: data?.Description ?? "",
-      Image: data?.ImageURL ?? "",
+      Name: data?.Name ?? '',
+      Username: data?.Username ?? '',
+      Intrests: ['hi', 'bye'],
+      Description: data?.Description ?? '',
+      Image: data?.ImageURL ?? '',
     },
     Client: db,
-  });
+  })
 
   if (data2 === undefined || data2 === null) {
-    console.log("Event creation failed");
-    return;
+    console.log('Event creation failed')
+    return
   }
   const requestData = {
     eventId: data2[0].EventID,
     userId: data?.ID ?? 0,
-    background: "what up",
-    experience: " whatup",
-    why: "whatup",
-  };
+    background: 'what up',
+    experience: ' whatup',
+    why: 'whatup',
+  }
 
   const joinRequestResult = await createJoinRequest({
     event: undefined,
     requestData,
     client: db,
-  });
+  })
 
   // Test update query
   const updateResult = await updateRequestStatus({
     event: undefined,
     requestId: joinRequestResult.data?.RequestID ?? 0,
-    newStatus: "confirmed",
+    newStatus: 'confirmed',
     client: db,
-  });
-  console.log("Update Result:", updateResult);
-  console.log("Join Request Result:", joinRequestResult);
-  console.log("Join Request Result:", updateResult);
-};
+  })
+  console.log('Update Result:', updateResult)
+  console.log('Join Request Result:', joinRequestResult)
+  console.log('Join Request Result:', updateResult)
+}
 
-main();
+main()

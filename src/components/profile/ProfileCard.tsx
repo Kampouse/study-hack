@@ -1,16 +1,16 @@
-import { Modal } from "@qwik-ui/headless";
-import { component$, type Signal } from "@builder.io/qwik";
-import { useSession } from "~/routes/plugin@auth";
+import { type Signal, component$ } from '@builder.io/qwik'
+import { Modal } from '@qwik-ui/headless'
+import { useSession } from '~/routes/plugin@auth'
 
 type CardProps = {
-  data: { name: string; about: string; interests: string[] };
-  active: Signal<boolean>;
-  onEdit: () => void;
-};
+  data: { name: string; about: string; interests: string[] }
+  active: Signal<boolean>
+  onEdit: () => void
+}
 
 export default component$<CardProps>(({ data }) => {
-  const session = useSession();
-  const image = session.value?.user?.image;
+  const session = useSession()
+  const image = session.value?.user?.image
   return (
     <div class="flex flex-col items-center  gap-5  py-8  md:flex-row md:gap-5 md:pt-12 lg:items-start ">
       <div class="flex flex-col justify-center ">
@@ -21,7 +21,7 @@ export default component$<CardProps>(({ data }) => {
           <div class="flex   flex-row justify-end md:justify-center">
             <Modal.Trigger>
               <img
-                src={image || "https://via.placeholder.com/200"}
+                src={image || 'https://via.placeholder.com/200'}
                 class="shadow-[0_8px_15px_rgba(0,0,0,0.1) rounded-full py-1"
                 width={175}
                 height={175}
@@ -68,12 +68,12 @@ export default component$<CardProps>(({ data }) => {
                   >
                     {item}
                   </div>
-                );
+                )
               })}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

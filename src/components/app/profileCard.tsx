@@ -1,11 +1,11 @@
-import { Modal } from "@qwik-ui/headless";
-import { component$, type Signal } from "@builder.io/qwik";
+import { type Signal, component$ } from '@builder.io/qwik'
+import { Modal } from '@qwik-ui/headless'
 
 type CardProps = {
-  data: { name: string; about: string; interests: string[] };
-  active: Signal<boolean>;
-  onEdit: () => void;
-};
+  data: { name: string; about: string; interests: string[] }
+  active: Signal<boolean>
+  onEdit: () => void
+}
 
 export default component$<CardProps>(({ data }) => {
   return (
@@ -15,7 +15,7 @@ export default component$<CardProps>(({ data }) => {
           <div class="flex flex-row justify-end md:justify-center">
             <Modal.Trigger>
               <img
-                src={"https://via.placeholder.com/200"}
+                src={'https://via.placeholder.com/200'}
                 class="shadow-[0_8px_15px_rgba(0,0,0,0.1) rounded-full py-1"
                 width={175}
                 height={175}
@@ -58,12 +58,12 @@ export default component$<CardProps>(({ data }) => {
                   >
                     {item}
                   </div>
-                );
+                )
               })}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

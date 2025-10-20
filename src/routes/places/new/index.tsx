@@ -1,105 +1,105 @@
-import { component$, useSignal } from "@builder.io/qwik";
-import { useForm, valiForm$, formAction$ } from "@modular-forms/qwik";
-import type { PlaceForm } from "~/api/Forms";
-import { placeSchema } from "~/api/Forms";
-import { routeLoader$ } from "@builder.io/qwik-city";
-import { useNavigate, server$ } from "@builder.io/qwik-city";
-import { CreatePlace, GetUser } from "~/api/Query";
-import type { InitialValues } from "@modular-forms/qwik";
+import { component$, useSignal } from '@builder.io/qwik'
+import { routeLoader$ } from '@builder.io/qwik-city'
+import { server$, useNavigate } from '@builder.io/qwik-city'
+import { formAction$, useForm, valiForm$ } from '@modular-forms/qwik'
+import type { InitialValues } from '@modular-forms/qwik'
 import {
   MapPinIcon as MapPin,
   StarIcon as Star,
-  WifiIcon as Wifi,
   VolumeXIcon as VolumeX,
-} from "lucide-qwik";
+  WifiIcon as Wifi,
+} from 'lucide-qwik'
+import type { PlaceForm } from '~/api/Forms'
+import { placeSchema } from '~/api/Forms'
+import { CreatePlace, GetUser } from '~/api/Query'
 
 type GeoResponse = {
   results: Array<{
     address_components: Array<{
-      long_name: string;
-      short_name: string;
-      types: string[];
-    }>;
-    formatted_address: string;
+      long_name: string
+      short_name: string
+      types: string[]
+    }>
+    formatted_address: string
     geometry: {
       location: {
-        lat: number;
-        lng: number;
-      };
-      location_type: string;
+        lat: number
+        lng: number
+      }
+      location_type: string
       viewport: {
         northeast: {
-          lat: number;
-          lng: number;
-        };
+          lat: number
+          lng: number
+        }
         southwest: {
-          lat: number;
-          lng: number;
-        };
-      };
-    };
-    place_id: string;
+          lat: number
+          lng: number
+        }
+      }
+    }
+    place_id: string
     plus_code?: {
-      compound_code: string;
-      global_code: string;
-    };
-    types: string[];
-  }>;
-  status: string;
-};
+      compound_code: string
+      global_code: string
+    }
+    types: string[]
+  }>
+  status: string
+}
 
 export const useFormLoader = routeLoader$<InitialValues<PlaceForm>>(() => ({
-  name: "",
-  address: "",
-  description: "",
-  image: "",
+  name: '',
+  address: '',
+  description: '',
+  image: '',
   tags: [],
-  rating: "3",
+  rating: '3',
   wifispeed: 0,
   hasquietenvironment: false,
-  price: "",
+  price: '',
   coordinates: [0, 0],
-  category: "",
-}));
+  category: '',
+}))
 
-type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never;
+type Data = ReturnType<typeof CreatePlace> extends Promise<infer T> ? T : never
 
 const FindLocation = server$(async function (address: string) {
-  const session = this.sharedMap.get("session");
-  const GEO = this.env.get("GOOGLE_GEO");
+  const session = this.sharedMap.get('session')
+  const GEO = this.env.get('GOOGLE_GEO')
   if (!session) {
     return {
-      status: "error",
-      message: "No session found",
-    };
+      status: 'error',
+      message: 'No session found',
+    }
   }
   const data = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`,
-  );
-  const output = (await data.json()) as GeoResponse;
-  return output.results.map((el) => {
+    `https://maps.googleapis.com/maps/api/geocode/json?key=${GEO}&address=${address}`
+  )
+  const output = (await data.json()) as GeoResponse
+  return output.results.map(el => {
     return {
       address: el.formatted_address,
       lat: el.geometry.location.lat,
       lng: el.geometry.location.lng,
-    };
-  });
-});
+    }
+  })
+})
 const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
-  const user = await GetUser({ event });
+  const user = await GetUser({ event })
 
   if (!user) {
     return {
-      status: "error",
-      message: "User not found",
-    };
+      status: 'error',
+      message: 'User not found',
+    }
   }
-  const data = await FindLocation(values.address);
+  const data = await FindLocation(values.address)
   if (!Array.isArray(data)) {
     return {
-      status: "error",
+      status: 'error',
       message: data.status,
-    };
+    }
   }
 
   const result = await CreatePlace({
@@ -109,50 +109,50 @@ const useFormAction = formAction$<PlaceForm, Data>(async (values, event) => {
       ...values,
       coordinates: [data[0].lat, data[0].lng],
     },
-  });
+  })
   if (result.success) {
-    console.log("Place created successfully");
+    console.log('Place created successfully')
     return {
-      status: "success",
+      status: 'success',
       data: result,
-    };
+    }
   }
 
   return {
-    status: "error",
+    status: 'error',
     message: result.message,
-  };
-}, valiForm$(placeSchema));
+  }
+}, valiForm$(placeSchema))
 
 export default component$(() => {
   const places = useSignal<
     Array<{ address: string; lat: number; lng: number }>
-  >([]);
+  >([])
   const suggestedTags = useSignal([
-    "Coffee",
-    "Quiet",
-    "WiFi",
-    "Outdoor Seating",
-    "Group Friendly",
-    "Power Outlets",
-    "Affordable",
-    "Spacious",
-    "Good Lighting",
-    "Meeting Rooms",
-    "Social",
-    "Networking",
-    "Focus Friendly",
-    "Collaborative",
-    "Long Hours",
-    "Private Booths",
-  ]);
+    'Coffee',
+    'Quiet',
+    'WiFi',
+    'Outdoor Seating',
+    'Group Friendly',
+    'Power Outlets',
+    'Affordable',
+    'Spacious',
+    'Good Lighting',
+    'Meeting Rooms',
+    'Social',
+    'Networking',
+    'Focus Friendly',
+    'Collaborative',
+    'Long Hours',
+    'Private Booths',
+  ])
 
-  const nav = useNavigate();
+  const nav = useNavigate()
   const [FormPlace, { Form, Field }] = useForm<PlaceForm, Data>({
     loader: useFormLoader(),
     action: useFormAction(),
     validate: valiForm$(placeSchema),
-  });
+  })
 
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
@@ -174,7 +174,7 @@ export default component$(() => {
                 class="space-y-6"
                 onSubmit$={() => {
                   if (FormPlace.submitted && !FormPlace.invalid) {
-                    nav("/places");
+                    nav('/places')
                   }
                 }}
               >
@@ -192,8 +192,8 @@ export default component$(() => {
                         type="text"
                         class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                           field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                            ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                            : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                         }`}
                         value={field.value}
                         placeholder="e.g. Cozy Corner Cafe"
@@ -225,8 +225,8 @@ export default component$(() => {
                             type="text"
                             class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                               field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                                ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                                : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                             }`}
                             value={field.value}
                             placeholder="Enter location address"
@@ -236,10 +236,10 @@ export default component$(() => {
                           type="button"
                           onClick$={async () => {
                             const output = await FindLocation(
-                              field.value as string,
-                            );
+                              field.value as string
+                            )
                             if (Array.isArray(output)) {
-                              places.value = output;
+                              places.value = output
                             }
                           }}
                           class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
@@ -262,7 +262,7 @@ export default component$(() => {
                                   key={i}
                                   type="button"
                                   onClick$={() => {
-                                    field.value = address.address;
+                                    field.value = address.address
                                   }}
                                   class="w-full rounded-md border border-[#E6D7C3] bg-white p-2 text-left text-sm text-[#6D5D4E] shadow-sm transition-colors duration-150 hover:bg-[#FFF1E6] hover:shadow-md focus:border-[#D98E73] focus:bg-[#FFF1E6] active:bg-[#F8D7BD]/30"
                                 >
@@ -291,8 +291,8 @@ export default component$(() => {
                         type="text"
                         class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                           field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                            ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                            : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                         }`}
                         value={field.value}
                         placeholder="Enter URL for place image"
@@ -319,8 +319,8 @@ export default component$(() => {
                         {...props}
                         class={`block w-full rounded-md border bg-white px-3 py-2 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                           field.error
-                            ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                            : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                            ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                            : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                         }`}
                         rows={3}
                         value={field.value}
@@ -336,7 +336,7 @@ export default component$(() => {
                 </Field>
 
                 <Field name="tags" type="string[]">
-                  {(field) => (
+                  {field => (
                     <div>
                       <label
                         for="tags"
@@ -350,13 +350,13 @@ export default component$(() => {
                       </p>
 
                       <div class="flex flex-wrap gap-2">
-                        {suggestedTags.value.map((tag) => (
+                        {suggestedTags.value.map(tag => (
                           <div key={tag} class="flex items-center">
                             <label
                               class={`flex cursor-pointer items-center rounded-full px-3 py-1 text-sm transition-colors ${
                                 field.value?.includes(tag)
-                                  ? "bg-[#F8D7BD] text-[#8B5A2B]"
-                                  : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#F8EDE3]/80"
+                                  ? 'bg-[#F8D7BD] text-[#8B5A2B]'
+                                  : 'bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#F8EDE3]/80'
                               }`}
                             >
                               <input
@@ -367,11 +367,11 @@ export default component$(() => {
                                   if (field.value?.includes(tag)) {
                                     // Remove tag if already selected
                                     field.value = field.value.filter(
-                                      (t) => t !== tag,
-                                    );
+                                      t => t !== tag
+                                    )
                                   } else {
                                     // Add tag if not selected
-                                    field.value = [...(field.value || []), tag];
+                                    field.value = [...(field.value || []), tag]
                                   }
                                 }}
                               />
@@ -404,9 +404,9 @@ export default component$(() => {
                                   type="button"
                                   onClick$={() => {
                                     const newTags = field.value?.filter(
-                                      (_, i) => i !== index,
-                                    );
-                                    field.value = newTags;
+                                      (_, i) => i !== index
+                                    )
+                                    field.value = newTags
                                   }}
                                   class="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#D98E73]/20 text-[#8B5A2B] hover:bg-[#D98E73]/50"
                                 >
@@ -441,8 +441,8 @@ export default component$(() => {
                             {...props}
                             class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                               field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                                ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                                : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                             }`}
                             value={field.value?.toString()}
                           >
@@ -478,8 +478,8 @@ export default component$(() => {
                             type="number"
                             class={`block w-full rounded-md border bg-white px-3 py-2 pl-10 text-sm text-[#5B3E29] ring-offset-white placeholder:text-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                               field.error
-                                ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                                : "border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20"
+                                ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                                : 'border-[#E6D7C3] focus:border-[#D98E73] focus:ring-[#D98E73]/20'
                             }`}
                             value={field.value?.toString()}
                             placeholder="e.g. 50"
@@ -522,7 +522,7 @@ export default component$(() => {
                 <div class="flex flex-col gap-4 pt-4 sm:flex-row">
                   <button
                     type="button"
-                    onClick$={() => nav("/places")}
+                    onClick$={() => nav('/places')}
                     class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D98E73] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
                   >
                     Cancel
@@ -540,5 +540,5 @@ export default component$(() => {
         </div>
       </section>
     </div>
-  );
-});
+  )
+})
