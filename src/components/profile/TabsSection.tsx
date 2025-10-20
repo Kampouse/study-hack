@@ -358,7 +358,6 @@ const ProfileEdit = component$<ProfileEditProps>(
                         {...props}
                         id="Name"
                         type="text"
-                        value={field.value}
                         class={`w-full rounded-md border ${
                           field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                         } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
@@ -383,7 +382,6 @@ const ProfileEdit = component$<ProfileEditProps>(
                         {...props}
                         id="Username"
                         type="text"
-                        value={field.value}
                         class={`w-full rounded-md border ${
                           field.error ? 'border-red-500' : 'border-[#E6D7C3]'
                         } bg-white px-4 py-2 text-[#5B3E29] shadow-sm focus:border-[#D98E73] focus:outline-none focus:ring-1 focus:ring-[#D98E73]`}
@@ -408,7 +406,6 @@ const ProfileEdit = component$<ProfileEditProps>(
                     <textarea
                       {...props}
                       id="bio"
-                      value={field.value}
                       rows={4}
                       class={`w-full rounded-md border ${
                         field.error ? 'border-red-500' : 'border-[#E6D7C3]'

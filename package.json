@@ -6,7 +6,9 @@
   },
   "engines-annotation": "Mostly required by sharp which needs a Node-API v9 compatible runtime",
   "private": true,
-  "trustedDependencies": ["sharp"],
+  "trustedDependencies": [
+    "sharp"
+  ],
   "trustedDependencies-annotation": "Needed for bun to allow running install scripts",
   "type": "module",
   "scripts": {
@@ -73,7 +75,6 @@
     "drizzle-orm": "^0.33.0",
     "leaflet": "1.9.4",
     "lucide-qwik": "^1.0.0",
-    "nx": "^19.6.4",
     "postcss": "^8.4.31",
     "posthog-js": "latest",
     "qwik-ui": "^0.1.3",

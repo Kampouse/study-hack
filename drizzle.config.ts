@@ -5,9 +5,16 @@ export default defineConfig({
   schema: './drizzle/schema.ts',
   dialect: 'sqlite',
   out: './drizzle/migrations/',
-  driver: 'turso',
-  dbCredentials: {
-    authToken: process.env.PRIVATE_TURSO_AUTH_TOKEN,
-    url: 'local.db',
-  },
+  dbCredentials: process.env.PRIVATE_TURSO_DATABASE_URL &&
+    process.env.PRIVATE_TURSO_ACCOUNT_ID &&
+    process.env.PRIVATE_TURSO_DATABASE_ID &&
+    process.env.PRIVATE_TURSO_AUTH_TOKEN
+    ? {
+        accountId: process.env.PRIVATE_TURSO_ACCOUNT_ID,
+        databaseId: process.env.PRIVATE_TURSO_DATABASE_ID,
+        token: process.env.PRIVATE_TURSO_AUTH_TOKEN,
+      }
+    : {
+        url: 'file:local.db',
+      },
 })
