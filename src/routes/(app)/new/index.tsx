@@ -2,7 +2,7 @@ import { component$, useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { useForm } from "@modular-forms/qwik";
 import { createEventForm } from "~/api/Forms";
-import {} from "@modular-forms/qwik";
+
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { eventSchema } from "~/api/Forms";
@@ -81,12 +81,13 @@ export default component$(() => {
     action: action(),
   });
   const data = useloadPlaces();
-  const { places, basePlace } = data.value;
+  const { places, basePlace, url } = data.value;
   const previewImage = useSignal<string | null>(
-    data.value.url !== "0"
-      ? data.value.basePlace?.Places?.ImageURL || null
-      : data.value.places.data?.[0]?.Places?.ImageURL || null,
+    url !== "0"
+      ? basePlace?.Places?.ImageURL || null
+      : places.data?.[0]?.Places?.ImageURL || null,
   );
+
   return (
     <div class="min-h-screen bg-[#FFF8F0]">
       <section class="relative bg-gradient-to-b from-[#F8EDE3] to-[#FFF8F0] pt-8">
@@ -173,8 +174,14 @@ export default component$(() => {
                       const selectedPlace = places.data?.find(
                         (place) => place.Places?.Name === target.value,
                       );
-                      previewImage.value =
-                        selectedPlace?.Places?.ImageURL || null;
+                      // Update location preview, handle case where place might not have an image
+                      if (selectedPlace?.Places?.ImageURL) {
+                        previewImage.value = selectedPlace.Places.ImageURL;
+                      } else {
+                        previewImage.value = null;
+                      }
+                      // Prevent any form re-renders by returning void
+                      return;
                     }}
                   >
                     {basePlace && (
@@ -283,6 +290,51 @@ export default component$(() => {
                             : ""}
                         </p>
                       </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Field>
+
+            <Field name="ImageURL">
+              {(field, props) => (
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-[#5B3E29]">
+                    Event Image URL (Optional)
+                  </label>
+                  <input
+                    {...props}
+                    class={`w-full rounded-xl border bg-white/50 px-4 py-3 text-[#5B3E29] shadow-sm transition-colors duration-300 focus:border-[#D98E73] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20 ${
+                      field.error ? "border-red-500" : "border-[#E6D7C3]"
+                    }`}
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    value={field.value || ""}
+                  />
+                  {field.error && (
+                    <div class="text-xs text-red-500">{field.error}</div>
+                  )}
+                  <p class="text-xs text-[#6D5D4E]">
+                    Add a custom image for your event. If not provided, the
+                    location image will be used.
+                  </p>
+                  {field.value && field.value.trim() !== "" && (
+                    <div class="mt-3 overflow-hidden rounded-lg border border-[#E6D7C3]">
+                      <div class="bg-[#F8EDE3] px-3 py-2">
+                        <span class="text-xs font-medium text-[#8B5A2B]">
+                          Event Image Preview
+                        </span>
+                      </div>
+                      <img
+                        src={field.value}
+                        alt="Custom event image"
+                        height="200"
+                        width="200"
+                        class="h-60 w-full object-cover"
+                        onError$={() => {
+                          // Handle image load error silently
+                        }}
+                      />
                     </div>
                   )}
                 </div>

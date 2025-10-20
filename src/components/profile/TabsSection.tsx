@@ -743,6 +743,7 @@ const ProfileEdit = component$<ProfileEditProps>(
     );
   },
 );
+
 interface TabsSectionProps {
   profile: UserProfileType;
   upcomingEvents: DetailedEventType[];
@@ -768,6 +769,174 @@ export const TabsSection = component$<TabsSectionProps>(
     const tab = loc.url.searchParams.get("tab") ?? "upcoming";
     const activeTab = useSignal(tab);
     const isEditing = useSignal(false);
+
+    // Filter state variables
+    const searchTerm = useSignal<string>("");
+    const placeCategory = useSignal<string>("all");
+    const eventDateRange = useSignal<string>("all");
+    const pastEventDateRange = useSignal<string>("all");
+    const eventSort = useSignal<string>("date-asc");
+    const placeSort = useSignal<string>("recommended");
+
+    // Quick filter states
+    const activeQuickFilters = useSignal<string[]>([]);
+
+    // Filter functions
+    const filterPlaces = (places: PlaceType[]) => {
+      return places.filter((place) => {
+        const matchesSearch =
+          searchTerm.value === "" ||
+          place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          place.description
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase()) ||
+          place.location
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase());
+
+        const matchesCategory =
+          placeCategory.value === "all" ||
+          (placeCategory.value === "popular" && place.badge === "Popular") ||
+          (placeCategory.value === "coffee" &&
+            place.tags?.includes("Coffee")) ||
+          (placeCategory.value === "quiet" && place.tags?.includes("Quiet")) ||
+          (placeCategory.value === "wifi" && place.tags?.includes("WiFi")) ||
+          (placeCategory.value === "power" && place.tags?.includes("Power"));
+
+        const matchesQuickFilters =
+          activeQuickFilters.value.length === 0 ||
+          activeQuickFilters.value.every((filter) =>
+            place.tags?.includes(filter),
+          );
+
+        return matchesSearch && matchesCategory && matchesQuickFilters;
+      });
+    };
+
+    const filterPastEvents = (events: DetailedEventType[]) => {
+      return events.filter((event) => {
+        const matchesSearch =
+          searchTerm.value === "" ||
+          event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          event.description
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase()) ||
+          event.location
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase());
+
+        const now = new Date();
+        const eventDate = new Date(event.date);
+        let matchesDateRange = true;
+
+        if (pastEventDateRange.value === "last_week") {
+          const lastWeekStart = new Date(
+            now.getTime() - 7 * 24 * 60 * 60 * 1000,
+          );
+          const lastWeekEnd = new Date(now);
+          matchesDateRange =
+            eventDate >= lastWeekStart && eventDate < lastWeekEnd;
+        } else if (pastEventDateRange.value === "last_month") {
+          const lastMonthStart = new Date(
+            now.getTime() - 30 * 24 * 60 * 60 * 1000,
+          );
+          const lastMonthEnd = new Date(now);
+          matchesDateRange =
+            eventDate >= lastMonthStart && eventDate < lastMonthEnd;
+        }
+
+        return matchesSearch && matchesDateRange;
+      });
+    };
+
+    const filterEvents = (events: DetailedEventType[]) => {
+      return events.filter((event) => {
+        const matchesSearch =
+          searchTerm.value === "" ||
+          event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+          event.description
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase()) ||
+          event.location
+            ?.toLowerCase()
+            .includes(searchTerm.value.toLowerCase());
+
+        const now = new Date();
+        const eventDate = new Date(event.date);
+        let matchesDateRange = true;
+
+        if (eventDateRange.value === "today") {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          matchesDateRange = eventDate >= today && eventDate < tomorrow;
+        } else if (eventDateRange.value === "this_week") {
+          const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+          matchesDateRange = eventDate >= now && eventDate <= weekFromNow;
+        } else if (eventDateRange.value === "next_week") {
+          const nextWeekStart = new Date(
+            now.getTime() + 7 * 24 * 60 * 60 * 1000,
+          );
+          const nextWeekEnd = new Date(
+            now.getTime() + 14 * 24 * 60 * 60 * 1000,
+          );
+          matchesDateRange =
+            eventDate >= nextWeekStart && eventDate <= nextWeekEnd;
+        }
+
+        return matchesSearch && matchesDateRange;
+      });
+    };
+
+    const sortPlaces = (places: PlaceType[]) => {
+      const sorted = [...places];
+      if (placeSort.value === "rating") {
+        sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      } else if (placeSort.value === "newest") {
+        // Sort by visitCount as a proxy for popularity/recency
+        // Higher visit count suggests more recently visited or popular places
+        sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0));
+      }
+      return sorted;
+    };
+
+    const sortEvents = (events: DetailedEventType[]) => {
+      const sorted = [...events];
+      if (eventSort.value === "date-asc") {
+        sorted.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
+      } else if (eventSort.value === "date-desc") {
+        sorted.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        );
+      } else if (eventSort.value === "popular") {
+        sorted.sort(
+          (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0),
+        );
+      }
+      return sorted;
+    };
+
+    const clearAllFilters = $(() => {
+      searchTerm.value = "";
+      placeCategory.value = "all";
+      eventDateRange.value = "all";
+      pastEventDateRange.value = "all";
+      eventSort.value = "date-asc";
+      placeSort.value = "recommended";
+      activeQuickFilters.value = [];
+    });
+
+    const toggleQuickFilter = $((filter: string) => {
+      const current = activeQuickFilters.value;
+      if (current.includes(filter)) {
+        activeQuickFilters.value = current.filter((f) => f !== filter);
+      } else {
+        activeQuickFilters.value = [...current, filter];
+      }
+    });
 
     // Add resource to fetch user places
 
@@ -886,134 +1055,959 @@ export const TabsSection = component$<TabsSectionProps>(
             <ProfileEdit profileData={profile} isEditing={isEditing} />
           )}
 
-          {activeTab.value === "upcoming" &&
-            (upcomingEvents.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {upcomingEvents.map((event) => (
-                  <EventCard key={event.eventID ?? event.id} event={event} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                context="CalendarIcon"
-                title="No Upcoming Events"
-                message="You haven't joined or been invited to any events yet. Explore events to join!"
-                actionButton={{
-                  href: "/events",
-                  label: "Explore Events",
-                }}
-              />
-            ))}
-
-          {activeTab.value === "hosted" &&
-            (hostedEvents.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {hostedEvents.map((event) => (
-                  <EventCard
-                    key={event.eventID ?? event.id}
-                    event={event}
-                    isHosted
-                  />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                context="UsersIcon" // Use context instead of icon (UserPlus mapped to UsersIcon context)
-                title="No Hosted Events Yet"
-                message="Ready to gather some folks? Host your first event and bring people together."
-                actionButton={{ label: "Host an Event", href: "/new" }}
-              />
-            ))}
-
-          {activeTab.value === "myplaces" && (
+          {activeTab.value === "upcoming" && (
             <div>
-              {savedPlaces.length > 0 ? (
-                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                  {savedPlaces.map((place) => (
-                    <PlaceCard
-                      key={place.placeId ?? place.id}
-                      place={{
-                        id: place.placeId ?? place.id,
-                        name: place.name,
-                        image: place.image ?? "",
-                        badge: "",
-                        location: place.location,
-                        description: place.description,
-                        tags: place.tags,
-                        creator: profile.name,
-                        rating:
-                          typeof place.rating === "number" ? place.rating : 0,
-                      }}
+              {/* Search and Filter Bar */}
+              <div class="mb-6 space-y-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="relative max-w-md flex-1">
+                    <input
+                      type="text"
+                      bind:value={searchTerm}
+                      placeholder="Search upcoming events..."
+                      class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     />
-                  ))}
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        class="h-4 w-4 text-[#A99D8F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <select
+                      bind:value={eventDateRange}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="all">
+                        All Upcoming ({upcomingEvents.length})
+                      </option>
+                      {(() => {
+                        const todayCount = upcomingEvents.filter((e) => {
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const tomorrow = new Date(today);
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          const eventDate = new Date(e.date);
+                          return eventDate >= today && eventDate < tomorrow;
+                        }).length;
+                        return (
+                          <option value="today">
+                            {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const thisWeekCount = upcomingEvents.filter((e) => {
+                          const now = new Date();
+                          const weekFromNow = new Date(
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                          );
+                          const eventDate = new Date(e.date);
+                          return eventDate >= now && eventDate <= weekFromNow;
+                        }).length;
+                        return (
+                          <option value="this_week">
+                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const nextWeekCount = upcomingEvents.filter((e) => {
+                          const now = new Date();
+                          const nextWeekStart = new Date(
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                          );
+                          const nextWeekEnd = new Date(
+                            now.getTime() + 14 * 24 * 60 * 60 * 1000,
+                          );
+                          const eventDate = new Date(e.date);
+                          return (
+                            eventDate >= nextWeekStart &&
+                            eventDate <= nextWeekEnd
+                          );
+                        }).length;
+                        return (
+                          <option value="next_week">
+                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                    </select>
+                    <select
+                      bind:value={eventSort}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="date-asc">Date: Soonest</option>
+                      <option value="date-desc">Date: Latest</option>
+                      <option value="popular">Most Popular</option>
+                    </select>
+                    {(searchTerm.value !== "" ||
+                      eventDateRange.value !== "all" ||
+                      eventSort.value !== "date-asc") && (
+                      <button
+                        onClick$={clearAllFilters}
+                        class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <EmptyState
-                  context="MapPinIcon"
-                  title="No Places Added Yet"
-                  message="You haven't added any places to the community. Share your favorite study spots!"
-                  actionButton={{ label: "Add a Place", href: "/places/new" }}
-                />
-              )}
+              </div>
+
+              {/* Events Grid */}
+              {(() => {
+                const filteredEvents = sortEvents(filterEvents(upcomingEvents));
+                return filteredEvents.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredEvents.map((event) => (
+                      <EventCard
+                        key={event.eventID ?? event.id}
+                        event={event}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="CalendarIcon"
+                      title={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? "No Upcoming Events Found"
+                          : "No Upcoming Events"
+                      }
+                      message={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? "Try adjusting your filters or search terms."
+                          : "You haven't joined or been invited to any events yet. Explore events to join!"
+                      }
+                      actionButton={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? undefined
+                          : { href: "/events", label: "Explore Events" }
+                      }
+                    />
+                    {(searchTerm.value || eventDateRange.value !== "all") && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={clearAllFilters}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           )}
 
-          {activeTab.value === "liked" &&
-            (likedPlaces.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {likedPlaces.map((place) => (
-                  <PlaceCard
-                    key={place.placeId ?? place.id}
-                    place={{
-                      id: place.placeId ?? place.id,
-                      name: place.name,
-                      image: place.image ?? "",
-                      badge: "",
-                      location: place.location,
-                      description: place.description,
-                      tags: place.tags,
-                      creator: profile.name,
-                      rating:
-                        typeof place.rating === "number" ? place.rating : 0,
-                    }}
+          {activeTab.value === "hosted" && (
+            <div>
+              {/* Search and Filter Bar */}
+              <div class="mb-6 space-y-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="relative max-w-md flex-1">
+                    <input
+                      type="text"
+                      bind:value={searchTerm}
+                      placeholder="Search your hosted events..."
+                      class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        class="h-4 w-4 text-[#A99D8F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <select
+                      bind:value={eventDateRange}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="all">
+                        All Upcoming ({hostedEvents.length})
+                      </option>
+                      {(() => {
+                        const todayCount = hostedEvents.filter((e) => {
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const tomorrow = new Date(today);
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          const eventDate = new Date(e.date);
+                          return eventDate >= today && eventDate < tomorrow;
+                        }).length;
+                        return (
+                          <option value="today">
+                            {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const thisWeekCount = hostedEvents.filter((e) => {
+                          const now = new Date();
+                          const weekFromNow = new Date(
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                          );
+                          const eventDate = new Date(e.date);
+                          return eventDate >= now && eventDate <= weekFromNow;
+                        }).length;
+                        return (
+                          <option value="this_week">
+                            {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const nextWeekCount = hostedEvents.filter((e) => {
+                          const now = new Date();
+                          const nextWeekStart = new Date(
+                            now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                          );
+                          const nextWeekEnd = new Date(
+                            now.getTime() + 14 * 24 * 60 * 60 * 1000,
+                          );
+                          const eventDate = new Date(e.date);
+                          return (
+                            eventDate >= nextWeekStart &&
+                            eventDate <= nextWeekEnd
+                          );
+                        }).length;
+                        return (
+                          <option value="next_week">
+                            {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                    </select>
+                    <select
+                      bind:value={eventSort}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="date-asc">Date: Soonest</option>
+                      <option value="date-desc">Date: Latest</option>
+                      <option value="popular">Most Popular</option>
+                    </select>
+                    {(searchTerm.value !== "" ||
+                      eventDateRange.value !== "all" ||
+                      eventSort.value !== "date-asc") && (
+                      <button
+                        onClick$={clearAllFilters}
+                        class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Events Grid */}
+              {(() => {
+                const filteredEvents = sortEvents(filterEvents(hostedEvents));
+                return filteredEvents.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredEvents.map((event) => (
+                      <EventCard
+                        key={event.eventID ?? event.id}
+                        event={event}
+                        isHosted
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="UsersIcon"
+                      title={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? "No Hosted Events Found"
+                          : "No Hosted Events Yet"
+                      }
+                      message={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? "Try adjusting your filters or search terms."
+                          : "Ready to gather some folks? Host your first event and bring people together."
+                      }
+                      actionButton={
+                        searchTerm.value || eventDateRange.value !== "all"
+                          ? undefined
+                          : { label: "Host an Event", href: "/new" }
+                      }
+                    />
+                    {(searchTerm.value || eventDateRange.value !== "all") && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={clearAllFilters}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {activeTab.value === "myplaces" && (
+            <div>
+              {/* Search and Filter Bar */}
+              <div class="mb-6 space-y-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="relative max-w-md flex-1">
+                    <input
+                      type="text"
+                      bind:value={searchTerm}
+                      placeholder="Search your saved places..."
+                      class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        class="h-4 w-4 text-[#A99D8F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <select
+                      bind:value={placeCategory}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="all">
+                        All Categories ({savedPlaces.length})
+                      </option>
+                      {(() => {
+                        const popularCount = savedPlaces.filter(
+                          (p) => p.badge === "Popular",
+                        ).length;
+                        return (
+                          <option value="popular">
+                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const coffeeCount = savedPlaces.filter((p) =>
+                          p.tags?.includes("Coffee"),
+                        ).length;
+                        return (
+                          <option value="coffee">
+                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const quietCount = savedPlaces.filter((p) =>
+                          p.tags?.includes("Quiet"),
+                        ).length;
+                        return (
+                          <option value="quiet">
+                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const wifiCount = savedPlaces.filter((p) =>
+                          p.tags?.includes("WiFi"),
+                        ).length;
+                        return (
+                          <option value="wifi">
+                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const powerCount = savedPlaces.filter((p) =>
+                          p.tags?.includes("Power"),
+                        ).length;
+                        return (
+                          <option value="power">
+                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                    </select>
+                    <select
+                      bind:value={placeSort}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="recommended">Recommended</option>
+                      <option value="rating">Highest Rated</option>
+                      <option value="newest">Most Visited</option>
+                    </select>
+                    {(searchTerm.value !== "" ||
+                      placeCategory.value !== "all" ||
+                      placeSort.value !== "recommended" ||
+                      activeQuickFilters.value.length > 0) && (
+                      <button
+                        onClick$={clearAllFilters}
+                        class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Filter Chips */}
+                <div class="flex flex-wrap gap-2">
+                  {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
+                    (tag) => (
+                      <button
+                        key={tag}
+                        onClick$={() => toggleQuickFilter(tag)}
+                        class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          activeQuickFilters.value.includes(tag)
+                            ? "bg-[#D98E73] text-white"
+                            : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+
+              {/* Places Grid */}
+              {(() => {
+                const filteredPlaces = sortPlaces(filterPlaces(savedPlaces));
+                return filteredPlaces.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredPlaces.map((place) => (
+                      <PlaceCard
+                        key={place.placeId ?? place.id}
+                        place={{
+                          id: place.placeId ?? place.id,
+                          name: place.name,
+                          image: place.image ?? "",
+                          badge: "",
+                          location: place.location,
+                          description: place.description,
+                          tags: place.tags,
+                          creator: profile.name,
+                          rating:
+                            typeof place.rating === "number" ? place.rating : 0,
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="MapPinIcon"
+                      title={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? "No Saved Places Found"
+                          : "No Places Added Yet"
+                      }
+                      message={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? "Try adjusting your filters or search terms."
+                          : "You haven't added any places to the community. Share your favorite study spots!"
+                      }
+                      actionButton={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? undefined
+                          : { label: "Add a Place", href: "/places/new" }
+                      }
+                    />
+                    {(searchTerm.value ||
+                      placeCategory.value !== "all" ||
+                      activeQuickFilters.value.length > 0) && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={clearAllFilters}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {activeTab.value === "liked" && (
+            <div>
+              {/* Search and Filter Bar */}
+              <div class="mb-6 space-y-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="relative max-w-md flex-1">
+                    <input
+                      type="text"
+                      bind:value={searchTerm}
+                      placeholder="Search liked places..."
+                      class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        class="h-4 w-4 text-[#A99D8F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <select
+                      bind:value={placeCategory}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="all">
+                        All Categories ({likedPlaces.length})
+                      </option>
+                      {(() => {
+                        const popularCount = likedPlaces.filter(
+                          (p) => p.badge === "Popular",
+                        ).length;
+                        return (
+                          <option value="popular">
+                            {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const coffeeCount = likedPlaces.filter((p) =>
+                          p.tags?.includes("Coffee"),
+                        ).length;
+                        return (
+                          <option value="coffee">
+                            {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const quietCount = likedPlaces.filter((p) =>
+                          p.tags?.includes("Quiet"),
+                        ).length;
+                        return (
+                          <option value="quiet">
+                            {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const wifiCount = likedPlaces.filter((p) =>
+                          p.tags?.includes("WiFi"),
+                        ).length;
+                        return (
+                          <option value="wifi">
+                            {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const powerCount = likedPlaces.filter((p) =>
+                          p.tags?.includes("Power"),
+                        ).length;
+                        return (
+                          <option value="power">
+                            {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                    </select>
+                    <select
+                      bind:value={placeSort}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="recommended">Recommended</option>
+                      <option value="rating">Highest Rated</option>
+                      <option value="newest">Most Visited</option>
+                    </select>
+                    {(searchTerm.value !== "" ||
+                      placeCategory.value !== "all" ||
+                      placeSort.value !== "recommended" ||
+                      activeQuickFilters.value.length > 0) && (
+                      <button
+                        onClick$={clearAllFilters}
+                        class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Filter Chips */}
+                <div class="flex flex-wrap gap-2">
+                  {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
+                    (tag) => (
+                      <button
+                        key={tag}
+                        onClick$={() => toggleQuickFilter(tag)}
+                        class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          activeQuickFilters.value.includes(tag)
+                            ? "bg-[#D98E73] text-white"
+                            : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+
+              {/* Places Grid */}
+              {(() => {
+                const filteredPlaces = sortPlaces(filterPlaces(likedPlaces));
+                return filteredPlaces.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredPlaces.map((place) => (
+                      <PlaceCard
+                        key={place.placeId ?? place.id}
+                        place={{
+                          id: place.placeId ?? place.id,
+                          name: place.name,
+                          image: place.image ?? "",
+                          badge: "",
+                          location: place.location,
+                          description: place.description,
+                          tags: place.tags,
+                          creator: profile.name,
+                          rating:
+                            typeof place.rating === "number" ? place.rating : 0,
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="MapPinIcon"
+                      title={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? "No Liked Places Found"
+                          : "No Liked Places"
+                      }
+                      message={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? "Try adjusting your filters or search terms."
+                          : "You haven't liked any places yet. Browse places and click the heart icon to add them here."
+                      }
+                      actionButton={
+                        searchTerm.value ||
+                        placeCategory.value !== "all" ||
+                        activeQuickFilters.value.length > 0
+                          ? undefined
+                          : { label: "Discover Places", href: "/places" }
+                      }
+                    />
+                    {(searchTerm.value ||
+                      placeCategory.value !== "all" ||
+                      activeQuickFilters.value.length > 0) && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={clearAllFilters}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {activeTab.value === "requests" && (
+            <div>
+              {/* Search Bar */}
+              <div class="mb-6">
+                <div class="relative max-w-md">
+                  <input
+                    type="text"
+                    bind:value={searchTerm}
+                    placeholder="Search requests..."
+                    class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                   />
-                ))}
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                      class="h-4 w-4 text-[#A99D8F]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <EmptyState
-                context="MapPinIcon"
-                title="No Liked Places"
-                message="You haven't liked any places yet. Browse places and click the heart icon to add them here."
-                actionButton={{ label: "Discover Places", href: "/places" }}
-              />
-            ))}
 
-          {activeTab.value === "requests" &&
-            (requests.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
-            ) : (
-              <EmptyState
-                context="BellIcon" // Use Bell icon context for requests
-                title="No Pending Requests"
-                message="You don't have any pending requests at the moment."
-              />
-            ))}
+              {/* Requests Grid */}
+              {(() => {
+                const filteredRequests = requests.filter((request) => {
+                  if (searchTerm.value === "") return true;
+                  const searchLower = searchTerm.value.toLowerCase();
+                  return (
+                    request.type?.toLowerCase().includes(searchLower) ||
+                    request.status?.toLowerCase().includes(searchLower)
+                  );
+                });
 
-          {activeTab.value === "past" &&
-            (pastEvents.length > 0 ? (
-              <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {pastEvents.map((event) => (
-                  <EventCard key={event.eventID ?? event.id} event={event} />
-                ))}
+                return filteredRequests.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredRequests.map((request) => (
+                      <div
+                        key={request.id}
+                        class="rounded-lg border border-[#E6D7C3] bg-white p-4"
+                      >
+                        <div class="mb-2 flex items-center justify-between">
+                          <span class="text-sm font-medium text-[#5B3E29]">
+                            {request.type}
+                          </span>
+                          <span class="text-xs text-[#6D5D4E]">
+                            {request.status}
+                          </span>
+                        </div>
+                        <p class="text-sm text-[#6D5D4E]">{request.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="BellIcon"
+                      title={
+                        searchTerm.value
+                          ? "No Requests Found"
+                          : "No Pending Requests"
+                      }
+                      message={
+                        searchTerm.value
+                          ? "Try adjusting your search terms."
+                          : "You don't have any pending requests at the moment."
+                      }
+                      actionButton={undefined}
+                    />
+                    {searchTerm.value && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={$(() => {
+                            searchTerm.value = "";
+                          })}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Search
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {activeTab.value === "past" && (
+            <div>
+              {/* Search and Filter Bar */}
+              <div class="mb-6 space-y-4">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="relative max-w-md flex-1">
+                    <input
+                      type="text"
+                      bind:value={searchTerm}
+                      placeholder="Search past events..."
+                      class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        class="h-4 w-4 text-[#A99D8F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <select
+                      bind:value={pastEventDateRange}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="all">
+                        All Past Events ({pastEvents.length})
+                      </option>
+                      {(() => {
+                        const lastWeekCount = pastEvents.filter((e) => {
+                          const now = new Date();
+                          const lastWeekStart = new Date(
+                            now.getTime() - 7 * 24 * 60 * 60 * 1000,
+                          );
+                          const lastWeekEnd = new Date(now);
+                          const eventDate = new Date(e.date);
+                          return (
+                            eventDate >= lastWeekStart &&
+                            eventDate < lastWeekEnd
+                          );
+                        }).length;
+                        return (
+                          <option value="last_week">
+                            {`Last Week${lastWeekCount > 0 ? ` (${lastWeekCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                      {(() => {
+                        const lastMonthCount = pastEvents.filter((e) => {
+                          const now = new Date();
+                          const lastMonthStart = new Date(
+                            now.getTime() - 30 * 24 * 60 * 60 * 1000,
+                          );
+                          const lastMonthEnd = new Date(now);
+                          const eventDate = new Date(e.date);
+                          return (
+                            eventDate >= lastMonthStart &&
+                            eventDate < lastMonthEnd
+                          );
+                        }).length;
+                        return (
+                          <option value="last_month">
+                            {`Last Month${lastMonthCount > 0 ? ` (${lastMonthCount})` : ""}`}
+                          </option>
+                        );
+                      })()}
+                    </select>
+                    <select
+                      bind:value={eventSort}
+                      class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      <option value="date-desc">Most Recent</option>
+                      <option value="date-asc">Oldest First</option>
+                      <option value="popular">Most Popular</option>
+                    </select>
+                    {(searchTerm.value !== "" ||
+                      pastEventDateRange.value !== "all" ||
+                      eventSort.value !== "date-desc") && (
+                      <button
+                        onClick$={clearAllFilters}
+                        class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            ) : (
-              <EmptyState
-                context="CalendarIcon"
-                title="No Past Events"
-                message="You haven't attended any events yet. Join some events to build your history!"
-                actionButton={{ label: "Find Events", href: "/events" }}
-              />
-            ))}
+
+              {/* Events Grid */}
+              {(() => {
+                const filteredEvents = sortEvents(filterPastEvents(pastEvents));
+                return filteredEvents.length > 0 ? (
+                  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredEvents.map((event) => (
+                      <EventCard
+                        key={event.eventID ?? event.id}
+                        event={event}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <EmptyState
+                      context="CalendarIcon"
+                      title={
+                        searchTerm.value || pastEventDateRange.value !== "all"
+                          ? "No Past Events Found"
+                          : "No Past Events"
+                      }
+                      message={
+                        searchTerm.value || pastEventDateRange.value !== "all"
+                          ? "Try adjusting your filters or search terms."
+                          : "You haven't attended any events yet. Join some events to build your history!"
+                      }
+                      actionButton={
+                        searchTerm.value || pastEventDateRange.value !== "all"
+                          ? undefined
+                          : { label: "Find Events", href: "/events" }
+                      }
+                    />
+                    {(searchTerm.value ||
+                      pastEventDateRange.value !== "all") && (
+                      <div class="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick$={clearAllFilters}
+                          class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-6 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Clear Filters
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       </div>
     );

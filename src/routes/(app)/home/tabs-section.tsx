@@ -1,6 +1,6 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useTask$, $ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
-import { ArrowRightIcon as ArrowRight, XIcon } from "lucide-qwik";
+import { ArrowRightIcon as ArrowRight } from "lucide-qwik";
 import { PlaceCard } from "./place-card";
 import { SharePlaceCard } from "./share-place-card";
 import { EventCard } from "./event-card";
@@ -37,11 +37,128 @@ export const TabsSection = component$((props: TabsSectionProps) => {
   const visibleEventsCount = useSignal(INITIAL_EVENTS_COUNT);
 
   // Filter state variables with proper TypeScript types
-  const showPlacesFilter = useSignal<boolean>(false);
-  const showEventsFilter = useSignal<boolean>(false);
   const searchTerm = useSignal<string>("");
   const placeFilterCategory = useSignal<string>("all");
   const eventFilterDateRange = useSignal<string>("all");
+  const eventSort = useSignal<string>("date-asc");
+  const placeSort = useSignal<string>("recommended");
+  const activeQuickFilters = useSignal<string[]>([]);
+
+  // Filter functions
+  const filterPlaces = (places: any[]) => {
+    return places.filter((place) => {
+      const matchesSearch =
+        searchTerm.value === "" ||
+        place.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+        place.description
+          ?.toLowerCase()
+          .includes(searchTerm.value.toLowerCase()) ||
+        place.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+
+      const matchesCategory =
+        placeFilterCategory.value === "all" ||
+        (placeFilterCategory.value === "popular" &&
+          place.badge === "Popular") ||
+        (placeFilterCategory.value === "coffee" &&
+          place.tags?.includes("Coffee")) ||
+        (placeFilterCategory.value === "quiet" &&
+          place.tags?.includes("Quiet")) ||
+        (placeFilterCategory.value === "wifi" &&
+          place.tags?.includes("WiFi")) ||
+        (placeFilterCategory.value === "power" &&
+          place.tags?.includes("Power"));
+
+      const matchesQuickFilters =
+        activeQuickFilters.value.length === 0 ||
+        activeQuickFilters.value.every((filter) =>
+          place.tags?.includes(filter),
+        );
+
+      return matchesSearch && matchesCategory && matchesQuickFilters;
+    });
+  };
+
+  const filterEvents = (events: any[]) => {
+    return events.filter((event) => {
+      const matchesSearch =
+        searchTerm.value === "" ||
+        event.name?.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+        event.description
+          ?.toLowerCase()
+          .includes(searchTerm.value.toLowerCase()) ||
+        event.location?.toLowerCase().includes(searchTerm.value.toLowerCase());
+
+      const now = new Date();
+      const eventDate = new Date(event.date);
+      let matchesDateRange = true;
+
+      if (eventFilterDateRange.value === "today") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        matchesDateRange = eventDate >= today && eventDate < tomorrow;
+      } else if (eventFilterDateRange.value === "this_week") {
+        const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        matchesDateRange = eventDate >= now && eventDate <= weekFromNow;
+      } else if (eventFilterDateRange.value === "next_week") {
+        const nextWeekStart = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const nextWeekEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+        matchesDateRange =
+          eventDate >= nextWeekStart && eventDate <= nextWeekEnd;
+      }
+
+      return matchesSearch && matchesDateRange;
+    });
+  };
+
+  const sortPlaces = (places: any[]) => {
+    const sorted = [...places];
+    if (placeSort.value === "rating") {
+      sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    } else if (placeSort.value === "newest") {
+      // Sort by visitCount as a proxy for popularity/recency
+      // Higher visit count suggests more recently visited or popular places
+      sorted.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0));
+    }
+    return sorted;
+  };
+
+  const sortEvents = (events: any[]) => {
+    const sorted = [...events];
+    if (eventSort.value === "date-asc") {
+      sorted.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
+    } else if (eventSort.value === "date-desc") {
+      sorted.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    } else if (eventSort.value === "popular") {
+      sorted.sort(
+        (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0),
+      );
+    }
+    return sorted;
+  };
+
+  const clearAllFilters = $(() => {
+    searchTerm.value = "";
+    placeFilterCategory.value = "all";
+    eventFilterDateRange.value = "all";
+    eventSort.value = "date-asc";
+    placeSort.value = "recommended";
+    activeQuickFilters.value = [];
+  });
+
+  const toggleQuickFilter = $((filter: string) => {
+    const current = activeQuickFilters.value;
+    if (current.includes(filter)) {
+      activeQuickFilters.value = current.filter((f) => f !== filter);
+    } else {
+      activeQuickFilters.value = [...current, filter];
+    }
+  });
 
   const allPlacesLoaded =
     visiblePlacesCount.value >= props.placesApiData.length;
@@ -86,88 +203,6 @@ export const TabsSection = component$((props: TabsSectionProps) => {
             Places
           </Link>
         </div>
-
-        {showPlacesFilter.value && (
-          <div class="mb-6 rounded-lg border border-[#E6D7C3] bg-white p-4">
-            <div class="mb-4 flex items-center justify-between">
-              <h3 class="text-lg font-medium text-[#5B3E29]">Filter Places</h3>
-              <button
-                onClick$={() => (showPlacesFilter.value = false)}
-                class="text-[#6D5D4E] hover:text-[#5B3E29]"
-              >
-                <XIcon class="h-5 w-5" />
-              </button>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
-                  Category
-                </label>
-                <select
-                  bind:value={placeFilterCategory}
-                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-                >
-                  <option value="all">All Places</option>
-                  <option value="popular">Popular</option>
-                  <option value="coffee">Coffee Shops</option>
-                  <option value="quiet">Quiet Spaces</option>
-                </select>
-              </div>
-              <div>
-                <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
-                  Search
-                </label>
-                <input
-                  type="text"
-                  bind:value={searchTerm}
-                  placeholder="Search places..."
-                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showEventsFilter.value && (
-          <div class="mb-6 rounded-lg border border-[#E6D7C3] bg-white p-4">
-            <div class="mb-4 flex items-center justify-between">
-              <h3 class="text-lg font-medium text-[#5B3E29]">Filter Events</h3>
-              <button
-                onClick$={() => (showEventsFilter.value = false)}
-                class="text-[#6D5D4E] hover:text-[#5B3E29]"
-              >
-                <XIcon class="h-5 w-5" />
-              </button>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
-                  Date Range
-                </label>
-                <select
-                  bind:value={eventFilterDateRange}
-                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-                >
-                  <option value="all">All Dates</option>
-                  <option value="this_week">This Week</option>
-                  <option value="this_month">This Month</option>
-                  <option value="this_year">This Year</option>
-                </select>
-              </div>
-              <div>
-                <label class="mb-2 block text-sm font-medium text-[#5B3E29]">
-                  Search
-                </label>
-                <input
-                  type="text"
-                  bind:value={searchTerm}
-                  placeholder="Search events..."
-                  class="w-full rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
-                />
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* All Content Tab */}
         {activeTab.value === "all" && (
@@ -219,54 +254,136 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         {/* Places Tab */}
         {activeTab.value === "places" && (
           <div class="mt-8">
-            <div class="mb-6 flex items-center justify-between">
-              <h2 class="text-2xl font-bold text-[#5B3E29]">
-                Cozy Spaces ({props.placesApiData.length})
-              </h2>
-              <div class="flex gap-3">
-                <select class="rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20">
-                  <option value="recommended">Recommended</option>
-                  <option value="rating">Highest Rated</option>
-                  <option value="newest">Newest</option>
-                </select>
-                <button
-                  type="button"
-                  onClick$={() =>
-                    (showPlacesFilter.value = !showPlacesFilter.value)
-                  }
-                  class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  Filters
-                  {showPlacesFilter.value ? (
-                    <XIcon class="ml-2 h-4 w-4" />
-                  ) : null}
-                </button>
+            {/* Search and Filter Bar */}
+            <div class="mb-6 space-y-4">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div class="relative max-w-md flex-1">
+                  <input
+                    type="text"
+                    bind:value={searchTerm}
+                    placeholder="Search cozy spaces..."
+                    class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  />
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                      class="h-4 w-4 text-[#A99D8F]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <select
+                    bind:value={placeFilterCategory}
+                    class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  >
+                    <option value="all">
+                      All Categories ({props.placesApiData.length})
+                    </option>
+                    {(() => {
+                      const popularCount = props.placesApiData.filter(
+                        (p) => p.badge === "Popular",
+                      ).length;
+                      return (
+                        <option value="popular">
+                          {`Popular${popularCount > 0 ? ` (${popularCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const coffeeCount = props.placesApiData.filter((p) =>
+                        p.tags?.includes("Coffee"),
+                      ).length;
+                      return (
+                        <option value="coffee">
+                          {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const quietCount = props.placesApiData.filter((p) =>
+                        p.tags?.includes("Quiet"),
+                      ).length;
+                      return (
+                        <option value="quiet">
+                          {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const wifiCount = props.placesApiData.filter((p) =>
+                        p.tags?.includes("WiFi"),
+                      ).length;
+                      return (
+                        <option value="wifi">
+                          {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const powerCount = props.placesApiData.filter((p) =>
+                        p.tags?.includes("Power"),
+                      ).length;
+                      return (
+                        <option value="power">
+                          {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                  </select>
+                  <select
+                    bind:value={placeSort}
+                    class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  >
+                    <option value="recommended">Recommended</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="newest">Most Visited</option>
+                  </select>
+                  {(searchTerm.value !== "" ||
+                    placeFilterCategory.value !== "all" ||
+                    placeSort.value !== "recommended" ||
+                    activeQuickFilters.value.length > 0) && (
+                    <button
+                      type="button"
+                      onClick$={clearAllFilters}
+                      class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Filter Chips */}
+              <div class="flex flex-wrap gap-2">
+                {["Coffee", "WiFi", "Quiet", "Power", "Music", "Study"].map(
+                  (tag) => (
+                    <button
+                      key={tag}
+                      onClick$={() => toggleQuickFilter(tag)}
+                      class={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                        activeQuickFilters.value.includes(tag)
+                          ? "bg-[#D98E73] text-white"
+                          : "bg-[#F8EDE3] text-[#6D5D4E] hover:bg-[#E6D7C3]"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {/* Filter places based on search term and category */}
-              {props.placesApiData
-                .filter((place) => {
-                  const matchesSearch =
-                    searchTerm.value === "" ||
-                    place.name
-                      ?.toLowerCase()
-                      .includes(searchTerm.value.toLowerCase()) ||
-                    place.description
-                      ?.toLowerCase()
-                      .includes(searchTerm.value.toLowerCase());
-
-                  const matchesCategory =
-                    placeFilterCategory.value === "all" ||
-                    (placeFilterCategory.value === "popular" &&
-                      place.badge === "Popular") ||
-                    (placeFilterCategory.value === "coffee" &&
-                      place.tags?.includes("Coffee")) ||
-                    (placeFilterCategory.value === "quiet" &&
-                      place.tags?.includes("Quiet"));
-
-                  return matchesSearch && matchesCategory;
-                })
+              {/* Filter and sort places */}
+              {sortPlaces(filterPlaces(props.placesApiData))
                 .slice(0, visiblePlacesCount.value)
                 .map((place) => (
                   <PlaceCard key={place.id} place={place} />
@@ -296,63 +413,116 @@ export const TabsSection = component$((props: TabsSectionProps) => {
         {/* Events Tab */}
         {activeTab.value === "events" && (
           <div class="mt-8">
-            <div class="mb-6 flex items-center justify-between">
-              <h2 class="text-2xl font-bold text-[#5B3E29]">
-                Upcoming Sessions ({props.eventsData.length})
-              </h2>
-              <div class="flex gap-3">
-                <select class="rounded-md border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20">
-                  <option value="date-asc">Date: Soonest First</option>
-                  <option value="date-desc">Date: Latest First</option>
-                  <option value="popular">Most Popular</option>
-                </select>
-                <button
-                  type="button"
-                  onClick$={() =>
-                    (showEventsFilter.value = !showEventsFilter.value)
-                  }
-                  class="inline-flex h-10 items-center justify-center rounded-md border border-[#D98E73] bg-transparent px-4 py-2 text-sm font-medium text-[#D98E73] ring-offset-background transition-colors hover:bg-[#FFF1E6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  Filters
-                  {showEventsFilter.value ? (
-                    <XIcon class="ml-2 h-4 w-4" />
-                  ) : null}
-                </button>
+            {/* Search and Filter Bar */}
+            <div class="mb-6 space-y-4">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div class="relative max-w-md flex-1">
+                  <input
+                    type="text"
+                    bind:value={searchTerm}
+                    placeholder="Search upcoming events..."
+                    class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  />
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                      class="h-4 w-4 text-[#A99D8F]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <select
+                    bind:value={eventFilterDateRange}
+                    class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  >
+                    <option value="all">
+                      All Upcoming ({props.eventsData.length})
+                    </option>
+                    {(() => {
+                      const todayCount = props.eventsData.filter((e) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const tomorrow = new Date(today);
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        const eventDate = new Date(e.date);
+                        return eventDate >= today && eventDate < tomorrow;
+                      }).length;
+                      return (
+                        <option value="today">
+                          {`Today${todayCount > 0 ? ` (${todayCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const thisWeekCount = props.eventsData.filter((e) => {
+                        const now = new Date();
+                        const weekFromNow = new Date(
+                          now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                        );
+                        const eventDate = new Date(e.date);
+                        return eventDate >= now && eventDate <= weekFromNow;
+                      }).length;
+                      return (
+                        <option value="this_week">
+                          {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                    {(() => {
+                      const nextWeekCount = props.eventsData.filter((e) => {
+                        const now = new Date();
+                        const nextWeekStart = new Date(
+                          now.getTime() + 7 * 24 * 60 * 60 * 1000,
+                        );
+                        const nextWeekEnd = new Date(
+                          now.getTime() + 14 * 24 * 60 * 60 * 1000,
+                        );
+                        const eventDate = new Date(e.date);
+                        return (
+                          eventDate >= nextWeekStart && eventDate <= nextWeekEnd
+                        );
+                      }).length;
+                      return (
+                        <option value="next_week">
+                          {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ""}`}
+                        </option>
+                      );
+                    })()}
+                  </select>
+                  <select
+                    bind:value={eventSort}
+                    class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                  >
+                    <option value="date-asc">Date: Soonest</option>
+                    <option value="date-desc">Date: Latest</option>
+                    <option value="popular">Most Popular</option>
+                  </select>
+                  {(searchTerm.value !== "" ||
+                    eventFilterDateRange.value !== "all" ||
+                    eventSort.value !== "date-asc") && (
+                    <button
+                      type="button"
+                      onClick$={clearAllFilters}
+                      class="rounded-lg border border-[#D98E73] bg-transparent px-3 py-2 text-sm text-[#D98E73] hover:bg-[#FFF1E6] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
             <div class="space-y-6">
-              {/* Filter events based on search term and date range */}
-              {props.eventsData
-                .filter((event) => {
-                  const matchesSearch =
-                    searchTerm.value === "" ||
-                    event.name
-                      ?.toLowerCase()
-                      .includes(searchTerm.value.toLowerCase()) ||
-                    event.description
-                      ?.toLowerCase()
-                      .includes(searchTerm.value.toLowerCase());
-
-                  const now = new Date();
-                  const eventDate = new Date(event.date);
-                  let matchesDateRange = true;
-
-                  if (eventFilterDateRange.value === "this_week") {
-                    const weekFromNow = new Date(
-                      now.getTime() + 7 * 24 * 60 * 60 * 1000,
-                    );
-                    matchesDateRange =
-                      eventDate >= now && eventDate <= weekFromNow;
-                  } else if (eventFilterDateRange.value === "this_month") {
-                    const monthFromNow = new Date(
-                      now.getTime() + 30 * 24 * 60 * 60 * 1000,
-                    );
-                    matchesDateRange =
-                      eventDate >= now && eventDate <= monthFromNow;
-                  }
-
-                  return matchesSearch && matchesDateRange;
-                })
+              {/* Filter and sort events */}
+              {sortEvents(filterEvents(props.eventsData))
                 .slice(0, visibleEventsCount.value)
                 .map((event) => (
                   <DetailedEventCard key={event.id} event={event} />
