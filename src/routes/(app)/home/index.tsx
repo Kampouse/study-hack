@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik'
+import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik'
 import { routeLoader$ } from '@builder.io/qwik-city'
 import { MapPinIcon as MapPin } from 'lucide-qwik' // Keep MapPin for the modal button
 
@@ -124,16 +124,25 @@ export default component$(() => {
       <CommunitySection />
 
       {showMap.value && (
-        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-          <div class="relative h-[90vh] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
+        <div
+          class="fixed inset-0 z-[100] flex items-start justify-center bg-black bg-opacity-50 backdrop-blur-sm pt-20"
+          onClick$={e => {
+            // Close map when clicking on the backdrop (outside the map container)
+            if (e.target === e.currentTarget) {
+              showMap.value = false
+            }
+          }}
+        >
+          <div class="relative mt-8 h-[calc(90vh-8rem)] w-[90vw] max-w-6xl rounded-lg bg-white p-4 shadow-2xl">
             <div class="mb-2 flex items-center justify-between border-b pb-2">
               <h2 class="text-xl font-semibold text-[#5B3E29]">
                 Locations Map
               </h2>
               <button
                 onClick$={() => (showMap.value = false)}
-                class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+                class="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#D98E73] focus:ring-offset-2"
                 aria-label="Close map"
+                title="Close map (ESC)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -169,10 +178,26 @@ export default component$(() => {
         type="button"
         onClick$={() => (showMap.value = true)}
         class="fixed bottom-24 right-6 z-40 inline-flex h-12 items-center justify-center rounded-full bg-[#D98E73] px-5 py-2 text-sm font-medium text-white shadow-lg ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+        title="Open locations map"
       >
         <MapPin class="mr-2 h-5 w-5" />
         View Map
       </button>
     </div>
   )
+
+  // Add ESC key support to close the map
+  useVisibleTask$(({ cleanup }) => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showMap.value) {
+        showMap.value = false
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+
+    cleanup(() => {
+      document.removeEventListener('keydown', handleEscape)
+    })
+  })
 })
