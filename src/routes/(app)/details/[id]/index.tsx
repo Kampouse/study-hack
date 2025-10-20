@@ -56,6 +56,30 @@ export default component$(() => {
     }
   }
 
+  const isEventInPast = (dateString: string, starttime?: string) => {
+    if (!dateString) return false
+
+    try {
+      const eventDate = new Date(dateString)
+
+      // Add time information if starttime is provided
+      if (starttime) {
+        const [hours, minutes] = starttime
+          .split(':')
+          .map(part => Number.parseInt(part, 10))
+        if (!isNaN(hours) && !isNaN(minutes)) {
+          eventDate.setHours(hours, minutes)
+        }
+      }
+
+      const now = new Date()
+      return eventDate < now
+    } catch (error) {
+      console.error('Error checking if event is in past:', error)
+      return false
+    }
+  }
+
   return (
     <div class="min-h-screen bg-gradient-to-br from-[#F8EDE3] to-[#FFF8F0] md:pt-20">
       <div class="mx-auto flex max-w-7xl flex-col px-4 py-4 pt-32 lg:flex-row lg:gap-6 lg:p-6">
@@ -121,12 +145,33 @@ export default component$(() => {
                   Connect with like-minded people at this event
                 </p>
               </div>
-              <Link
-                href={`/join/${data.value.event.data?.event.eventID}`}
-                class="mt-2 w-full rounded-lg bg-[#D98E73] px-6 py-2 text-center text-white hover:bg-[#C27B62] sm:mt-0 sm:w-auto"
-              >
-                Join This Event
-              </Link>
+              {(() => {
+                const isPast = isEventInPast(
+                  data.value.event.data?.event.date || '',
+                  data.value.event.data?.event.starttime || ''
+                )
+
+                if (isPast) {
+                  return (
+                    <button
+                      disabled
+                      class="mt-2 w-full rounded-lg bg-gray-400 px-6 py-2 text-center text-white cursor-not-allowed sm:mt-0 sm:w-auto"
+                      title="This event has already ended"
+                    >
+                      Event Ended
+                    </button>
+                  )
+                } else {
+                  return (
+                    <Link
+                      href={`/join/${data.value.event.data?.event.eventID}`}
+                      class="mt-2 w-full rounded-lg bg-[#D98E73] px-6 py-2 text-center text-white hover:bg-[#C27B62] sm:mt-0 sm:w-auto"
+                    >
+                      Join This Event
+                    </Link>
+                  )
+                }
+              })()}
             </div>
           </div>
 

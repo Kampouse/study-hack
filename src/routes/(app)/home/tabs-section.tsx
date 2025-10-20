@@ -285,8 +285,8 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       {'All Categories (' + props.placesApiData.length + ')'}
                     </option>
                     {(() => {
-                      const popularCount = props.placesApiData.filter(
-                        p => p.tags?.includes('Popular')
+                      const popularCount = props.placesApiData.filter(p =>
+                        p.tags?.includes('Popular')
                       ).length
                       return (
                         <option value="popular">

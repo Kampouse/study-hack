@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest'
+import { Events, Users } from '../../drizzle/schema'
 import { testDb } from '../../tests/setup'
 import {
   CreateEvent,
@@ -219,6 +220,108 @@ test('Create a join request', async () => {
   expect(updatedRequest).toBeDefined()
   expect(updatedRequest.success).toBe(true)
   expect(updatedRequest.data?.Status).toBe('confirmed')
+})
+
+test('Cannot join past events', async () => {
+  // Create users directly in database
+  const owner = await testDb
+    .insert(Users)
+    .values({
+      Username: 'owner',
+      Name: 'Event Owner',
+      Email: 'owner@example.com',
+    })
+    .returning()
+
+  const requester = await testDb
+    .insert(Users)
+    .values({
+      Username: 'requester',
+      Name: 'Test User',
+      Email: 'requester@example.com',
+    })
+    .returning()
+
+  // Create a past event (yesterday)
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const pastDate = yesterday.toISOString().split('T')[0] // YYYY-MM-DD format
+  const pastTime = '10:00:00'
+
+  const pastEvent = await testDb
+    .insert(Events)
+    .values({
+      Name: 'Past Event',
+      Description: 'This event is in the past',
+      Location: 'Test Location',
+      Coordinates: JSON.stringify([0, 0]),
+      Date: pastDate,
+      StartTime: pastTime,
+      EndTime: '11:00:00',
+      Tags: JSON.stringify(['test']),
+      UserID: owner[0].UserID,
+    })
+    .returning()
+
+  // Try to join the past event using the existing function
+  const joinRequest = await createJoinRequest({
+    requestData: {
+      eventId: pastEvent[0].EventID,
+      userId: requester[0].UserID,
+    },
+    event: pastEvent,
+    client: testDb as any,
+  })
+
+  // Should fail because event is in the past
+  expect(joinRequest.success).toBe(false)
+  expect(joinRequest.message).toBe('Cannot join past events')
+  expect(joinRequest.data).toBe(null)
+})
+
+test('Past event detection utility function', () => {
+  const isEventInPast = (dateString: string, timeString?: string) => {
+    if (!dateString) return false
+
+    try {
+      const eventDate = new Date(dateString)
+
+      // Add time information if timeString is provided
+      if (timeString) {
+        const [hours, minutes] = timeString
+          .split(':')
+          .map(part => Number.parseInt(part, 10))
+        if (!isNaN(hours) && !isNaN(minutes)) {
+          eventDate.setHours(hours, minutes)
+        }
+      }
+
+      const now = new Date()
+      return eventDate < now
+    } catch (error) {
+      console.error('Error checking if event is in past:', error)
+      return false
+    }
+  }
+
+  // Test with past date
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  expect(isEventInPast(yesterday.toISOString().split('T')[0])).toBe(true)
+
+  // Test with future date
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  expect(isEventInPast(tomorrow.toISOString().split('T')[0])).toBe(false)
+
+  // Test with today but past time
+  const today = new Date()
+  const todayStr = today.toISOString().split('T')[0]
+  const pastTime = '00:00:00'
+  expect(isEventInPast(todayStr, pastTime)).toBe(true)
+
+  // Test with invalid date
+  expect(isEventInPast('invalid-date')).toBe(false)
 })
 test('QueryAllReferenceEvents - validity of data', async () => {
   // Create users

@@ -788,7 +788,8 @@ export const TabsSection = component$<TabsSectionProps>(
 
         const matchesCategory =
           placeCategory.value === 'all' ||
-          (placeCategory.value === 'popular' && place.tags?.includes('Popular')) ||
+          (placeCategory.value === 'popular' &&
+            place.tags?.includes('Popular')) ||
           (placeCategory.value === 'coffee' &&
             place.tags?.includes('Coffee')) ||
           (placeCategory.value === 'quiet' && place.tags?.includes('Quiet')) ||
@@ -896,9 +897,7 @@ export const TabsSection = component$<TabsSectionProps>(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         )
       } else if (eventSort.value === 'popular') {
-        sorted.sort(
-          (a, b) => (b.attendees || 0) - (a.attendees || 0)
-        )
+        sorted.sort((a, b) => (b.attendees || 0) - (a.attendees || 0))
       }
       return sorted
     }
@@ -1395,8 +1394,8 @@ export const TabsSection = component$<TabsSectionProps>(
                         {'All Categories (' + savedPlaces.length + ')'}
                       </option>
                       {(() => {
-                        const popularCount = savedPlaces.filter(
-                          p => p.tags?.includes('Popular')
+                        const popularCount = savedPlaces.filter(p =>
+                          p.tags?.includes('Popular')
                         ).length
                         return (
                           <option value="popular">
@@ -1592,8 +1591,8 @@ export const TabsSection = component$<TabsSectionProps>(
                         {'All Categories (' + likedPlaces.length + ')'}
                       </option>
                       {(() => {
-                        const popularCount = likedPlaces.filter(
-                          p => p.tags?.includes('Popular')
+                        const popularCount = likedPlaces.filter(p =>
+                          p.tags?.includes('Popular')
                         ).length
                         return (
                           <option value="popular">

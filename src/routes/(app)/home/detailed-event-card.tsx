@@ -8,6 +8,30 @@ import {
   UsersIcon as Users,
 } from 'lucide-qwik'
 
+const isEventInPast = (dateString: string, timeString?: string) => {
+  if (!dateString) return false
+
+  try {
+    const eventDate = new Date(dateString)
+
+    // Add time information if timeString is provided
+    if (timeString) {
+      const [hours, minutes] = timeString
+        .split(':')
+        .map(part => Number.parseInt(part, 10))
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        eventDate.setHours(hours, minutes)
+      }
+    }
+
+    const now = new Date()
+    return eventDate < now
+  } catch (error) {
+    console.error('Error checking if event is in past:', error)
+    return false
+  }
+}
+
 export const DetailedEventCard = component$(
   (props: {
     event: {
@@ -24,6 +48,7 @@ export const DetailedEventCard = component$(
       spotsLeft: number
     }
   }) => {
+    const isPast = isEventInPast(props.event.date, props.event.time)
     return (
       <div
         key={props.event.id}
@@ -110,13 +135,24 @@ export const DetailedEventCard = component$(
                   +{props.event.attendees - 3}
                 </div>
               </div>
-              <Link
-                href={`/join/${props.event.id}`}
-                type="button"
-                class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              >
-                Join Session
-              </Link>
+              {isPast ? (
+                <button
+                  disabled
+                  type="button"
+                  class="inline-flex h-10 items-center justify-center rounded-md bg-gray-400 px-4 py-2 text-sm font-medium text-white cursor-not-allowed"
+                  title="This event has already ended"
+                >
+                  Event Ended
+                </button>
+              ) : (
+                <Link
+                  href={`/join/${props.event.id}`}
+                  type="button"
+                  class="inline-flex h-10 items-center justify-center rounded-md bg-[#D98E73] px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-[#C27B62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                >
+                  Join Session
+                </Link>
+              )}
             </div>
           </div>
         </div>

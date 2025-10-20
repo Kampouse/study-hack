@@ -8,6 +8,7 @@ import {
   MapPinIcon as MapPin,
   UserPlusIcon as UserPlus,
   UsersIcon as Users,
+  XCircleIcon as XCircle,
 } from 'lucide-qwik'
 import type { DetailedEventType } from '~/routes/profile/types'
 import JustRnD from '../../assets/just-rnd.png?url'
@@ -15,6 +16,30 @@ import JustRnD from '../../assets/just-rnd.png?url'
 interface EventCardProps {
   event: DetailedEventType
   isHosted?: boolean
+}
+
+const isEventInPast = (dateString: string, timeString?: string) => {
+  if (!dateString) return false
+
+  try {
+    const eventDate = new Date(dateString)
+
+    // Add time information if timeString is provided
+    if (timeString) {
+      const [hours, minutes] = timeString
+        .split(':')
+        .map(part => Number.parseInt(part, 10))
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        eventDate.setHours(hours, minutes)
+      }
+    }
+
+    const now = new Date()
+    return eventDate < now
+  } catch (error) {
+    console.error('Error checking if event is in past:', error)
+    return false
+  }
 }
 const formatEventDate = (dateString: string) => {
   try {
@@ -75,17 +100,23 @@ const formatEventDate = (dateString: string) => {
 export const EventCard = component$<EventCardProps>(
   ({ event, isHosted = false }) => {
     const status = isHosted ? 'Host' : event.role || event.status || 'Pending'
+    const isPast = isEventInPast(event.date, event.time)
 
     // Use the improved date formatting function
     const { displayDate, displayTime } = formatEventDate(event.date)
+
     // Status styles remain the same
     const statusStyles: Record<string, string> = {
       Host: 'bg-[#E6F2FF] text-[#5B8CB7]',
       Confirmed: 'bg-[#E8F4EA] text-[#6A9B7E]',
       Pending: 'bg-[#FFF1E6] text-[#D98E73]',
+      'Past Event': 'bg-gray-100 text-gray-500',
       Default: 'bg-gray-100 text-gray-600',
     }
-    const currentStatusStyle = statusStyles[status] || statusStyles.Default
+
+    // Use "Past Event" status for past events
+    const finalStatus = isPast ? 'Past Event' : status
+    const currentStatusStyle = statusStyles[finalStatus] || statusStyles.Default
 
     return (
       // Added h-full for flex/grid consistency, adjusted shadow and border slightly
@@ -123,15 +154,25 @@ export const EventCard = component$<EventCardProps>(
               class={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ${currentStatusStyle}`} // Adjusted padding slightly
             >
               {/* Increased icon margin */}
-              {status === 'Host' && <UserPlus class="mr-1.5 h-3.5 w-3.5" />}
-              {status === 'Confirmed' && (
+              {finalStatus === 'Host' && (
+                <UserPlus class="mr-1.5 h-3.5 w-3.5" />
+              )}
+              {finalStatus === 'Confirmed' && (
                 <CheckCircle class="mr-1.5 h-3.5 w-3.5" />
               )}
-              {status === 'Pending' && <Clock3 class="mr-1.5 h-3.5 w-3.5" />}
-              {status !== 'Host' &&
-                status !== 'Confirmed' &&
-                status !== 'Pending' && <InfoIcon class="mr-1.5 h-3.5 w-3.5" />}
-              {status}
+              {finalStatus === 'Pending' && (
+                <Clock3 class="mr-1.5 h-3.5 w-3.5" />
+              )}
+              {finalStatus === 'Past Event' && (
+                <XCircle class="mr-1.5 h-3.5 w-3.5" />
+              )}
+              {finalStatus !== 'Host' &&
+                finalStatus !== 'Confirmed' &&
+                finalStatus !== 'Pending' &&
+                finalStatus !== 'Past Event' && (
+                  <InfoIcon class="mr-1.5 h-3.5 w-3.5" />
+                )}
+              {finalStatus}
             </span>
           </div>
 
