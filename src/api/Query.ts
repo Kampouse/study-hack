@@ -216,16 +216,17 @@ export const serverSession = (event: Requested) => {
 /**
  * Secure environment-based test mode check
  * Cannot be manipulated by client requests
+ * Uses Qwik's import.meta.env for client/server compatibility
  */
 const IS_TEST_ENVIRONMENT =
-  process.env.NODE_ENV === "test" ||
-  process.env.VITEST === "true" ||
-  (process.env.NODE_ENV === "development" && process.env.TEST_MODE === "true");
+  import.meta.env.MODE === "test" ||
+  import.meta.env.VITEST === "true" ||
+  (import.meta.env.DEV && import.meta.env.VITE_TEST_MODE === "true");
 
 /**
  * Production safeguard: ensure test mode is never enabled in production
  */
-if (IS_TEST_ENVIRONMENT && process.env.NODE_ENV === "production") {
+if (IS_TEST_ENVIRONMENT && import.meta.env.PROD) {
   throw new Error(
     "SECURITY ERROR: Test mode cannot be enabled in production environment"
   );
@@ -838,13 +839,32 @@ export const QueryAllReferenceEvents = async (params: {
 
   const processedEvents = await Promise.all(
     mergedEvents.map(async (event) => {
-      const date = new Date(event.date);
+      // Parse date string in local timezone to avoid timezone shifts
+      // If date is in format "YYYY-MM-DD", split it to create a proper local date
+      const dateParts = event.date.split("-");
+      let date: Date;
+      if (dateParts.length === 3) {
+        // Create date in local timezone (not UTC)
+        const year = Number.parseInt(dateParts[0], 10);
+        const month = Number.parseInt(dateParts[1], 10) - 1; // Month is 0-indexed
+        const day = Number.parseInt(dateParts[2], 10);
+        date = new Date(year, month, day);
+      } else {
+        // Fallback to normal Date parsing
+        date = new Date(event.date);
+      }
+
       const startTime = event.startTime;
       const hrs = startTime ? startTime.split(":")[0] : "00";
       const minutes = startTime ? startTime.split(":")[1] : "00";
       const ampm = Number.parseInt(hrs) >= 12 ? "PM" : "AM";
       const formattedHours = Number.parseInt(hrs) % 12 || 12;
-      event.date = `${date.toLocaleDateString()} at ${formattedHours}:${minutes} ${ampm}`;
+
+      // Format date properly: M/D/YYYY format
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const year = date.getFullYear();
+      event.date = `${month}/${day}/${year} at ${formattedHours}:${minutes} ${ampm}`;
 
       const res = await Client.select({
         requestID: Requests.RequestID,
@@ -862,7 +882,7 @@ export const QueryAllReferenceEvents = async (params: {
             eq(Requests.Status, "confirmed")
           )
         )
-        .groupBy(Requests.EventID);
+        .execute();
 
       // Use place image if event doesn't have one
       const eventPlace =

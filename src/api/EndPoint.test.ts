@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest'
-import { Events, Users } from '../../drizzle/schema'
-import { testDb } from '../../tests/setup'
+import { expect, test } from "vitest";
+import { Events, Users } from "../../drizzle/schema";
+import { testDb } from "../../tests/setup";
 import {
   CreateEvent,
   CreatePlace,
@@ -13,69 +13,69 @@ import {
   UpdatePlace,
   createJoinRequest,
   updateRequestStatus,
-} from './Query'
+} from "./Query";
 
-import { faker } from '@faker-js/faker'
-test('Create a valid user', async () => {
+import { faker } from "@faker-js/faker";
+test("Create a valid user", async () => {
   const result = await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
-  expect(result).toBeDefined()
-})
+  });
+  expect(result).toBeDefined();
+});
 
-test('Get user from email', async () => {
+test("Get user from email", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   // Then get the user
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
-  expect(user).toBeDefined()
-  expect(user?.Email).toBe('jpmartel98@gmail.com')
-})
+  });
+  expect(user).toBeDefined();
+  expect(user?.Email).toBe("jpmartel98@gmail.com");
+});
 
-test('add valid event from user', async () => {
+test("add valid event from user", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const event = {
     Name: faker.lorem.words(3),
     Description: faker.lorem.paragraph(),
-    Date: faker.date.future().toISOString().split('T')[0],
+    Date: faker.date.future().toISOString().split("T")[0],
     StartTime: faker.date.future().toLocaleTimeString(),
     EndTime: faker.date.future().toLocaleTimeString(),
     Location: faker.location.city(),
@@ -84,20 +84,20 @@ test('add valid event from user', async () => {
       faker.number.float({ min: -90, max: 90 }),
       faker.number.float({ min: -180, max: 180 }),
     ] as [number, number],
-  }
+  };
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   type userData = {
-    ID: number
-    Name: string
-    Intrests: string
-    Description: string
-    Image: string
-  }
+    ID: number;
+    Name: string;
+    Intrests: string;
+    Description: string;
+    Image: string;
+  };
 
   const userData = {
     ID: user?.ID as number,
@@ -106,67 +106,67 @@ test('add valid event from user', async () => {
     Intrests: user?.Intrests as string[],
     Description: user?.Description as string,
     Image: user?.ImageURL as string,
-  }
+  };
 
   const output = await CreateEvent({
     event: undefined,
     session: event,
     userData: userData,
     Client: testDb as any,
-  })
-  expect(output).toBeDefined()
+  });
+  expect(output).toBeDefined();
   if (output) {
-    expect(output[0]).toHaveProperty('EventID')
+    expect(output[0]).toHaveProperty("EventID");
   }
-})
+});
 
-test('Create a join request', async () => {
+test("Create a join request", async () => {
   // Create event owner
   await CreateUser({
     event: undefined,
     session: {
-      name: 'EventOwner',
+      name: "EventOwner",
       user: {
-        name: 'EventOwner',
-        email: 'owner@example.com',
-        image: 'owner_image.jpg',
+        name: "EventOwner",
+        email: "owner@example.com",
+        image: "owner_image.jpg",
       },
     },
     client: testDb as any,
-  })
+  });
   const eventOwner = await GetUserFromEmail({
     event: undefined,
-    email: 'owner@example.com',
+    email: "owner@example.com",
     client: testDb as any,
-  })
+  });
 
   // Create requester (different user)
   await CreateUser({
     event: undefined,
     session: {
-      name: 'Requester',
+      name: "Requester",
       user: {
-        name: 'Requester',
-        email: 'requester@example.com',
-        image: 'requester_image.jpg',
+        name: "Requester",
+        email: "requester@example.com",
+        image: "requester_image.jpg",
       },
     },
     client: testDb as any,
-  })
+  });
   const queriedUser = await GetUserFromEmail({
     event: undefined,
-    email: 'requester@example.com',
+    email: "requester@example.com",
     client: testDb as any,
-  })
+  });
 
-  expect(queriedUser).toBeDefined()
-  expect(queriedUser?.Email).toBe('requester@example.com')
+  expect(queriedUser).toBeDefined();
+  expect(queriedUser?.Email).toBe("requester@example.com");
 
   // Event owner creates an event
   const event = {
     Name: faker.lorem.words(3),
     Description: faker.lorem.paragraph(),
-    Date: faker.date.future().toISOString().split('T')[0],
+    Date: faker.date.future().toISOString().split("T")[0],
     StartTime: faker.date.future().toLocaleTimeString(),
     EndTime: faker.date.future().toLocaleTimeString(),
     Location: faker.location.city(),
@@ -175,17 +175,17 @@ test('Create a join request', async () => {
       faker.number.float({ min: -90, max: 90 }),
       faker.number.float({ min: -180, max: 180 }),
     ] as [number, number],
-  }
+  };
 
   const createdEvent = await CreateEvent({
     event: undefined,
     session: event,
     userData: eventOwner as any,
     Client: testDb as any,
-  })
+  });
 
-  expect(createdEvent).toBeDefined()
-  expect(createdEvent?.[0]).toHaveProperty('EventID')
+  expect(createdEvent).toBeDefined();
+  expect(createdEvent?.[0]).toHaveProperty("EventID");
 
   // Requester (different user) creates a join request
   const joinRequest = await createJoinRequest({
@@ -198,70 +198,70 @@ test('Create a join request', async () => {
       why: faker.lorem.paragraph(),
     },
     client: testDb as any,
-  })
+  });
 
-  expect(joinRequest).toBeDefined()
+  expect(joinRequest).toBeDefined();
   if (!joinRequest.success) {
-    console.log('Join request failed:', joinRequest.message)
+    console.log("Join request failed:", joinRequest.message);
   }
-  expect(joinRequest.success).toBe(true)
-  expect(joinRequest.data).toHaveProperty('RequestID')
-  expect(joinRequest.data?.EventID).toBe(createdEvent?.[0].EventID)
-  expect(joinRequest.data?.UserID).toBe(queriedUser?.ID)
+  expect(joinRequest.success).toBe(true);
+  expect(joinRequest.data).toHaveProperty("RequestID");
+  expect(joinRequest.data?.EventID).toBe(createdEvent?.[0].EventID);
+  expect(joinRequest.data?.UserID).toBe(queriedUser?.ID);
 
   // Update the request status
   const updatedRequest = await updateRequestStatus({
     event: undefined,
     requestId: joinRequest.data?.RequestID as number,
-    newStatus: 'confirmed',
+    newStatus: "confirmed",
     client: testDb as any,
-  })
+  });
 
-  expect(updatedRequest).toBeDefined()
-  expect(updatedRequest.success).toBe(true)
-  expect(updatedRequest.data?.Status).toBe('confirmed')
-})
+  expect(updatedRequest).toBeDefined();
+  expect(updatedRequest.success).toBe(true);
+  expect(updatedRequest.data?.Status).toBe("confirmed");
+});
 
-test('Cannot join past events', async () => {
+test("Cannot join past events", async () => {
   // Create users directly in database
   const owner = await testDb
     .insert(Users)
     .values({
-      Username: 'owner',
-      Name: 'Event Owner',
-      Email: 'owner@example.com',
+      Username: "owner",
+      Name: "Event Owner",
+      Email: "owner@example.com",
     })
-    .returning()
+    .returning();
 
   const requester = await testDb
     .insert(Users)
     .values({
-      Username: 'requester',
-      Name: 'Test User',
-      Email: 'requester@example.com',
+      Username: "requester",
+      Name: "Test User",
+      Email: "requester@example.com",
     })
-    .returning()
+    .returning();
 
   // Create a past event (yesterday)
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  const pastDate = yesterday.toISOString().split('T')[0] // YYYY-MM-DD format
-  const pastTime = '10:00:00'
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const pastDate = yesterday.toISOString().split("T")[0]; // YYYY-MM-DD format
+  const pastTime = "10:00:00";
 
   const pastEvent = await testDb
     .insert(Events)
     .values({
-      Name: 'Past Event',
-      Description: 'This event is in the past',
-      Location: 'Test Location',
+      Name: "Past Event",
+      Description: "This event is in the past",
+      Location: "Test Location",
       Coordinates: JSON.stringify([0, 0]),
       Date: pastDate,
       StartTime: pastTime,
-      EndTime: '11:00:00',
-      Tags: JSON.stringify(['test']),
+      EndTime: "11:00:00",
+      Tags: JSON.stringify(["test"]),
       UserID: owner[0].UserID,
     })
-    .returning()
+    .returning();
 
   // Try to join the past event using the existing function
   const joinRequest = await createJoinRequest({
@@ -271,60 +271,60 @@ test('Cannot join past events', async () => {
     },
     event: pastEvent,
     client: testDb as any,
-  })
+  });
 
   // Should fail because event is in the past
-  expect(joinRequest.success).toBe(false)
-  expect(joinRequest.message).toBe('Cannot join past events')
-  expect(joinRequest.data).toBe(null)
-})
+  expect(joinRequest.success).toBe(false);
+  expect(joinRequest.message).toBe("Cannot join past events");
+  expect(joinRequest.data).toBe(null);
+});
 
-test('Past event detection utility function', () => {
+test("Past event detection utility function", () => {
   const isEventInPast = (dateString: string, timeString?: string) => {
-    if (!dateString) return false
+    if (!dateString) return false;
 
     try {
-      const eventDate = new Date(dateString)
+      const eventDate = new Date(dateString);
 
       // Add time information if timeString is provided
       if (timeString) {
         const [hours, minutes] = timeString
-          .split(':')
-          .map(part => Number.parseInt(part, 10))
+          .split(":")
+          .map((part) => Number.parseInt(part, 10));
         if (!isNaN(hours) && !isNaN(minutes)) {
-          eventDate.setHours(hours, minutes)
+          eventDate.setHours(hours, minutes);
         }
       }
 
-      const now = new Date()
-      return eventDate < now
+      const now = new Date();
+      return eventDate < now;
     } catch (error) {
-      console.error('Error checking if event is in past:', error)
-      return false
+      console.error("Error checking if event is in past:", error);
+      return false;
     }
-  }
+  };
 
   // Test with past date
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  expect(isEventInPast(yesterday.toISOString().split('T')[0])).toBe(true)
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  expect(isEventInPast(yesterday.toISOString().split("T")[0])).toBe(true);
 
   // Test with future date
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  expect(isEventInPast(tomorrow.toISOString().split('T')[0])).toBe(false)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  expect(isEventInPast(tomorrow.toISOString().split("T")[0])).toBe(false);
 
   // Test with today but past time
-  const today = new Date()
-  const todayStr = today.toISOString().split('T')[0]
-  const pastTime = '00:00:00'
-  expect(isEventInPast(todayStr, pastTime)).toBe(true)
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+  const pastTime = "00:00:00";
+  expect(isEventInPast(todayStr, pastTime)).toBe(true);
 
   // Test with invalid date
-  expect(isEventInPast('invalid-date')).toBe(false)
-})
+  expect(isEventInPast("invalid-date")).toBe(false);
+});
 
-test('Map close functionality should work correctly', () => {
+test("Map close functionality should work correctly", () => {
   // Test that map close button exists and is functional
   // This is a basic test to ensure the close button is rendered
   const closeButtonHTML = `
@@ -339,102 +339,102 @@ test('Map close functionality should work correctly', () => {
         <line x1="6" y1="6" x2="18" y2="18" />
       </svg>
     </button>
-  `
+  `;
 
   // Verify the close button HTML structure
-  expect(closeButtonHTML).toContain('aria-label="Close map"')
-  expect(closeButtonHTML).toContain('title="Close map (ESC)"')
-  expect(closeButtonHTML).toContain('onClick$={() => (showMap.value = false)}')
-})
-test('QueryAllReferenceEvents - validity of data', async () => {
+  expect(closeButtonHTML).toContain('aria-label="Close map"');
+  expect(closeButtonHTML).toContain('title="Close map (ESC)"');
+  expect(closeButtonHTML).toContain("onClick$={() => (showMap.value = false)}");
+});
+test("QueryAllReferenceEvents - validity of data", async () => {
   // Create users
   await CreateUser({
     event: undefined,
     session: {
-      name: 'User1',
+      name: "User1",
       user: {
-        name: 'User1',
-        email: 'user1@example.com',
-        image: 'user1_image.jpg',
+        name: "User1",
+        email: "user1@example.com",
+        image: "user1_image.jpg",
       },
     },
     client: testDb as any,
-  })
+  });
 
   await CreateUser({
     event: undefined,
     session: {
-      name: 'User2',
+      name: "User2",
       user: {
-        name: 'User2',
-        email: 'user2@example.com',
-        image: 'user2_image.jpg',
+        name: "User2",
+        email: "user2@example.com",
+        image: "user2_image.jpg",
       },
     },
     client: testDb as any,
-  })
+  });
 
   // Get users from email
   const user1 = await GetUserFromEmail({
     event: undefined,
-    email: 'user1@example.com',
+    email: "user1@example.com",
     client: testDb as any,
-  })
+  });
 
   const user2 = await GetUserFromEmail({
     event: undefined,
-    email: 'user2@example.com',
+    email: "user2@example.com",
     client: testDb as any,
-  })
+  });
 
-  expect(user1).toBeDefined()
-  expect(user2).toBeDefined()
+  expect(user1).toBeDefined();
+  expect(user2).toBeDefined();
 
   // Create events (set date to tomorrow to ensure they're in the future)
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const futureDate = tomorrow.toISOString().split('T')[0]
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const futureDate = tomorrow.toISOString().split("T")[0];
 
   const event1 = {
-    Name: 'Test Event 1',
-    Description: 'This is test event 1',
+    Name: "Test Event 1",
+    Description: "This is test event 1",
     Date: futureDate,
-    StartTime: '10:00:00',
-    EndTime: '12:00:00',
-    Location: 'Test Location 1',
-    ImageURL: 'test_image1.jpg',
+    StartTime: "10:00:00",
+    EndTime: "12:00:00",
+    Location: "Test Location 1",
+    ImageURL: "test_image1.jpg",
     Coordinates: [0, 0] as [number, number],
-  }
+  };
 
   const event2 = {
-    Name: 'Test Event 2',
-    Description: 'This is test event 2',
+    Name: "Test Event 2",
+    Description: "This is test event 2",
     Date: futureDate,
-    StartTime: '14:00:00',
-    EndTime: '16:00:00',
-    Location: 'Test Location 2',
-    ImageURL: 'test_image2.jpg',
+    StartTime: "14:00:00",
+    EndTime: "16:00:00",
+    Location: "Test Location 2",
+    ImageURL: "test_image2.jpg",
     Coordinates: [1, 1] as [number, number],
-  }
+  };
 
   const createdEvent1 = await CreateEvent({
     event: undefined,
     session: event1,
     userData: user1 as any,
     Client: testDb as any,
-  })
+  });
 
   const createdEvent2 = await CreateEvent({
     event: undefined,
     session: event2,
     userData: user2 as any,
     Client: testDb as any,
-  })
+  });
 
-  expect(createdEvent1).toBeDefined()
-  expect(createdEvent1?.[0]).toHaveProperty('EventID')
-  expect(createdEvent2).toBeDefined()
-  expect(createdEvent2?.[0]).toHaveProperty('EventID')
+  expect(createdEvent1).toBeDefined();
+  expect(createdEvent1?.[0]).toHaveProperty("EventID");
+  expect(createdEvent2).toBeDefined();
+  expect(createdEvent2?.[0]).toHaveProperty("EventID");
 
   // Create join requests
   const joinRequest1 = await createJoinRequest({
@@ -442,29 +442,29 @@ test('QueryAllReferenceEvents - validity of data', async () => {
     requestData: {
       eventId: createdEvent1?.[0].EventID as number,
       userId: user2?.ID as number,
-      background: 'Test background 1',
-      experience: 'Test experience 1',
-      why: 'Test reason 1',
+      background: "Test background 1",
+      experience: "Test experience 1",
+      why: "Test reason 1",
     },
     client: testDb as any,
-  })
+  });
 
   const joinRequest2 = await createJoinRequest({
     event: undefined,
     requestData: {
       eventId: createdEvent2?.[0].EventID as number,
       userId: user1?.ID as number,
-      background: 'Test background 2',
-      experience: 'Test experience 2',
-      why: 'Test reason 2',
+      background: "Test background 2",
+      experience: "Test experience 2",
+      why: "Test reason 2",
     },
     client: testDb as any,
-  })
+  });
 
-  expect(joinRequest1).toBeDefined()
-  expect(joinRequest1.success).toBe(true)
-  expect(joinRequest2).toBeDefined()
-  expect(joinRequest2.success).toBe(true)
+  expect(joinRequest1).toBeDefined();
+  expect(joinRequest1.success).toBe(true);
+  expect(joinRequest2).toBeDefined();
+  expect(joinRequest2.success).toBe(true);
 
   // Query all reference events for user1
   const dataFromUser1 = await QueryAllReferenceEvents({
@@ -473,11 +473,11 @@ test('QueryAllReferenceEvents - validity of data', async () => {
     options: {
       client: testDb as any,
     },
-  })
+  });
 
-  expect(dataFromUser1).toBeDefined()
-  expect(dataFromUser1).toBeInstanceOf(Array)
-  expect(dataFromUser1?.length).toBeGreaterThanOrEqual(2)
+  expect(dataFromUser1).toBeDefined();
+  expect(dataFromUser1).toBeInstanceOf(Array);
+  expect(dataFromUser1?.length).toBeGreaterThanOrEqual(2);
 
   // Query all reference events for user2
   const dataFromUser2 = await QueryAllReferenceEvents({
@@ -486,32 +486,32 @@ test('QueryAllReferenceEvents - validity of data', async () => {
     options: {
       client: testDb as any,
     },
-  })
+  });
 
-  expect(dataFromUser2).toBeDefined()
-  expect(dataFromUser2).toBeInstanceOf(Array)
-  expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2)
-})
-test('Create a valid place', async () => {
+  expect(dataFromUser2).toBeDefined();
+  expect(dataFromUser2).toBeInstanceOf(Array);
+  expect(dataFromUser2?.length).toBeGreaterThanOrEqual(2);
+});
+test("Create a valid place", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   const placeData = {
     name: faker.company.name(),
@@ -526,42 +526,42 @@ test('Create a valid place', async () => {
     rating: faker.number.int({ min: 1, max: 5 }).toString(),
     wifispeed: faker.number.int({ min: 1, max: 100 }),
     hasquietenvironment: faker.datatype.boolean(),
-    price: '$'.repeat(faker.number.int({ min: 1, max: 3 })),
+    price: "$".repeat(faker.number.int({ min: 1, max: 3 })),
     category: faker.word.sample(),
-  }
+  };
 
   const result = await CreatePlace({
     event: undefined,
     userID: user?.ID as number,
     placeData,
     client: testDb as any,
-  })
+  });
 
-  expect(result).toBeDefined()
-  expect(result.success).toBe(true)
-  expect(result.data).toHaveProperty('PlaceID')
-})
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data).toHaveProperty("PlaceID");
+});
 
-test('Query a specific place', async () => {
+test("Query a specific place", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   const placeData = {
     name: faker.company.name(),
@@ -572,53 +572,53 @@ test('Query a specific place', async () => {
       faker.number.float({ min: -90, max: 90 }),
       faker.number.float({ min: -180, max: 180 }),
     ] as [number, number],
-  }
+  };
 
   const createdPlace = await CreatePlace({
     event: undefined,
     userID: user?.ID as number,
     placeData,
     client: testDb as any,
-  })
-  expect(createdPlace).toBeDefined()
+  });
+  expect(createdPlace).toBeDefined();
   if (!createdPlace.data) {
-    throw new Error('Failed to create place')
+    throw new Error("Failed to create place");
   }
 
   const result = await QueryPlace({
     event: undefined,
     placeId: createdPlace.data.PlaceID,
     client: testDb as any,
-  })
+  });
   if (!result.success || !result.data) {
-    throw new Error('Failed to query place')
+    throw new Error("Failed to query place");
   }
 
-  expect(result).toBeDefined()
-  expect(result.success).toBe(true)
-  expect(result.data.Name).toBe(placeData.name)
-})
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data.Name).toBe(placeData.name);
+});
 
-test('Query all places', async () => {
+test("Query all places", async () => {
   // First create a user and a place so we have data to query
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   // Create a place
   await CreatePlace({
@@ -635,42 +635,42 @@ test('Query all places', async () => {
       ] as [number, number],
     },
     client: testDb as any,
-  })
+  });
 
   const result = await QueryPlaces({
     event: undefined,
     client: testDb as any,
-  })
+  });
 
-  expect(result).toBeDefined()
-  expect(result.success).toBe(true)
-  expect(result.data).toBeDefined()
-  expect(Array.isArray(result.data)).toBe(true)
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data).toBeDefined();
+  expect(Array.isArray(result.data)).toBe(true);
   if (result.data) {
-    expect(result.data.length).toBeGreaterThan(0)
+    expect(result.data.length).toBeGreaterThan(0);
   }
-})
+});
 
-test('Update a place', async () => {
+test("Update a place", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   const placeData = {
     name: faker.company.name(),
@@ -681,21 +681,21 @@ test('Update a place', async () => {
       faker.number.float({ min: -90, max: 90 }),
       faker.number.float({ min: -180, max: 180 }),
     ] as [number, number],
-  }
+  };
 
   const createdPlace = await CreatePlace({
     event: undefined,
     userID: user?.ID as number,
     placeData,
     client: testDb as any,
-  })
+  });
 
   const updateData = {
     name: faker.company.name(),
     description: faker.lorem.paragraph(),
-  }
+  };
   if (!createdPlace.data) {
-    throw new Error('Failed to create place')
+    throw new Error("Failed to create place");
   }
 
   const result = await UpdatePlace({
@@ -703,35 +703,35 @@ test('Update a place', async () => {
     placeId: createdPlace.data.PlaceID,
     placeData: updateData,
     client: testDb as any,
-  })
+  });
   if (!result.success || !result.data) {
-    throw new Error('Failed to update place')
+    throw new Error("Failed to update place");
   }
-  expect(result).toBeDefined()
-  expect(result.success).toBe(true)
-  expect(result.data.Name).toBe(updateData.name)
-})
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+  expect(result.data.Name).toBe(updateData.name);
+});
 
-test('Delete a place', async () => {
+test("Delete a place", async () => {
   // First create a user
   await CreateUser({
     event: undefined,
     session: {
-      name: 'test',
+      name: "test",
       user: {
-        name: 'Kampouse',
-        email: 'jpmartel98@gmail.com',
-        image: 'somthing',
+        name: "Kampouse",
+        email: "jpmartel98@gmail.com",
+        image: "somthing",
       },
     },
     client: testDb as any,
-  })
+  });
 
   const user = await GetUserFromEmail({
     event: undefined,
-    email: 'jpmartel98@gmail.com',
+    email: "jpmartel98@gmail.com",
     client: testDb as any,
-  })
+  });
 
   const placeData = {
     name: faker.company.name(),
@@ -742,24 +742,103 @@ test('Delete a place', async () => {
       faker.number.float({ min: -90, max: 90 }),
       faker.number.float({ min: -180, max: 180 }),
     ] as [number, number],
-  }
+  };
 
   const createdPlace = await CreatePlace({
     event: undefined,
     userID: user?.ID as number,
     placeData,
     client: testDb as any,
-  })
+  });
   if (!createdPlace.data) {
-    throw new Error('Failed to create place')
+    throw new Error("Failed to create place");
   }
 
   const result = await DeletePlace({
     event: undefined,
     placeId: createdPlace.data.PlaceID,
     client: testDb as any,
-  })
+  });
 
-  expect(result).toBeDefined()
-  expect(result.success).toBe(true)
-})
+  expect(result).toBeDefined();
+  expect(result.success).toBe(true);
+});
+
+test('Created event returns with "host" role in QueryAllReferenceEvents', async () => {
+  // Create a user
+  await CreateUser({
+    event: undefined,
+    session: {
+      name: "test",
+      user: {
+        name: "EventCreator",
+        email: "creator@example.com",
+        image: "creator_image.jpg",
+      },
+    },
+    client: testDb as any,
+  });
+
+  const user = await GetUserFromEmail({
+    event: undefined,
+    email: "creator@example.com",
+    client: testDb as any,
+  });
+
+  expect(user).toBeDefined();
+
+  // Create a future event
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const futureDate = tomorrow.toISOString().split("T")[0];
+
+  const newEventData = {
+    Name: "My Test Event",
+    Description: "Testing event creation",
+    Date: futureDate,
+    StartTime: "18:00:00",
+    EndTime: "20:00:00",
+    Location: "Test Location",
+    ImageURL: "test.jpg",
+    Coordinates: [45.5, -73.5] as [number, number],
+  };
+
+  const createdEvent = await CreateEvent({
+    event: undefined,
+    session: newEventData,
+    userData: user as any,
+    Client: testDb as any,
+  });
+
+  expect(createdEvent).toBeDefined();
+  expect(createdEvent?.[0]).toHaveProperty("EventID");
+
+  // Query all reference events - this is what the profile page calls
+  const allEvents = await QueryAllReferenceEvents({
+    event: undefined as any,
+    UserID: user?.ID as number,
+    options: {
+      client: testDb as any,
+    },
+  });
+
+  expect(allEvents).toBeDefined();
+  expect(allEvents).toBeInstanceOf(Array);
+  expect(allEvents?.length).toBeGreaterThan(0);
+
+  // Find the event we just created
+  const myEvent = allEvents?.find(
+    (event: any) => event.eventID === createdEvent?.[0].EventID
+  );
+
+  // CRITICAL: The event must exist in the results
+  expect(myEvent).toBeDefined();
+
+  // CRITICAL: The event must have role="host" (lowercase)
+  // This is what determines if it shows in the "Hosting" tab
+  expect(myEvent?.role).toBe("host");
+
+  // Additional validations
+  expect(myEvent?.name).toBe(newEventData.Name);
+  expect(myEvent?.location).toBe(newEventData.Location);
+});

@@ -19,15 +19,20 @@ import type {
 
 const formatEventDate = (dateString: string) => {
   try {
-    // Parse the date string "3/31/2025 at 8:00 AM" format
+    // Parse the date string "3/31/2025 at 8:00 AM" or "11/1/2025 at 6:00 PM" format
     const dateTimeParts = dateString.split(" at ");
     const datePart = dateTimeParts[0];
     const timePart = dateTimeParts[1];
 
-    // Create a valid date object from the date part
-    const dateObj = new Date(datePart);
+    // Parse M/D/YYYY or MM/DD/YYYY format properly
+    const [month, day, year] = datePart
+      .split("/")
+      .map((num) => Number.parseInt(num, 10));
 
-    // Set the time part if available
+    // Create date object in local timezone
+    const dateObj = new Date(year, month - 1, day);
+
+    // Set the time part if available, otherwise default to start of day (midnight)
     if (timePart) {
       const timeMatch = timePart.match(/(\d+):(\d+)\s*(AM|PM)/i);
       if (timeMatch) {
@@ -40,21 +45,15 @@ const formatEventDate = (dateString: string) => {
         if (ampm === "PM" && hour < 12) hours24 += 12;
         if (ampm === "AM" && hour === 12) hours24 = 0;
 
-        // Round minutes to nearest 15
-        const roundedMinutes = Math.ceil(minute / 15) * 15;
-        let adjustedHour = hours24;
-
-        // Handle case where minutes round to 60
-        if (roundedMinutes === 60) {
-          adjustedHour = (hours24 + 1) % 24;
-        }
-
-        // Set hours and minutes on the date object
-        dateObj.setHours(adjustedHour);
-        dateObj.setMinutes(roundedMinutes === 60 ? 0 : roundedMinutes);
+        // Set hours and minutes on the date object (no rounding needed for comparison)
+        dateObj.setHours(hours24);
+        dateObj.setMinutes(minute);
         dateObj.setSeconds(0);
         dateObj.setMilliseconds(0);
       }
+    } else {
+      // If no time specified, set to start of day
+      dateObj.setHours(0, 0, 0, 0);
     }
 
     // Generate display strings
@@ -198,17 +197,28 @@ export default component$(() => {
       });
   });
 
+  // Get start of today (midnight) for comparison - this includes all of today's events
+  const now = new Date();
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
+
+  // Current date/time for filtering past events
   const currentDate = new Date();
 
-  // Filter for upcoming events (future date) - includes both hosted and attending
+  // Filter for upcoming events (today or future) - includes both hosted and attending
   const upcomingEvents = useComputed$(() =>
     allEvents.value.filter((event) => {
       try {
         const eventDate = formatEventDate(event.date).date;
-        return (
-          !isNaN(formatEventDate(event.date).date.getTime()) &&
-          eventDate > currentDate
-        );
+        // Include events from start of today onwards
+        return !isNaN(eventDate.getTime()) && eventDate >= startOfToday;
       } catch (e) {
         return false; // Invalid dates are not upcoming
       }
@@ -217,11 +227,15 @@ export default component$(() => {
 
   // Separate upcoming events into hosting and attending
   const upcomingHostedEvents = useComputed$(() =>
-    upcomingEvents.value.filter((event) => event.role === "Host")
+    upcomingEvents.value.filter(
+      (event) => event.role === "host" || event.role === "Host"
+    )
   );
 
   const upcomingAttendingEvents = useComputed$(() =>
-    upcomingEvents.value.filter((event) => event.role !== "Host")
+    upcomingEvents.value.filter(
+      (event) => event.role === "confirmed" || event.role === "pending"
+    )
   );
 
   // For backward compatibility - all hosted events (including past)

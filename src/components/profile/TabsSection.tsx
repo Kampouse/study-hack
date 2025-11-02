@@ -755,14 +755,14 @@ interface TabsSectionProps {
 
 export const TabsSection = component$<TabsSectionProps>(
   ({
-    upcomingEvents,
-    upcomingHostedEvents,
-    upcomingAttendingEvents,
+    upcomingEvents = [],
+    upcomingHostedEvents = [],
+    upcomingAttendingEvents = [],
     profile,
-    hostedEvents,
-    pastEvents,
-    likedPlaces,
-    savedPlaces,
+    hostedEvents = [],
+    pastEvents = [],
+    likedPlaces = [],
+    savedPlaces = [],
     requests = [],
   }) => {
     const loc = useLocation();
@@ -959,7 +959,7 @@ export const TabsSection = component$<TabsSectionProps>(
         id: "upcoming",
         label: "Upcoming",
         icon: Calendar,
-        count: upcomingEvents.length,
+        count: upcomingAttendingEvents.length,
       },
       {
         id: "requests",
@@ -975,9 +975,9 @@ export const TabsSection = component$<TabsSectionProps>(
       },
       {
         id: "hosted",
-        label: "Hosted",
+        label: "Hosting",
         icon: UserPlus,
-        count: hostedEvents.length,
+        count: upcomingHostedEvents.length,
       },
       {
         id: "liked",
@@ -1300,58 +1300,19 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Events Display */}
               {(() => {
-                const filteredHostedEvents = sortEvents(
-                  filterEvents(upcomingHostedEvents)
-                );
                 const filteredAttendingEvents = sortEvents(
                   filterEvents(upcomingAttendingEvents)
                 );
-                const hasHostedEvents = filteredHostedEvents.length > 0;
                 const hasAttendingEvents = filteredAttendingEvents.length > 0;
-                const hasAnyEvents = hasHostedEvents || hasAttendingEvents;
 
-                return hasAnyEvents ? (
-                  <div class="space-y-8">
-                    {/* Hosting Section */}
-                    {hasHostedEvents && (
-                      <div>
-                        <div class="mb-4 flex items-center gap-2">
-                          <UserPlus class="h-5 w-5 text-[#D98E73]" />
-                          <h3 class="text-lg font-semibold text-[#5B3E29]">
-                            Hosting ({filteredHostedEvents.length})
-                          </h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                          {filteredHostedEvents.map((event) => (
-                            <EventCard
-                              key={event.eventID ?? event.id}
-                              event={event}
-                              isHosted
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Attending Section */}
-                    {hasAttendingEvents && (
-                      <div>
-                        <div class="mb-4 flex items-center gap-2">
-                          <Calendar class="h-5 w-5 text-[#D98E73]" />
-                          <h3 class="text-lg font-semibold text-[#5B3E29]">
-                            Attending ({filteredAttendingEvents.length})
-                          </h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                          {filteredAttendingEvents.map((event) => (
-                            <EventCard
-                              key={event.eventID ?? event.id}
-                              event={event}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                return hasAttendingEvents ? (
+                  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredAttendingEvents.map((event) => (
+                      <EventCard
+                        key={event.eventID ?? event.id}
+                        event={event}
+                      />
+                    ))}
                   </div>
                 ) : (
                   <>
@@ -1394,12 +1355,12 @@ export const TabsSection = component$<TabsSectionProps>(
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div class="relative max-w-md flex-1">
+                <div class="flex flex-col gap-4">
+                  <div class="relative flex-1">
                     <input
                       type="text"
                       bind:value={searchTerm}
-                      placeholder="Search your hosted events..."
+                      placeholder="Search events you're hosting..."
                       class="w-full rounded-lg border border-[#E6D7C3] bg-white py-2 pl-10 pr-4 text-sm text-[#5B3E29] placeholder-[#A99D8F] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     />
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -1418,16 +1379,16 @@ export const TabsSection = component$<TabsSectionProps>(
                       </svg>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
+                  <div class="flex flex-wrap items-center gap-3">
                     <select
                       bind:value={eventDateRange}
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
                     >
                       <option value="all">
-                        {"All Upcoming (" + hostedEvents.length + ")"}
+                        {"All Upcoming (" + upcomingHostedEvents.length + ")"}
                       </option>
                       {(() => {
-                        const todayCount = hostedEvents.filter((e) => {
+                        const todayCount = upcomingHostedEvents.filter((e) => {
                           const today = new Date();
                           today.setHours(0, 0, 0, 0);
                           const tomorrow = new Date(today);
@@ -1442,14 +1403,16 @@ export const TabsSection = component$<TabsSectionProps>(
                         );
                       })()}
                       {(() => {
-                        const thisWeekCount = hostedEvents.filter((e) => {
-                          const now = new Date();
-                          const weekFromNow = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000
-                          );
-                          const eventDate = new Date(e.date);
-                          return eventDate >= now && eventDate <= weekFromNow;
-                        }).length;
+                        const thisWeekCount = upcomingHostedEvents.filter(
+                          (e) => {
+                            const now = new Date();
+                            const weekFromNow = new Date(
+                              now.getTime() + 7 * 24 * 60 * 60 * 1000
+                            );
+                            const eventDate = new Date(e.date);
+                            return eventDate >= now && eventDate <= weekFromNow;
+                          }
+                        ).length;
                         return (
                           <option value="this_week">
                             {`This Week${
@@ -1459,20 +1422,22 @@ export const TabsSection = component$<TabsSectionProps>(
                         );
                       })()}
                       {(() => {
-                        const nextWeekCount = hostedEvents.filter((e) => {
-                          const now = new Date();
-                          const nextWeekStart = new Date(
-                            now.getTime() + 7 * 24 * 60 * 60 * 1000
-                          );
-                          const nextWeekEnd = new Date(
-                            now.getTime() + 14 * 24 * 60 * 60 * 1000
-                          );
-                          const eventDate = new Date(e.date);
-                          return (
-                            eventDate >= nextWeekStart &&
-                            eventDate <= nextWeekEnd
-                          );
-                        }).length;
+                        const nextWeekCount = upcomingHostedEvents.filter(
+                          (e) => {
+                            const now = new Date();
+                            const nextWeekStart = new Date(
+                              now.getTime() + 7 * 24 * 60 * 60 * 1000
+                            );
+                            const nextWeekEnd = new Date(
+                              now.getTime() + 14 * 24 * 60 * 60 * 1000
+                            );
+                            const eventDate = new Date(e.date);
+                            return (
+                              eventDate >= nextWeekStart &&
+                              eventDate <= nextWeekEnd
+                            );
+                          }
+                        ).length;
                         return (
                           <option value="next_week">
                             {`Next Week${
@@ -1506,7 +1471,9 @@ export const TabsSection = component$<TabsSectionProps>(
 
               {/* Events Grid */}
               {(() => {
-                const filteredEvents = sortEvents(filterEvents(hostedEvents));
+                const filteredEvents = sortEvents(
+                  filterEvents(upcomingHostedEvents)
+                );
                 return filteredEvents.length > 0 ? (
                   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredEvents.map((event) => (
@@ -1558,8 +1525,8 @@ export const TabsSection = component$<TabsSectionProps>(
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div class="relative max-w-md flex-1">
+                <div class="flex flex-col gap-4">
+                  <div class="relative flex-1">
                     <input
                       type="text"
                       bind:value={searchTerm}
@@ -1582,7 +1549,7 @@ export const TabsSection = component$<TabsSectionProps>(
                       </svg>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
+                  <div class="flex flex-wrap items-center gap-3">
                     <select
                       bind:value={placeCategory}
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
@@ -1765,8 +1732,8 @@ export const TabsSection = component$<TabsSectionProps>(
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div class="relative max-w-md flex-1">
+                <div class="flex flex-col gap-4">
+                  <div class="relative flex-1">
                     <input
                       type="text"
                       bind:value={searchTerm}
@@ -1789,7 +1756,7 @@ export const TabsSection = component$<TabsSectionProps>(
                       </svg>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
+                  <div class="flex flex-wrap items-center gap-3">
                     <select
                       bind:value={placeCategory}
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
@@ -2066,8 +2033,8 @@ export const TabsSection = component$<TabsSectionProps>(
             <div>
               {/* Search and Filter Bar */}
               <div class="mb-6 space-y-4">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div class="relative max-w-md flex-1">
+                <div class="flex flex-col gap-4">
+                  <div class="relative flex-1">
                     <input
                       type="text"
                       bind:value={searchTerm}
@@ -2090,7 +2057,7 @@ export const TabsSection = component$<TabsSectionProps>(
                       </svg>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
+                  <div class="flex flex-wrap items-center gap-3">
                     <select
                       bind:value={pastEventDateRange}
                       class="rounded-lg border border-[#E6D7C3] bg-white px-3 py-2 text-sm text-[#6D5D4E] focus:outline-none focus:ring-2 focus:ring-[#D98E73]/20"
