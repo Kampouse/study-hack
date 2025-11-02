@@ -503,7 +503,13 @@ export const QueryEvents = async (params: {
                 )
               )
           )
-        )
+        ),
+        // Only return upcoming events if active parameter is true
+        ...(params.options?.active
+          ? [
+              sql`datetime(${Events.Date} || ' ' || ${Events.StartTime}) > datetime('now')`,
+            ]
+          : [])
       )
     )
     .limit(params.options.limit ?? 3)

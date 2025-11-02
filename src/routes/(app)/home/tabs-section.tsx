@@ -205,43 +205,46 @@ export const TabsSection = component$((props: TabsSectionProps) => {
           <div class="mt-8 space-y-12">
             {/* Featured Places Section */}
             <div>
-              <div class="mb-6 flex items-end justify-between">
+              <div class="mb-4">
                 <h2 class="text-2xl font-bold text-[#5B3E29]">Cozy Places</h2>
-                <Link
-                  href="/places"
-                  class="flex items-center text-[#D98E73] hover:underline"
-                >
-                  View all places <ArrowRight class="ml-1 h-4 w-4" />
-                </Link>
               </div>
-              <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {/* Show first 3 places + Share Card */}
+              <div class="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* Show first 3 places */}
                 {props.placesApiData.slice(0, 3).map(place => (
                   <PlaceCard key={place.id} place={place} />
                 ))}
-                <SharePlaceCard />
+              </div>
+              <div class="text-center">
+                <Link
+                  href="/places"
+                  class="inline-flex items-center text-[#D98E73] hover:underline"
+                >
+                  View all places <ArrowRight class="ml-1 h-4 w-4" />
+                </Link>
               </div>
             </div>
 
             {/* Upcoming Events Section */}
             <div>
-              <div class="mb-6 flex items-end justify-between">
+              <div class="mb-4">
                 <h2 class="text-2xl font-bold text-[#5B3E29]">
                   Upcoming Events
                 </h2>
-                <Link
-                  href="/events"
-                  class="flex items-center text-[#D98E73] hover:underline"
-                >
-                  View all events <ArrowRight class="ml-1 h-4 w-4" />
-                </Link>
               </div>
-              <div class="grid gap-6 md:grid-cols-4">
-                {/* Show first 4 events + Create Card */}
+              <div class="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* Show first 3 events + add CreateEventCard if needed */}
                 {props.eventsData.slice(0, 3).map(event => (
                   <EventCard key={event.id} event={event} />
                 ))}
-                <CreateEventCard />
+                {props.eventsData.length < 3 && <CreateEventCard />}
+              </div>
+              <div class="text-center">
+                <Link
+                  href="/events"
+                  class="inline-flex items-center text-[#D98E73] hover:underline"
+                >
+                  View all events <ArrowRight class="ml-1 h-4 w-4" />
+                </Link>
               </div>
             </div>
           </div>
@@ -290,7 +293,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       ).length
                       return (
                         <option value="popular">
-                          {`Popular${popularCount > 0 ? ` (${popularCount})` : ''}`}
+                          {`Popular${
+                            popularCount > 0 ? ` (${popularCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -300,7 +305,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       ).length
                       return (
                         <option value="coffee">
-                          {`Coffee Shops${coffeeCount > 0 ? ` (${coffeeCount})` : ''}`}
+                          {`Coffee Shops${
+                            coffeeCount > 0 ? ` (${coffeeCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -310,7 +317,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       ).length
                       return (
                         <option value="quiet">
-                          {`Quiet Spaces${quietCount > 0 ? ` (${quietCount})` : ''}`}
+                          {`Quiet Spaces${
+                            quietCount > 0 ? ` (${quietCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -320,7 +329,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       ).length
                       return (
                         <option value="wifi">
-                          {`WiFi Available${wifiCount > 0 ? ` (${wifiCount})` : ''}`}
+                          {`WiFi Available${
+                            wifiCount > 0 ? ` (${wifiCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -330,7 +341,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       ).length
                       return (
                         <option value="power">
-                          {`Power Outlets${powerCount > 0 ? ` (${powerCount})` : ''}`}
+                          {`Power Outlets${
+                            powerCount > 0 ? ` (${powerCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -469,7 +482,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       }).length
                       return (
                         <option value="this_week">
-                          {`This Week${thisWeekCount > 0 ? ` (${thisWeekCount})` : ''}`}
+                          {`This Week${
+                            thisWeekCount > 0 ? ` (${thisWeekCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}
@@ -489,7 +504,9 @@ export const TabsSection = component$((props: TabsSectionProps) => {
                       }).length
                       return (
                         <option value="next_week">
-                          {`Next Week${nextWeekCount > 0 ? ` (${nextWeekCount})` : ''}`}
+                          {`Next Week${
+                            nextWeekCount > 0 ? ` (${nextWeekCount})` : ''
+                          }`}
                         </option>
                       )
                     })()}

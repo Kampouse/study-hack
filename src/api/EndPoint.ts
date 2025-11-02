@@ -33,7 +33,7 @@ export const getEvents = async ({
 
     const data = await QueryEvents({
       event,
-      options: { ...options, byUser: user.ID },
+      options: { ...options, byUser: user.ID, active: true },
     })
     if (data === null) {
       return {
