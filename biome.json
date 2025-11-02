@@ -36,6 +36,7 @@
       "**/.rollup.cache",
       "**/tsconfig.tsbuildinfo",
       "**/vite.config.ts",
+      "**/vite.config.ts.timestamp-*.mjs",
       "**/*.spec.tsx",
       "**/*.spec.ts",
       "**/.netlify",
